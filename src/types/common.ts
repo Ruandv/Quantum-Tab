@@ -1,7 +1,7 @@
 // Centralized type definitions for the entire application
 
 // Utility type to make all properties required except className and callback functions
-type RequiredProps<T> = Required<Omit<T, 'className' | 'isLocked' | 'buttons' | 'onBackgroundChange'>>;
+type RequiredProps<T> = Required<Omit<T, 'className' | 'isLocked' | 'onBackgroundChange' | 'onButtonsChange'>>;
 
 export interface Position {
   x: number;
@@ -36,6 +36,7 @@ interface DefaultWidgetProps{
 export interface SavedData {
   widgets: DashboardWidget[];
   backgroundImage: string;
+  isLocked: boolean;
   timestamp: number;
 }
 
@@ -60,6 +61,7 @@ export interface LiveClockProps extends DefaultWidgetProps {
 export interface QuickActionButtonsProps extends DefaultWidgetProps {
   className?: string;
   buttons?: ActionButton[];
+  onButtonsChange?: (buttons: ActionButton[]) => void;
 }
 
 export interface ActionButton {
@@ -95,6 +97,7 @@ export interface DashboardProps {
   onWidgetResize?: (widgetId: string, dimensions: Dimensions) => void;
   onWidgetMove?: (widgetId: string, position: Position) => void;
   onBackgroundChange?: (imageUrl: string) => void;
+  onUpdateWidgetProps?: (widgetId: string, newProps: any) => void;
 }
 
 export interface WidgetManagerProps extends DefaultWidgetProps {

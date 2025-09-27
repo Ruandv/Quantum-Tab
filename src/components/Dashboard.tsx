@@ -10,7 +10,8 @@ const Dashboard: React.FC<DashboardProps> = ({
     onRemoveWidget,
     onWidgetResize,
     onWidgetMove,
-    onBackgroundChange
+    onBackgroundChange,
+    onUpdateWidgetProps
 }) => {
     const [dragState, setDragState] = useState<DragState>({
         isDragging: false,
@@ -142,6 +143,9 @@ const Dashboard: React.FC<DashboardProps> = ({
                             isLocked={isLocked}
                             {...(widget.props || {})}
                             {...(widget.id.includes('background-manager') && onBackgroundChange ? { onBackgroundChange } : undefined)}
+                            {...(widget.id.includes('quick-actions') && onUpdateWidgetProps ? { 
+                                onButtonsChange: (buttons: any[]) => onUpdateWidgetProps(widget.id, { buttons }) 
+                            } : undefined)}
                         />
                     </div>
                 </ResizableWidget>

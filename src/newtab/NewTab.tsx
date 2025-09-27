@@ -263,6 +263,18 @@ const NewTab: React.FC = () => {
         debouncedSaveWidgetPositions();
     }, [debouncedSaveWidgetPositions]);
 
+    const handleUpdateWidgetProps = useCallback((widgetId: string, newProps: any) => {
+        setWidgets(prev =>
+            prev.map(widget =>
+                widget.id === widgetId 
+                    ? { ...widget, props: { ...widget.props, ...newProps } }
+                    : widget
+            )
+        );
+        // Trigger debounced save for prop changes
+        debouncedSaveWidgetPositions();
+    }, [debouncedSaveWidgetPositions]);
+
     const toggleLock = useCallback(() => {
         setIsLocked(prev => !prev);
     }, []);
@@ -342,6 +354,7 @@ const NewTab: React.FC = () => {
                         onWidgetResize={handleWidgetResize}
                         onWidgetMove={handleWidgetMove}
                         onBackgroundChange={handleBackgroundChange}
+                        onUpdateWidgetProps={handleUpdateWidgetProps}
                     />
                 </main>
             </div>
