@@ -146,7 +146,12 @@
   position: relative;
 }
 
-.widget-container {
+/* Hide widget-wrapper if marked as empty */
+.widget-wrapper.empty-widget {
+  display: none !important;
+}
+
+.widget-wrapper {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 16px;
@@ -155,7 +160,12 @@
   transition: all 0.3s ease;
 }
 
-.widget-container:hover {
+/* Fallback for browsers without :has() support */
+.widget-wrapper.empty-content {
+  display: none;
+}
+
+.widget-wrapper:hover {
   background: rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
@@ -440,6 +450,262 @@
 .remove-btn:hover {
   background: rgba(255, 59, 48, 1);
   transform: scale(1.1);
+}
+
+/* GitHub Widget */
+.github-widget {
+  padding: 1.5rem;
+  color: white;
+}
+
+.github-widget .widget-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: white;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.github-widget .widget-title::before {
+  content: '🐙';
+  font-size: 1.4rem;
+}
+
+.github-widget-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.github-parameter {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+
+.parameter-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.parameter-value {
+  font-size: 0.9rem;
+  color: white;
+  font-family: 'Courier New', monospace;
+  word-break: break-all;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.github-widget-status {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.status-indicator {
+  font-size: 0.9rem;
+  color: rgba(255, 193, 7, 0.9);
+}
+
+/* GitHub Widget Data Display */
+.github-config {
+  margin-bottom: 1rem;
+}
+
+.github-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  background: rgba(79, 172, 254, 0.1);
+  border: 1px solid rgba(79, 172, 254, 0.3);
+  border-radius: 8px;
+}
+
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(79, 172, 254, 0.3);
+  border-top: 2px solid rgba(79, 172, 254, 0.8);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  color: rgba(79, 172, 254, 0.9);
+  font-weight: 500;
+}
+
+.github-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.error-text {
+  color: rgba(239, 68, 68, 0.9);
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.retry-btn, .refresh-btn {
+  background: rgba(79, 172, 254, 0.2);
+  border: 1px solid rgba(79, 172, 254, 0.4);
+  color: rgba(79, 172, 254, 0.9);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retry-btn:hover, .refresh-btn:hover {
+  background: rgba(79, 172, 254, 0.3);
+  transform: translateY(-1px);
+}
+
+.github-data {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.data-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pr-count {
+  font-weight: 600;
+  color: white;
+}
+
+.last-updated {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.pr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+
+.pr-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.pr-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+  cursor: pointer;
+}
+
+.pr-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.pr-number {
+  font-weight: 600;
+  color: rgba(79, 172, 254, 0.9);
+  font-family: 'Courier New', monospace;
+}
+
+.pr-state {
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.pr-state-open {
+  background: rgba(34, 197, 94, 0.2);
+  color: rgba(34, 197, 94, 0.9);
+}
+
+.pr-state-merged {
+  background: rgba(168, 85, 247, 0.2);
+  color: rgba(168, 85, 247, 0.9);
+}
+
+.pr-state-closed {
+  background: rgba(239, 68, 68, 0.2);
+  color: rgba(239, 68, 68, 0.9);
+}
+
+.pr-draft {
+  font-size: 0.7rem;
+  background: rgba(255, 193, 7, 0.2);
+  color: rgba(255, 193, 7, 0.9);
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+}
+
+.pr-title {
+  color: white;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.pr-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.pr-author {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pr-changes {
+  font-family: 'Courier New', monospace;
+}
+
+.refresh-btn {
+  width: 100%;
+  margin-top: 0.5rem;
+  justify-self: center;
 }
 
 /* Add Button Popup Styles */
@@ -1034,75 +1300,6 @@
   font-weight: 600;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .newtab-content {
-    padding: 1rem;
-  }
-
-  .newtab-header {
-    flex-direction: column;
-    gap: 0.75rem;
-    text-align: center;
-    align-items: center;
-  }
-
-  .header-actions {
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .logo-text {
-    font-size: 2rem;
-  }
-
-  .dashboard {
-    grid-template-columns: 1fr !important;
-    gap: 1.5rem;
-  }
-
-  .widget-container {
-    padding: 1.5rem;
-  }
-
-  .live-clock-widget .current-time {
-    font-size: 3rem;
-  }
-
-  .stats {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .modal-content {
-    width: 95%;
-    margin: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .logo-text {
-    font-size: 1.75rem;
-  }
-
-  .live-clock-widget .current-time {
-    font-size: 2.5rem;
-  }
-
-  .widget-container {
-    padding: 1rem;
-  }
-
-  .modal-body {
-    padding: 1rem;
-  }
-
-  .modal-header,
-  .modal-footer {
-    padding: 1rem;
-  }
-}
-
 /* Lock/Unlock Toggle Button */
 .lock-toggle {
   background: linear-gradient(45deg, #4facfe, #00f2fe);
@@ -1124,19 +1321,19 @@
 }
 
 /* Drag and Drop Styles */
-.widget-container.dragging {
+.widget-wrapper.dragging {
   opacity: 0.8;
   transform: rotate(5deg) scale(1.05);
   z-index: 1000;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.widget-container:not(.locked) {
+.widget-wrapper:not(.locked) {
   position: relative;
   cursor: move;
 }
 
-.widget-container.locked {
+.widget-wrapper.locked {
   cursor: default;
 }
 
@@ -1163,7 +1360,7 @@
   font-weight: bold;
 }
 
-.widget-container:not(.locked):hover .widget-drag-handle {
+.widget-wrapper:not(.locked):hover .widget-drag-handle {
   opacity: 1;
 }
 
@@ -1192,7 +1389,7 @@
   justify-content: center;
 }
 
-.widget-container:not(.locked):hover .widget-remove-btn {
+.widget-wrapper:hover .widget-remove-btn {
   opacity: 1;
 }
 
@@ -1202,12 +1399,12 @@
 }
 
 /* Edit Mode Visual Feedback */
-.widget-container:not(.locked) {
+.widget-wrapper:not(.locked) {
   border: 2px dashed transparent;
   transition: border-color 0.3s ease;
 }
 
-.widget-container:not(.locked):hover {
+.widget-wrapper:not(.locked):hover {
   border-color: rgba(255, 255, 255, 0.3);
 }
 
@@ -1313,6 +1510,6 @@
 }
 
 /* Disable resize handles in locked mode */
-.widget-container.locked .resize-handle {
+.widget-wrapper.locked .resize-handle {
   display: none;
 }

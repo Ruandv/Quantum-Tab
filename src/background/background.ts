@@ -1,4 +1,6 @@
 // Background service worker for Chrome Extension Manifest V3
+import { BackgroundMessage, BackgroundResponse } from '../types/common';
+import { GitHubService } from '../services/githubService';
 
 // Listen for extension installation or startup
 chrome.runtime.onInstalled.addListener((details) => {
@@ -19,6 +21,14 @@ chrome.runtime.onStartup.addListener(() => {
 // Listen for messages from content scripts or popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('Background received message:', message, 'from:', sender);
+  console.log('Message action type:', typeof message.action, 'value:', message.action);
+  
+  // Handle async operations properly
+  if (message.action === 'fetchPullRequests') {
+    console.log('Handling fetchPullRequests action (async)');
+    handleGitHubApiRequest(message, sendResponse);
+    return true; // Keep message channel open for async response
+  }
   
   switch (message.action) {
     case 'getTabInfo':
@@ -46,15 +56,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     case 'pageLoaded':
       // Handle page loaded notifications from content script
-      // You can perform actions when pages load, such as:
-      // - Track page visits
-      // - Update extension state
-      // - Analyze page content
       sendResponse({ success: true });
       break;
       
     default:
       console.warn('Unknown action:', message.action);
+      console.warn('Available actions: getTabInfo, updateBadge, pageLoaded, fetchPullRequests');
       sendResponse({ error: 'Unknown action' });
   }
   
@@ -82,6 +89,81 @@ chrome.action.onClicked.addListener((tab) => {
 chrome.storage.onChanged.addListener((changes, namespace) => {
   console.log('Storage changed in namespace:', namespace, changes);
 });
+
+// GitHub API handler
+const handleGitHubApiRequest = async (message: BackgroundMessage, sendResponse: (response: BackgroundResponse) => void) => {
+  if (message.action !== 'fetchPullRequests') {
+    sendResponse({ action: 'fetchPullRequests', success: false, error: 'Invalid action' });
+    return;
+  }
+
+  const { patToken, repositoryUrl } = message.data;
+
+  console.log('GitHub API request received:', { repositoryUrl, hasToken: !!patToken });
+
+  // Validate required parameters
+  if (!patToken) {
+    sendResponse({
+      action: 'fetchPullRequests',
+      success: false,
+      error: 'GitHub Personal Access Token is required'
+    });
+    return;
+  }
+
+  if (!repositoryUrl) {
+    sendResponse({
+      action: 'fetchPullRequests',
+      success: false,
+      error: 'Repository URL is required'
+    });
+    return;
+  }
+
+  try {
+    console.log('Fetching pull requests using GitHub Service...');
+    
+    // Use the GitHub service to fetch real data
+    const pullRequests = await GitHubService.getPullRequests(
+      patToken,
+      repositoryUrl,
+      { state: 'open', per_page: 10 } // Fetch up to 10 open PRs
+    );
+
+    console.log(`GitHub API response ready: ${pullRequests.length} PRs fetched`);
+
+    // Return the pull requests directly - they already match our GitHubPullRequest interface
+    sendResponse({
+      action: 'fetchPullRequests',
+      success: true,
+      data: pullRequests
+    });
+
+  } catch (error) {
+    console.error('GitHub API request failed:', error);
+    
+    let errorMessage = 'Failed to fetch pull requests';
+    
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      
+      // Provide more helpful error messages for common issues
+      if (error.message.includes('401')) {
+        errorMessage = 'Invalid GitHub token. Please check your Personal Access Token.';
+      } else if (error.message.includes('404')) {
+        errorMessage = 'Repository not found. Please check the repository URL and token permissions.';
+      } else if (error.message.includes('403')) {
+        errorMessage = 'Access forbidden. Check your token permissions or rate limit.';
+      }
+    }
+    
+    sendResponse({
+      action: 'fetchPullRequests',
+      success: false,
+      error: errorMessage
+    });
+  }
+};
 
 // Utility function to log errors
 const logError = (error: Error, context: string) => {

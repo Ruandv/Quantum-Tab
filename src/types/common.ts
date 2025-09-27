@@ -78,6 +78,12 @@ export interface QuickActionButtonItemProps {
   onRemoveButton: (index: number) => void;
 }
 
+export interface GitHubWidgetProps extends DefaultWidgetProps {
+  className?: string;
+  patToken?: string;
+  repositoryUrl?: string;
+}
+
 export interface BackgroundManagerProps extends DefaultWidgetProps {
   className?: string;
   onBackgroundChange?: (imageUrl: string) => void;
@@ -146,3 +152,122 @@ export const FILE_UPLOAD_CONSTRAINTS = {
   MAX_SIZE: 5 * 1024 * 1024, // 5MB
   ALLOWED_TYPES: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp']
 } as const;
+
+// GitHub API Types (based on GitHub REST API v2022-11-28)
+export interface GitHubUser {
+  login: string;
+  id: number;
+  avatar_url: string;
+  html_url: string;
+  type: string;
+}
+
+export interface GitHubLabel {
+  id: number;
+  name: string;
+  color: string;
+  description: string | null;
+}
+
+export interface GitHubMilestone {
+  id: number;
+  number: number;
+  title: string;
+  description: string | null;
+  state: 'open' | 'closed';
+  created_at: string;
+  updated_at: string;
+  due_on: string | null;
+}
+
+export interface GitHubRepository {
+  id: number;
+  name: string;
+  full_name: string;
+  html_url: string;
+  description: string | null;
+  private: boolean;
+  fork: boolean;
+  default_branch: string;
+}
+
+export interface GitHubPullRequestHead {
+  label: string;
+  ref: string;
+  sha: string;
+  user: GitHubUser;
+  repo: GitHubRepository;
+}
+
+export interface GitHubPullRequest {
+  id: number;
+  number: number;
+  state: 'open' | 'closed';
+  title: string;
+  body: string | null;
+  user: GitHubUser;
+  labels: GitHubLabel[];
+  milestone: GitHubMilestone | null;
+  assignee: GitHubUser | null;
+  assignees: GitHubUser[];
+  requested_reviewers: GitHubUser[];
+  head: GitHubPullRequestHead;
+  base: GitHubPullRequestHead;
+  draft: boolean;
+  merged: boolean;
+  mergeable: boolean | null;
+  mergeable_state: string;
+  merged_by: GitHubUser | null;
+  comments: number;
+  review_comments: number;
+  commits: number;
+  additions: number;
+  deletions: number;
+  changed_files: number;
+  created_at: string;
+  updated_at: string;
+  closed_at: string | null;
+  merged_at: string | null;
+  html_url: string;
+  diff_url: string;
+  patch_url: string;
+}
+
+export interface GitHubApiError {
+  message: string;
+  documentation_url?: string;
+  errors?: Array<{
+    resource: string;
+    field: string;
+    code: string;
+  }>;
+}
+
+export interface GitHubPullRequestsParams {
+  state?: 'open' | 'closed' | 'all';
+  head?: string;
+  base?: string;
+  sort?: 'created' | 'updated' | 'popularity' | 'long-running';
+  direction?: 'asc' | 'desc';
+  per_page?: number;
+  page?: number;
+}
+
+export interface GitHubApiRequest {
+  action: 'fetchPullRequests';
+  data: {
+    patToken: string;
+    repositoryUrl: string;
+  };
+}
+
+export interface GitHubApiResponse {
+  action: 'fetchPullRequests';
+  success: boolean;
+  data?: GitHubPullRequest[];
+  error?: string;
+}
+
+// Background message types
+export type BackgroundMessage = GitHubApiRequest;
+export type BackgroundResponse = GitHubApiResponse;

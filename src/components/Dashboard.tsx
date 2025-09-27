@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import ResizableWidget from './ResizableWidget';
 import { DashboardWidget, DashboardProps, DragState, Position, Dimensions } from '../types/common';
 import { constrainPosition, getViewportDimensions } from '../utils/helpers';
@@ -19,6 +19,9 @@ const Dashboard: React.FC<DashboardProps> = ({
         startPos: { x: 0, y: 0 },
         startWidgetPos: { x: 0, y: 0 }
     });
+
+    const [emptyWidgets, setEmptyWidgets] = useState<Set<string>>(new Set());
+    const widgetRefs = useRef<Map<string, HTMLElement>>(new Map());
 
     const containerBounds = useMemo(() => getViewportDimensions(), []);
 
@@ -78,6 +81,34 @@ const Dashboard: React.FC<DashboardProps> = ({
         onRemoveWidget?.(widgetId);
     }, [onRemoveWidget]);
 
+    // Check for empty widgets after render
+    useEffect(() => {
+        const checkEmptyWidgets = () => {
+            const newEmptyWidgets = new Set<string>();
+
+            widgetRefs.current.forEach((element, widgetId) => {
+                const contentElement = element.querySelector('.widget-content');
+                if (contentElement) {
+                    // Check if content is empty (no text, no child elements, or only whitespace)
+                    const hasText = contentElement.textContent?.trim().length || 0;
+                    const hasElements = contentElement.children.length;
+                    const hasVisibleContent = hasText > 0 || hasElements > 0;
+                    if (!hasVisibleContent && isLocked) {
+                        newEmptyWidgets.add(widgetId);
+                    }
+                }
+            });
+
+            setEmptyWidgets(newEmptyWidgets);
+        };
+
+        // Check immediately and after a short delay to ensure DOM is updated
+        checkEmptyWidgets();
+        const timeoutId = setTimeout(checkEmptyWidgets, 100);
+
+        return () => clearTimeout(timeoutId);
+    }, [widgets]);
+
     // Global mouse event listeners
     React.useEffect(() => {
         if (dragState.isDragging) {
@@ -101,10 +132,19 @@ const Dashboard: React.FC<DashboardProps> = ({
             return null;
         }
 
+        const isEmpty = emptyWidgets.has(widget.id);
+
         return (
             <div
                 key={widget.id}
-                className={`widget-wrapper ${isLocked ? 'locked' : 'editable'} ${isDragging ? 'dragging' : ''}`}
+                ref={(el) => {
+                    if (el) {
+                        widgetRefs.current.set(widget.id, el);
+                    } else {
+                        widgetRefs.current.delete(widget.id);
+                    }
+                }}
+                className={`widget-wrapper ${isLocked ? 'locked' : 'editable'} ${isDragging ? 'dragging' : ''} ${isEmpty ? 'empty-widget' : ''}`}
                 style={{
                     position: 'absolute',
                     left: `${widget.position.x}px`,
@@ -123,7 +163,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 >
                     {!isLocked && handleRemoveWidget && (
                         <button
-                            className="widget-remove-btn"
+                            className="widget-remove-btn remove-btn"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 handleRemoveWidget(widget.id);
@@ -143,15 +183,15 @@ const Dashboard: React.FC<DashboardProps> = ({
                             isLocked={isLocked}
                             {...(widget.props || {})}
                             {...(widget.id.includes('background-manager') && onBackgroundChange ? { onBackgroundChange } : undefined)}
-                            {...(widget.id.includes('quick-actions') && onUpdateWidgetProps ? { 
-                                onButtonsChange: (buttons: any[]) => onUpdateWidgetProps(widget.id, { buttons }) 
+                            {...(widget.id.includes('quick-actions') && onUpdateWidgetProps ? {
+                                onButtonsChange: (buttons: any[]) => onUpdateWidgetProps(widget.id, { buttons })
                             } : undefined)}
                         />
                     </div>
                 </ResizableWidget>
             </div>
         );
-    }, [dragState.draggedWidgetId, isLocked, handleMouseDown, handleWidgetResize, handleRemoveWidget]);
+    }, [dragState.draggedWidgetId, isLocked, emptyWidgets, handleMouseDown, handleWidgetResize, handleRemoveWidget]);
 
     return (
         <div className={`dashboard-container ${className}`}>
