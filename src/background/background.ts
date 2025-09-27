@@ -4,8 +4,6 @@ import { GitHubService } from '../services/githubService';
 
 // Listen for extension installation or startup
 chrome.runtime.onInstalled.addListener((details) => {
-  console.log('Extension installed:', details);
-  
   // Set up initial state or perform initialization tasks
   chrome.storage.sync.set({
     extensionInstalled: true,
@@ -15,17 +13,13 @@ chrome.runtime.onInstalled.addListener((details) => {
 
 // Listen for extension startup
 chrome.runtime.onStartup.addListener(() => {
-  console.log('Extension started');
+  // Extension started - ready to handle messages
 });
 
 // Listen for messages from content scripts or popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('Background received message:', message, 'from:', sender);
-  console.log('Message action type:', typeof message.action, 'value:', message.action);
-  
   // Handle async operations properly
   if (message.action === 'fetchPullRequests') {
-    console.log('Handling fetchPullRequests action (async)');
     handleGitHubApiRequest(message, sendResponse);
     return true; // Keep message channel open for async response
   }
@@ -72,8 +66,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // Listen for tab updates
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete' && tab.url) {
-    console.log('Tab updated:', tab.url);
-    
     // You can perform actions when tabs are updated
     // For example, inject content scripts or update extension state
   }
@@ -87,7 +79,7 @@ chrome.action.onClicked.addListener((tab) => {
 
 // Listen for storage changes
 chrome.storage.onChanged.addListener((changes, namespace) => {
-  console.log('Storage changed in namespace:', namespace, changes);
+  // Handle storage changes if needed
 });
 
 // GitHub API handler
@@ -98,8 +90,6 @@ const handleGitHubApiRequest = async (message: BackgroundMessage, sendResponse: 
   }
 
   const { patToken, repositoryUrl } = message.data;
-
-  console.log('GitHub API request received:', { repositoryUrl, hasToken: !!patToken });
 
   // Validate required parameters
   if (!patToken) {
@@ -121,16 +111,12 @@ const handleGitHubApiRequest = async (message: BackgroundMessage, sendResponse: 
   }
 
   try {
-    console.log('Fetching pull requests using GitHub Service...');
-    
     // Use the GitHub service to fetch real data
     const pullRequests = await GitHubService.getPullRequests(
       patToken,
       repositoryUrl,
       { state: 'open', per_page: 10 } // Fetch up to 10 open PRs
     );
-
-    console.log(`GitHub API response ready: ${pullRequests.length} PRs fetched`);
 
     // Return the pull requests directly - they already match our GitHubPullRequest interface
     sendResponse({

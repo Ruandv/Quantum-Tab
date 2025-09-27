@@ -90,9 +90,19 @@
 
 .widget-wrapper {
   position: absolute;
-  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
   transition: all 0.3s ease;
   user-select: none; /* Prevent text selection during drag */
+}
+
+.widget-wrapper:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .widget-wrapper.editable {
@@ -151,24 +161,9 @@
   display: none !important;
 }
 
-.widget-wrapper {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  padding: 2rem;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-}
-
 /* Fallback for browsers without :has() support */
 .widget-wrapper.empty-content {
   display: none;
-}
-
-.widget-wrapper:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 /* Widget Sizes */
@@ -1320,22 +1315,7 @@
   box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
 }
 
-/* Drag and Drop Styles */
-.widget-wrapper.dragging {
-  opacity: 0.8;
-  transform: rotate(5deg) scale(1.05);
-  z-index: 1000;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.widget-wrapper:not(.locked) {
-  position: relative;
-  cursor: move;
-}
-
-.widget-wrapper.locked {
-  cursor: default;
-}
+/* Drag and Drop Styles - consolidated above with main widget styles */
 
 .dashboard.drag-over {
   background-color: rgba(255, 255, 255, 0.1);

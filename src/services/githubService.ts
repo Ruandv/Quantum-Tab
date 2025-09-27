@@ -153,31 +153,17 @@ export class GitHubService {
     try {
       const { owner, repo } = this.parseRepositoryUrl(repositoryUrl);
       
-      console.log(`Attempting to fetch PRs for: ${owner}/${repo}`);
-      
       // First, validate token and check repository access
-      console.log('Validating token...');
       const tokenValidation = await this.validateToken(token);
       if (!tokenValidation.valid) {
         throw new Error(`Invalid token: ${tokenValidation.error}`);
       }
       
-      console.log(`Token valid for user: ${tokenValidation.user}`);
-      console.log(`Token scopes: ${tokenValidation.scopes?.join(', ') || 'none'}`);
-      
-      // Check if token has repo access for private repositories
-      if (!tokenValidation.scopes?.includes('repo') && !tokenValidation.scopes?.includes('public_repo')) {
-        console.warn('Token may lack repository access scopes. Private repositories require \'repo\' scope.');
-      }
-      
       // Check repository access
-      console.log('Checking repository access...');
       const repoAccess = await this.checkRepositoryAccess(token, repositoryUrl);
       if (!repoAccess.hasAccess) {
         throw new Error(repoAccess.error || 'Cannot access repository');
       }
-      
-      console.log(`Repository access confirmed. Private: ${repoAccess.isPrivate}`);
       
       // Build query parameters
       const queryParams = new URLSearchParams();
@@ -193,17 +179,12 @@ export class GitHubService {
       if (params.page) queryParams.set('page', params.page.toString());
 
       const endpoint = `/repos/${owner}/${repo}/pulls?${queryParams.toString()}`;
-      const fullUrl = `${this.BASE_URL}${endpoint}`;
-      
-      console.log(`Fetching pull requests from: ${fullUrl}`);
       
       const pullRequests = await this.makeRequest<GitHubPullRequest[]>(
         endpoint,
         token
       );
 
-      console.log(`Successfully fetched ${pullRequests.length} pull requests`);
-      
       return pullRequests;
     } catch (error) {
       console.error('GitHub Service Error:', error);
