@@ -29,11 +29,13 @@ export interface WidgetType<T = any> {
   defaultDimensions: Dimensions;
   defaultProps: RequiredProps<T>;
 }
+interface DefaultWidgetProps{
+    isLocked: boolean;
+}
 
 export interface SavedData {
   widgets: DashboardWidget[];
   backgroundImage: string;
-  isLocked: boolean;
   timestamp: number;
 }
 
@@ -45,7 +47,7 @@ export interface StorageInfo {
 }
 
 // Component-specific interfaces
-export interface LiveClockProps {
+export interface LiveClockProps extends DefaultWidgetProps {
   className?: string;
   timeZone: string;
   dateFormat?: string; // Optional date format prop
@@ -55,10 +57,9 @@ export interface LiveClockProps {
   showTimeZone?: boolean;
 }
 
-export interface QuickActionButtonsProps {
+export interface QuickActionButtonsProps extends DefaultWidgetProps {
   className?: string;
   buttons?: ActionButton[];
-  isLocked?: boolean;
 }
 
 export interface ActionButton {
@@ -67,7 +68,7 @@ export interface ActionButton {
   url: string;
 }
 
-export interface BackgroundManagerProps {
+export interface BackgroundManagerProps extends DefaultWidgetProps {
   className?: string;
   onBackgroundChange?: (imageUrl: string) => void;
 }
@@ -96,7 +97,7 @@ export interface DashboardProps {
   onBackgroundChange?: (imageUrl: string) => void;
 }
 
-export interface WidgetManagerProps {
+export interface WidgetManagerProps extends DefaultWidgetProps {
   onAddWidget: (widget: DashboardWidget) => void;
   onRemoveWidget: (widgetId: string) => void;
   existingWidgets: DashboardWidget[];

@@ -321,12 +321,13 @@ const NewTab: React.FC = () => {
                         >
                             {isLocked ? '🔒' : '🔓'} {isLocked ? 'Locked' : 'Edit Mode'}
                         </button>
-                        {!isLocked && <WidgetManager
+                        <WidgetManager
                             onAddWidget={handleAddWidget}
                             onRemoveWidget={handleRemoveWidget}
                             existingWidgets={widgets}
+                            isLocked={isLocked}
                             onBackgroundChange={handleBackgroundChange}
-                        />}
+                        />
                     </div>
 
                 </header>

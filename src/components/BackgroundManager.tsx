@@ -2,10 +2,12 @@ import React, { useState, useRef, useCallback } from 'react';
 import { BackgroundManagerProps } from '../types/common';
 import { validateImageFile, fileToDataURL } from '../utils/helpers';
 
-const BackgroundManager: React.FC<BackgroundManagerProps> = ({ 
-  className = '', 
-  onBackgroundChange 
-}) => {
+const BackgroundManager: React.FC<BackgroundManagerProps> = ({
+  className = '',
+  onBackgroundChange,
+  isLocked
+}: BackgroundManagerProps) => {
+  if (isLocked) return null;
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +22,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
     if (!file) return;
 
     setError(null);
-    
+
     // Validate file
     const validation = validateImageFile(file);
     if (!validation.isValid) {
@@ -76,9 +78,9 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   const renderPreview = () => (
     <div className="preview-section">
       <div className="image-preview">
-        <img 
-          src={uploadedImage!} 
-          alt="Background preview" 
+        <img
+          src={uploadedImage!}
+          alt="Background preview"
           className="preview-image"
         />
         <div className="preview-overlay">
@@ -92,21 +94,21 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
     if (uploadedImage) {
       return (
         <>
-          <button 
+          <button
             className="control-btn change-btn"
             onClick={handleFileSelect}
             title="Change background image"
           >
             📁 Change
           </button>
-          <button 
+          <button
             className="control-btn default-btn"
             onClick={handleRestoreDefault}
             title="Restore default gradient background"
           >
             🎨 Default
           </button>
-          <button 
+          <button
             className="control-btn remove-btn"
             onClick={handleRemoveBackground}
             title="Remove background image"
@@ -118,7 +120,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
     }
 
     return (
-      <button 
+      <button
         className="control-btn default-btn"
         onClick={handleRestoreDefault}
         title="Restore default gradient background"
@@ -131,7 +133,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   return (
     <div className={`background-manager-widget ${className}`}>
       <h3 className="widget-title">Background Manager</h3>
-      
+
       <div className="upload-section">
         {!uploadedImage ? (
           <div className="upload-area" onClick={handleFileSelect}>
@@ -140,7 +142,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
         ) : (
           renderPreview()
         )}
-        
+
         {error && (
           <div className="error-message" style={{ color: '#ff6b6b', fontSize: '0.8rem', marginTop: '0.5rem' }}>
             {error}

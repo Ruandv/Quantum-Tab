@@ -137,15 +137,13 @@ const Dashboard: React.FC<DashboardProps> = ({
                             ⋮⋮
                         </div>
                     )}
-                    {/* Conditionally render BackgroundManager only when not locked */}
-                    {!(isLocked && widget.id.startsWith('background-manager')) && (
-                        <div className="widget-content">
-                            <WidgetComponent 
-                                {...(widget.props || {})} 
-                                {...(widget.id.includes('background-manager') && onBackgroundChange ? { onBackgroundChange } : {})}
-                            />
-                        </div>
-                    )}
+                    <div className="widget-content">
+                        <WidgetComponent
+                            isLocked={isLocked}
+                            {...(widget.props || {})}
+                            {...(widget.id.includes('background-manager') && onBackgroundChange ? { onBackgroundChange } : undefined)}
+                        />
+                    </div>
                 </ResizableWidget>
             </div>
         );

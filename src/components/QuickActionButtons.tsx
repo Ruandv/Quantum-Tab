@@ -18,8 +18,9 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
     icon: '🗞️',
     label: 'MyBroadband',
     url: 'https://mybroadband.co.za/',
-  },]
-}) => {
+  },],
+  isLocked
+}: QuickActionButtonsProps) => {
   const handleButtonClick = (url: string) => {
     window.open(url, '_blank');
   };
@@ -39,10 +40,12 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
             <span className="btn-label">{button.label}</span>
           </button>
         ))}
-        <button title='Add' className="action-btn">
-          <span className="btn-icon">➕</span>
-          <span className="btn-label">Add</span>
-        </button>
+       {!isLocked && (
+         <button title='Add' className="action-btn">
+           <span className="btn-icon">➕</span>
+           <span className="btn-label">Add</span>
+         </button>
+       )}
       </div>
     </div>
   );

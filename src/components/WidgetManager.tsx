@@ -7,8 +7,11 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     onAddWidget,
     onRemoveWidget,
     existingWidgets,
-    onBackgroundChange
-}) => {
+    onBackgroundChange,
+    isLocked
+}: WidgetManagerProps) => {
+    if (isLocked) return null;
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedWidgetType, setSelectedWidgetType] = useState<WidgetType | null>(null);
     const [widgetDimensions, setWidgetDimensions] = useState<Dimensions>({ width: 300, height: 200 });
@@ -36,7 +39,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     const handleWidgetTypeSelect = useCallback((widgetType: WidgetType) => {
         setSelectedWidgetType(widgetType);
         setWidgetDimensions(widgetType.defaultDimensions);
-        
+
         // Auto-calculate optimal position
         const optimalPosition = findOptimalPosition(
             widgetType.defaultDimensions,
@@ -49,7 +52,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     const handleAddWidget = useCallback(() => {
         if (!selectedWidgetType) return;
         let widgetProps = { ...(selectedWidgetType.defaultProps || {}) };
-        
+
         // Add background change handler for BackgroundManager
         if (selectedWidgetType.id === 'background-manager' && onBackgroundChange) {
             widgetProps = {
@@ -80,7 +83,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
     const handlePropertyChange = useCallback((key: string, value: string) => {
         if (!selectedWidgetType) return;
-        
+
         setSelectedWidgetType(prev => prev ? {
             ...prev,
             defaultProps: {
