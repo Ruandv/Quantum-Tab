@@ -10,6 +10,7 @@ const STORAGE_KEYS = {
 // Interface for serialized widget (component stored as string)
 export interface SerializedWidget {
     id: string;
+    allowMultiples: boolean;
     component: string; // Stored as widget type ID or component name
     props?: Record<string, any>;
     dimensions: Dimensions;

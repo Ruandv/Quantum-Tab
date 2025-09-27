@@ -15,6 +15,7 @@ export interface Dimensions {
 
 export interface DashboardWidget {
   id: string;
+  allowMultiples:boolean;
   component: React.ComponentType<any>;
   props?: Record<string, any>;
   dimensions: Dimensions;
@@ -24,6 +25,7 @@ export interface DashboardWidget {
 export interface WidgetType<T = any> {
   id: string;
   name: string;
+  allowMultiples:boolean;
   description: string;
   component: React.ComponentType<T>;
   defaultDimensions: Dimensions;

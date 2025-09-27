@@ -15,7 +15,6 @@
   margin: 0 auto;
   padding: 2rem;
   width: 100%;
-  height: 100%; /* Ensure full height */
   box-sizing: border-box;
 }
 
@@ -71,7 +70,7 @@
 /* Dashboard Layout */
 .main-dashboard {
   width: 100%;
-  flex: 1; /* Take remaining height */
+  /* Removed flex: 1 to allow natural content-based sizing */
   display: flex;
   flex-direction: column;
 }
@@ -79,7 +78,7 @@
 .dashboard-container {
   position: relative;
   width: 100%;
-  flex: 1; /* Fill remaining space */
+  /* Height is now controlled by JavaScript for dynamic sizing */
   min-height: 400px; /* Minimum height for usability */
   background: rgba(255, 255, 255, 0.05);
   border-radius: 20px;

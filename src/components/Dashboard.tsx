@@ -23,6 +23,21 @@ const Dashboard: React.FC<DashboardProps> = ({
     const [emptyWidgets, setEmptyWidgets] = useState<Set<string>>(new Set());
     const widgetRefs = useRef<Map<string, HTMLElement>>(new Map());
 
+    // Calculate dynamic container height based on widget positions
+    const containerHeight = useMemo(() => {
+        if (widgets.length === 0) return 400; // Default minimum height
+
+        const lowestPoint = widgets.reduce((max, widget) => {
+            // Calculate widget bottom including padding (2rem = 32px) and some extra margin
+            const widgetPadding = 64; // 2rem padding * 2 for top and bottom
+            const extraMargin = 40; // Additional breathing room
+            const widgetBottom = widget.position.y + widget.dimensions.height + widgetPadding + extraMargin;
+            return Math.max(max, widgetBottom);
+        }, 400); // Minimum 400px height
+
+        return Math.max(lowestPoint, 400);
+    }, [widgets]);
+
     const containerBounds = useMemo(() => getViewportDimensions(), []);
 
     const handleMouseDown = useCallback((e: React.MouseEvent, widget: DashboardWidget) => {
@@ -194,7 +209,13 @@ const Dashboard: React.FC<DashboardProps> = ({
     }, [dragState.draggedWidgetId, isLocked, emptyWidgets, handleMouseDown, handleWidgetResize, handleRemoveWidget]);
 
     return (
-        <div className={`dashboard-container ${className}`}>
+        <div 
+            className={`dashboard-container ${className}`}
+            style={{ 
+                height: `${containerHeight}px`,
+                minHeight: '400px'
+            }}
+        >
             {widgets.map(renderWidget)}
         </div>
     );

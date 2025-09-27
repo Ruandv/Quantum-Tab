@@ -10,6 +10,7 @@ const NewTab: React.FC = () => {
     // Component mapping for deserialization
     const componentMap = useMemo(() => {
         const map = widgetRegistry.createComponentMap();
+        console.log('Component map created with keys:', Object.keys(map));
         return map;
     }, []);
 
@@ -17,9 +18,10 @@ const NewTab: React.FC = () => {
     const getInitialWidgets = useCallback((): DashboardWidget[] => {
         try {
             const viewport = getViewportDimensions();
-            
+
             const clockWidget: DashboardWidget = {
                 id: 'clock-widget-1',
+                allowMultiples: true,
                 position: { x: Math.max(50, viewport.width - 350), y: 50 },
                 dimensions: { width: 300, height: 200 },
                 component: componentMap['LiveClock'] || (() => null),
@@ -28,6 +30,7 @@ const NewTab: React.FC = () => {
 
             const backgroundManagerWidget: DashboardWidget = {
                 id: 'background-manager-1',
+                allowMultiples: false,
                 position: { x: 50, y: Math.max(50, viewport.height - 250) },
                 dimensions: { width: 300, height: 200 },
                 component: componentMap['background-manager'] || (() => null),
@@ -35,10 +38,13 @@ const NewTab: React.FC = () => {
             };
 
             const quickActionWidget: DashboardWidget = {
-                id: 'quick-action-1', 
-                position: { x: Math.max(50, viewport.width - 350), y: Math.max(270, viewport.height - 250) },
+                id: 'quick-action-1',
+                allowMultiples: true,
+                position: {
+                    x: Math.max(50, viewport.width - 350), y: Math.max(270, viewport.height - 250)
+                },
                 dimensions: { width: 300, height: 200 },
-                component: componentMap['quick-action-buttons'] || (() => null),
+                component: componentMap['quick-actions'] || (() => null),
                 props: { className: 'default-quick-actions' }
             };
 
@@ -58,23 +64,38 @@ const NewTab: React.FC = () => {
     // Load data from Chrome storage on component mount
     useEffect(() => {
         const loadInitialData = async () => {
+            console.log('Starting widget initialization...');
+
+            // Quick check if chrome.storage is available
+            if (!chrome?.storage?.local) {
+                console.warn('Chrome storage not available, using default widgets');
+                setWidgets(getInitialWidgets());
+                setIsLoading(false);
+                return;
+            }
+
             try {
+                console.log('Loading data from Chrome storage...');
                 const savedData = await chromeStorage.loadAll();
-                
+                console.log('Loaded saved data:', savedData);
+
                 // Set background and lock state
                 setBackgroundImage(savedData.backgroundImage || '');
                 setIsLocked(savedData.isLocked || false);
-                
-                // Handle widgets
-                if (!savedData?.widgets?.length) {
+
+                // Handle widgets - force fresh start if data looks corrupted
+                if (!savedData?.widgets?.length || savedData.widgets.some(w => !w.component)) {
+                    console.log('No valid saved widgets found, using initial widgets');
                     setWidgets(getInitialWidgets());
                     setIsLoading(false);
                     return;
                 }
 
                 // Restore component references with error handling
+                console.log('Available component map keys:', Object.keys(componentMap));
                 const restoredWidgets = savedData.widgets.map(widget => {
                     try {
+                        console.log(`Restoring widget ${widget.id} with component:`, widget.component);
                         // Default to LiveClock if component info is missing
                         let componentName = 'LiveClock';
                         let widgetTypeId = '';
@@ -156,18 +177,75 @@ const NewTab: React.FC = () => {
                     }
                 });
 
-                setWidgets(restoredWidgets);
+                // Validate restored widgets before setting
+                const validWidgets = restoredWidgets.filter(w => w.component && typeof w.component === 'function');
+
+                if (validWidgets.length === 0) {
+                    console.warn('No valid restored widgets, falling back to initial widgets');
+                    setWidgets(getInitialWidgets());
+                } else {
+                    setWidgets(validWidgets);
+                }
             } catch (error) {
                 console.error('Critical error during widget initialization:', error);
-                // Use initial widgets as ultimate fallback
+                // Clear corrupted storage and use initial widgets
+                try {
+                    await chromeStorage.clearAll();
+                } catch (clearError) {
+                    console.error('Failed to clear storage:', clearError);
+                }
                 setWidgets(getInitialWidgets());
             } finally {
+                console.log('Widget initialization complete, stopping loading spinner');
                 setIsLoading(false);
             }
         };
 
-        loadInitialData();
+        // Add timeout safeguard
+        const timeoutId = setTimeout(() => {
+            console.warn('Loading timeout - forcing initialization with default widgets');
+            setWidgets(getInitialWidgets());
+            setIsLoading(false);
+        }, 5000); // 5 second timeout
+
+        loadInitialData().finally(() => {
+            clearTimeout(timeoutId);
+        });
     }, [getInitialWidgets, componentMap]);
+
+    // Debug function to reset everything
+    const handleReset = useCallback(async () => {
+        try {
+            await chromeStorage.clearAll();
+            setWidgets(getInitialWidgets());
+            setBackgroundImage('');
+            setIsLocked(false);
+            console.log('Extension reset successfully');
+        } catch (error) {
+            console.error('Failed to reset extension:', error);
+        }
+    }, [getInitialWidgets]);
+
+    // Add keyboard shortcuts
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.ctrlKey && event.shiftKey && event.key === 'R') {
+                event.preventDefault();
+                console.log('Manual reset triggered');
+                handleReset();
+            } else if (event.ctrlKey && event.shiftKey && event.key === 'L') {
+                event.preventDefault();
+                console.log('Manual loading stop triggered');
+                setIsLoading(false);
+                if (widgets.length === 0) {
+                    setWidgets(getInitialWidgets());
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [handleReset, widgets.length, getInitialWidgets]);
 
     // Optimized save function with debouncing
     const saveToStorage = useCallback(
@@ -178,6 +256,7 @@ const NewTab: React.FC = () => {
                     const widgetType = widgetRegistry.findByComponentName(widget.component.name);
                     return {
                         id: widget.id,
+                        allowMultiples: widgetType?.allowMultiples || false,
                         component: widgetType?.id || widget.component.name || 'LiveClock',
                         props: widget.props,
                         dimensions: widget.dimensions,
@@ -223,13 +302,13 @@ const NewTab: React.FC = () => {
     }, []);
 
     const handleWidgetResize = useCallback((id: string, dimensions: Dimensions) => {
-        setWidgets(prev => prev.map(widget => 
+        setWidgets(prev => prev.map(widget =>
             widget.id === id ? { ...widget, dimensions } : widget
         ));
     }, []);
 
     const handleWidgetMove = useCallback((id: string, position: Position) => {
-        setWidgets(prev => prev.map(widget => 
+        setWidgets(prev => prev.map(widget =>
             widget.id === id ? { ...widget, position } : widget
         ));
     }, []);
@@ -256,7 +335,7 @@ const NewTab: React.FC = () => {
                 timestamp: Date.now(),
                 storageInfo
             };
-            
+
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -293,8 +372,8 @@ const NewTab: React.FC = () => {
     }
 
     return (
-        <div 
-            className="new-tab-container"
+        <div
+            className="newtab-container"
             style={{
                 backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
                 backgroundSize: 'cover',
@@ -304,26 +383,45 @@ const NewTab: React.FC = () => {
                 position: 'relative'
             }}
         >
-            <Dashboard
-                widgets={widgets}
-                onRemoveWidget={handleRemoveWidget}
-                onWidgetResize={handleWidgetResize}
-                onWidgetMove={handleWidgetMove}
-                isLocked={isLocked}
-                onBackgroundChange={handleBackgroundChange}
-                onUpdateWidgetProps={(widgetId: string, newProps: any) => {
-                    setWidgets(prev => prev.map(w => 
-                        w.id === widgetId ? { ...w, props: { ...w.props, ...newProps } } : w
-                    ));
-                }}
-            />
-            <WidgetManager
-                onAddWidget={handleAddWidget}
-                onRemoveWidget={handleRemoveWidget}
-                existingWidgets={widgets}
-                onBackgroundChange={handleBackgroundChange}
-                isLocked={isLocked}
-            />
+            <div className="newtab-content">
+                <header className="newtab-header">
+                    <div className="header-actions">
+                        <button
+                            className={`lock-toggle ${isLocked ? 'locked' : ''}`}
+                            onClick={handleToggleLock}
+                            title={isLocked ? 'Unlock Dashboard' : 'Lock Dashboard'}
+                        >
+                            <span className="btn-icon">{isLocked ? '🔒' : '🔓'}</span>
+                            {isLocked ? 'Unlock' : 'Lock'}
+                        </button>
+                        <WidgetManager
+                            onAddWidget={handleAddWidget}
+                            onRemoveWidget={handleRemoveWidget}
+                            existingWidgets={widgets}
+                            onBackgroundChange={handleBackgroundChange}
+                            isLocked={isLocked}
+                        />
+                    </div>
+                </header>
+
+                <main className="newtab-main">
+                    <div className="main-dashboard">
+                        <Dashboard
+                            widgets={widgets}
+                            onRemoveWidget={handleRemoveWidget}
+                            onWidgetResize={handleWidgetResize}
+                            onWidgetMove={handleWidgetMove}
+                            isLocked={isLocked}
+                            onBackgroundChange={handleBackgroundChange}
+                            onUpdateWidgetProps={(widgetId: string, newProps: any) => {
+                                setWidgets(prev => prev.map(w =>
+                                    w.id === widgetId ? { ...w, props: { ...w.props, ...newProps } } : w
+                                ));
+                            }}
+                        />
+                    </div>
+                </main>
+            </div>
         </div>
     );
 };

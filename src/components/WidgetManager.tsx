@@ -10,7 +10,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     onBackgroundChange,
     isLocked
 }: WidgetManagerProps) => {
-    if (isLocked) return null;
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedWidgetType, setSelectedWidgetType] = useState<WidgetType | null>(null);
@@ -63,6 +62,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
         const newWidget: DashboardWidget = {
             id: generateUniqueId(selectedWidgetType.id),
+            allowMultiples: selectedWidgetType.allowMultiples,
             component: selectedWidgetType.component,
             dimensions: widgetDimensions,
             position: widgetPosition,
@@ -98,14 +98,24 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     }, [availableWidgets]);
 
     const renderWidgetTypeCard = useCallback((widgetType: WidgetType) => (
-        <div
-            key={widgetType.id}
-            className={`widget-type-card ${selectedWidgetType?.id === widgetType.id ? 'selected' : ''}`}
-            onClick={() => handleWidgetTypeSelect(widgetType)}
-        >
-            <h4>{widgetType.name}</h4>
-            <p>{widgetType.description}</p>
-        </div>
+        (() => {
+            const component = existingWidgets.find(widget => widget.id.startsWith(widgetType.id));
+            if (component && component.allowMultiples === false) {
+                return (
+                    <div></div>
+                );
+            }
+            return (
+                <div
+                    key={widgetType.id}
+                    className={`widget-type-card ${selectedWidgetType?.id === widgetType.id ? 'selected' : ''}`}
+                    onClick={() => handleWidgetTypeSelect(widgetType)}
+                >
+                    <h4>{widgetType.name}</h4>
+                    <p>{widgetType.description}</p>
+                </div>
+            );
+        })()
     ), [selectedWidgetType, handleWidgetTypeSelect]);
 
     const renderDimensionInput = useCallback((
@@ -151,111 +161,113 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     ), [handlePositionChange]);
 
     return (
-        <>
-            <button
-                className="add-widget-btn"
-                onClick={handleOpenModal}
-                title="Add Widget"
-            >
-                <span className="btn-icon">➕</span>
-                Add Widget
-            </button>
+        isLocked ? (
+            <></>
+        ) : (
+            <div className='widget-manager'>
+                <div className="widgets-list">
+                    <button
+                        className="add-widget-btn"
+                        onClick={handleOpenModal}
+                        title="Add Widget"
+                    >
+                        <span className="btn-icon">➕</span>
+                        Add Widget
+                    </button>
+                    {existingWidgets.length > 0 &&
+                        existingWidgets.map((widget) => (
+                            <div key={widget.id} className="widget-item">
+                                <span className="widget-name">
+                                    {getWidgetDisplayName(widget)}
+                                </span>
+                                <button
+                                    className="remove-widget-btn"
+                                    onClick={() => onRemoveWidget(widget.id)}
+                                    title="Remove Widget"
+                                >
+                                    🗑️
+                                </button>
+                            </div>
+                        ))}
+                </div>
 
-            {isModalOpen && (
-                <div className="modal-overlay" onClick={handleCloseModal}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2>Add New Widget</h2>
-                            <button className="modal-close" onClick={handleCloseModal}>
-                                ✕
-                            </button>
-                        </div>
-
-                        <div className="modal-body">
-                            <div className="form-section">
-                                <h3>Choose Widget Type</h3>
-                                <div className="widget-types">
-                                    {availableWidgets.map(renderWidgetTypeCard)}
-                                </div>
+                {isModalOpen && (
+                    <div className="modal-overlay" onClick={handleCloseModal}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                            <div className="modal-header">
+                                <h2>Add New Widget</h2>
+                                <button className="modal-close" onClick={handleCloseModal}>
+                                    ✕
+                                </button>
                             </div>
 
-                            {selectedWidgetType && (
-                                <>
-                                    <div className="form-section">
-                                        <h3>Widget Dimensions</h3>
-                                        <div className="dimension-options">
-                                            {renderDimensionInput('width', widgetDimensions.width, 150, 800)}
-                                            {renderDimensionInput('height', widgetDimensions.height, 100, 600)}
-                                        </div>
+                            <div className="modal-body">
+                                <div className="form-section">
+                                    <h3>Choose Widget Type</h3>
+                                    <div className="widget-types">
+                                        {availableWidgets.map(renderWidgetTypeCard)}
                                     </div>
+                                </div>
 
-                                    <div className="form-section">
-                                        <h3>Initial Position</h3>
-                                        <div className="position-options">
-                                            {renderPositionInput('x', widgetPosition.x, 'X Position')}
-                                            {renderPositionInput('y', widgetPosition.y, 'Y Position')}
-                                        </div>
-                                    </div>
-
-                                    {selectedWidgetType.defaultProps && Object.entries(selectedWidgetType.defaultProps).length > 0 && (
-                                        <div className="form-section additional-properties">
-                                            <h3>Additional Properties</h3>
-                                            <div className="properties-grid">
-                                                {Object.entries(selectedWidgetType.defaultProps).map(([key, value]) => (
-                                                    <div key={key} className="property-field">
-                                                        <label className="property-label">
-                                                            {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            value={String(value ?? '')}
-                                                            placeholder={`Enter ${key.toLowerCase()}`}
-                                                            onChange={(e) => handlePropertyChange(key, e.target.value)}
-                                                        />
-                                                    </div>
-                                                ))}
+                                {selectedWidgetType && (
+                                    <>
+                                        <div className="form-section">
+                                            <h3>Widget Dimensions</h3>
+                                            <div className="dimension-options">
+                                                {renderDimensionInput('width', widgetDimensions.width, 150, 800)}
+                                                {renderDimensionInput('height', widgetDimensions.height, 100, 600)}
                                             </div>
                                         </div>
-                                    )}
-                                </>
-                            )}
-                        </div>
 
-                        <div className="modal-footer">
-                            <button className="btn-secondary" onClick={handleCloseModal}>
-                                Cancel
-                            </button>
-                            <button
-                                className="btn-primary"
-                                onClick={handleAddWidget}
-                                disabled={!selectedWidgetType}
-                            >
-                                Add Widget
-                            </button>
+                                        <div className="form-section">
+                                            <h3>Initial Position</h3>
+                                            <div className="position-options">
+                                                {renderPositionInput('x', widgetPosition.x, 'X Position')}
+                                                {renderPositionInput('y', widgetPosition.y, 'Y Position')}
+                                            </div>
+                                        </div>
+
+                                        {selectedWidgetType.defaultProps && Object.entries(selectedWidgetType.defaultProps).length > 0 && (
+                                            <div className="form-section additional-properties">
+                                                <h3>Additional Properties</h3>
+                                                <div className="properties-grid">
+                                                    {Object.entries(selectedWidgetType.defaultProps).map(([key, value]) => (
+                                                        <div key={key} className="property-field">
+                                                            <label className="property-label">
+                                                                {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
+                                                            </label>
+                                                            <input
+                                                                type="text"
+                                                                value={String(value ?? '')}
+                                                                placeholder={`Enter ${key.toLowerCase()}`}
+                                                                onChange={(e) => handlePropertyChange(key, e.target.value)}
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+
+                            <div className="modal-footer">
+                                <button className="btn-secondary" onClick={handleCloseModal}>
+                                    Cancel
+                                </button>
+                                <button
+                                    className="btn-primary"
+                                    onClick={handleAddWidget}
+                                    disabled={!selectedWidgetType}
+                                >
+                                    Add Widget
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
-
-            {existingWidgets.length > 0 && (
-                <div className="widgets-list">
-                    {existingWidgets.map((widget) => (
-                        <div key={widget.id} className="widget-item">
-                            <span className="widget-name">
-                                {getWidgetDisplayName(widget)}
-                            </span>
-                            <button
-                                className="remove-widget-btn"
-                                onClick={() => onRemoveWidget(widget.id)}
-                                title="Remove Widget"
-                            >
-                                🗑️
-                            </button>
-                        </div>
-                    ))}
-                </div>
-            )}
-        </>
+                )}
+            </div>
+        )
     );
 };
 
