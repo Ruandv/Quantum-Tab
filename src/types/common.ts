@@ -70,6 +70,14 @@ export interface ActionButton {
   url: string;
 }
 
+export interface QuickActionButtonItemProps {
+  button: ActionButton;
+  index: number;
+  isLocked: boolean;
+  onButtonClick: (url: string) => void;
+  onRemoveButton: (index: number) => void;
+}
+
 export interface BackgroundManagerProps extends DefaultWidgetProps {
   className?: string;
   onBackgroundChange?: (imageUrl: string) => void;

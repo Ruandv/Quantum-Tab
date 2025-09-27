@@ -279,8 +279,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .preview-section {
@@ -371,8 +375,8 @@
 }
 
 .action-buttons {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  display: flex;
+  flex-direction: row;
   gap: 1rem;
   width: 100%;
 }
@@ -451,6 +455,12 @@
   justify-content: center;
   z-index: 1000;
   backdrop-filter: blur(4px);
+  pointer-events: all;
+  cursor: default;
+}
+
+.add-popup-overlay:hover {
+  cursor: pointer;
 }
 
 .add-popup {
@@ -462,6 +472,14 @@
   max-width: 400px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   color: #333;
+  pointer-events: all !important;
+  position: relative;
+  z-index: 1001;
+  cursor: auto;
+}
+
+.add-popup * {
+  cursor: inherit;
 }
 
 .add-popup h4 {
@@ -470,6 +488,7 @@
   font-weight: 600;
   text-align: center;
   color: #333;
+  cursor: default;
 }
 
 .form-group {
@@ -481,6 +500,7 @@
   margin-bottom: 0.5rem;
   font-weight: 500;
   color: #555;
+  cursor: default;
 }
 
 .form-group input {
@@ -492,6 +512,14 @@
   background: rgba(255, 255, 255, 0.8);
   transition: all 0.3s ease;
   box-sizing: border-box;
+  pointer-events: all !important;
+  cursor: text !important;
+  position: relative;
+  z-index: 1002;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
 }
 
 .form-group input:focus {
@@ -515,6 +543,8 @@
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
+  pointer-events: all !important;
+  cursor: pointer !important;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -545,7 +575,7 @@
 }
 
 /* Header Button Base Styles */
-.header-btn, 
+.header-btn,
 .header-actions .add-widget-btn,
 .header-actions .lock-toggle {
   padding: 0.5rem 1rem;
@@ -668,8 +698,8 @@
 }
 
 /* Form Input Styles */
-.form-section input[type="number"],
-.form-section input[type="text"] {
+.form-section input[type='number'],
+.form-section input[type='text'] {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 6px;
@@ -681,8 +711,8 @@
   box-sizing: border-box;
 }
 
-.form-section input[type="number"]:focus,
-.form-section input[type="text"]:focus {
+.form-section input[type='number']:focus,
+.form-section input[type='text']:focus {
   outline: none;
   border-color: rgba(79, 172, 254, 0.6);
   background: rgba(255, 255, 255, 0.15);
@@ -750,7 +780,7 @@
   cursor: pointer;
 }
 
-.size-option input[type="radio"] {
+.size-option input[type='radio'] {
   margin: 0;
 }
 
@@ -778,7 +808,7 @@
 }
 
 .dimension-label::after {
-  content: ":";
+  content: ':';
 }
 
 /* Position Options */
@@ -805,7 +835,7 @@
 }
 
 .position-label::after {
-  content: ":";
+  content: ':';
 }
 
 /* Input with Unit Styling */
@@ -815,7 +845,7 @@
   align-items: center;
 }
 
-.input-with-unit input[type="number"] {
+.input-with-unit input[type='number'] {
   padding-right: 2.5rem; /* Make space for unit */
   width: 100%;
 }
@@ -853,7 +883,7 @@
 }
 
 .additional-properties h3::before {
-  content: "⚙️";
+  content: '⚙️';
   font-size: 1rem;
 }
 
@@ -879,7 +909,7 @@
 }
 
 .property-label::after {
-  content: ":";
+  content: ':';
 }
 
 .position-options label {
@@ -1009,45 +1039,41 @@
   .newtab-content {
     padding: 1rem;
   }
-  
+
   .newtab-header {
     flex-direction: column;
     gap: 0.75rem;
     text-align: center;
     align-items: center;
   }
-  
+
   .header-actions {
     justify-content: center;
     flex-wrap: wrap;
   }
-  
+
   .logo-text {
     font-size: 2rem;
   }
-  
+
   .dashboard {
     grid-template-columns: 1fr !important;
     gap: 1.5rem;
   }
-  
+
   .widget-container {
     padding: 1.5rem;
   }
-  
+
   .live-clock-widget .current-time {
     font-size: 3rem;
   }
-  
-  .action-buttons {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
+
   .stats {
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .modal-content {
     width: 95%;
     margin: 1rem;
@@ -1058,23 +1084,19 @@
   .logo-text {
     font-size: 1.75rem;
   }
-  
+
   .live-clock-widget .current-time {
     font-size: 2.5rem;
   }
-  
+
   .widget-container {
     padding: 1rem;
   }
-  
-  .action-buttons {
-    grid-template-columns: 1fr;
-  }
-  
+
   .modal-body {
     padding: 1rem;
   }
-  
+
   .modal-header,
   .modal-footer {
     padding: 1rem;
@@ -1220,7 +1242,10 @@
 }
 
 /* Corner Handles */
-.resize-ne, .resize-nw, .resize-se, .resize-sw {
+.resize-ne,
+.resize-nw,
+.resize-se,
+.resize-sw {
   width: 12px;
   height: 12px;
   border-radius: 50%;
@@ -1251,14 +1276,16 @@
 }
 
 /* Edge Handles */
-.resize-n, .resize-s {
+.resize-n,
+.resize-s {
   height: 6px;
   left: 12px;
   right: 12px;
   border-radius: 3px;
 }
 
-.resize-e, .resize-w {
+.resize-e,
+.resize-w {
   width: 6px;
   top: 12px;
   bottom: 12px;
@@ -1289,4 +1316,3 @@
 .widget-container.locked .resize-handle {
   display: none;
 }
-
