@@ -68,7 +68,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             position: widgetPosition,
             props: widgetProps,
         };
-        debugger;
         onAddWidget(newWidget);
         handleCloseModal();
     }, [selectedWidgetType, widgetDimensions, widgetPosition, onBackgroundChange, onAddWidget, handleCloseModal]);

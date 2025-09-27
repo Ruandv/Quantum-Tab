@@ -1,7 +1,18 @@
 import { LiveClockProps } from '@/types/common';
 import React, { useState, useEffect } from 'react';
+import { useWidgetTextSizes } from '../hooks/useProportionalTextSize';
 
-const LiveClock: React.FC<LiveClockProps> = ({ className = '', timeZone, dateFormat = "yyyy-MM-dd", timeFormat = "hh:mm a", showDate, showTime = true, showTimeZone }: LiveClockProps) => {
+const LiveClock: React.FC<LiveClockProps> = ({ 
+  className = '', 
+  timeZone, 
+  dateFormat = "yyyy-MM-dd", 
+  timeFormat = "hh:mm a", 
+  showDate, 
+  showTime = true, 
+  showTimeZone,
+  // Get dimensions from parent ResizableWidget via CSS custom properties
+  // These will be available as CSS variables in the component
+}: LiveClockProps) => {
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {

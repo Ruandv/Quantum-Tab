@@ -1,4 +1,5 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
+import { useWidgetTextSizes } from '../hooks/useProportionalTextSize';
 
 interface ResizableWidgetProps {
   id: string;
@@ -23,8 +24,8 @@ const ResizableWidget: React.FC<ResizableWidgetProps> = ({
   initialHeight = 200,
   minWidth = 150,
   minHeight = 100,
-  maxWidth = 800,
-  maxHeight = 600,
+  maxWidth = 1800,
+  maxHeight = 1600,
   onResize,
   isResizable = true,
   className = '',
@@ -37,6 +38,21 @@ const ResizableWidget: React.FC<ResizableWidgetProps> = ({
   const widgetRef = useRef<HTMLDivElement>(null);
   const startPos = useRef({ x: 0, y: 0 });
   const startSize = useRef({ width: 0, height: 0 });
+
+  // Calculate proportional text sizes based on current dimensions
+  const textSizes = useWidgetTextSizes({ width, height });
+  
+  // Combine custom properties with existing styles
+  const widgetStyles = useMemo(() => ({
+    width: `${width}px`,
+    height: `${height}px`,
+    position: 'relative' as const,
+    minWidth: `${minWidth}px`,
+    minHeight: `${minHeight}px`,
+    maxWidth: `${maxWidth}px`,
+    maxHeight: `${maxHeight}px`,
+    ...textSizes.allCssProperties
+  }), [width, height, minWidth, minHeight, maxWidth, maxHeight, textSizes.allCssProperties]);
 
   const handleMouseDown = useCallback((e: React.MouseEvent, direction: ResizeDirection) => {
     if (!isResizable) return;
@@ -113,15 +129,7 @@ const ResizableWidget: React.FC<ResizableWidgetProps> = ({
     <div
       ref={widgetRef}
       className={`resizable-widget ${className} ${isResizing ? 'resizing' : ''}`}
-      style={{
-        width: `${width}px`,
-        height: `${height}px`,
-        position: 'relative',
-        minWidth: `${minWidth}px`,
-        minHeight: `${minHeight}px`,
-        maxWidth: `${maxWidth}px`,
-        maxHeight: `${maxHeight}px`,
-      }}
+      style={widgetStyles}
     >
       {children}
       {getResizeHandles()}
