@@ -1,213 +1,202 @@
-import React, { useState } from 'react';
-import { DashboardWidget } from './Dashboard';
-import LiveClock from './LiveClock';
-import QuickActionButtons from './QuickActionButtons';
-
-interface WidgetType {
-    id: string;
-    name: string;
-    description: string;
-    component: React.ComponentType<any>;
-    defaultDimensions: { width: number; height: number };
-    defaultProps?: any;
-}
-
-interface WidgetManagerProps {
-    onAddWidget: (widget: DashboardWidget) => void;
-    onRemoveWidget: (widgetId: string) => void;
-    existingWidgets: DashboardWidget[];
-}
-
-// Available widget types
-const AVAILABLE_WIDGETS: WidgetType[] = [
-    {
-        id: 'live-clock',
-        name: 'Live Clock',
-        description: 'Real-time clock with date and greeting',
-        component: LiveClock,
-        defaultDimensions: { width: 400, height: 150 },
-        defaultProps: {
-            timeZone: 'Africa/Nairobi',
-            dateFormat: 'yyyy-MM-dd',
-            timeFormat: 'hh:mm a'
-        },
-    },
-    {
-        id: 'quick-actions',
-        name: 'Quick Actions',
-        description: 'Quick access buttons to favorite sites',
-        component: QuickActionButtons,
-        defaultDimensions: { width: 350, height: 200 },
-    },
-];
+import React, { useState, useCallback, useMemo } from 'react';
+import { DashboardWidget, WidgetManagerProps, WidgetType, Dimensions, Position } from '../types/common';
+import { widgetRegistry } from '../utils/widgetRegistry';
+import { generateUniqueId, findOptimalPosition, getViewportDimensions } from '../utils/helpers';
 
 const WidgetManager: React.FC<WidgetManagerProps> = ({
     onAddWidget,
     onRemoveWidget,
-    existingWidgets
+    existingWidgets,
+    onBackgroundChange
 }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedWidgetType, setSelectedWidgetType] = useState<WidgetType | null>(null);
-    const [widgetDimensions, setWidgetDimensions] = useState({ width: 300, height: 200 });
-    const [widgetPosition, setWidgetPosition] = useState({ x: 50, y: 50 });
+    const [widgetDimensions, setWidgetDimensions] = useState<Dimensions>({ width: 300, height: 200 });
+    const [widgetPosition, setWidgetPosition] = useState<Position>({ x: 50, y: 50 });
 
-    const handleAddWidget = () => {
+    const availableWidgets = useMemo(() => widgetRegistry.getAvailable(), []);
+    const containerBounds = useMemo(() => getViewportDimensions(), []);
+
+    const resetModalState = useCallback(() => {
+        setSelectedWidgetType(null);
+        setWidgetDimensions({ width: 300, height: 200 });
+        setWidgetPosition({ x: 50, y: 50 });
+    }, []);
+
+    const handleOpenModal = useCallback(() => {
+        setIsModalOpen(true);
+        resetModalState();
+    }, [resetModalState]);
+
+    const handleCloseModal = useCallback(() => {
+        setIsModalOpen(false);
+        resetModalState();
+    }, [resetModalState]);
+
+    const handleWidgetTypeSelect = useCallback((widgetType: WidgetType) => {
+        setSelectedWidgetType(widgetType);
+        setWidgetDimensions(widgetType.defaultDimensions);
+        
+        // Auto-calculate optimal position
+        const optimalPosition = findOptimalPosition(
+            widgetType.defaultDimensions,
+            existingWidgets,
+            containerBounds
+        );
+        setWidgetPosition(optimalPosition);
+    }, [existingWidgets, containerBounds]);
+
+    const handleAddWidget = useCallback(() => {
         if (!selectedWidgetType) return;
+        let widgetProps = { ...(selectedWidgetType.defaultProps || {}) };
+        
+        // Add background change handler for BackgroundManager
+        if (selectedWidgetType.id === 'background-manager' && onBackgroundChange) {
+            widgetProps = {
+                ...widgetProps,
+                onBackgroundChange
+            };
+        }
 
         const newWidget: DashboardWidget = {
-            id: `${selectedWidgetType.id}-${Date.now()}`, // Unique ID
+            id: generateUniqueId(selectedWidgetType.id),
             component: selectedWidgetType.component,
             dimensions: widgetDimensions,
             position: widgetPosition,
-            props: selectedWidgetType.defaultProps || {},
+            props: widgetProps,
         };
-
+        debugger;
         onAddWidget(newWidget);
-        setIsModalOpen(false);
-        setSelectedWidgetType(null);
-    };
+        handleCloseModal();
+    }, [selectedWidgetType, widgetDimensions, widgetPosition, onBackgroundChange, onAddWidget, handleCloseModal]);
 
-    const handleRemoveWidget = (widgetId: string) => {
-        onRemoveWidget(widgetId);
-    };
+    const handleDimensionChange = useCallback((dimension: 'width' | 'height', value: number) => {
+        setWidgetDimensions(prev => ({ ...prev, [dimension]: value }));
+    }, []);
+
+    const handlePositionChange = useCallback((axis: 'x' | 'y', value: number) => {
+        setWidgetPosition(prev => ({ ...prev, [axis]: value }));
+    }, []);
+
+    const handlePropertyChange = useCallback((key: string, value: string) => {
+        if (!selectedWidgetType) return;
+        
+        setSelectedWidgetType(prev => prev ? {
+            ...prev,
+            defaultProps: {
+                ...prev.defaultProps,
+                [key]: value
+            }
+        } : null);
+    }, [selectedWidgetType]);
+
+    const getWidgetDisplayName = useCallback((widget: DashboardWidget): string => {
+        const widgetType = availableWidgets.find(w => widget.id.startsWith(w.id));
+        return widgetType?.name || 'Unknown Widget';
+    }, [availableWidgets]);
+
+    const renderWidgetTypeCard = useCallback((widgetType: WidgetType) => (
+        <div
+            key={widgetType.id}
+            className={`widget-type-card ${selectedWidgetType?.id === widgetType.id ? 'selected' : ''}`}
+            onClick={() => handleWidgetTypeSelect(widgetType)}
+        >
+            <h4>{widgetType.name}</h4>
+            <p>{widgetType.description}</p>
+        </div>
+    ), [selectedWidgetType, handleWidgetTypeSelect]);
+
+    const renderDimensionInput = useCallback((
+        dimension: 'width' | 'height',
+        value: number,
+        min: number,
+        max: number
+    ) => (
+        <div className="dimension-field">
+            <label className="dimension-label">
+                {dimension.charAt(0).toUpperCase() + dimension.slice(1)}
+            </label>
+            <div className="input-with-unit">
+                <input
+                    type="number"
+                    value={value}
+                    min={min}
+                    max={max}
+                    onChange={(e) => handleDimensionChange(dimension, parseInt(e.target.value) || value)}
+                />
+                <span className="input-unit">px</span>
+            </div>
+        </div>
+    ), [handleDimensionChange]);
+
+    const renderPositionInput = useCallback((
+        axis: 'x' | 'y',
+        value: number,
+        label: string
+    ) => (
+        <div className="position-field">
+            <label className="position-label">{label}</label>
+            <div className="input-with-unit">
+                <input
+                    type="number"
+                    value={value}
+                    min={0}
+                    onChange={(e) => handlePositionChange(axis, parseInt(e.target.value) || 0)}
+                />
+                <span className="input-unit">px</span>
+            </div>
+        </div>
+    ), [handlePositionChange]);
 
     return (
         <>
-            {/* Add Widget Button */}
             <button
                 className="add-widget-btn"
-                onClick={() => setIsModalOpen(true)}
+                onClick={handleOpenModal}
                 title="Add Widget"
             >
                 <span className="btn-icon">➕</span>
                 Add Widget
             </button>
 
-            {/* Widget Management Modal */}
             {isModalOpen && (
-                <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
+                <div className="modal-overlay" onClick={handleCloseModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-header">
                             <h2>Add New Widget</h2>
-                            <button
-                                className="modal-close"
-                                onClick={() => setIsModalOpen(false)}
-                            >
+                            <button className="modal-close" onClick={handleCloseModal}>
                                 ✕
                             </button>
                         </div>
 
                         <div className="modal-body">
-                            {/* Widget Type Selection */}
                             <div className="form-section">
                                 <h3>Choose Widget Type</h3>
                                 <div className="widget-types">
-                                    {AVAILABLE_WIDGETS.map((widgetType) => (
-                                        <div
-                                            key={widgetType.id}
-                                            className={`widget-type-card ${selectedWidgetType?.id === widgetType.id ? 'selected' : ''}`}
-                                            onClick={() => {
-                                                setSelectedWidgetType(widgetType);
-                                                setWidgetDimensions(widgetType.defaultDimensions);
-                                            }}
-                                        >
-                                            <h4>{widgetType.name}</h4>
-                                            <p>{widgetType.description}</p>
-                                        </div>
-                                    ))}
+                                    {availableWidgets.map(renderWidgetTypeCard)}
                                 </div>
                             </div>
 
-                            {/* Widget Configuration */}
                             {selectedWidgetType && (
                                 <>
                                     <div className="form-section">
                                         <h3>Widget Dimensions</h3>
                                         <div className="dimension-options">
-                                            <div className="dimension-field">
-                                                <label className="dimension-label">
-                                                    Width
-                                                </label>
-                                                <div className="input-with-unit">
-                                                    <input
-                                                        type="number"
-                                                        value={widgetDimensions.width}
-                                                        min="150"
-                                                        max="800"
-                                                        placeholder="400"
-                                                        onChange={(e) => setWidgetDimensions({
-                                                            ...widgetDimensions,
-                                                            width: parseInt(e.target.value) || 300
-                                                        })}
-                                                    />
-                                                    <span className="input-unit">px</span>
-                                                </div>
-                                            </div>
-                                            <div className="dimension-field">
-                                                <label className="dimension-label">
-                                                    Height
-                                                </label>
-                                                <div className="input-with-unit">
-                                                    <input
-                                                        type="number"
-                                                        value={widgetDimensions.height}
-                                                        min="100"
-                                                        max="600"
-                                                        placeholder="200"
-                                                        onChange={(e) => setWidgetDimensions({
-                                                            ...widgetDimensions,
-                                                            height: parseInt(e.target.value) || 200
-                                                        })}
-                                                    />
-                                                    <span className="input-unit">px</span>
-                                                </div>
-                                            </div>
+                                            {renderDimensionInput('width', widgetDimensions.width, 150, 800)}
+                                            {renderDimensionInput('height', widgetDimensions.height, 100, 600)}
                                         </div>
                                     </div>
 
                                     <div className="form-section">
                                         <h3>Initial Position</h3>
                                         <div className="position-options">
-                                            <div className="position-field">
-                                                <label className="position-label">
-                                                    X Position
-                                                </label>
-                                                <div className="input-with-unit">
-                                                    <input
-                                                        type="number"
-                                                        value={widgetPosition.x}
-                                                        min="0"
-                                                        placeholder="50"
-                                                        onChange={(e) => setWidgetPosition({
-                                                            ...widgetPosition,
-                                                            x: parseInt(e.target.value) || 0
-                                                        })}
-                                                    />
-                                                    <span className="input-unit">px</span>
-                                                </div>
-                                            </div>
-                                            <div className="position-field">
-                                                <label className="position-label">
-                                                    Y Position
-                                                </label>
-                                                <div className="input-with-unit">
-                                                    <input
-                                                        type="number"
-                                                        value={widgetPosition.y}
-                                                        min="0"
-                                                        placeholder="50"
-                                                        onChange={(e) => setWidgetPosition({
-                                                            ...widgetPosition,
-                                                            y: parseInt(e.target.value) || 0
-                                                        })}
-                                                    />
-                                                    <span className="input-unit">px</span>
-                                                </div>
-                                            </div>
+                                            {renderPositionInput('x', widgetPosition.x, 'X Position')}
+                                            {renderPositionInput('y', widgetPosition.y, 'Y Position')}
                                         </div>
                                     </div>
-                                    {selectedWidgetType.defaultProps && (
-                                        <div className='form-section additional-properties'>
+
+                                    {selectedWidgetType.defaultProps && Object.entries(selectedWidgetType.defaultProps).length > 0 && (
+                                        <div className="form-section additional-properties">
                                             <h3>Additional Properties</h3>
                                             <div className="properties-grid">
                                                 {Object.entries(selectedWidgetType.defaultProps).map(([key, value]) => (
@@ -217,29 +206,21 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                                         </label>
                                                         <input
                                                             type="text"
-                                                            value={String(value)}
+                                                            value={String(value ?? '')}
                                                             placeholder={`Enter ${key.toLowerCase()}`}
-                                                            onChange={(e) => setSelectedWidgetType({
-                                                                ...selectedWidgetType,
-                                                                defaultProps: {
-                                                                    ...selectedWidgetType.defaultProps,
-                                                                    [key]: e.target.value
-                                                                }
-                                                            })}
+                                                            onChange={(e) => handlePropertyChange(key, e.target.value)}
                                                         />
                                                     </div>
                                                 ))}
                                             </div>
-                                        </div>)}
+                                        </div>
+                                    )}
                                 </>
                             )}
                         </div>
 
                         <div className="modal-footer">
-                            <button
-                                className="btn-secondary"
-                                onClick={() => setIsModalOpen(false)}
-                            >
+                            <button className="btn-secondary" onClick={handleCloseModal}>
                                 Cancel
                             </button>
                             <button
@@ -254,18 +235,16 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                 </div>
             )}
 
-            {/* Existing Widgets List */}
             {existingWidgets.length > 0 && (
-
                 <div className="widgets-list">
                     {existingWidgets.map((widget) => (
                         <div key={widget.id} className="widget-item">
                             <span className="widget-name">
-                                {AVAILABLE_WIDGETS.find(w => widget.id.startsWith(w.id))?.name || 'Unknown Widget'}
+                                {getWidgetDisplayName(widget)}
                             </span>
                             <button
                                 className="remove-widget-btn"
-                                onClick={() => handleRemoveWidget(widget.id)}
+                                onClick={() => onRemoveWidget(widget.id)}
                                 title="Remove Widget"
                             >
                                 🗑️
@@ -278,4 +257,4 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     );
 };
 
-export default WidgetManager;
+export default React.memo(WidgetManager);

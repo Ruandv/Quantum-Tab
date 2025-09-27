@@ -43,9 +43,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
       sendResponse({ success: true });
       break;
+
+    case 'pageLoaded':
+      // Handle page loaded notifications from content script
+      // You can perform actions when pages load, such as:
+      // - Track page visits
+      // - Update extension state
+      // - Analyze page content
+      sendResponse({ success: true });
+      break;
       
     default:
-      console.log('Unknown action:', message.action);
+      console.warn('Unknown action:', message.action);
       sendResponse({ error: 'Unknown action' });
   }
   

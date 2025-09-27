@@ -1,3 +1,4 @@
+import { QuickActionButtonsProps } from '@/types/common';
 import React from 'react';
 
 interface ActionButton {
@@ -6,37 +7,18 @@ interface ActionButton {
   url: string;
 }
 
-interface QuickActionButtonsProps {
-  className?: string;
-  buttons?: ActionButton[];
-}
-
-const defaultButtons: ActionButton[] = [
-  {
+const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
+  className = '',
+  buttons = [{
     icon: '🐙',
     label: 'GitHub',
     url: 'https://github.com',
   },
   {
-    icon: '📚',
-    label: 'Stack Overflow',
-    url: 'https://stackoverflow.com',
-  },
-  {
-    icon: '📖',
-    label: 'MDN Docs',
-    url: 'https://developer.mozilla.org',
-  },
-  {
-    icon: '🎥',
-    label: 'YouTube',
-    url: 'https://youtube.com',
-  },
-];
-
-const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({ 
-  className = '', 
-  buttons = defaultButtons 
+    icon: '🗞️',
+    label: 'MyBroadband',
+    url: 'https://mybroadband.co.za/',
+  },]
 }) => {
   const handleButtonClick = (url: string) => {
     window.open(url, '_blank');
@@ -57,6 +39,10 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
             <span className="btn-label">{button.label}</span>
           </button>
         ))}
+        <button title='Add' className="action-btn">
+          <span className="btn-icon">➕</span>
+          <span className="btn-label">Add</span>
+        </button>
       </div>
     </div>
   );

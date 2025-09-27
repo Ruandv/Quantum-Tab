@@ -14,6 +14,7 @@ module.exports = {
     filename: '[name].js',
     clean: true,
   },
+  devtool: 'cheap-module-source-map', // CSP-friendly source maps
   module: {
     rules: [
       {
