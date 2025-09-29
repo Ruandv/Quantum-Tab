@@ -1,5 +1,6 @@
 import { QuickActionButtonsProps, ActionButton } from '@/types/common';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import QuickActionButtonItem from './QuickActionButtonItem';
 
 const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
@@ -17,12 +18,14 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
   isLocked,
   onButtonsChange
 }: QuickActionButtonsProps) => {
+  const { t } = useTranslation();
+  
   const [showAddPopup, setShowAddPopup] = useState(false);
   const [newButton, setNewButton] = useState({ icon: '', label: '', url: '' });
 
   const handleButtonClick = (url: string) => {
     if (!isLocked) {
-      alert("you are in edit state")
+      alert(t('quickActionButtons.messages.editState'))
     }
     else {
       window.open(url, '_blank');
@@ -41,7 +44,7 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
       setShowAddPopup(false);
     }
     else {
-      alert("eee");
+      alert(t('quickActionButtons.messages.validationError'));
     }
   };
 
@@ -57,7 +60,7 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
 
   return (
     <div className={`quick-actions-widget ${className}`}>
-      <h3 className="widget-title">Quick Access</h3>
+      <h3 className="widget-title">{t('quickActionButtons.title')}</h3>
       <div className="action-buttons">
         {buttons.map((button, index) => (
           <QuickActionButtonItem
@@ -70,9 +73,9 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
           />
         ))}
         {!isLocked && (
-          <button title='Add' className="action-btn" onClick={handleAddButton}>
+          <button title={t('quickActionButtons.tooltips.add')} className="action-btn" onClick={handleAddButton}>
             <span className="btn-icon">➕</span>
-            <span className="btn-label">Add</span>
+            <span className="btn-label">{t('quickActionButtons.buttons.add')}</span>
           </button>
         )}
       </div>
@@ -87,9 +90,9 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
             className="add-popup" 
             onClick={(e) => e.stopPropagation()}
           >
-            <h4>Add New Action Button</h4>
+            <h4>{t('quickActionButtons.popup.title')}</h4>
             <div className="form-group">
-              <label>Icon (emoji):</label>
+              <label>{t('quickActionButtons.popup.labels.icon')}</label>
               <input
                 type="text"
                 value={newButton.icon}
@@ -98,21 +101,18 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
                   e.stopPropagation();
                   e.preventDefault();
                   e.currentTarget.focus();
-                  console.log('Icon input clicked and focused');
                 }}
                 onMouseDown={(e) => {
                   e.stopPropagation();
-                  console.log('Icon input mouse down');
                 }}
-                onFocus={(e) => console.log('Icon input focused')}
-                placeholder="🌟"
+                placeholder={t('quickActionButtons.popup.placeholders.icon')}
                 maxLength={2}
                 style={{ pointerEvents: 'all', cursor: 'text' }}
                 autoFocus={false}
               />
             </div>
             <div className="form-group">
-              <label>Label:</label>
+              <label>{t('quickActionButtons.popup.labels.label')}</label>
               <input
                 type="text"
                 value={newButton.label}
@@ -121,19 +121,16 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
                   e.stopPropagation();
                   e.preventDefault();
                   e.currentTarget.focus();
-                  console.log('Label input clicked and focused');
                 }}
                 onMouseDown={(e) => {
                   e.stopPropagation();
-                  console.log('Label input mouse down');
                 }}
-                onFocus={(e) => console.log('Label input focused')}
-                placeholder="My Website"
+                placeholder={t('quickActionButtons.popup.placeholders.label')}
                 style={{ pointerEvents: 'all', cursor: 'text' }}
               />
             </div>
             <div className="form-group">
-              <label>URL:</label>
+              <label>{t('quickActionButtons.popup.labels.url')}</label>
               <input
                 type="url"
                 value={newButton.url}
@@ -142,14 +139,11 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
                   e.stopPropagation();
                   e.preventDefault();
                   e.currentTarget.focus();
-                  console.log('URL input clicked and focused');
                 }}
                 onMouseDown={(e) => {
                   e.stopPropagation();
-                  console.log('URL input mouse down');
                 }}
-                onFocus={(e) => console.log('URL input focused')}
-                placeholder="https://example.com"
+                placeholder={t('quickActionButtons.popup.placeholders.url')}
                 style={{ pointerEvents: 'all', cursor: 'text' }}
               />
             </div>
@@ -162,7 +156,7 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
                 className="save-btn"
                 style={{ pointerEvents: 'all' }}
               >
-                Save
+                {t('quickActionButtons.popup.buttons.save')}
               </button>
               <button 
                 onClick={(e) => {
@@ -172,7 +166,7 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
                 className="cancel-btn"
                 style={{ pointerEvents: 'all' }}
               >
-                Cancel
+                {t('quickActionButtons.popup.buttons.cancel')}
               </button>
             </div>
           </div>

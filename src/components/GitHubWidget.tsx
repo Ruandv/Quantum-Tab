@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { GitHubWidgetProps, GitHubPullRequest, BackgroundMessage, BackgroundResponse } from '@/types/common';
 
 const GitHubWidget: React.FC<GitHubWidgetProps> = ({
@@ -7,15 +8,18 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
     repositoryUrl = '',
     isLocked
 }) => {
+    const { t } = useTranslation();
+    
     const [pullRequests, setPullRequests] = useState<GitHubPullRequest[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [lastFetch, setLastFetch] = useState<Date | null>(null);
-    const repositoryName = repositoryUrl ? repositoryUrl.split('/').slice(-2).join('/') : 'Unknown Repo';
+    const repositoryName = repositoryUrl ? repositoryUrl.split('/').slice(-2).join('/') : t('githubWidget.labels.unknownRepo');
+    
     // Function to fetch PR data from background service
-    const fetchPullRequests = async () => {
+    const fetchPullRequests = useCallback(async () => {
         if (!patToken || !repositoryUrl) {
-            setError('PAT Token and Repository URL are required');
+            setError(t('githubWidget.errors.patTokenRequired'));
             return;
         }
 
@@ -36,7 +40,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
                 setIsLoading(false);
 
                 if (chrome.runtime.lastError) {
-                    setError(`Extension error: ${chrome.runtime.lastError.message}`);
+                    setError(`${t('githubWidget.errors.extensionError')}: ${chrome.runtime.lastError.message}`);
                     return;
                 }
 
@@ -45,30 +49,30 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
                     setLastFetch(new Date());
                     setError(null);
                 } else {
-                    setError(response.error || 'Failed to fetch pull requests');
+                    setError(response.error || t('githubWidget.errors.fetchFailed'));
                 }
             });
         } catch (err) {
             setIsLoading(false);
-            setError(err instanceof Error ? err.message : 'Unknown error occurred');
+            setError(err instanceof Error ? err.message : t('githubWidget.errors.unknownError'));
         }
-    };
+    }, [patToken, repositoryUrl, t]);
 
     // Fetch PR data when widget loads or parameters change
     useEffect(() => {
         if (patToken && repositoryUrl) {
             fetchPullRequests();
         }
-    }, [patToken, repositoryUrl]);
+    }, [fetchPullRequests, patToken, repositoryUrl]);
     return (
         <div className={`github-widget ${className}`}>
-            <h3 className="widget-title">GitHub Repository ({repositoryName})</h3>
+            <h3 className="widget-title">{t('githubWidget.title')} ({repositoryName})</h3>
             <div className="github-widget-content">
                 {/* Status and Data Section */}
                 { isLoading ? (
                     <div className="github-loading">
                         <div className="loading-spinner"></div>
-                        <span className="loading-text">Fetching pull requests...</span>
+                        <span className="loading-text">{t('githubWidget.loading.fetchingPullRequests')}</span>
                     </div>
                 ) : error ? (
                     <div className="github-error">
@@ -76,17 +80,17 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
                         <span className="error-text">{error}</span>
                         {!isLocked && (
                             <button onClick={fetchPullRequests} className="retry-btn">
-                                🔄 Retry
+                                🔄 {t('githubWidget.buttons.retry')}
                             </button>
                         )}
                     </div>
                 ) : (
                     <div className="github-data">
                         <div className="data-header">
-                            <span className="pr-count">📋 {pullRequests.length} Pull Requests</span>
+                            <span className="pr-count">📋 {pullRequests.length} {t('githubWidget.pullRequests.count')}</span>
                             {lastFetch && (
                                 <span className="last-updated">
-                                    Updated: {lastFetch.toLocaleTimeString()}
+                                    {t('githubWidget.pullRequests.updated')}: {lastFetch.toLocaleTimeString()}
                                 </span>
                             )}
                         </div>
@@ -97,15 +101,15 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
                                         <span className="pr-number">#{pr.number}</span>
                                         <span className={`pr-state pr-state-${pr.state}`}>
                                             {pr.state === 'open' ? '🟢' : pr.merged ? '🟣' : '🔴'}
-                                            {pr.merged ? 'MERGED' : pr.state.toUpperCase()}
+                                            {pr.merged ? t('githubWidget.pullRequests.states.merged') : t(`githubWidget.pullRequests.states.${pr.state}`)}
                                         </span>
-                                        {pr.draft && <span className="pr-draft">📝 Draft</span>}
+                                        {pr.draft && <span className="pr-draft">📝 {t('githubWidget.pullRequests.draft')}</span>}
                                     </div>
                                     <div className="pr-title">{pr.title}</div>
                                     <div className="pr-meta">
                                         {/* <span className="pr-author">👤 {pr.user.login}</span> */}
                                         <span className="pr-changes">
-                                            +{pr.additions} -{pr.deletions} ({pr.changed_files} files)
+                                            +{pr.additions} -{pr.deletions} ({pr.changed_files} {t('githubWidget.labels.files')})
                                         </span>
                                     </div>
                                 </div>
@@ -113,7 +117,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
                         </div>
                         {!isLocked && (
                             <button onClick={fetchPullRequests} className="refresh-btn">
-                                🔄 Refresh Data
+                                🔄 {t('githubWidget.buttons.refresh')}
                             </button>
                         )}
                     </div>

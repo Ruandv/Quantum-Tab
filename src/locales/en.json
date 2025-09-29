@@ -3,5 +3,120 @@
     "loading": {
       "dashboard": "Loading dashboard..."
     }
+  },
+  "widgetManager": {
+    "buttons": {
+      "addWidget": "Add Widget",
+      "cancel": "Cancel",
+      "removeWidget": "Remove Widget"
+    },
+    "tooltips": {
+      "addWidget": "Add Widget",
+      "removeWidget": "Remove Widget"
+    },
+    "modal": {
+      "title": "Add New Widget",
+      "sections": {
+        "chooseType": "Choose Widget Type",
+        "dimensions": "Widget Dimensions",
+        "position": "Initial Position",
+        "properties": "Additional Properties"
+      }
+    },
+    "labels": {
+      "width": "Width",
+      "height": "Height",
+      "xPosition": "X Position",
+      "yPosition": "Y Position",
+      "unknownWidget": "Unknown Widget"
+    },
+    "units": {
+      "pixels": "px"
+    }
+  },
+  "backgroundManager": {
+    "title": "Background Manager",
+    "upload": {
+      "uploading": "Uploading...",
+      "clickToUpload": "Click to upload image",
+      "supportedFormats": "PNG, JPG, JPEG, GIF, WebP (max 5MB)",
+      "previewAlt": "Background preview"
+    },
+    "preview": {
+      "currentBackground": "Current Background"
+    },
+    "buttons": {
+      "change": "Change",
+      "default": "Default",
+      "remove": "Remove",
+      "defaultGradient": "Default Gradient"
+    },
+    "tooltips": {
+      "changeBackground": "Change background image",
+      "restoreDefault": "Restore default gradient background",
+      "removeBackground": "Remove background image"
+    },
+    "errors": {
+      "invalidFile": "Invalid file",
+      "failedToRead": "Failed to read file. Please try again."
+    }
+  },
+  "githubWidget": {
+    "title": "GitHub Repository",
+    "loading": {
+      "fetchingPullRequests": "Fetching pull requests..."
+    },
+    "errors": {
+      "patTokenRequired": "PAT Token and Repository URL are required",
+      "extensionError": "Extension error",
+      "fetchFailed": "Failed to fetch pull requests",
+      "unknownError": "Unknown error occurred"
+    },
+    "pullRequests": {
+      "count": "Pull Requests",
+      "updated": "Updated",
+      "draft": "Draft",
+      "states": {
+        "merged": "MERGED",
+        "open": "OPEN",
+        "closed": "CLOSED"
+      }
+    },
+    "buttons": {
+      "retry": "Retry",
+      "refresh": "Refresh Data"
+    },
+    "labels": {
+      "unknownRepo": "Unknown Repo",
+      "files": "files"
+    }
+  },
+  "quickActionButtons": {
+    "title": "Quick Access",
+    "buttons": {
+      "add": "Add",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "tooltips": {
+      "add": "Add"
+    },
+    "popup": {
+      "title": "Add New Action Button",
+      "labels": {
+        "icon": "Icon (emoji):",
+        "label": "Label:",
+        "url": "URL:"
+      },
+      "placeholders": {
+        "icon": "🌟",
+        "label": "My Website",
+        "url": "https://example.com"
+      }
+    },
+    "messages": {
+      "editState": "You are in edit state",
+      "validationError": "Please fill in all fields (icon, label, and URL)"
+    }
   }
 }

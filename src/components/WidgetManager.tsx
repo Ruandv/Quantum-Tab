@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DashboardWidget, WidgetManagerProps, WidgetType, Dimensions, Position } from '../types/common';
 import { widgetRegistry } from '../utils/widgetRegistry';
 import { generateUniqueId, findOptimalPosition, getViewportDimensions } from '../utils/helpers';
@@ -10,6 +11,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     onBackgroundChange,
     isLocked
 }: WidgetManagerProps) => {
+    const { t } = useTranslation();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedWidgetType, setSelectedWidgetType] = useState<WidgetType | null>(null);
@@ -94,8 +96,8 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
     const getWidgetDisplayName = useCallback((widget: DashboardWidget): string => {
         const widgetType = availableWidgets.find(w => widget.id.startsWith(w.id));
-        return widgetType?.name || 'Unknown Widget';
-    }, [availableWidgets]);
+        return widgetType?.name || t('widgetManager.labels.unknownWidget');
+    }, [availableWidgets, t]);
 
     const renderWidgetTypeCard = useCallback((widgetType: WidgetType) => (
         (() => {
@@ -126,7 +128,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     ) => (
         <div className="dimension-field">
             <label className="dimension-label">
-                {dimension.charAt(0).toUpperCase() + dimension.slice(1)}
+                {t(`widgetManager.labels.${dimension}`)}
             </label>
             <div className="input-with-unit">
                 <input
@@ -136,18 +138,18 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                     max={max}
                     onChange={(e) => handleDimensionChange(dimension, parseInt(e.target.value) || value)}
                 />
-                <span className="input-unit">px</span>
+                <span className="input-unit">{t('widgetManager.units.pixels')}</span>
             </div>
         </div>
-    ), [handleDimensionChange]);
+    ), [handleDimensionChange, t]);
 
     const renderPositionInput = useCallback((
         axis: 'x' | 'y',
         value: number,
-        label: string
+        translationKey: string
     ) => (
         <div className="position-field">
-            <label className="position-label">{label}</label>
+            <label className="position-label">{t(translationKey)}</label>
             <div className="input-with-unit">
                 <input
                     type="number"
@@ -155,10 +157,10 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                     min={0}
                     onChange={(e) => handlePositionChange(axis, parseInt(e.target.value) || 0)}
                 />
-                <span className="input-unit">px</span>
+                <span className="input-unit">{t('widgetManager.units.pixels')}</span>
             </div>
         </div>
-    ), [handlePositionChange]);
+    ), [handlePositionChange, t]);
 
     return (
         isLocked ? (
@@ -169,10 +171,10 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                     <button
                         className="add-widget-btn"
                         onClick={handleOpenModal}
-                        title="Add Widget"
+                        title={t('widgetManager.tooltips.addWidget')}
                     >
                         <span className="btn-icon">➕</span>
-                        Add Widget
+                        {t('widgetManager.buttons.addWidget')}
                     </button>
                     {existingWidgets.length > 0 &&
                         existingWidgets.map((widget) => (
@@ -183,7 +185,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                 <button
                                     className="remove-widget-btn"
                                     onClick={() => onRemoveWidget(widget.id)}
-                                    title="Remove Widget"
+                                    title={t('widgetManager.tooltips.removeWidget')}
                                 >
                                     🗑️
                                 </button>
@@ -195,7 +197,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                     <div className="modal-overlay" onClick={handleCloseModal}>
                         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                             <div className="modal-header">
-                                <h2>Add New Widget</h2>
+                                <h2>{t('widgetManager.modal.title')}</h2>
                                 <button className="modal-close" onClick={handleCloseModal}>
                                     ✕
                                 </button>
@@ -203,7 +205,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
                             <div className="modal-body">
                                 <div className="form-section">
-                                    <h3>Choose Widget Type</h3>
+                                    <h3>{t('widgetManager.modal.sections.chooseType')}</h3>
                                     <div className="widget-types">
                                         {availableWidgets.map(renderWidgetTypeCard)}
                                     </div>
@@ -212,7 +214,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                 {selectedWidgetType && (
                                     <>
                                         <div className="form-section">
-                                            <h3>Widget Dimensions</h3>
+                                            <h3>{t('widgetManager.modal.sections.dimensions')}</h3>
                                             <div className="dimension-options">
                                                 {renderDimensionInput('width', widgetDimensions.width, 150, 800)}
                                                 {renderDimensionInput('height', widgetDimensions.height, 100, 600)}
@@ -220,16 +222,16 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                         </div>
 
                                         <div className="form-section">
-                                            <h3>Initial Position</h3>
+                                            <h3>{t('widgetManager.modal.sections.position')}</h3>
                                             <div className="position-options">
-                                                {renderPositionInput('x', widgetPosition.x, 'X Position')}
-                                                {renderPositionInput('y', widgetPosition.y, 'Y Position')}
+                                                {renderPositionInput('x', widgetPosition.x, 'widgetManager.labels.xPosition')}
+                                                {renderPositionInput('y', widgetPosition.y, 'widgetManager.labels.yPosition')}
                                             </div>
                                         </div>
 
                                         {selectedWidgetType.defaultProps && Object.entries(selectedWidgetType.defaultProps).length > 0 && (
                                             <div className="form-section additional-properties">
-                                                <h3>Additional Properties</h3>
+                                                <h3>{t('widgetManager.modal.sections.properties')}</h3>
                                                 <div className="properties-grid">
                                                     {Object.entries(selectedWidgetType.defaultProps).map(([key, value]) => (
                                                         <div key={key} className="property-field">
@@ -253,14 +255,14 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
                             <div className="modal-footer">
                                 <button className="btn-secondary" onClick={handleCloseModal}>
-                                    Cancel
+                                    {t('widgetManager.buttons.cancel')}
                                 </button>
                                 <button
                                     className="btn-primary"
                                     onClick={handleAddWidget}
                                     disabled={!selectedWidgetType}
                                 >
-                                    Add Widget
+                                    {t('widgetManager.buttons.addWidget')}
                                 </button>
                             </div>
                         </div>

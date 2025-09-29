@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BackgroundManagerProps } from '../types/common';
 import { validateImageFile, fileToDataURL } from '../utils/helpers';
 
@@ -7,6 +8,8 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   onBackgroundChange,
   isLocked
 }: BackgroundManagerProps) => {
+  const { t } = useTranslation();
+  
   if (isLocked) return null;
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -26,7 +29,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
     // Validate file
     const validation = validateImageFile(file);
     if (!validation.isValid) {
-      setError(validation.error || 'Invalid file');
+      setError(validation.error || t('backgroundManager.errors.invalidFile'));
       return;
     }
 
@@ -37,12 +40,12 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       setUploadedImage(imageUrl);
       onBackgroundChange?.(imageUrl);
     } catch (err) {
-      setError('Failed to read file. Please try again.');
+      setError(t('backgroundManager.errors.failedToRead'));
       console.error('File read error:', err);
     } finally {
       setIsUploading(false);
     }
-  }, [onBackgroundChange]);
+  }, [onBackgroundChange, t]);
 
   const handleRemoveBackground = useCallback(() => {
     setUploadedImage(null);
@@ -61,7 +64,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       return (
         <div className="upload-content">
           <div className="upload-spinner" />
-          <span>Uploading...</span>
+          <span>{t('backgroundManager.upload.uploading')}</span>
         </div>
       );
     }
@@ -69,8 +72,8 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
     return (
       <div className="upload-content">
         <div className="upload-icon">📁</div>
-        <span className="upload-text">Click to upload image</span>
-        <small className="upload-hint">PNG, JPG, JPEG, GIF, WebP (max 5MB)</small>
+        <span className="upload-text">{t('backgroundManager.upload.clickToUpload')}</span>
+        <small className="upload-hint">{t('backgroundManager.upload.supportedFormats')}</small>
       </div>
     );
   };
@@ -80,11 +83,11 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       <div className="image-preview">
         <img
           src={uploadedImage!}
-          alt="Background preview"
+          alt={t('backgroundManager.upload.previewAlt')}
           className="preview-image"
         />
         <div className="preview-overlay">
-          <span className="preview-label">Current Background</span>
+          <span className="preview-label">{t('backgroundManager.preview.currentBackground')}</span>
         </div>
       </div>
     </div>
@@ -97,23 +100,23 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
           <button
             className="control-btn change-btn"
             onClick={handleFileSelect}
-            title="Change background image"
+            title={t('backgroundManager.tooltips.changeBackground')}
           >
-            📁 Change
+            📁 {t('backgroundManager.buttons.change')}
           </button>
           <button
             className="control-btn default-btn"
             onClick={handleRestoreDefault}
-            title="Restore default gradient background"
+            title={t('backgroundManager.tooltips.restoreDefault')}
           >
-            🎨 Default
+            🎨 {t('backgroundManager.buttons.default')}
           </button>
           <button
             className="control-btn remove-btn"
             onClick={handleRemoveBackground}
-            title="Remove background image"
+            title={t('backgroundManager.tooltips.removeBackground')}
           >
-            🗑️ Remove
+            🗑️ {t('backgroundManager.buttons.remove')}
           </button>
         </>
       );
@@ -123,16 +126,16 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       <button
         className="control-btn default-btn"
         onClick={handleRestoreDefault}
-        title="Restore default gradient background"
+        title={t('backgroundManager.tooltips.restoreDefault')}
       >
-        🎨 Default Gradient
+        🎨 {t('backgroundManager.buttons.defaultGradient')}
       </button>
     );
   };
 
   return (
     <div className={`background-manager-widget ${className}`}>
-      <h3 className="widget-title">Background Manager</h3>
+      <h3 className="widget-title">{t('backgroundManager.title')}</h3>
 
       <div className="upload-section">
         {!uploadedImage ? (
