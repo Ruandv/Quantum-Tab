@@ -128,9 +128,6 @@
     "labels": {
       "language": "Koppelvlak Taal:",
       "current": "Huidige Taal:"
-    },
-    "hints": {
-      "restart": "Veranderinge sal onmiddellik van krag word"
     }
   }
 }

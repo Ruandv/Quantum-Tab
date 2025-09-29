@@ -128,9 +128,6 @@
     "labels": {
       "language": "Interface Language:",
       "current": "Current Language:"
-    },
-    "hints": {
-      "restart": "Changes will take effect immediately"
     }
   }
 }
