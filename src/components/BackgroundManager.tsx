@@ -13,8 +13,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  if (isLocked) return null;
 
   const handleFileSelect = useCallback(() => {
     fileInputRef.current?.click();
@@ -133,7 +131,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
     );
   };
 
-  return (
+  return isLocked ? null : (
     <div className={`background-manager-widget ${className}`}>
       <h3 className="widget-title">{t('backgroundManager.title')}</h3>
 
