@@ -1,6 +1,5 @@
 import { LiveClockProps } from '@/types/common';
 import React, { useState, useEffect } from 'react';
-import { useWidgetTextSizes } from '../hooks/useProportionalTextSize';
 
 const LiveClock: React.FC<LiveClockProps> = ({ 
   className = '', 
@@ -65,36 +64,34 @@ const LiveClock: React.FC<LiveClockProps> = ({
   };
 
   const formatDate = (date: Date) => {
-    // Month names for MMM and MMMM tokens
-    const monthNames = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    const monthNamesShort = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
+    // Use browser's locale or fallback to en-US
+    const locale = navigator.language || 'en-US';
+    
+    // Helper functions to get localized names using Intl API
+    const getLocalizedMonth = (date: Date, format: 'long' | 'short') => {
+      return new Intl.DateTimeFormat(locale, { month: format }).format(date);
+    };
+    
+    const getLocalizedDay = (date: Date, format: 'long' | 'short') => {
+      return new Intl.DateTimeFormat(locale, { weekday: format }).format(date);
+    };
 
-    // Day names for dddd and ddd tokens
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const dayNamesShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-    // Comprehensive format token mapping
+    // Comprehensive format token mapping using Intl API
     const formatMap: { [key: string]: string } = {
       // Year tokens
       'yyyy': date.getFullYear().toString(),
       'yyy': date.getFullYear().toString(),
       'yy': date.getFullYear().toString().slice(-2),
 
-      // Month tokens
-      'MMMM': monthNames[date.getMonth()], // Full month name
-      'MMM': monthNamesShort[date.getMonth()], // Short month name
+      // Month tokens (using Intl API for localization)
+      'MMMM': getLocalizedMonth(date, 'long'), // Full month name
+      'MMM': getLocalizedMonth(date, 'short'), // Short month name
       'MM': String(date.getMonth() + 1).padStart(2, '0'), // 2-digit month with zero
       'M': String(date.getMonth() + 1), // Month without zero
 
-      // Day tokens
-      'dddd': dayNames[date.getDay()], // Full day name
-      'ddd': dayNamesShort[date.getDay()], // Short day name
+      // Day tokens (using Intl API for localization)
+      'dddd': getLocalizedDay(date, 'long'), // Full day name
+      'ddd': getLocalizedDay(date, 'short'), // Short day name
       'dd': String(date.getDate()).padStart(2, '0'), // 2-digit day with zero
       'd': String(date.getDate()), // Day without zero
     };
