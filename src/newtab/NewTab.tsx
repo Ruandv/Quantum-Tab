@@ -23,11 +23,11 @@ const NewTab: React.FC = () => {
             const viewport = getViewportDimensions();
 
             const clockWidget: DashboardWidget = {
-                id: 'clock-widget-1',
+                id: 'live-clock-1',
                 allowMultiples: true,
                 position: { x: Math.max(50, viewport.width - 350), y: 50 },
                 dimensions: { width: 300, height: 200 },
-                component: componentMap['LiveClock'] || (() => null),
+                component: componentMap['live-clock'] || (() => null),
                 props: { className: 'default-clock' }
             };
 
@@ -41,7 +41,7 @@ const NewTab: React.FC = () => {
             };
 
             const quickActionWidget: DashboardWidget = {
-                id: 'quick-action-1',
+                id: 'quick-actions-1',
                 allowMultiples: true,
                 position: {
                     x: Math.max(50, viewport.width - 350), y: Math.max(270, viewport.height - 250)
