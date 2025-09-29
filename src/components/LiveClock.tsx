@@ -122,4 +122,6 @@ const LiveClock: React.FC<LiveClockProps> = ({
   );
 };
 
+LiveClock.displayName = 'LiveClock';
+
 export default LiveClock;

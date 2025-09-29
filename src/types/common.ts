@@ -91,6 +91,22 @@ export interface BackgroundManagerProps extends DefaultWidgetProps {
   onBackgroundChange?: (imageUrl: string) => void;
 }
 
+export interface WebsiteCounterData {
+  url: string;
+  hostname: string;
+  count: number;
+  lastVisited: number; // timestamp
+  favicon?: string;
+}
+
+export interface WebsiteCounterProps extends DefaultWidgetProps {
+  className?: string;
+  websites?: WebsiteCounterData[];
+  showFavicons?: boolean;
+  maxWebsites?: number;
+  sortBy?: 'count' | 'name' | 'recent';
+}
+
 export interface ResizableWidgetProps {
   id: string;
   children: React.ReactNode;

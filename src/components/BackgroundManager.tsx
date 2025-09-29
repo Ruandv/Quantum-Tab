@@ -165,4 +165,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   );
 };
 
+BackgroundManager.displayName = 'BackgroundManager';
+
 export default BackgroundManager;

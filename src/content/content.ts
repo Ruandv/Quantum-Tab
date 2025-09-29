@@ -3,6 +3,38 @@
 
 console.log('Quantum Tab content script loaded');
 
+// Website visit tracking
+async function trackWebsiteVisit(): Promise<void> {
+  try {
+    const hostname = window.location.hostname.replace('www.', '');
+    const url = window.location.href;
+    
+    // Get current website counters
+    const result = await chrome.storage.local.get('websiteCounters');
+    const websiteCounters = result.websiteCounters || [];
+    
+    // Find if this website is being tracked
+    const existingIndex = websiteCounters.findIndex((site: any) => site.hostname === hostname);
+    
+    if (existingIndex !== -1) {
+      // Update existing counter
+      websiteCounters[existingIndex].count += 1;
+      websiteCounters[existingIndex].lastVisited = Date.now();
+      websiteCounters[existingIndex].url = url; // Update to latest URL
+      
+      // Save updated counters - this will trigger the storage listener in WebsiteCounter component
+      await chrome.storage.local.set({ websiteCounters });
+      
+      console.log(`Website visit tracked: ${hostname} (${websiteCounters[existingIndex].count} visits)`);
+    }
+  } catch (error) {
+    console.error('Failed to track website visit:', error);
+  }
+}
+
+// Track the current page visit when content script loads
+trackWebsiteVisit();
+
 // Listen for messages from popup or background script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('Content script received message:', message);

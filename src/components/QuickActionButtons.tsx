@@ -182,4 +182,6 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
   );
 };
 
+QuickActionButtons.displayName = 'QuickActionButtons';
+
 export default QuickActionButtons;

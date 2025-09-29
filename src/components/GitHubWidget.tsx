@@ -123,4 +123,6 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
     );
 };
 
+GitHubWidget.displayName = 'GitHubWidget';
+
 export default GitHubWidget;

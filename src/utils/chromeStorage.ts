@@ -32,6 +32,7 @@ export interface SavedData {
 export const chromeStorage = {
     // Save widget data
     saveWidgets: async (widgets: SerializedWidget[]): Promise<boolean> => {
+        console.log('Saving widgets to Chrome storage:', widgets);
         try {
             await chrome.storage.local.set({
                 [STORAGE_KEYS.WIDGETS]: widgets
@@ -155,6 +156,52 @@ export const chromeStorage = {
         } catch (error) {
             console.error('Failed to clear Chrome storage:', error);
             return false;
+        }
+    },
+
+    // Generic get method for custom data
+    get: async (key: string): Promise<any> => {
+        try {
+            const result = await chrome.storage.local.get(key);
+            return result;
+        } catch (error) {
+            console.error(`Failed to get ${key} from Chrome storage:`, error);
+            return {};
+        }
+    },
+
+    // Generic set method for custom data
+    set: async (key: string, value: any): Promise<boolean> => {
+        try {
+            await chrome.storage.local.set({ [key]: value });
+            return true;
+        } catch (error) {
+            console.error(`Failed to set ${key} in Chrome storage:`, error);
+            return false;
+        }
+    },
+
+    // Save website counter data
+    saveWebsiteCounters: async (counters: any[]): Promise<boolean> => {
+        try {
+            await chrome.storage.local.set({
+                'websiteCounters': counters
+            });
+            return true;
+        } catch (error) {
+            console.error('Failed to save website counters to Chrome storage:', error);
+            return false;
+        }
+    },
+
+    // Load website counter data
+    loadWebsiteCounters: async (): Promise<any[]> => {
+        try {
+            const result = await chrome.storage.local.get('websiteCounters');
+            return result.websiteCounters || [];
+        } catch (error) {
+            console.error('Failed to load website counters from Chrome storage:', error);
+            return [];
         }
     },
 

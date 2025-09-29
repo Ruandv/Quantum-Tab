@@ -102,16 +102,20 @@ const NewTab: React.FC = () => {
 
                         // Try to extract widget type ID from saved data
                         const comp = widget.component as any;
+                        console.log(`Restoring widget ${widget.id}, saved component:`, comp);
 
                         if (typeof comp === 'string') {
                             // If it's a string, it might be the widget type ID
                             widgetTypeId = comp;
+                            console.log(`Widget ${widget.id}: Using string component as widgetTypeId: ${widgetTypeId}`);
                         } else if (comp?.widgetTypeId) {
                             // If we stored the widget type ID
                             widgetTypeId = comp.widgetTypeId;
+                            console.log(`Widget ${widget.id}: Found widgetTypeId in component: ${widgetTypeId}`);
                         } else if (comp?.name && typeof comp.name === 'string') {
                             // Fallback: try to match by component function name
                             componentName = comp.name;
+                            console.log(`Widget ${widget.id}: Using component name: ${componentName}`);
                         }
 
                         // If we have a widget type ID, get the component from registry
@@ -253,11 +257,18 @@ const NewTab: React.FC = () => {
             try {
                 const serializedWidgets: SerializedWidget[] = widgets.map(widget => {
                     // Find the widget type ID for this component
-                    const widgetType = widgetRegistry.findByComponentName(widget.component.name);
+                    const componentName = widget.component.name || widget.component.displayName || 'unknown';
+                    console.log(`Saving widget ${widget.id}, component name: ${componentName}`);
+                    
+                    const widgetType = widgetRegistry.findByComponentName(componentName);
+                    const serializedComponent = widgetType?.id || componentName || 'LiveClock';
+                    
+                    console.log(`Widget ${widget.id}: Found widgetType:`, widgetType?.name, 'Serializing as:', serializedComponent);
+                    
                     return {
                         id: widget.id,
                         allowMultiples: widgetType?.allowMultiples || false,
-                        component: widgetType?.id || widget.component.name || 'LiveClock',
+                        component: serializedComponent,
                         props: widget.props,
                         dimensions: widget.dimensions,
                         position: widget.position
