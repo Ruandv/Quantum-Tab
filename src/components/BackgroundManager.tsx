@@ -9,12 +9,12 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   isLocked
 }: BackgroundManagerProps) => {
   const { t } = useTranslation();
-  
-  if (isLocked) return null;
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  if (isLocked) return null;
 
   const handleFileSelect = useCallback(() => {
     fileInputRef.current?.click();

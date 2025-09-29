@@ -1,0 +1,126 @@
+{
+  "common": {
+    "buttons": {
+      "add": "Voeg By",
+      "cancel": "Kanselleer",
+      "save": "Stoor",
+      "remove": "Verwyder",
+      "change": "Verander",
+      "retry": "Probeer Weer",
+      "refresh": "Verfris",
+      "default": "Verstek"
+    },
+    "placeholders": {
+      "url": "https://voorbeeld.com",
+      "website": "My Webwerf",
+      "emoji": "🌟"
+    },
+    "states": {
+      "loading": "Laai...",
+      "uploading": "Laai Op...",
+      "unknown": "Onbekend"
+    },
+    "loading": {
+      "dashboard": "Laai paneelbord..."
+    }
+  },
+  "widgetManager": {
+    "buttons": {
+      "addWidget": "Voeg Widget By",
+      "removeWidget": "Verwyder Widget"
+    },
+    "tooltips": {
+      "addWidget": "Voeg Widget By",
+      "removeWidget": "Verwyder Widget"
+    },
+    "modal": {
+      "title": "Voeg Nuwe Widget By",
+      "sections": {
+        "chooseType": "Kies Widget Tipe",
+        "dimensions": "Widget Dimensies",
+        "position": "Aanvanklike Posisie",
+        "properties": "Addisionele Eienskappe"
+      }
+    },
+    "labels": {
+      "width": "Breedte",
+      "height": "Hoogte",
+      "xPosition": "X Posisie",
+      "yPosition": "Y Posisie",
+      "unknownWidget": "{{unknown}} Widget"
+    },
+    "units": {
+      "pixels": "px"
+    }
+  },
+  "backgroundManager": {
+    "title": "Agtergrond Bestuurder",
+    "upload": {
+      "clickToUpload": "Klik om prent op te laai",
+      "supportedFormats": "PNG, JPG, JPEG, GIF, WebP (maks 5MB)",
+      "previewAlt": "Agtergrond voorskou"
+    },
+    "preview": {
+      "currentBackground": "Huidige Agtergrond"
+    },
+    "buttons": {
+      "defaultGradient": "Verstek Gradiënt"
+    },
+    "tooltips": {
+      "changeBackground": "Verander agtergrond prent",
+      "restoreDefault": "Herstel verstek gradiënt agtergrond",
+      "removeBackground": "Verwyder agtergrond prent"
+    },
+    "errors": {
+      "invalidFile": "Ongeldige lêer",
+      "failedToRead": "Kon nie lêer lees nie. Probeer asseblief weer."
+    }
+  },
+  "githubWidget": {
+    "title": "GitHub Bewaarplek",
+    "loading": {
+      "fetchingPullRequests": "Haal trek-versoeke op..."
+    },
+    "errors": {
+      "patTokenRequired": "PAT Token en Bewaarplek URL is vereis",
+      "extensionError": "Uitbreiding fout",
+      "fetchFailed": "Kon nie trek-versoeke ophaal nie",
+      "unknownError": "{{unknown}} fout het voorgekom"
+    },
+    "pullRequests": {
+      "count": "Trek-versoeke",
+      "updated": "Opgedateer",
+      "draft": "Konsep",
+      "states": {
+        "merged": "SAAMGEVOEG",
+        "open": "OOP",
+        "closed": "GESLUIT"
+      }
+    },
+    "buttons": {
+      "refreshData": "Verfris Data"
+    },
+    "labels": {
+      "unknownRepo": "{{unknown}} Bewaarplek",
+      "files": "lêers"
+    }
+  },
+  "quickActionButtons": {
+    "title": "Vinnige Toegang",
+    "tooltips": {
+      "add": "Voeg By"
+    },
+    "popup": {
+      "title": "Voeg Nuwe Aksie Knoppie By",
+      "labels": {
+        "icon": "Ikoon (emoji):",
+        "label": "Etiket:",
+        "url": "URL:"
+      }
+    },
+    "messages": {
+      "editState": "Jy is in wysig modus",
+      "validationError": "Vul asseblief alle velde in (ikoon, etiket, en URL)"
+    }
+  }
+}

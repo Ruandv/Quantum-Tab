@@ -96,7 +96,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
     const getWidgetDisplayName = useCallback((widget: DashboardWidget): string => {
         const widgetType = availableWidgets.find(w => widget.id.startsWith(w.id));
-        return widgetType?.name || t('widgetManager.labels.unknownWidget');
+        return widgetType?.name || t('widgetManager.labels.unknownWidget', { unknown: t('common.states.unknown') });
     }, [availableWidgets, t]);
 
     const renderWidgetTypeCard = useCallback((widgetType: WidgetType) => (

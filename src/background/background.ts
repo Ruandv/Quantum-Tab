@@ -67,7 +67,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete' && tab.url) {
     // You can perform actions when tabs are updated
-    // For example, inject content scripts or update extension state
   }
 });
 
