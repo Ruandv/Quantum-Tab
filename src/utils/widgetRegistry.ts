@@ -117,7 +117,7 @@ export class WidgetRegistry {
       component: LocaleWidget,
       defaultDimensions: { width: 300, height: 200 },
       defaultProps: {
-        selectedLocale: getBrowserRegion().includes('_') ? getBrowserRegion().split('_')[0] : 'en',
+        selectedLocale: getBrowserLanguage(),
       },
     });
   }
@@ -181,6 +181,29 @@ export class WidgetRegistry {
 // Export singleton instance
 export const widgetRegistry = WidgetRegistry.getInstance();
 export default widgetRegistry;
+
+/**
+ * Gets the user's browser language preference
+ * @returns {string} Language code (e.g., 'en', 'af', 'fr')
+ */
+function getBrowserLanguage(): string {
+  try {
+    // Primary method: Use navigator.language
+    const browserLang = navigator.language.split('-')[0]; // Get language code without region
+    
+    // Available locales in our app - update this when adding new locales
+    const availableLocales = ['en', 'af'];
+    
+    if (availableLocales.includes(browserLang)) {
+      return browserLang;
+    }
+  } catch (error) {
+    console.warn('Failed to detect browser language:', error);
+  }
+
+  // Fallback to English
+  return 'en';
+}
 
 /**
  * Gets the user's browser timezone/region using modern browser APIs

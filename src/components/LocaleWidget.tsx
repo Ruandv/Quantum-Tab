@@ -27,6 +27,8 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
   // Handle locale change
   const handleLocaleChange = useCallback(async (newLocale: string) => {
     try {
+      console.log('Changing locale from', currentLocale, 'to', newLocale);
+      
       // Change the i18n language
       await i18n.changeLanguage(newLocale);
       
@@ -38,12 +40,15 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
       
       // Store in chrome storage for persistence
       if (typeof chrome !== 'undefined' && chrome.storage) {
-        chrome.storage.local.set({ userLocale: newLocale });
+        await chrome.storage.local.set({ userLocale: newLocale });
+        console.log('Locale saved to storage:', newLocale);
       }
+      
+      console.log('Locale change completed. i18n language:', i18n.language);
     } catch (error) {
       console.error('Failed to change locale:', error);
     }
-  }, [i18n, onLocaleChange]);
+  }, [i18n, onLocaleChange, currentLocale]);
 
   // Get current locale display info
   const getCurrentLocaleInfo = () => {
