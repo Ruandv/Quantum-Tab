@@ -1839,7 +1839,15 @@
   font-weight: 500;
 }
 
-.locale-dropdown {
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
   padding: 0.75rem;
   background: rgba(255, 255, 255, 0.1);
@@ -1850,23 +1858,90 @@
   backdrop-filter: blur(5px);
   cursor: pointer;
   transition: all 0.2s ease;
+  user-select: none;
 }
 
-.locale-dropdown:hover {
+.dropdown-trigger:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-.locale-dropdown:focus {
+.dropdown-trigger:focus {
   outline: none;
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.5);
 }
 
-.locale-dropdown option {
+.selected-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dropdown-arrow {
+  font-size: 0.8rem;
+  transition: transform 0.2s ease;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  margin-top: 0.25rem;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dropdown-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
   color: white;
-  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-option:last-child {
+  border-bottom: none;
+}
+
+.dropdown-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-option:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.dropdown-option.selected {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.dropdown-option .selected-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.checkmark {
+  color: #10b981;
+  font-weight: bold;
+  font-size: 1rem;
 }
 
 .locale-info {

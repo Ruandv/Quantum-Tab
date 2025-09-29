@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LocaleWidgetProps } from '../types/common';
 
@@ -10,6 +10,8 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
 }: LocaleWidgetProps) => {
   const { t, i18n } = useTranslation();
   const [currentLocale, setCurrentLocale] = useState<string>(selectedLocale || i18n.language);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Available locales - add more as you create additional locale files
   const availableLocales = [
@@ -24,6 +26,20 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
     }
   }, [selectedLocale, currentLocale]);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isDropdownOpen]);
+
   // Handle locale change
   const handleLocaleChange = useCallback(async (newLocale: string) => {
     try {
@@ -34,6 +50,9 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
       
       // Update internal state
       setCurrentLocale(newLocale);
+      
+      // Close dropdown
+      setIsDropdownOpen(false);
       
       // Notify parent component
       onLocaleChange?.(newLocale);
@@ -49,6 +68,11 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
       console.error('Failed to change locale:', error);
     }
   }, [i18n, onLocaleChange, currentLocale]);
+
+  // Toggle dropdown
+  const toggleDropdown = useCallback(() => {
+    setIsDropdownOpen(!isDropdownOpen);
+  }, [isDropdownOpen]);
 
   // Get current locale display info
   const getCurrentLocaleInfo = () => {
@@ -74,22 +98,54 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
       <h3 className="widget-title">🌐 {t('localeWidget.title')}</h3>
       
       <div className="locale-selector">
-        <label htmlFor="locale-select" className="locale-label">
+        <label className="locale-label">
           {t('localeWidget.labels.language')}
         </label>
         
-        <select
-          id="locale-select"
-          value={currentLocale}
-          onChange={(e) => handleLocaleChange(e.target.value)}
-          className="locale-dropdown"
-        >
-          {availableLocales.map((locale) => (
-            <option key={locale.code} value={locale.code}>
-              {locale.flag} {locale.name}
-            </option>
-          ))}
-        </select>
+        <div className="custom-dropdown" ref={dropdownRef}>
+          <div 
+            className="dropdown-trigger"
+            onClick={toggleDropdown}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleDropdown();
+              }
+            }}
+          >
+            <span className="selected-option">
+              <span className="locale-flag">{getCurrentLocaleInfo().flag}</span>
+              <span className="locale-name">{getCurrentLocaleInfo().name}</span>
+            </span>
+            <span className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}>▼</span>
+          </div>
+          
+          {isDropdownOpen && (
+            <div className="dropdown-menu">
+              {availableLocales.map((locale) => (
+                <div
+                  key={locale.code}
+                  className={`dropdown-option ${locale.code === currentLocale ? 'selected' : ''}`}
+                  onClick={() => handleLocaleChange(locale.code)}
+                  role="option"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleLocaleChange(locale.code);
+                    }
+                  }}
+                >
+                  <span className="locale-flag">{locale.flag}</span>
+                  <span className="locale-name">{locale.name}</span>
+                  {locale.code === currentLocale && <span className="checkmark">✓</span>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
         
         <div className="locale-info">
           <small className="locale-hint">
