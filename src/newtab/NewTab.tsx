@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import Dashboard from '../components/Dashboard';
 import WidgetManager from '../components/WidgetManager';
 import { DashboardWidget, Position, Dimensions } from '../types/common';
@@ -7,6 +8,8 @@ import { widgetRegistry } from '../utils/widgetRegistry';
 import { debounce, getViewportDimensions } from '../utils/helpers';
 
 const NewTab: React.FC = () => {
+    const { t } = useTranslation();
+
     // Component mapping for deserialization
     const componentMap = useMemo(() => {
         const map = widgetRegistry.createComponentMap();
@@ -377,7 +380,7 @@ const NewTab: React.FC = () => {
                 color: 'white',
                 fontSize: '1.2rem'
             }}>
-                Loading dashboard...
+                {t('common.loading.dashboard')}
             </div>
         );
     }
