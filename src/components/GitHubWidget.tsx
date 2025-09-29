@@ -14,7 +14,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [lastFetch, setLastFetch] = useState<Date | null>(null);
-    const repositoryName = repositoryUrl ? repositoryUrl.split('/').slice(-2).join('/') : t('githubWidget.labels.unknownRepo');
+    const repositoryName = repositoryUrl ? repositoryUrl.split('/').slice(-2).join('/') : t('githubWidget.labels.unknownRepo', { unknown: t('common.states.unknown') });
     
     // Function to fetch PR data from background service
     const fetchPullRequests = useCallback(async () => {
@@ -54,7 +54,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
             });
         } catch (err) {
             setIsLoading(false);
-            setError(err instanceof Error ? err.message : t('githubWidget.errors.unknownError'));
+            setError(err instanceof Error ? err.message : t('githubWidget.errors.unknownError', { unknown: t('common.states.unknown') }));
         }
     }, [patToken, repositoryUrl, t]);
 
@@ -80,7 +80,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
                         <span className="error-text">{error}</span>
                         {!isLocked && (
                             <button onClick={fetchPullRequests} className="retry-btn">
-                                🔄 {t('githubWidget.buttons.retry')}
+                                🔄 {t('common.buttons.retry')}
                             </button>
                         )}
                     </div>
@@ -117,7 +117,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
                         </div>
                         {!isLocked && (
                             <button onClick={fetchPullRequests} className="refresh-btn">
-                                🔄 {t('githubWidget.buttons.refresh')}
+                                🔄 {t('common.buttons.refresh')}
                             </button>
                         )}
                     </div>

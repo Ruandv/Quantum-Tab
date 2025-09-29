@@ -64,7 +64,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       return (
         <div className="upload-content">
           <div className="upload-spinner" />
-          <span>{t('backgroundManager.upload.uploading')}</span>
+          <span>{t('common.states.uploading')}</span>
         </div>
       );
     }
@@ -102,21 +102,21 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
             onClick={handleFileSelect}
             title={t('backgroundManager.tooltips.changeBackground')}
           >
-            📁 {t('backgroundManager.buttons.change')}
+            📁 {t('common.buttons.change')}
           </button>
           <button
             className="control-btn default-btn"
             onClick={handleRestoreDefault}
             title={t('backgroundManager.tooltips.restoreDefault')}
           >
-            🎨 {t('backgroundManager.buttons.default')}
+            🎨 {t('common.buttons.default')}
           </button>
           <button
             className="control-btn remove-btn"
             onClick={handleRemoveBackground}
             title={t('backgroundManager.tooltips.removeBackground')}
           >
-            🗑️ {t('backgroundManager.buttons.remove')}
+            🗑️ {t('common.buttons.remove')}
           </button>
         </>
       );

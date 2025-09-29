@@ -1,5 +1,25 @@
 {
   "common": {
+    "buttons": {
+      "add": "Add",
+      "cancel": "Cancel",
+      "save": "Save",
+      "remove": "Remove",
+      "change": "Change",
+      "retry": "Retry",
+      "refresh": "Refresh",
+      "default": "Default"
+    },
+    "placeholders": {
+      "url": "https://example.com",
+      "website": "My Website",
+      "emoji": "🌟"
+    },
+    "states": {
+      "loading": "Loading...",
+      "uploading": "Uploading...",
+      "unknown": "Unknown"
+    },
     "loading": {
       "dashboard": "Loading dashboard..."
     }
@@ -7,7 +27,6 @@
   "widgetManager": {
     "buttons": {
       "addWidget": "Add Widget",
-      "cancel": "Cancel",
       "removeWidget": "Remove Widget"
     },
     "tooltips": {
@@ -28,7 +47,7 @@
       "height": "Height",
       "xPosition": "X Position",
       "yPosition": "Y Position",
-      "unknownWidget": "Unknown Widget"
+      "unknownWidget": "{{unknown}} Widget"
     },
     "units": {
       "pixels": "px"
@@ -37,7 +56,6 @@
   "backgroundManager": {
     "title": "Background Manager",
     "upload": {
-      "uploading": "Uploading...",
       "clickToUpload": "Click to upload image",
       "supportedFormats": "PNG, JPG, JPEG, GIF, WebP (max 5MB)",
       "previewAlt": "Background preview"
@@ -46,9 +64,6 @@
       "currentBackground": "Current Background"
     },
     "buttons": {
-      "change": "Change",
-      "default": "Default",
-      "remove": "Remove",
       "defaultGradient": "Default Gradient"
     },
     "tooltips": {
@@ -70,7 +85,7 @@
       "patTokenRequired": "PAT Token and Repository URL are required",
       "extensionError": "Extension error",
       "fetchFailed": "Failed to fetch pull requests",
-      "unknownError": "Unknown error occurred"
+      "unknownError": "{{unknown}} error occurred"
     },
     "pullRequests": {
       "count": "Pull Requests",
@@ -83,21 +98,15 @@
       }
     },
     "buttons": {
-      "retry": "Retry",
-      "refresh": "Refresh Data"
+      "refreshData": "Refresh Data"
     },
     "labels": {
-      "unknownRepo": "Unknown Repo",
+      "unknownRepo": "{{unknown}} Repo",
       "files": "files"
     }
   },
   "quickActionButtons": {
     "title": "Quick Access",
-    "buttons": {
-      "add": "Add",
-      "save": "Save",
-      "cancel": "Cancel"
-    },
     "tooltips": {
       "add": "Add"
     },
@@ -107,11 +116,6 @@
         "icon": "Icon (emoji):",
         "label": "Label:",
         "url": "URL:"
-      },
-      "placeholders": {
-        "icon": "🌟",
-        "label": "My Website",
-        "url": "https://example.com"
       }
     },
     "messages": {

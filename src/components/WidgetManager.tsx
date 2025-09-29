@@ -255,7 +255,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
                             <div className="modal-footer">
                                 <button className="btn-secondary" onClick={handleCloseModal}>
-                                    {t('widgetManager.buttons.cancel')}
+                                    {t('common.buttons.cancel')}
                                 </button>
                                 <button
                                     className="btn-primary"

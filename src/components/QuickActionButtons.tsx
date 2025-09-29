@@ -75,7 +75,7 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
         {!isLocked && (
           <button title={t('quickActionButtons.tooltips.add')} className="action-btn" onClick={handleAddButton}>
             <span className="btn-icon">➕</span>
-            <span className="btn-label">{t('quickActionButtons.buttons.add')}</span>
+            <span className="btn-label">{t('common.buttons.add')}</span>
           </button>
         )}
       </div>
@@ -105,7 +105,7 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
                 onMouseDown={(e) => {
                   e.stopPropagation();
                 }}
-                placeholder={t('quickActionButtons.popup.placeholders.icon')}
+                placeholder={t('common.placeholders.emoji')}
                 maxLength={2}
                 style={{ pointerEvents: 'all', cursor: 'text' }}
                 autoFocus={false}
@@ -125,7 +125,7 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
                 onMouseDown={(e) => {
                   e.stopPropagation();
                 }}
-                placeholder={t('quickActionButtons.popup.placeholders.label')}
+                placeholder={t('common.placeholders.website')}
                 style={{ pointerEvents: 'all', cursor: 'text' }}
               />
             </div>
@@ -143,7 +143,7 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
                 onMouseDown={(e) => {
                   e.stopPropagation();
                 }}
-                placeholder={t('quickActionButtons.popup.placeholders.url')}
+                placeholder={t('common.placeholders.url')}
                 style={{ pointerEvents: 'all', cursor: 'text' }}
               />
             </div>
@@ -156,7 +156,7 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
                 className="save-btn"
                 style={{ pointerEvents: 'all' }}
               >
-                {t('quickActionButtons.popup.buttons.save')}
+                {t('common.buttons.save')}
               </button>
               <button 
                 onClick={(e) => {
@@ -166,7 +166,7 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
                 className="cancel-btn"
                 style={{ pointerEvents: 'all' }}
               >
-                {t('quickActionButtons.popup.buttons.cancel')}
+                {t('common.buttons.cancel')}
               </button>
             </div>
           </div>
