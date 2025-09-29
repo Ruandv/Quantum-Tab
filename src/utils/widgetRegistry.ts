@@ -1,9 +1,10 @@
-import { LiveClockProps, QuickActionButtonsProps, BackgroundManagerProps, GitHubWidgetProps, WebsiteCounterProps, WidgetType } from '../types/common';
+import { LiveClockProps, QuickActionButtonsProps, BackgroundManagerProps, GitHubWidgetProps, WebsiteCounterProps, LocaleWidgetProps, WidgetType } from '../types/common';
 import LiveClock from '../components/LiveClock';
 import QuickActionButtons from '../components/QuickActionButtons';
 import BackgroundManager from '../components/BackgroundManager';
 import GitHubWidget from '../components/GitHubWidget';
 import WebsiteCounter from '../components/WebsiteCounter';
+import LocaleWidget from '../components/LocaleWidget';
 
 export class WidgetRegistry {
   private static instance: WidgetRegistry;
@@ -105,6 +106,18 @@ export class WidgetRegistry {
         showFavicons: true,
         maxWebsites: 10,
         sortBy: 'count',
+      },
+    });
+
+    this.register<LocaleWidgetProps>({
+      id: 'locale-selector',
+      name: 'Language Settings',
+      allowMultiples: false,
+      description: 'Change the language/locale of the extension interface',
+      component: LocaleWidget,
+      defaultDimensions: { width: 300, height: 200 },
+      defaultProps: {
+        selectedLocale: getBrowserRegion().includes('_') ? getBrowserRegion().split('_')[0] : 'en',
       },
     });
   }

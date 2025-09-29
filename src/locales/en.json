@@ -122,5 +122,15 @@
       "editState": "You are in edit state",
       "validationError": "Please fill in all fields (icon, label, and URL)"
     }
+  },
+  "localeWidget": {
+    "title": "Language Settings",
+    "labels": {
+      "language": "Interface Language:",
+      "current": "Current Language:"
+    },
+    "hints": {
+      "restart": "Changes will take effect immediately"
+    }
   }
 }

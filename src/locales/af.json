@@ -122,5 +122,15 @@
       "editState": "Jy is in wysig modus",
       "validationError": "Vul asseblief alle velde in (ikoon, etiket, en URL)"
     }
+  },
+  "localeWidget": {
+    "title": "Taal Instellings",
+    "labels": {
+      "language": "Koppelvlak Taal:",
+      "current": "Huidige Taal:"
+    },
+    "hints": {
+      "restart": "Veranderinge sal onmiddellik van krag word"
+    }
   }
 }

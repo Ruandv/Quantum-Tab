@@ -1,7 +1,7 @@
 // Centralized type definitions for the entire application
 
 // Utility type to make all properties required except className and callback functions
-type RequiredProps<T> = Required<Omit<T, 'className' | 'isLocked' | 'onBackgroundChange' | 'onButtonsChange'>>;
+type RequiredProps<T> = Required<Omit<T, 'className' | 'isLocked' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange'>>;
 
 export interface Position {
   x: number;
@@ -105,6 +105,12 @@ export interface WebsiteCounterProps extends DefaultWidgetProps {
   showFavicons?: boolean;
   maxWebsites?: number;
   sortBy?: 'count' | 'name' | 'recent';
+}
+
+export interface LocaleWidgetProps extends DefaultWidgetProps {
+  className?: string;
+  selectedLocale?: string;
+  onLocaleChange?: (locale: string) => void;
 }
 
 export interface ResizableWidgetProps {

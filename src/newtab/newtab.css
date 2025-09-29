@@ -1809,3 +1809,124 @@
   padding: 2rem;
   color: rgba(255, 255, 255, 0.7);
 }
+
+/* Locale Widget Styles */
+.locale-widget {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.locale-widget .widget-title {
+  margin: 0 0 1rem 0;
+  font-size: var(--widget-title-size, 1.1rem);
+  font-weight: 600;
+  color: white;
+  text-align: center;
+}
+
+.locale-selector {
+  margin-bottom: 1rem;
+}
+
+.locale-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: var(--widget-text-size, 0.9rem);
+  font-weight: 500;
+}
+
+.locale-dropdown {
+  width: 100%;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: white;
+  font-size: var(--widget-text-size, 0.9rem);
+  backdrop-filter: blur(5px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.locale-dropdown:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.locale-dropdown:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.locale-dropdown option {
+  background: rgba(30, 30, 30, 0.95);
+  color: white;
+  padding: 0.5rem;
+}
+
+.locale-info {
+  margin-top: 0.5rem;
+}
+
+.locale-hint {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: var(--widget-small-size, 0.8rem);
+  line-height: var(--widget-small-line-height, 1.4);
+}
+
+.current-locale-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.current-locale-label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--widget-small-size, 0.8rem);
+  font-weight: 500;
+}
+
+.current-locale-value {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.locale-flag {
+  font-size: 1.2rem;
+}
+
+.locale-name {
+  color: white;
+  font-size: var(--widget-text-size, 0.9rem);
+  font-weight: 500;
+}
+
+.locale-display.locked {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.locale-display.locked .locale-flag {
+  font-size: 1.5rem;
+}
+
+.locale-display.locked .locale-name {
+  font-size: var(--widget-text-size, 1rem);
+  font-weight: 600;
+}

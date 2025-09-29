@@ -138,6 +138,17 @@ The Quantum Tab extension provides a customizable dashboard with the following w
 - **Multiple Instances**: No (single counter tracks all websites)
 - **Default Sites**: Google, GitHub, MyBroadband
 
+#### 🌐 **Language Settings**
+- **Description**: Change the language/locale of the extension interface
+- **Features**:
+  - Support for multiple languages (English, Afrikaans)
+  - Instant language switching without restart
+  - Persistent locale preferences stored in Chrome storage
+  - Visual language indicators with flag emojis
+  - Read-only display when widget is locked
+- **Multiple Instances**: No (single language settings widget)
+- **Available Languages**: English (🇺🇸), Afrikaans (🇿🇦)
+
 ### Extension Infrastructure
 
 #### Popup Interface
