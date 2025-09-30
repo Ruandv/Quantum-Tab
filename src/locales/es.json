@@ -1,0 +1,133 @@
+{
+    "common": {
+        "buttons": {
+            "add": "Agregar",
+            "cancel": "Cancelar",
+            "save": "Guardar",
+            "remove": "Eliminar",
+            "change": "Cambiar",
+            "retry": "Reintentar",
+            "refresh": "Actualizar",
+            "default": "Predeterminado"
+        },
+        "placeholders": {
+            "url": "https://example.com",
+            "website": "Mi Sitio Web",
+            "emoji": "🌟"
+        },
+        "states": {
+            "loading": "Cargando...",
+            "uploading": "Subiendo...",
+            "unknown": "Desconocido"
+        },
+        "loading": {
+            "dashboard": "Cargando panel..."
+        }
+    },
+    "widgetManager": {
+        "buttons": {
+            "addWidget": "Agregar Widget",
+            "removeWidget": "Eliminar Widget"
+        },
+        "tooltips": {
+            "addWidget": "Agregar Widget",
+            "removeWidget": "Eliminar Widget"
+        },
+        "modal": {
+            "title": "Agregar Nuevo Widget",
+            "sections": {
+                "chooseType": "Elegir Tipo de Widget",
+                "dimensions": "Dimensiones del Widget",
+                "position": "Posición Inicial",
+                "properties": "Propiedades Adicionales"
+            }
+        },
+        "labels": {
+            "width": "Ancho",
+            "height": "Alto",
+            "xPosition": "Posición X",
+            "yPosition": "Posición Y",
+            "unknownWidget": "Widget {{unknown}}"
+        },
+        "units": {
+            "pixels": "px"
+        }
+    },
+    "backgroundManager": {
+        "title": "Administrador de Fondo",
+        "upload": {
+            "clickToUpload": "Haz clic para subir imagen",
+            "supportedFormats": "PNG, JPG, JPEG, GIF, WebP (máx. 5MB)",
+            "previewAlt": "Vista previa del fondo"
+        },
+        "preview": {
+            "currentBackground": "Fondo Actual"
+        },
+        "buttons": {
+            "defaultGradient": "Gradiente Predeterminado"
+        },
+        "tooltips": {
+            "changeBackground": "Cambiar imagen de fondo",
+            "restoreDefault": "Restaurar fondo con gradiente predeterminado",
+            "removeBackground": "Eliminar imagen de fondo"
+        },
+        "errors": {
+            "invalidFile": "Archivo inválido",
+            "failedToRead": "No se pudo leer el archivo. Por favor, inténtalo de nuevo."
+        }
+    },
+    "githubWidget": {
+        "title": "Repositorio de GitHub",
+        "loading": {
+            "fetchingPullRequests": "Obteniendo solicitudes de extracción..."
+        },
+        "errors": {
+            "patTokenRequired": "Se requiere el Token PAT y la URL del repositorio",
+            "extensionError": "Error de extensión",
+            "fetchFailed": "Error al obtener solicitudes de extracción",
+            "unknownError": "Ocurrió un error {{unknown}}"
+        },
+        "pullRequests": {
+            "count": "Solicitudes de Extracción",
+            "updated": "Actualizado",
+            "draft": "Borrador",
+            "states": {
+                "merged": "FUSIONADO",
+                "open": "ABIERTO",
+                "closed": "CERRADO"
+            }
+        },
+        "buttons": {
+            "refreshData": "Actualizar Datos"
+        },
+        "labels": {
+            "unknownRepo": "Repositorio {{unknown}}",
+            "files": "archivos"
+        }
+    },
+    "quickActionButtons": {
+        "title": "Acceso Rápido",
+        "tooltips": {
+            "add": "Agregar"
+        },
+        "popup": {
+            "title": "Agregar Nuevo Botón de Acción",
+            "labels": {
+                "icon": "Ícono (emoji):",
+                "label": "Etiqueta:",
+                "url": "URL:"
+            }
+        },
+        "messages": {
+            "editState": "Estás en modo de edición",
+            "validationError": "Por favor, completa todos los campos (ícono, etiqueta y URL)"
+        }
+    },
+    "localeWidget": {
+        "title": "Configuración de Idioma",
+        "labels": {
+            "language": "Idioma de la Interfaz:",
+            "current": "Idioma Actual:"
+        }
+    }
+}

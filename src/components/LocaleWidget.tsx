@@ -18,7 +18,8 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
     // Available locales - add more as you create additional locale files
     const availableLocales = [
         { code: 'en', name: 'English', flag: '🇺🇸' },
-        { code: 'af', name: 'Afrikaans', flag: '🇿🇦' }
+        { code: 'af', name: 'Afrikaans', flag: '🇿🇦' },
+        { code: 'es', name: 'Español', flag: '🇪🇸' }
     ];
 
     // Update internal state when prop changes
