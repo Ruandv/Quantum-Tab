@@ -79,7 +79,12 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
         return availableLocales.find(locale => locale.code === currentLocale) || availableLocales[0];
     };
 
-    return isLocked ? null : (
+    // Return null if locked (after all hooks have been called)
+    if (isLocked) {
+        return null;
+    }
+
+    return (
         <div className={`locale-widget ${className}`}>
             <h3 className="widget-title">🌐 {t('localeWidget.title')}</h3>
 

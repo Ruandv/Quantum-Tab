@@ -131,7 +131,12 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
     );
   };
 
-  return isLocked ? null : (
+  // Return null if locked (after all hooks have been called)
+  if (isLocked) {
+    return null;
+  }
+
+  return (
     <div className={`background-manager-widget ${className}`}>
       <h3 className="widget-title">{t('backgroundManager.title')}</h3>
 
