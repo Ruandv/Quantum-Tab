@@ -8,7 +8,8 @@
     "dev": "webpack --mode development --watch",
     "lint": "eslint src/**/*.{ts,tsx} --fix",
     "format": "prettier --write src/**/*.{ts,tsx,css,html}",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "publish": "npm version patch && npm run build && node scripts/create-zip.js"
   },
   "keywords": [
     "chrome-extension",
