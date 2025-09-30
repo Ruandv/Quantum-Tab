@@ -1,8 +1,23 @@
+
+
+
+
+
+
+
 <div align="center">
 
 ![Quantum Tab Logo](public/icons/icon128.png)
 
 # 🚀 Quantum Tab
+
+
+
+
+
+
+
+    
 
 ### *The Ultimate Chrome Extension Dashboard*
 
@@ -24,7 +39,7 @@
 🎨 **Beautiful & Modern** - Sleek glass-morphism design with customizable backgrounds  
 ⚡ **Lightning Fast** - Built with React 18 and optimized for performance  
 🧩 **Modular Widgets** - Drag, drop, and customize your perfect workspace  
-🌐 **Multi-Language** - Full internationalization support (English & Afrikaans)  
+🌐 **Multi-Language** - Full internationalization support (English, Afrikaans, Spanish)  
 🔒 **Privacy First** - All data stored locally, no tracking, no servers  
 🛡️ **Manifest V3** - Future-proof with the latest Chrome Extension standards
 
@@ -97,6 +112,7 @@ quantum-tab/
 │   ├── 🌍 locales/             # Internationalization
 │   │   ├── en.json            # English translations
 │   │   └── af.json            # Afrikaans translations
+│   │   └── es.json            # Spanish translations
 │   ├── 🔧 background/          # Extension background
 │   ├── 📝 content/             # Content scripts
 │   ├── 🎯 types/               # TypeScript definitions
@@ -265,7 +281,7 @@ npm run dev
 - 🔒 Read-only display when widget is locked
 
 **Multiple Instances:** ❌ No (single language settings)  
-**Available Languages:** English (🇺🇸), Afrikaans (🇿🇦)
+**Available Languages:** English ![alt text](./public/images/us.png), Afrikaans ![alt text](./public/images/za.png), Spanish ![alt text](./public/images/es.png)
 
 </details>
 

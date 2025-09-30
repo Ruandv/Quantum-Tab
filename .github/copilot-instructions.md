@@ -21,4 +21,4 @@
 - Include helpful comments for complex logic
 - Add error handling for user inputs and API calls
 - Commit messages should follow the Conventional Commits specification.
-- All commits should be atomic and have clear, descriptive messages.
+- All commits should be atomic and have clear, descriptive messages and be very detailed.
