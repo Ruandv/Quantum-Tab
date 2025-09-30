@@ -13,7 +13,7 @@
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0.5rem;
   width: 100%;
   box-sizing: border-box;
 }
@@ -97,7 +97,7 @@
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 16px;
-  padding: 2rem;
+  padding: 0.5rem;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
   user-select: none; /* Prevent text selection during drag */
@@ -243,7 +243,7 @@
 .upload-area {
   border: 2px dashed rgba(255, 255, 255, 0.3);
   border-radius: 12px;
-  padding: 2rem;
+  padding: 0.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.05);
@@ -549,7 +549,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  padding: 2rem;
+  padding: 0.5rem;
   background: rgba(79, 172, 254, 0.1);
   border: 1px solid rgba(79, 172, 254, 0.3);
   border-radius: 8px;
@@ -760,7 +760,7 @@
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border-radius: 16px;
-  padding: 2rem;
+  padding: 0.5rem;
   width: 90%;
   max-width: 400px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -1302,7 +1302,7 @@
 /* Footer */
 .newtab-footer {
   margin-top: auto;
-  padding-top: 2rem;
+  padding-top: 0.5rem;
 }
 
 .stats {
@@ -1589,7 +1589,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 0.5rem;
   text-align: center;
   opacity: 0.7;
 }
@@ -1952,28 +1952,6 @@
   color: rgba(255, 255, 255, 0.6);
   font-size: var(--widget-small-size, 0.8rem);
   line-height: var(--widget-small-line-height, 1.4);
-}
-
-.current-locale-display {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.current-locale-label {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: var(--widget-small-size, 0.8rem);
-  font-weight: 500;
-}
-
-.current-locale-value {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 .locale-flag {

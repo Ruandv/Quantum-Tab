@@ -196,6 +196,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                     <div className="widget-content">
                         <WidgetComponent
                             isLocked={isLocked}
+                            widgetId={widget.id}
                             {...(widget.props || {})}
                             {...(widget.id.includes('background-manager') && onBackgroundChange ? { onBackgroundChange } : undefined)}
                             {...(widget.id.includes('quick-actions') && onUpdateWidgetProps ? {

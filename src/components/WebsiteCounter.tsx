@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { WebsiteCounterProps, WebsiteCounterData } from '../types/common';
 import chromeStorage from '../utils/chromeStorage';
+import { addWidgetRemovalListener } from '../utils/widgetEvents';
 
 const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
     className = '',
@@ -8,7 +9,8 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
     showFavicons = true,
     maxWebsites = 10,
     isLocked = false,
-    sortBy = 'count'
+    sortBy = 'count',
+    widgetId
 }) => {
     const [websiteData, setWebsiteData] = useState<WebsiteCounterData[]>(websites);
     const [isLoading, setIsLoading] = useState(true);
@@ -53,6 +55,34 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
             }
         };
     }, []);
+
+    // Add widget removal event listener for cleanup
+    useEffect(() => {
+        if (!widgetId) return;
+
+        const removeListener = addWidgetRemovalListener(widgetId, async () => {
+            // Cleanup: Clear website counter data and storage
+            try {
+                console.log('Cleaning up WebsiteCounter widget data for:', widgetId);
+                
+                // Clear website counter data from storage
+                if (typeof chrome !== 'undefined' && chrome.storage) {
+                    await chrome.storage.local.remove(['websiteCounters']);
+                    console.log('WebsiteCounter storage cleared for widget:', widgetId);
+                }
+                
+                // Clear component state
+                setWebsiteData([]);
+                setNewWebsiteUrl('');
+                setIsAddingWebsite(false);
+            } catch (error) {
+                console.error('Failed to cleanup WebsiteCounter widget data:', error);
+            }
+        });
+
+        // Cleanup listener when component unmounts
+        return removeListener;
+    }, [widgetId]);
 
     // Debounced save to storage
     const debouncedSave = useCallback((data: WebsiteCounterData[]) => {

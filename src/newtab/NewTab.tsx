@@ -6,6 +6,7 @@ import { DashboardWidget, Position, Dimensions } from '../types/common';
 import chromeStorage, { SerializedWidget } from '../utils/chromeStorage';
 import { widgetRegistry } from '../utils/widgetRegistry';
 import { debounce, getViewportDimensions } from '../utils/helpers';
+import { dispatchWidgetRemoval } from '../utils/widgetEvents';
 
 const NewTab: React.FC = () => {
     const { t } = useTranslation();
@@ -308,6 +309,10 @@ const NewTab: React.FC = () => {
     }, []);
 
     const handleRemoveWidget = useCallback((widgetId: string) => {
+        // Dispatch the RemoveWidget event before removing the widget
+        dispatchWidgetRemoval(widgetId);
+        
+        // Remove the widget from state
         setWidgets(prev => prev.filter(w => w.id !== widgetId));
     }, []);
 

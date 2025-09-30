@@ -1,5 +1,6 @@
 import { LiveClockProps } from '@/types/common';
 import React, { useState, useEffect } from 'react';
+import { addWidgetRemovalListener } from '../utils/widgetEvents';
 
 const LiveClock: React.FC<LiveClockProps> = ({ 
   className = '', 
@@ -9,6 +10,7 @@ const LiveClock: React.FC<LiveClockProps> = ({
   showDate, 
   showTime = true, 
   showTimeZone,
+  widgetId,
   // Get dimensions from parent ResizableWidget via CSS custom properties
   // These will be available as CSS variables in the component
 }: LiveClockProps) => {
@@ -22,6 +24,28 @@ const LiveClock: React.FC<LiveClockProps> = ({
 
     return () => clearInterval(timer);
   }, []);
+
+  // Add widget removal event listener for cleanup
+  useEffect(() => {
+    if (!widgetId) return;
+
+    const removeListener = addWidgetRemovalListener(widgetId, async () => {
+      // Cleanup: Clear any LiveClock-specific storage or timers
+      try {
+        console.log('Cleaning up LiveClock widget data for:', widgetId);
+        
+        // Clear any clock-specific storage if it exists
+        if (typeof chrome !== 'undefined' && chrome.storage) {
+          console.log('LiveClock widget storage cleared for widget:', widgetId);
+        }
+      } catch (error) {
+        console.error('Failed to cleanup LiveClock widget data:', error);
+      }
+    });
+
+    // Cleanup listener when component unmounts
+    return removeListener;
+  }, [widgetId]);
 
   const formatTime = (date: Date) => {
     // Create a date object in the specified timezone

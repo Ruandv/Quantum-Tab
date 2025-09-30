@@ -1,12 +1,14 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LocaleWidgetProps } from '../types/common';
+import { addWidgetRemovalListener } from '../utils/widgetEvents';
 
 const LocaleWidget: React.FC<LocaleWidgetProps> = ({
     className = '',
     selectedLocale,
     onLocaleChange,
-    isLocked = false
+    isLocked = false,
+    widgetId
 }: LocaleWidgetProps) => {
     const { t, i18n } = useTranslation();
     const [currentLocale, setCurrentLocale] = useState<string>(selectedLocale || i18n.language);
@@ -40,6 +42,32 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
         }
     }, [isDropdownOpen]);
 
+    // Add widget removal event listener for cleanup
+    useEffect(() => {
+        if (!widgetId) return;
+
+        const removeListener = addWidgetRemovalListener(widgetId, async () => {
+            // Cleanup: Reset language to English when widget is removed
+            try {
+                console.log('Resetting language to English for widget:', widgetId);
+                
+                // Reset i18n language to English
+                await i18n.changeLanguage('en');
+                
+                // Clear stored user locale
+                if (typeof chrome !== 'undefined' && chrome.storage) {
+                    await chrome.storage.local.remove(['quantum-tab-userLocale']);
+                    console.log('User locale storage cleared for widget:', widgetId);
+                }
+            } catch (error) {
+                console.error('Failed to reset language during widget cleanup:', error);
+            }
+        });
+
+        // Cleanup listener when component unmounts
+        return removeListener;
+    }, [widgetId, i18n]);
+
     // Handle locale change
     const handleLocaleChange = useCallback(async (newLocale: string) => {
         try {
@@ -59,7 +87,7 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
 
             // Store in chrome storage for persistence
             if (typeof chrome !== 'undefined' && chrome.storage) {
-                await chrome.storage.local.set({ userLocale: newLocale });
+                await chrome.storage.local.set({ 'quantum-tab-userLocale': newLocale });
                 console.log('Locale saved to storage:', newLocale);
             }
 
@@ -140,14 +168,6 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
                             ))}
                         </div>
                     )}
-                </div>
-            </div>
-
-            <div className="current-locale-display">
-                <span className="current-locale-label">{t('localeWidget.labels.current')}</span>
-                <div className="current-locale-value">
-                    <span className="locale-flag">{getCurrentLocaleInfo().flag}</span>
-                    <span className="locale-name">{getCurrentLocaleInfo().name}</span>
                 </div>
             </div>
         </div>

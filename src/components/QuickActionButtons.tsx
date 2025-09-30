@@ -1,7 +1,8 @@
 import { QuickActionButtonsProps, ActionButton } from '@/types/common';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import QuickActionButtonItem from './QuickActionButtonItem';
+import { addWidgetRemovalListener } from '../utils/widgetEvents';
 
 const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
   className = '',
@@ -16,12 +17,28 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
     url: 'https://mybroadband.co.za/',
   },],
   isLocked,
-  onButtonsChange
+  onButtonsChange,
+  widgetId
 }: QuickActionButtonsProps) => {
   const { t } = useTranslation();
   
   const [showAddPopup, setShowAddPopup] = useState(false);
   const [newButton, setNewButton] = useState({ icon: '', label: '', url: '' });
+
+  // Add widget removal event listener for cleanup
+  useEffect(() => {
+    if (!widgetId) return;
+
+    const removeListener = addWidgetRemovalListener(widgetId, async () => {
+      // No specific storage cleanup needed - QuickActionButtons data is stored
+      // as part of the widget configuration in 'quantum-tab-widgets' and is
+      // automatically removed when the widget is deleted from the dashboard
+      console.log('QuickActionButtons widget removed:', widgetId);
+    });
+
+    // Cleanup listener when component unmounts
+    return removeListener;
+  }, [widgetId]);
 
   const handleButtonClick = (url: string) => {
     if (!isLocked) {

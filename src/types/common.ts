@@ -1,7 +1,7 @@
 // Centralized type definitions for the entire application
 
-// Utility type to make all properties required except className and callback functions
-type RequiredProps<T> = Required<Omit<T, 'className' | 'isLocked' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange'>>;
+// Utility type to make all properties required except className, callback functions, and widgetId
+type RequiredProps<T> = Required<Omit<T, 'className' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange'>>;
 
 export interface Position {
   x: number;
@@ -33,6 +33,7 @@ export interface WidgetType<T = any> {
 }
 interface DefaultWidgetProps{
     isLocked: boolean;
+    widgetId?: string; // Optional widget ID for event handling
 }
 
 export interface SavedData {

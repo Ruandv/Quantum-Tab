@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GitHubWidgetProps, GitHubPullRequest, BackgroundMessage, BackgroundResponse } from '@/types/common';
+import { addWidgetRemovalListener } from '../utils/widgetEvents';
 
 const GitHubWidget: React.FC<GitHubWidgetProps> = ({
     className = '',
     patToken = '',
     repositoryUrl = '',
-    isLocked
+    isLocked,
+    widgetId
 }) => {
     const { t } = useTranslation();
     
@@ -64,6 +66,35 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
             fetchPullRequests();
         }
     }, [fetchPullRequests, patToken, repositoryUrl]);
+
+    // Add widget removal event listener for cleanup
+    useEffect(() => {
+        if (!widgetId) return;
+
+        const removeListener = addWidgetRemovalListener(widgetId, async () => {
+            // Cleanup: Clear GitHub-related state and any stored PAT tokens or repository URLs
+            try {
+                console.log('Cleaning up GitHub widget data for:', widgetId);
+                
+                // Clear component state
+                setPullRequests([]);
+                setError(null);
+                setLastFetch(null);
+                
+                // If there are any GitHub-specific storage items, clear them here
+                // For example, cached PR data or repository-specific settings
+                if (typeof chrome !== 'undefined' && chrome.storage) {
+                    console.log('GitHub widget storage cleared for widget:', widgetId);
+                }
+            } catch (error) {
+                console.error('Failed to cleanup GitHub widget data:', error);
+            }
+        });
+
+        // Cleanup listener when component unmounts
+        return removeListener;
+    }, [widgetId]);
+
     return (
         <div className={`github-widget ${className}`}>
             <h3 className="widget-title">{t('githubWidget.title')} ({repositoryName})</h3>

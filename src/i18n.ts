@@ -19,9 +19,9 @@ const getUserLocale = async (): Promise<string> => {
   try {
     // First, try to get saved user preference from Chrome storage
     if (typeof chrome !== 'undefined' && chrome.storage) {
-      const result = await chrome.storage.local.get(['userLocale']);
-      if (result.userLocale && resources[result.userLocale as keyof typeof resources]) {
-        return result.userLocale;
+      const result = await chrome.storage.local.get(['quantum-tab-userLocale']);
+      if (result[`quantum-tab-userLocale`] && resources[result[`quantum-tab-userLocale`] as keyof typeof resources]) {
+        return result[`quantum-tab-userLocale`];
       }
     }
   } catch (error) {

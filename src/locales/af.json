@@ -126,8 +126,7 @@
   "localeWidget": {
     "title": "Taal Instellings",
     "labels": {
-      "language": "Koppelvlak Taal:",
-      "current": "Huidige Taal:"
+      "language": "Koppelvlak Taal:"
     }
   }
 }

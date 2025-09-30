@@ -126,8 +126,7 @@
   "localeWidget": {
     "title": "Language Settings",
     "labels": {
-      "language": "Interface Language:",
-      "current": "Current Language:"
+      "language": "Interface Language:"
     }
   }
 }

@@ -1,12 +1,14 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BackgroundManagerProps } from '../types/common';
 import { validateImageFile, fileToDataURL } from '../utils/helpers';
+import { addWidgetRemovalListener } from '../utils/widgetEvents';
 
 const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   className = '',
   onBackgroundChange,
-  isLocked
+  isLocked,
+  widgetId
 }: BackgroundManagerProps) => {
   const { t } = useTranslation();
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -17,6 +19,31 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   const handleFileSelect = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
+
+  // Add widget removal event listener for cleanup
+  useEffect(() => {
+    if (!widgetId) return;
+
+    const removeListener = addWidgetRemovalListener(widgetId, async () => {
+      // Cleanup: Remove the background image from storage when widget is removed
+      try {
+        if (typeof chrome !== 'undefined' && chrome.storage) {
+          await chrome.storage.local.remove(['quantum-tab-background']);
+          console.log('Background image storage cleared for widget:', widgetId);
+        }
+        
+        // Reset background to default if there's a callback
+        if (onBackgroundChange) {
+          onBackgroundChange('');
+        }
+      } catch (error) {
+        console.error('Failed to cleanup background storage:', error);
+      }
+    });
+
+    // Cleanup listener when component unmounts
+    return removeListener;
+  }, [widgetId, onBackgroundChange]);
 
   const handleFileChange = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
