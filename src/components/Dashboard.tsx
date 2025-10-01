@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useRef, useEffect, CSSProperties } from 'react';
 import ResizableWidget from './ResizableWidget';
 import { DashboardWidget, DashboardProps, DragState, Position, Dimensions } from '../types/common';
-import { constrainPosition, getViewportDimensions } from '../utils/helpers';
+import { constrainPosition, getViewportDimensions, widgetHasBackgroundColours } from '../utils/helpers';
 
 const Dashboard: React.FC<DashboardProps> = ({
     widgets,
@@ -148,7 +148,21 @@ const Dashboard: React.FC<DashboardProps> = ({
         }
 
         const isEmpty = emptyWidgets.has(widget.id);
-
+        const widgetStyles:CSSProperties = {
+            position: 'absolute',
+            left: `${widget.position.x}px`,
+            top: `${widget.position.y}px`,
+            zIndex: isDragging ? 1000 : 10 + index,
+            cursor: isLocked ? 'default' : 'move',
+            ...(typeof widget.style.radius == 'number' && widget.style.radius > 0) ? { borderRadius: `${widget.style.radius}px` } : {},
+            ...(typeof widget.style.border == 'number' && widget.style.border > 0) ? { border: `${widget.style.border}px solid` } : {}
+        };
+        
+        const widgetContentStyles:CSSProperties = {
+            display: 'flex',
+            alignItems: widget.style.alignment ,
+            justifyContent: widget.style.justify,
+        }
         return (
             <div
                 key={widget.id}
@@ -160,13 +174,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                     }
                 }}
                 className={`widget-wrapper ${isLocked ? 'locked' : 'editable'} ${isDragging ? 'dragging' : ''} ${isEmpty ? 'empty-widget' : ''}`}
-                style={{
-                    position: 'absolute',
-                    left: `${widget.position.x}px`,
-                    top: `${widget.position.y}px`,
-                    zIndex: isDragging ? 1000 : 10 + index,
-                    cursor: isLocked ? 'default' : 'move'
-                }}
+                style={widgetStyles}
                 onMouseDown={(e) => handleMouseDown(e, widget)}
             >
                 <ResizableWidget
@@ -175,6 +183,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                     initialHeight={widget.dimensions.height}
                     isResizable={!isLocked}
                     onResize={(dimensions) => handleWidgetResize(widget.id, dimensions)}
+                    widgetStyle={widget.style}
                 >
                     {!isLocked && handleRemoveWidget && (
                         <button
@@ -193,7 +202,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                             ⋮⋮
                         </div>
                     )}
-                    <div className="widget-content">
+                    <div className="widget-content" style={widgetContentStyles}> 
                         <WidgetComponent
                             isLocked={isLocked}
                             widgetId={widget.id}
@@ -210,11 +219,11 @@ const Dashboard: React.FC<DashboardProps> = ({
     }, [dragState.draggedWidgetId, isLocked, emptyWidgets, handleMouseDown, handleWidgetResize, handleRemoveWidget]);
 
     return (
-        <div 
+        <div
             className={`dashboard-container ${className}`}
-            style={{ 
+            style={{
                 height: `${containerHeight}px`,
-                minHeight: '400px'
+                minHeight: '98vh'
             }}
         >
             {widgets.map(renderWidget)}

@@ -1,7 +1,7 @@
 // Centralized type definitions for the entire application
 
 // Utility type to make all properties required except className, callback functions, and widgetId
-type RequiredProps<T> = Required<Omit<T, 'className' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange'>>;
+type RequiredProps<T> = Required<Omit<T, 'className' | 'buttons' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange'>>;
 
 export interface Position {
   x: number;
@@ -12,28 +12,39 @@ export interface Dimensions {
   width: number;
   height: number;
 }
-
+export interface CssStyle {
+  border: number;
+  radius: number;
+  blur: number;
+  backgroundColorRed: number;
+  backgroundColorGreen: number;
+  backgroundColorBlue: number;
+  transparency: number;
+  alignment: 'left' | 'center' | 'right'
+  justify: 'flex-start' | 'center' | 'flex-end' | 'space-around' | 'space-between';
+}
 export interface DashboardWidget {
   id: string;
-  allowMultiples:boolean;
+  allowMultiples: boolean;
   component: React.ComponentType<any>;
   props?: Record<string, any>;
   dimensions: Dimensions;
   position: Position;
+  style: CssStyle
 }
 
 export interface WidgetType<T = any> {
   id: string;
   name: string;
-  allowMultiples:boolean;
+  allowMultiples: boolean;
   description: string;
   component: React.ComponentType<T>;
   defaultDimensions: Dimensions;
   defaultProps: RequiredProps<T>;
 }
-interface DefaultWidgetProps{
-    isLocked: boolean;
-    widgetId?: string; // Optional widget ID for event handling
+interface DefaultWidgetProps {
+  isLocked: boolean;
+  widgetId?: string; // Optional widget ID for event handling
 }
 
 export interface SavedData {
@@ -161,8 +172,13 @@ export type ResizeDirection = 'n' | 's' | 'e' | 'w' | 'ne' | 'nw' | 'se' | 'sw';
 export const STORAGE_KEYS = {
   WIDGETS: 'quantum-tab-widgets',
   BACKGROUND: 'quantum-tab-background',
-  LOCK_STATE: 'quantum-tab-lock-state'
+  LOCK_STATE: 'quantum-tab-lock-state',
+  DEFAULT_STYLING: 'quantum-tab-default-styling',
+  DEFAULT_POSITION: 'quantum-tab-default-position',
+  DEFAULT_DIMENSIONS: 'quantum-tab-default-dimensions'
 } as const;
+
+
 
 export const DEFAULT_WIDGET_CONSTRAINTS = {
   MIN_WIDTH: 150,

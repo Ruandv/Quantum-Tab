@@ -177,6 +177,7 @@ export const useWidgetTextSizes = (dimensions: Dimensions) => {
       '--widget-body-line-height': `${body.lineHeight}px`,
       '--widget-small-line-height': `${small.lineHeight}px`,
       '--widget-button-line-height': `${button.lineHeight}px`,
+      '--widget-background-color': '#110099'
     } as React.CSSProperties
   };
 };

@@ -1,7 +1,7 @@
 // Background service worker for Chrome Extension Manifest V3
-import { BackgroundMessage, BackgroundResponse } from '../types/common';
+import { BackgroundMessage, BackgroundResponse, STORAGE_KEYS } from '../types/common';
 import { GitHubService } from '../services/githubService';
-
+import { defaultPosition, defaultStyle } from '@/types/defaults';
 // Listen for extension installation or startup
 chrome.runtime.onInstalled.addListener((details) => {
   // Set up initial state or perform initialization tasks
@@ -9,10 +9,23 @@ chrome.runtime.onInstalled.addListener((details) => {
     extensionInstalled: true,
     installDate: new Date().toISOString(),
   });
+
+  chrome.storage.local.get([STORAGE_KEYS.DEFAULT_STYLING], (result) => {
+    if (!result.defaultPosition) {
+      chrome.storage.local.set({ [STORAGE_KEYS.DEFAULT_STYLING]: defaultStyle });
+    }
+  });
+
+  chrome.storage.local.get([STORAGE_KEYS.DEFAULT_POSITION], (result) => {
+    if (!result.defaultPosition) {
+      chrome.storage.local.set({ [STORAGE_KEYS.DEFAULT_POSITION]: defaultPosition });
+    }
+  });
 });
 
 // Listen for extension startup
 chrome.runtime.onStartup.addListener(() => {
+
   // Extension started - ready to handle messages
 });
 
@@ -23,7 +36,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     handleGitHubApiRequest(message, sendResponse);
     return true; // Keep message channel open for async response
   }
-  
+
   switch (message.action) {
     case 'getTabInfo':
       if (sender.tab) {
@@ -34,7 +47,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
       }
       break;
-      
+
     case 'updateBadge':
       if (sender.tab && message.text) {
         chrome.action.setBadgeText({
@@ -52,13 +65,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       // Handle page loaded notifications from content script
       sendResponse({ success: true });
       break;
-      
+
     default:
       console.warn('Unknown action:', message.action);
       console.warn('Available actions: getTabInfo, updateBadge, pageLoaded, fetchPullRequests');
       sendResponse({ error: 'Unknown action' });
   }
-  
+
   // Return true to indicate we want to send an asynchronous response
   return true;
 });
@@ -126,12 +139,12 @@ const handleGitHubApiRequest = async (message: BackgroundMessage, sendResponse: 
 
   } catch (error) {
     console.error('GitHub API request failed:', error);
-    
+
     let errorMessage = 'Failed to fetch pull requests';
-    
+
     if (error instanceof Error) {
       errorMessage = error.message;
-      
+
       // Provide more helpful error messages for common issues
       if (error.message.includes('401')) {
         errorMessage = 'Invalid GitHub token. Please check your Personal Access Token.';
@@ -141,7 +154,7 @@ const handleGitHubApiRequest = async (message: BackgroundMessage, sendResponse: 
         errorMessage = 'Access forbidden. Check your token permissions or rate limit.';
       }
     }
-    
+
     sendResponse({
       action: 'fetchPullRequests',
       success: false,

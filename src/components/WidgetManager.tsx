@@ -1,8 +1,10 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DashboardWidget, WidgetManagerProps, WidgetType, Dimensions, Position } from '../types/common';
+import { DashboardWidget, WidgetManagerProps, WidgetType, Dimensions, Position, CssStyle } from '../types/common';
 import { widgetRegistry } from '../utils/widgetRegistry';
 import { generateUniqueId, findOptimalPosition, getViewportDimensions } from '../utils/helpers';
+import { defaultDimensions, } from '@/types/defaults';
+import chromeStorage from '@/utils/chromeStorage';
 
 const WidgetManager: React.FC<WidgetManagerProps> = ({
     onAddWidget,
@@ -15,16 +17,24 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedWidgetType, setSelectedWidgetType] = useState<WidgetType | null>(null);
-    const [widgetDimensions, setWidgetDimensions] = useState<Dimensions>({ width: 300, height: 200 });
-    const [widgetPosition, setWidgetPosition] = useState<Position>({ x: 50, y: 50 });
+    const [widgetDimensions, setWidgetDimensions] = useState<Dimensions>();
+    const [widgetPosition, setWidgetPosition] = useState<Position>();
+    const [widgetStyle, setWidgetStyle] = useState<CssStyle>();
 
     const availableWidgets = useMemo(() => widgetRegistry.getAvailable(), []);
     const containerBounds = useMemo(() => getViewportDimensions(), []);
-
-    const resetModalState = useCallback(() => {
+    const loadDefaults = async () => {
+        const defaultStyle: CssStyle = (await chromeStorage.loadAllDefaults()).styling
+        const defaultDimensions: Dimensions = (await chromeStorage.loadAllDefaults()).dimensions
+        const defaultPosition: Position = (await chromeStorage.loadAllDefaults()).positioning
+        return { defaultStyle, defaultDimensions, defaultPosition };
+    }
+    const resetModalState = useCallback(async () => {
         setSelectedWidgetType(null);
-        setWidgetDimensions({ width: 300, height: 200 });
-        setWidgetPosition({ x: 50, y: 50 });
+        var r = await loadDefaults();
+        setWidgetDimensions(r.defaultDimensions);
+        setWidgetPosition(r.defaultPosition);
+        setWidgetStyle(r.defaultStyle);
     }, []);
 
     const handleOpenModal = useCallback(() => {
@@ -33,9 +43,15 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     }, [resetModalState]);
 
     const handleCloseModal = useCallback(() => {
-        setIsModalOpen(false);
-        resetModalState();
-    }, [resetModalState]);
+        if (selectedWidgetType) {
+            // First click: deselect widget type but keep modal open
+            setSelectedWidgetType(null);
+        } else {
+            // Second click: close modal when no widget type is selected
+            setIsModalOpen(false);
+            resetModalState();
+        }
+    }, [selectedWidgetType, resetModalState]);
 
     const handleWidgetTypeSelect = useCallback((widgetType: WidgetType) => {
         setSelectedWidgetType(widgetType);
@@ -69,10 +85,14 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             dimensions: widgetDimensions,
             position: widgetPosition,
             props: widgetProps,
+            style: widgetStyle
         };
+
         onAddWidget(newWidget);
+        chromeStorage.saveAllDefaults({ styling: widgetStyle, dimensions: widgetDimensions, positioning: widgetPosition })
+        setIsModalOpen(false);
         handleCloseModal();
-    }, [selectedWidgetType, widgetDimensions, widgetPosition, onBackgroundChange, onAddWidget, handleCloseModal]);
+    }, [selectedWidgetType, widgetDimensions, widgetPosition, widgetStyle, onBackgroundChange, onAddWidget, handleCloseModal]);
 
     const handleDimensionChange = useCallback((dimension: 'width' | 'height', value: number) => {
         setWidgetDimensions(prev => ({ ...prev, [dimension]: value }));
@@ -80,6 +100,16 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
     const handlePositionChange = useCallback((axis: 'x' | 'y', value: number) => {
         setWidgetPosition(prev => ({ ...prev, [axis]: value }));
+    }, []);
+
+    const handleStyleChange = useCallback((property: keyof CssStyle, value: number) => {
+        // Convert transparency from percentage to decimal
+        const finalValue = property === 'transparency' ? value / 100 : value;
+        setWidgetStyle(prev => {
+            const newStyle = { ...prev, [property]: finalValue };
+            console.log(`Style changed: ${property} = ${finalValue}`, newStyle);
+            return newStyle;
+        });
     }, []);
 
     const handlePropertyChange = useCallback((key: string, value: string) => {
@@ -162,6 +192,60 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
         </div>
     ), [handlePositionChange, t]);
 
+    const renderStyleInput = useCallback((
+        property: keyof CssStyle,
+        value: number,
+        label: string,
+        min: number = 0,
+        max: number = 100,
+        step: number = 1
+    ) => (
+        <div className="style-field">
+            <label className="style-label">{label}</label>
+            <div className="input-with-unit">
+                <input
+                    type="number"
+                    value={value}
+                    min={min}
+                    max={max}
+                    step={step}
+                    onChange={(e) => handleStyleChange(property, parseFloat(e.target.value) || 0)}
+                />
+                <span className="input-unit">
+                    {property === 'transparency' ? '%' : property.includes('backgroundColor') ? '' : 'px'}
+                </span>
+            </div>
+        </div>
+    ), [handleStyleChange]);
+
+    const renderColorInput = useCallback((
+        property: 'backgroundColorRed' | 'backgroundColorGreen' | 'backgroundColorBlue',
+        value: number,
+        label: string
+    ) => (
+        <div className="color-field">
+            <label className="color-label">{label}</label>
+            <div className="color-input-container">
+                <input
+                    type="range"
+                    value={value}
+                    min={0}
+                    max={255}
+                    onChange={(e) => handleStyleChange(property, parseInt(e.target.value))}
+                    className="color-slider"
+                />
+                <input
+                    type="number"
+                    value={value}
+                    min={0}
+                    max={255}
+                    onChange={(e) => handleStyleChange(property, parseInt(e.target.value) || 0)}
+                    className="color-number"
+                />
+            </div>
+        </div>
+    ), [handleStyleChange]);
+
     return (
         isLocked ? (
             <></>
@@ -204,28 +288,134 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                             </div>
 
                             <div className="modal-body">
-                                <div className="form-section">
-                                    <h3>{t('widgetManager.modal.sections.chooseType')}</h3>
-                                    <div className="widget-types">
-                                        {availableWidgets.map(renderWidgetTypeCard)}
-                                    </div>
-                                </div>
+                                {!selectedWidgetType && (
+                                    <div className="form-section">
+                                        <h3>{t('widgetManager.modal.sections.chooseType')}</h3>
+                                        <div className="widget-types">
+                                            {availableWidgets.map(renderWidgetTypeCard)}
+                                        </div>
+                                    </div>)}
 
                                 {selectedWidgetType && (
                                     <>
-                                        <div className="form-section">
-                                            <h3>{t('widgetManager.modal.sections.dimensions')}</h3>
-                                            <div className="dimension-options">
-                                                {renderDimensionInput('width', widgetDimensions.width, 150, 800)}
-                                                {renderDimensionInput('height', widgetDimensions.height, 100, 600)}
-                                            </div>
-                                        </div>
+                                        <div className="section form-section">
+                                            <h3>{t('widgetManager.modal.sections.styling')}</h3>
+                                            <div className="styling-options">
+                                                <div className="style-row">
+                                                    {renderStyleInput('border', widgetStyle.border, t('widgetManager.labels.border'), 0, 10)}
+                                                    {renderStyleInput('radius', widgetStyle.radius, t('widgetManager.labels.radius'), 0, 50)}
+                                                </div>
+                                                <div className="style-row">
+                                                    {renderStyleInput('blur', widgetStyle.blur, t('widgetManager.labels.blur'), 0, 20)}
+                                                    {renderStyleInput('transparency', Math.round(widgetStyle.transparency * 100), t('widgetManager.labels.transparency'), 0, 100, 5)}
+                                                </div>
+                                                <div className="section color-section">
+                                                    <h4>{t('widgetManager.labels.backgroundColor')}</h4>
+                                                    <div className="color-preview" style={{
+                                                        backgroundColor: `rgba(${widgetStyle.backgroundColorRed}, ${widgetStyle.backgroundColorGreen}, ${widgetStyle.backgroundColorBlue}, ${widgetStyle.transparency})`,
+                                                        width: '100%',
+                                                        height: '40px',
+                                                        borderRadius: '4px',
+                                                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                                                        marginBottom: '10px'
+                                                    }}></div>
+                                                    <div className="color-controls">
+                                                        {renderColorInput('backgroundColorRed', widgetStyle.backgroundColorRed, t('widgetManager.labels.red'))}
+                                                        {renderColorInput('backgroundColorGreen', widgetStyle.backgroundColorGreen, t('widgetManager.labels.green'))}
+                                                        {renderColorInput('backgroundColorBlue', widgetStyle.backgroundColorBlue, t('widgetManager.labels.blue'))}
+                                                    </div>
+                                                </div>
 
-                                        <div className="form-section">
-                                            <h3>{t('widgetManager.modal.sections.position')}</h3>
-                                            <div className="position-options">
-                                                {renderPositionInput('x', widgetPosition.x, 'widgetManager.labels.xPosition')}
-                                                {renderPositionInput('y', widgetPosition.y, 'widgetManager.labels.yPosition')}
+                                                <div className="section text-align-section">
+                                                    <h4>{t('widgetManager.labels.textAlign')}</h4>
+                                                    <div className="text-align-options">
+                                                        <label>
+                                                            <input
+                                                                type="radio"
+                                                                name="textAlign"
+                                                                value="left"
+                                                                checked={widgetStyle.alignment === 'left'}
+                                                                onChange={() => handleStyleChange('alignment', 'left' as any)}
+                                                            />
+                                                            {t('widgetManager.labels.left')}
+                                                        </label>
+                                                        <label>
+                                                            <input
+                                                                type="radio"
+                                                                name="textAlign"
+                                                                value="center"
+                                                                checked={widgetStyle.alignment === 'center'}
+                                                                onChange={() => handleStyleChange('alignment', 'center' as any)}
+                                                            />
+                                                            {t('widgetManager.labels.center')}
+                                                        </label>
+                                                        <label>
+                                                            <input
+                                                                type="radio"
+                                                                name="textAlign"
+                                                                value="right"
+                                                                checked={widgetStyle.alignment === 'right'}
+                                                                onChange={() => handleStyleChange('alignment', 'right' as any)}
+                                                            />
+                                                            {t('widgetManager.labels.right')}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div className="section justify-section">
+                                                    <h4>{t('widgetManager.labels.justify')}</h4>
+                                                    <div className="justify-options">
+                                                        <label>
+                                                            <input
+                                                                type="radio"
+                                                                name="justify"
+                                                                value="flex-start"
+                                                                checked={widgetStyle.justify === 'flex-start'}
+                                                                onChange={() => handleStyleChange('justify', 'flex-start' as any)}
+                                                            />
+                                                            {t('widgetManager.labels.justifyStart')}
+                                                        </label>
+                                                        <label>
+                                                            <input
+                                                                type="radio"
+                                                                name="justify"
+                                                                value="center"
+                                                                checked={widgetStyle.justify === 'center'}
+                                                                onChange={() => handleStyleChange('justify', 'center' as any)}
+                                                            />
+                                                            {t('widgetManager.labels.justifyCenter')}
+                                                        </label>
+                                                        <label>
+                                                            <input
+                                                                type="radio"
+                                                                name="justify"
+                                                                value="flex-end"
+                                                                checked={widgetStyle.justify === 'flex-end'}
+                                                                onChange={() => handleStyleChange('justify', 'flex-end' as any)}
+                                                            />
+                                                            {t('widgetManager.labels.justifyEnd')}
+                                                        </label>
+                                                        <label>
+                                                            <input
+                                                                type="radio"
+                                                                name="justify"
+                                                                value="space-between"
+                                                                checked={widgetStyle.justify === 'space-between'}
+                                                                onChange={() => handleStyleChange('justify', 'space-between' as any)}
+                                                            />
+                                                            {t('widgetManager.labels.justifyBetween')}
+                                                        </label>
+                                                        <label>
+                                                            <input
+                                                                type="radio"
+                                                                name="justify"
+                                                                value="space-around"
+                                                                checked={widgetStyle.justify === 'space-around'}
+                                                                onChange={() => handleStyleChange('justify', 'space-around' as any)}
+                                                            />
+                                                            {t('widgetManager.labels.justifyAround')}
+                                                        </label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 

@@ -7,6 +7,7 @@ import chromeStorage, { SerializedWidget } from '../utils/chromeStorage';
 import { widgetRegistry } from '../utils/widgetRegistry';
 import { debounce, getViewportDimensions } from '../utils/helpers';
 import { dispatchWidgetRemoval } from '../utils/widgetEvents';
+import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 
 const NewTab: React.FC = () => {
     const { t } = useTranslation();
@@ -26,33 +27,14 @@ const NewTab: React.FC = () => {
             const clockWidget: DashboardWidget = {
                 id: 'live-clock-1',
                 allowMultiples: true,
-                position: { x: Math.max(50, viewport.width - 350), y: 50 },
-                dimensions: { width: 300, height: 200 },
+                position: defaultPosition,
+                dimensions: defaultDimensions,
                 component: componentMap['live-clock'] || (() => null),
-                props: { className: 'default-clock' }
+                props: { className: 'default-clock' },
+                style: defaultStyle
             };
 
-            const backgroundManagerWidget: DashboardWidget = {
-                id: 'background-manager-1',
-                allowMultiples: false,
-                position: { x: 50, y: Math.max(50, viewport.height - 250) },
-                dimensions: { width: 300, height: 200 },
-                component: componentMap['background-manager'] || (() => null),
-                props: { className: 'default-background-manager' }
-            };
-
-            const quickActionWidget: DashboardWidget = {
-                id: 'quick-actions-1',
-                allowMultiples: true,
-                position: {
-                    x: Math.max(50, viewport.width - 350), y: Math.max(270, viewport.height - 250)
-                },
-                dimensions: { width: 300, height: 200 },
-                component: componentMap['quick-actions'] || (() => null),
-                props: { className: 'default-quick-actions' }
-            };
-
-            return [clockWidget, backgroundManagerWidget, quickActionWidget];
+            return [clockWidget];
         } catch (error) {
             console.error('Error creating initial widgets:', error);
             return [];
@@ -171,17 +153,22 @@ const NewTab: React.FC = () => {
                             componentName = 'LiveClock';
                         }
 
-                        return {
+                        const restoredWidget: DashboardWidget = {
                             ...widget,
-                            component: restoredComponent
+                            component: restoredComponent,
+                            // Ensure style property exists with defaults if missing
+                            style: widget.style ||defaultStyle
                         };
+                        return restoredWidget;
                     } catch (widgetError) {
                         console.error(`Error restoring widget ${widget.id}:`, widgetError);
-                        // Return widget with LiveClock as fallback
-                        return {
+                        // Return widget with LiveClock as fallback and default style
+                        const fallbackWidget: DashboardWidget = {
                             ...widget,
-                            component: componentMap['LiveClock']
+                            component: componentMap['LiveClock'],
+                            style: widget.style || defaultStyle
                         };
+                        return fallbackWidget;
                     }
                 });
 
@@ -275,7 +262,8 @@ const NewTab: React.FC = () => {
                         component: serializedComponent,
                         props: widget.props,
                         dimensions: widget.dimensions,
-                        position: widget.position
+                        position: widget.position,
+                        style: widget.style
                     };
                 });
 
@@ -316,10 +304,6 @@ const NewTab: React.FC = () => {
         setWidgets(prev => prev.filter(w => w.id !== widgetId));
     }, []);
 
-    const handleUpdateWidget = useCallback((updatedWidget: DashboardWidget) => {
-        setWidgets(prev => prev.map(w => w.id === updatedWidget.id ? updatedWidget : w));
-    }, []);
-
     const handleWidgetResize = useCallback((id: string, dimensions: Dimensions) => {
         setWidgets(prev => prev.map(widget =>
             widget.id === id ? { ...widget, dimensions } : widget
@@ -339,35 +323,6 @@ const NewTab: React.FC = () => {
     const handleToggleLock = useCallback(() => {
         setIsLocked(prev => !prev);
     }, []);
-
-    // Export functionality for testing/debugging
-    const handleExportData = useCallback(async () => {
-        try {
-            const storageInfo = await chromeStorage.getStorageInfo();
-            const data = {
-                widgets: widgets.map(widget => ({
-                    ...widget,
-                    component: widget.component.name || 'Unknown'
-                })),
-                backgroundImage,
-                isLocked,
-                timestamp: Date.now(),
-                storageInfo
-            };
-
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `quantum-tab-export-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        } catch (error) {
-            console.error('Export failed:', error);
-        }
-    }, [widgets, backgroundImage, isLocked]);
 
     // Show loading state
     if (isLoading) {
