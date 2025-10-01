@@ -158,11 +158,7 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
                                         }
                                     }}
                                 >
-                                    <span className="locale-flag"><img
-                                        src={`https://flagicons.lipis.dev/flags/4x3/${locale.flag}.svg`}
-                                        alt={`${locale.name} flag`}
-                                        className="locale-flag-img"
-                                    /></span>
+                                    <span className="locale-flag">{locale.flag}</span>
                                     <span className="locale-name">{locale.name}</span>
                                     {locale.code === currentLocale && <span className="checkmark">✓</span>}
                                 </div>
