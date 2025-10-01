@@ -173,7 +173,7 @@ export const chromeStorage = {
                 dimensions: result[STORAGE_KEYS.DEFAULT_DIMENSIONS]
             };
         } catch (error) {
-            console.error('Failed to load all defaults  from Chrome storage:', error);
+            console.error('Failed to load all defaults from Chrome storage:', error);
             return {
                 styling: defaultStyle,
                 positioning: defaultPosition,
