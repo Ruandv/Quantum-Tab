@@ -103,7 +103,7 @@
   background: rgba(255, 255, 255, 0.05);
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow: visible; /* Allow widgets to extend outside if needed */
+  overflow: visible; /* Allow widgets and dropdowns to extend outside */
 }
 
 /* ===== WIDGET SYSTEM STYLES ===== */
@@ -113,6 +113,12 @@
   padding: 0.5rem;
   transition: all 0.3s ease;
   user-select: none; /* Prevent text selection during drag */
+  overflow: visible !important;
+}
+
+/* Boost widget wrapper z-index when it contains an open dropdown */
+.widget-wrapper:has(.dropdown-menu) {
+  z-index: 49997 !important;
 }
 
 
@@ -163,7 +169,7 @@
 .widget-content {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow: visible !important;
   position: relative;
 }
 
@@ -1502,6 +1508,13 @@
   z-index: 20;
 }
 
+/* Hide resize handles when dropdown is open */
+.locale-widget .custom-dropdown.open ~ .resize-handle,
+.widget-wrapper:has(.dropdown-menu) .resize-handle {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
 .resizable-widget:hover .resize-handle {
   opacity: 1;
 }
@@ -1843,6 +1856,13 @@
 /* Locale Widget Styles */
 .locale-widget {
   padding: 1rem;
+  overflow: visible !important;
+  z-index: 1;
+}
+
+/* Boost locale widget z-index when dropdown is open */
+.locale-widget:has(.dropdown-menu) {
+  z-index: 49998 !important;
 }
 
 .locale-widget .widget-title {
@@ -1865,6 +1885,7 @@
 .custom-dropdown {
   position: relative;
   width: 100%;
+  z-index: 49999;
 }
 
 .dropdown-trigger {
@@ -1916,14 +1937,15 @@
   top: 100%;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 50000;
   background: rgba(30, 30, 30, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 8px;
   backdrop-filter: blur(10px);
   margin-top: 0.25rem;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  min-width: 200px;
 }
 
 .dropdown-option {
@@ -1979,6 +2001,7 @@
 
 .locale-flag {
   font-size: 1.2rem;
+  font-family: 'Segoe UI Emoji', 'Segoe UI Symbol', 'Arial', sans-serif;
 }
 
 .locale-name {
@@ -2000,6 +2023,7 @@
 
 .locale-display.locked .locale-flag {
   font-size: 1.5rem;
+    font-family: 'Segoe UI Emoji', 'Segoe UI Symbol', 'Arial', sans-serif;
 }
 
 .locale-display.locked .locale-name {
