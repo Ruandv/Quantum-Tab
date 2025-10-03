@@ -100,9 +100,9 @@
   width: 100%;
   /* Height is now controlled by JavaScript for dynamic sizing */
   min-height: 400px; /* Minimum height for usability */
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* background: rgba(255, 255, 255, 0.05); */
+  /* border-radius: 20px; */
+  /* border: 1px solid rgba(255, 255, 255, 0.1); */
   overflow: visible; /* Allow widgets and dropdowns to extend outside */
 }
 

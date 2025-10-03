@@ -154,68 +154,6 @@ const Dashboard: React.FC<DashboardProps> = ({
     }
   }, [dragState.isDragging, handleMouseMove, handleMouseUp]);
 
-  const renderWidget = useCallback(
-    (widget: DashboardWidget, index: number) => {
-      const WidgetComponent = widget.component;
-      const isDragging = dragState.draggedWidgetId === widget.id;
-
-      // Safety check to prevent React error #130
-      if (!WidgetComponent) {
-        console.error('Widget component is undefined for widget:', widget);
-        return null;
-      }
-
-      const isEmpty = emptyWidgets.has(widget.id);
-
-    const handleWidgetResize = useCallback((widgetId: string, dimensions: Dimensions) => {
-        onWidgetResize?.(widgetId, dimensions);
-    }, [onWidgetResize]);
-
-    const handleRemoveWidget = useCallback((widgetId: string) => {
-        onRemoveWidget?.(widgetId);
-    }, [onRemoveWidget]);
-
-    // Check for empty widgets after render
-    useEffect(() => {
-        const checkEmptyWidgets = () => {
-            const newEmptyWidgets = new Set<string>();
-
-            widgetRefs.current.forEach((element, widgetId) => {
-                const contentElement = element.querySelector('.widget-content');
-                if (contentElement) {
-                    // Check if content is empty (no text, no child elements, or only whitespace)
-                    const hasText = contentElement.textContent?.trim().length || 0;
-                    const hasElements = contentElement.children.length;
-                    const hasVisibleContent = hasText > 0 || hasElements > 0;
-                    if (!hasVisibleContent && isLocked) {
-                        newEmptyWidgets.add(widgetId);
-                    }
-                }
-            });
-
-            setEmptyWidgets(newEmptyWidgets);
-        };
-
-        // Check immediately and after a short delay to ensure DOM is updated
-        checkEmptyWidgets();
-        const timeoutId = setTimeout(checkEmptyWidgets, 100);
-
-        return () => clearTimeout(timeoutId);
-    }, [widgets]);
-
-    // Global mouse event listeners
-    React.useEffect(() => {
-        if (dragState.isDragging) {
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-
-            return () => {
-                document.removeEventListener('mousemove', handleMouseMove);
-                document.removeEventListener('mouseup', handleMouseUp);
-            };
-        }
-    }, [dragState.isDragging, handleMouseMove, handleMouseUp]);
-
     const renderWidget = useCallback((widget: DashboardWidget, index: number) => {
         const WidgetComponent = widget.component;
         const isDragging = dragState.draggedWidgetId === widget.id;
@@ -317,68 +255,6 @@ const Dashboard: React.FC<DashboardProps> = ({
             </div>
         );
     }, [dragState.draggedWidgetId, isLocked, emptyWidgets, handleMouseDown, handleWidgetResize, handleRemoveWidget]);
-
-    return (
-        <div
-            className={`dashboard-container ${className}`}
-            style={{
-                height: `${containerHeight}px`,
-                minHeight: '98vh'
-            }}
-        >
-          <ResizableWidget
-            id={widget.id}
-            initialWidth={widget.dimensions.width}
-            initialHeight={widget.dimensions.height}
-            isResizable={!isLocked}
-            onResize={(dimensions) => handleWidgetResize(widget.id, dimensions)}
-          >
-            {!isLocked && handleRemoveWidget && (
-              <button
-                className="widget-remove-btn remove-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRemoveWidget(widget.id);
-                }}
-                title="Remove widget"
-              >
-                ×
-              </button>
-            )}
-            {!isLocked && (
-              <div className="widget-drag-indicator" title="Drag to move">
-                ⋮⋮
-              </div>
-            )}
-            <div className="widget-content">
-              <WidgetComponent
-                isLocked={isLocked}
-                widgetId={widget.id}
-                {...(widget.props || {})}
-                {...(widget.id.includes('background-manager') && onBackgroundChange
-                  ? { onBackgroundChange }
-                  : undefined)}
-                {...(widget.id.includes('quick-actions') && onUpdateWidgetProps
-                  ? {
-                      onButtonsChange: (buttons: any[]) =>
-                        onUpdateWidgetProps(widget.id, { buttons }),
-                    }
-                  : undefined)}
-              />
-            </div>
-          </ResizableWidget>
-        </div>
-      );
-    },
-    [
-      dragState.draggedWidgetId,
-      isLocked,
-      emptyWidgets,
-      handleMouseDown,
-      handleWidgetResize,
-      handleRemoveWidget,
-    ]
-  );
 
   return (
     <div
