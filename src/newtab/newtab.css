@@ -2204,3 +2204,38 @@
   display: flex;
   justify-content: space-between;
 }
+.github-issues{
+  cursor: pointer;
+  height: 50px;
+  width: 50px;
+  background-color: black;
+  border-radius: 50px;
+  position:absolute;
+  right: 10px;
+  bottom: 10px;
+  background-image: url("../../public/images/github.svg");
+  background-size: cover
+}
+.github-issues-modal{
+  position: fixed;
+  right: -150px;
+  bottom: 10px;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  max-height: 85vh;
+  color: white;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent double scrollbars */
+  z-index:50000
+}
+.github-issues:hover{
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  cursor:pointer
+}

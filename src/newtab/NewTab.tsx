@@ -10,6 +10,7 @@ import { debounce } from '../utils/helpers';
 import { dispatchWidgetRemoval } from '../utils/widgetEvents';
 import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 import NotificationManager from '@/utils/notificationManager';
+import GitHubIssues from '@/components/GitHubIssues';
 
 // Stable fallback component to avoid creating new function instances
 const EmptyWidget: React.FC<any> = () => null;
@@ -437,6 +438,7 @@ const NewTab: React.FC = () => {
                     onDismiss={() => setShowNotification(false)}
                 />
             )}
+            <GitHubIssues />
         </div>
     );
 };
