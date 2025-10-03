@@ -1,9 +1,9 @@
-import React, { useState, useCallback, useMemo, useEffect, CSSProperties } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DashboardWidget, WidgetManagerProps, WidgetType, Dimensions, Position, CssStyle } from '../types/common';
 import { widgetRegistry } from '../utils/widgetRegistry';
 import { generateUniqueId, findOptimalPosition, getViewportDimensions } from '../utils/helpers';
-import { defaultDimensions, } from '@/types/defaults';
+import { defaultDimensions, defaultPosition, defaultStyle, } from '@/types/defaults';
 import chromeStorage from '@/utils/chromeStorage';
 
 const WidgetManager: React.FC<WidgetManagerProps> = ({
@@ -17,9 +17,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedWidgetType, setSelectedWidgetType] = useState<WidgetType | null>(null);
-    const [widgetDimensions, setWidgetDimensions] = useState<Dimensions>();
-    const [widgetPosition, setWidgetPosition] = useState<Position>();
-    const [widgetStyle, setWidgetStyle] = useState<CssStyle>();
+    const [widgetDimensions, setWidgetDimensions] = useState<Dimensions>(defaultDimensions);
+    const [widgetPosition, setWidgetPosition] = useState<Position>(defaultPosition);
+    const [widgetStyle, setWidgetStyle] = useState<CssStyle>(defaultStyle);
 
     const availableWidgets = useMemo(() => widgetRegistry.getAvailable(), []);
     const containerBounds = useMemo(() => getViewportDimensions(), []);
@@ -31,7 +31,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     }
     const resetModalState = useCallback(async () => {
         setSelectedWidgetType(null);
-        var r = await loadDefaults();
+        const r = await loadDefaults();
         setWidgetDimensions(r.defaultDimensions);
         setWidgetPosition(r.defaultPosition);
         setWidgetStyle(r.defaultStyle);
@@ -93,15 +93,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
         setIsModalOpen(false);
         handleCloseModal();
     }, [selectedWidgetType, widgetDimensions, widgetPosition, widgetStyle, onBackgroundChange, onAddWidget, handleCloseModal]);
-
-    const handleDimensionChange = useCallback((dimension: 'width' | 'height', value: number) => {
-        setWidgetDimensions(prev => ({ ...prev, [dimension]: value }));
-    }, []);
-
-    const handlePositionChange = useCallback((axis: 'x' | 'y', value: number) => {
-        setWidgetPosition(prev => ({ ...prev, [axis]: value }));
-    }, []);
-
+  
     const handleStyleChange = useCallback((property: keyof CssStyle, value: number) => {
         // Convert transparency from percentage to decimal
         const finalValue = property === 'transparency' ? value / 100 : value;
@@ -149,48 +141,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             );
         })()
     ), [selectedWidgetType, handleWidgetTypeSelect]);
-
-    const renderDimensionInput = useCallback((
-        dimension: 'width' | 'height',
-        value: number,
-        min: number,
-        max: number
-    ) => (
-        <div className="dimension-field">
-            <label className="dimension-label"> 
-                {t(`widgetManager.labels.${dimension}`)}
-            </label>
-            <div className="input-with-unit">
-                <input
-                    type="number"
-                    value={value}
-                    min={min}
-                    max={max}
-                    onChange={(e) => handleDimensionChange(dimension, parseInt(e.target.value) || value)}
-                />
-                <span className="input-unit">{t('widgetManager.units.pixels')}</span>
-            </div>
-        </div>
-    ), [handleDimensionChange, t]);
-
-    const renderPositionInput = useCallback((
-        axis: 'x' | 'y',
-        value: number,
-        translationKey: string
-    ) => (
-        <div className="position-field">
-            <label className="position-label">{t(translationKey)}</label>
-            <div className="input-with-unit">
-                <input
-                    type="number"
-                    value={value}
-                    min={0}
-                    onChange={(e) => handlePositionChange(axis, parseInt(e.target.value) || 0)}
-                />
-                <span className="input-unit">{t('widgetManager.units.pixels')}</span>
-            </div>
-        </div>
-    ), [handlePositionChange, t]);
 
     const renderStyleInput = useCallback((
         property: keyof CssStyle,

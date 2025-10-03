@@ -5,7 +5,7 @@ import WidgetManager from '../components/WidgetManager';
 import { DashboardWidget, Position, Dimensions } from '../types/common';
 import chromeStorage, { SerializedWidget } from '../utils/chromeStorage';
 import { widgetRegistry } from '../utils/widgetRegistry';
-import { debounce, getViewportDimensions } from '../utils/helpers';
+import { debounce } from '../utils/helpers';
 import { dispatchWidgetRemoval } from '../utils/widgetEvents';
 import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 
@@ -25,8 +25,6 @@ const NewTab: React.FC = () => {
     // Initialize widgets with default configuration
     const getInitialWidgets = useCallback((): DashboardWidget[] => {
         try {
-            const viewport = getViewportDimensions();
-
             // Create a stable fallback component reference
             const ClockComponent = componentMap['live-clock'];
             if (!ClockComponent) {
