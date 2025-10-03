@@ -9,6 +9,9 @@ import { debounce, getViewportDimensions } from '../utils/helpers';
 import { dispatchWidgetRemoval } from '../utils/widgetEvents';
 import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 
+// Stable fallback component to avoid creating new function instances
+const EmptyWidget: React.FC<any> = () => null;
+
 const NewTab: React.FC = () => {
     const { t } = useTranslation();
 
@@ -24,12 +27,19 @@ const NewTab: React.FC = () => {
         try {
             const viewport = getViewportDimensions();
 
+            // Create a stable fallback component reference
+            const ClockComponent = componentMap['live-clock'];
+            if (!ClockComponent) {
+                console.error('Live clock component not found in component map');
+                return [];
+            }
+
             const clockWidget: DashboardWidget = {
                 id: 'live-clock-1',
                 allowMultiples: true,
                 position: defaultPosition,
                 dimensions: defaultDimensions,
-                component: componentMap['live-clock'] || (() => null),
+                component: ClockComponent,
                 props: { className: 'default-clock' },
                 style: defaultStyle
             };
@@ -148,9 +158,9 @@ const NewTab: React.FC = () => {
                         }
 
                         if (!restoredComponent) {
-                            console.warn(`Failed to restore component for widget ${widget.id}, falling back to LiveClock`);
-                            restoredComponent = componentMap['LiveClock'];
-                            componentName = 'LiveClock';
+                            console.warn(`Failed to restore component for widget ${widget.id}, falling back to EmptyWidget`);
+                            restoredComponent = EmptyWidget;
+                            componentName = 'EmptyWidget';
                         }
 
                         const restoredWidget: DashboardWidget = {

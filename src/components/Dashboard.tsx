@@ -141,12 +141,33 @@ const Dashboard: React.FC<DashboardProps> = ({
         const WidgetComponent = widget.component;
         const isDragging = dragState.draggedWidgetId === widget.id;
 
-        // Safety check to prevent React error #130
+        // Safety check to prevent React error #130 - use a stable empty component
         if (!WidgetComponent) {
             console.error('Widget component is undefined for widget:', widget);
-            return null;
+            // Return a stable empty widget div instead of null to maintain consistent rendering
+            return (
+                <div 
+                    key={widget.id} 
+                    className="widget-wrapper error-widget"
+                    style={{
+                        position: 'absolute',
+                        left: `${widget.position.x}px`,
+                        top: `${widget.position.y}px`,
+                        width: `${widget.dimensions.width}px`,
+                        height: `${widget.dimensions.height}px`,
+                        border: '2px dashed red',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'red',
+                        fontSize: '12px'
+                    }}
+                >
+                    Error: Missing Component
+                </div>
+            );
         }
-
+ 
         const isEmpty = emptyWidgets.has(widget.id);
         const widgetStyles:CSSProperties = {
             position: 'absolute',
@@ -154,14 +175,14 @@ const Dashboard: React.FC<DashboardProps> = ({
             top: `${widget.position.y}px`,
             zIndex: isDragging ? 1000 : 10 + index,
             cursor: isLocked ? 'default' : 'move',
-            ...(typeof widget.style.radius == 'number' && widget.style.radius > 0) ? { borderRadius: `${widget.style.radius}px` } : {},
-            ...(typeof widget.style.border == 'number' && widget.style.border > 0) ? { border: `${widget.style.border}px solid` } : {}
+            // ...(typeof widget.style.radius == 'number' && widget.style.radius > 0) ? { borderRadius: `${widget.style.radius}px` } : {},
+            // ...(typeof widget.style.border == 'number' && widget.style.border > 0) ? { border: `${widget.style.border}px solid` } : {}
         };
         
         const widgetContentStyles:CSSProperties = {
             display: 'flex',
-            alignItems: widget.style.alignment ,
-            justifyContent: widget.style.justify,
+            alignItems: widget.style?.alignment || 'center',
+            justifyContent: widget.style?.justify || 'center',
         }
         return (
             <div

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { DashboardWidget, WidgetManagerProps, WidgetType, Dimensions, Position, CssStyle } from '../types/common';
 import { widgetRegistry } from '../utils/widgetRegistry';
 import { generateUniqueId, findOptimalPosition, getViewportDimensions } from '../utils/helpers';
-import { defaultDimensions, } from '@/types/defaults';
+import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 import chromeStorage from '@/utils/chromeStorage';
 
 const WidgetManager: React.FC<WidgetManagerProps> = ({
@@ -17,9 +17,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedWidgetType, setSelectedWidgetType] = useState<WidgetType | null>(null);
-    const [widgetDimensions, setWidgetDimensions] = useState<Dimensions>();
-    const [widgetPosition, setWidgetPosition] = useState<Position>();
-    const [widgetStyle, setWidgetStyle] = useState<CssStyle>();
+    const [widgetDimensions, setWidgetDimensions] = useState<Dimensions>(defaultDimensions);
+    const [widgetPosition, setWidgetPosition] = useState<Position>(defaultPosition);
+    const [widgetStyle, setWidgetStyle] = useState<CssStyle>(defaultStyle);
 
     const availableWidgets = useMemo(() => widgetRegistry.getAvailable(), []);
     const containerBounds = useMemo(() => getViewportDimensions(), []);
@@ -306,17 +306,17 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                             <h3>{t('widgetManager.modal.sections.styling')}</h3>
                                             <div className="styling-options">
                                                 <div className="style-row">
-                                                    {renderStyleInput('border', widgetStyle.border, t('widgetManager.labels.border'), 0, 10)}
-                                                    {renderStyleInput('radius', widgetStyle.radius, t('widgetManager.labels.radius'), 0, 50)}
+                                                    {renderStyleInput('border', widgetStyle?.border || 0, t('widgetManager.labels.border'), 0, 10)}
+                                                    {renderStyleInput('radius', widgetStyle?.radius || 0, t('widgetManager.labels.radius'), 0, 50)}
                                                 </div>
                                                 <div className="style-row">
-                                                    {renderStyleInput('blur', widgetStyle.blur, t('widgetManager.labels.blur'), 0, 20)}
-                                                    {renderStyleInput('transparency', Math.round(widgetStyle.transparency * 100), t('widgetManager.labels.transparency'), 0, 100, 5)}
+                                                    {renderStyleInput('blur', widgetStyle?.blur || 0, t('widgetManager.labels.blur'), 0, 20)}
+                                                    {renderStyleInput('transparency', Math.round((widgetStyle?.transparency || 0) * 100), t('widgetManager.labels.transparency'), 0, 100, 5)}
                                                 </div>
                                                 <div className="section color-section">
                                                     <h4>{t('widgetManager.labels.backgroundColor')}</h4>
                                                     <div className="color-preview" style={{
-                                                        backgroundColor: `rgba(${widgetStyle.backgroundColorRed}, ${widgetStyle.backgroundColorGreen}, ${widgetStyle.backgroundColorBlue}, ${widgetStyle.transparency})`,
+                                                        backgroundColor: `rgba(${widgetStyle?.backgroundColorRed || 0}, ${widgetStyle?.backgroundColorGreen || 0}, ${widgetStyle?.backgroundColorBlue || 0}, ${widgetStyle?.transparency || 0})`,
                                                         width: '100%',
                                                         height: '40px',
                                                         borderRadius: '4px',
@@ -324,9 +324,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                                         marginBottom: '10px'
                                                     }}></div>
                                                     <div className="color-controls">
-                                                        {renderColorInput('backgroundColorRed', widgetStyle.backgroundColorRed, t('widgetManager.labels.red'))}
-                                                        {renderColorInput('backgroundColorGreen', widgetStyle.backgroundColorGreen, t('widgetManager.labels.green'))}
-                                                        {renderColorInput('backgroundColorBlue', widgetStyle.backgroundColorBlue, t('widgetManager.labels.blue'))}
+                                                        {renderColorInput('backgroundColorRed', widgetStyle?.backgroundColorRed || 0, t('widgetManager.labels.red'))}
+                                                        {renderColorInput('backgroundColorGreen', widgetStyle?.backgroundColorGreen || 0, t('widgetManager.labels.green'))}
+                                                        {renderColorInput('backgroundColorBlue', widgetStyle?.backgroundColorBlue || 0, t('widgetManager.labels.blue'))}
                                                     </div>
                                                 </div>
 
@@ -338,7 +338,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                                                 type="radio"
                                                                 name="textAlign"
                                                                 value="left"
-                                                                checked={widgetStyle.alignment === 'left'}
+                                                                checked={(widgetStyle?.alignment || 'left') === 'left'}
                                                                 onChange={() => handleStyleChange('alignment', 'left' as any)}
                                                             />
                                                             {t('widgetManager.labels.left')}
@@ -348,7 +348,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                                                 type="radio"
                                                                 name="textAlign"
                                                                 value="center"
-                                                                checked={widgetStyle.alignment === 'center'}
+                                                                checked={(widgetStyle?.alignment || 'left') === 'center'}
                                                                 onChange={() => handleStyleChange('alignment', 'center' as any)}
                                                             />
                                                             {t('widgetManager.labels.center')}
@@ -358,7 +358,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                                                 type="radio"
                                                                 name="textAlign"
                                                                 value="right"
-                                                                checked={widgetStyle.alignment === 'right'}
+                                                                checked={(widgetStyle?.alignment || 'left') === 'right'}
                                                                 onChange={() => handleStyleChange('alignment', 'right' as any)}
                                                             />
                                                             {t('widgetManager.labels.right')}
@@ -373,7 +373,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                                                 type="radio"
                                                                 name="justify"
                                                                 value="flex-start"
-                                                                checked={widgetStyle.justify === 'flex-start'}
+                                                                checked={(widgetStyle?.justify || 'center') === 'flex-start'}
                                                                 onChange={() => handleStyleChange('justify', 'flex-start' as any)}
                                                             />
                                                             {t('widgetManager.labels.justifyStart')}
@@ -383,7 +383,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                                                 type="radio"
                                                                 name="justify"
                                                                 value="center"
-                                                                checked={widgetStyle.justify === 'center'}
+                                                                checked={(widgetStyle?.justify || 'center') === 'center'}
                                                                 onChange={() => handleStyleChange('justify', 'center' as any)}
                                                             />
                                                             {t('widgetManager.labels.justifyCenter')}
@@ -393,7 +393,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                                                 type="radio"
                                                                 name="justify"
                                                                 value="flex-end"
-                                                                checked={widgetStyle.justify === 'flex-end'}
+                                                                checked={(widgetStyle?.justify || 'center') === 'flex-end'}
                                                                 onChange={() => handleStyleChange('justify', 'flex-end' as any)}
                                                             />
                                                             {t('widgetManager.labels.justifyEnd')}
@@ -403,7 +403,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                                                 type="radio"
                                                                 name="justify"
                                                                 value="space-between"
-                                                                checked={widgetStyle.justify === 'space-between'}
+                                                                checked={(widgetStyle?.justify || 'center') === 'space-between'}
                                                                 onChange={() => handleStyleChange('justify', 'space-between' as any)}
                                                             />
                                                             {t('widgetManager.labels.justifyBetween')}
@@ -413,7 +413,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                                                 type="radio"
                                                                 name="justify"
                                                                 value="space-around"
-                                                                checked={widgetStyle.justify === 'space-around'}
+                                                                checked={(widgetStyle?.justify || 'center') === 'space-around'}
                                                                 onChange={() => handleStyleChange('justify', 'space-around' as any)}
                                                             />
                                                             {t('widgetManager.labels.justifyAround')}
