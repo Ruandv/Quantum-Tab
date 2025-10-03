@@ -1,0 +1,41 @@
+name: ✨ Feature Request
+description: Suggest a new idea or improvement
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! Please provide as much detail as possible.
+  - type: input
+    id: summary
+    attributes:
+      label: Feature Summary
+      description: A short, clear title for the feature.
+      placeholder: "Introductory dialog when the extension updates"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Explain what you’d like to see added or changed.
+      placeholder: "Introduce a new dialog that shows up when the extension is installed or updated..."
+    validations:
+      required: true
+  - type: textarea
+    id: usecase
+    attributes:
+      label: Use Case
+      description: Why would this be useful? Who benefits from it?
+      placeholder: "Helps onboard users and highlight changes."
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Did you consider other ways to solve this?
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Links, screenshots, or references.
