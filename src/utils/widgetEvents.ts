@@ -1,6 +1,6 @@
 /**
  * Widget Event System
- * 
+ *
  * Provides a centralized event system for widgets to handle cleanup operations
  * when they are removed from the dashboard.
  */
@@ -45,7 +45,7 @@ class WidgetEventManager {
   dispatchEvent(event: WidgetEvent): void {
     const listeners = this.listeners.get(event.type);
     if (listeners) {
-      listeners.forEach(listener => {
+      listeners.forEach((listener) => {
         try {
           listener(event);
         } catch (error) {
@@ -77,7 +77,7 @@ export const widgetEventManager = new WidgetEventManager();
 export const WIDGET_EVENTS = {
   REMOVE_WIDGET: 'RemoveWidget',
   WIDGET_ADDED: 'WidgetAdded',
-  WIDGET_UPDATED: 'WidgetUpdated'
+  WIDGET_UPDATED: 'WidgetUpdated',
 } as const;
 
 /**
@@ -87,7 +87,7 @@ export const dispatchWidgetRemoval = (widgetId: string, data?: any): void => {
   widgetEventManager.dispatchEvent({
     type: WIDGET_EVENTS.REMOVE_WIDGET,
     widgetId,
-    data
+    data,
   });
 };
 
@@ -95,7 +95,7 @@ export const dispatchWidgetRemoval = (widgetId: string, data?: any): void => {
  * Convenience function to add a removal listener for a specific widget
  */
 export const addWidgetRemovalListener = (
-  widgetId: string, 
+  widgetId: string,
   cleanup: () => void | Promise<void>
 ): (() => void) => {
   const listener: WidgetEventListener = async (event) => {
@@ -110,7 +110,7 @@ export const addWidgetRemovalListener = (
   };
 
   widgetEventManager.addEventListener(WIDGET_EVENTS.REMOVE_WIDGET, listener);
-  
+
   // Return cleanup function to remove the listener
   return () => {
     widgetEventManager.removeEventListener(WIDGET_EVENTS.REMOVE_WIDGET, listener);

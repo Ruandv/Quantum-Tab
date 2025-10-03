@@ -26,10 +26,10 @@ export const constrainPosition = (
 ): Position => {
   const maxX = Math.max(0, containerBounds.width - dimensions.width);
   const maxY = Math.max(0, containerBounds.height - dimensions.height);
-  
+
   return {
     x: clamp(position.x, 0, maxX),
-    y: clamp(position.y, 0, maxY)
+    y: clamp(position.y, 0, maxY),
   };
 };
 
@@ -41,7 +41,7 @@ export const debounce = <T extends (...args: any[]) => any>(
   wait: number
 ): ((...args: Parameters<T>) => void) => {
   let timeout: number;
-  
+
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = window.setTimeout(() => func(...args), wait);
@@ -53,11 +53,11 @@ export const debounce = <T extends (...args: any[]) => any>(
  */
 export const validateImageFile = (file: File): { isValid: boolean; error?: string } => {
   const allowedTypes = FILE_UPLOAD_CONSTRAINTS.ALLOWED_TYPES as readonly string[];
-  
+
   if (!allowedTypes.includes(file.type)) {
     return {
       isValid: false,
-      error: `Invalid file type. Allowed types: ${allowedTypes.join(', ')}`
+      error: `Invalid file type. Allowed types: ${allowedTypes.join(', ')}`,
     };
   }
 
@@ -65,7 +65,7 @@ export const validateImageFile = (file: File): { isValid: boolean; error?: strin
     const maxSizeMB = FILE_UPLOAD_CONSTRAINTS.MAX_SIZE / (1024 * 1024);
     return {
       isValid: false,
-      error: `File size exceeds ${maxSizeMB}MB limit`
+      error: `File size exceeds ${maxSizeMB}MB limit`,
     };
   }
 
@@ -106,12 +106,12 @@ export const deepClone = <T>(obj: T): T => {
   if (obj === null || typeof obj !== 'object') return obj;
   if (obj instanceof Date) return new Date(obj.getTime()) as unknown as T;
   if (Array.isArray(obj)) return obj.map(deepClone) as unknown as T;
-  
+
   const clonedObj = {} as T;
-  Object.keys(obj).forEach(key => {
+  Object.keys(obj).forEach((key) => {
     clonedObj[key as keyof T] = deepClone(obj[key as keyof T]);
   });
-  
+
   return clonedObj;
 };
 
@@ -122,16 +122,16 @@ export const isEqual = (a: any, b: any): boolean => {
   if (a === b) return true;
   if (a == null || b == null) return false;
   if (typeof a !== typeof b) return false;
-  
+
   if (typeof a === 'object') {
     const keysA = Object.keys(a);
     const keysB = Object.keys(b);
-    
+
     if (keysA.length !== keysB.length) return false;
-    
-    return keysA.every(key => isEqual(a[key], b[key]));
+
+    return keysA.every((key) => isEqual(a[key], b[key]));
   }
-  
+
   return false;
 };
 
@@ -139,7 +139,8 @@ export const isEqual = (a: any, b: any): boolean => {
  * Create a safe string for use in IDs or classes
  */
 export const sanitizeString = (str: string): string => {
-  return str.toLowerCase()
+  return str
+    .toLowerCase()
     .replace(/[^a-z0-9]/g, '-')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
@@ -151,7 +152,7 @@ export const sanitizeString = (str: string): string => {
 export const getViewportDimensions = (): Dimensions => {
   return {
     width: Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0),
-    height: Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
+    height: Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0),
   };
 };
 
@@ -165,13 +166,13 @@ export const findOptimalPosition = (
 ): Position => {
   const gridSize = 20; // Snap to grid
   const padding = 10;
-  
+
   for (let y = padding; y < containerBounds.height - dimensions.height; y += gridSize) {
     for (let x = padding; x < containerBounds.width - dimensions.width; x += gridSize) {
       const position = { x, y };
-      
+
       // Check for overlaps
-      const hasOverlap = existingWidgets.some(widget => {
+      const hasOverlap = existingWidgets.some((widget) => {
         return !(
           position.x >= widget.position.x + widget.dimensions.width ||
           position.x + dimensions.width <= widget.position.x ||
@@ -179,16 +180,16 @@ export const findOptimalPosition = (
           position.y + dimensions.height <= widget.position.y
         );
       });
-      
+
       if (!hasOverlap) {
         return position;
       }
     }
   }
-  
+
   // Fallback to random position if no optimal position found
   return {
     x: Math.random() * Math.max(0, containerBounds.width - dimensions.width),
-    y: Math.random() * Math.max(0, containerBounds.height - dimensions.height)
+    y: Math.random() * Math.max(0, containerBounds.height - dimensions.height),
   };
 };

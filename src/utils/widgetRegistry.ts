@@ -1,4 +1,12 @@
-import { LiveClockProps, QuickActionButtonsProps, BackgroundManagerProps, GitHubWidgetProps, WebsiteCounterProps, LocaleWidgetProps, WidgetType } from '../types/common';
+import {
+  LiveClockProps,
+  QuickActionButtonsProps,
+  BackgroundManagerProps,
+  GitHubWidgetProps,
+  WebsiteCounterProps,
+  LocaleWidgetProps,
+  WidgetType,
+} from '../types/common';
 import LiveClock from '../components/LiveClock';
 import QuickActionButtons from '../components/QuickActionButtons';
 import BackgroundManager from '../components/BackgroundManager';
@@ -36,7 +44,7 @@ export class WidgetRegistry {
         showTime: true,
         showDate: false,
         showTimeZone: false,
-      }
+      },
     });
 
     this.register<QuickActionButtonsProps>({
@@ -58,7 +66,7 @@ export class WidgetRegistry {
             label: 'MyBroadband',
             url: 'https://mybroadband.co.za/',
           },
-        ]
+        ],
       },
     });
 
@@ -69,8 +77,7 @@ export class WidgetRegistry {
       description: 'Upload and manage custom background images',
       component: BackgroundManager,
       defaultDimensions: { width: 320, height: 320 },
-      defaultProps: {
-      },
+      defaultProps: {},
     });
 
     this.register<GitHubWidgetProps>({
@@ -94,7 +101,7 @@ export class WidgetRegistry {
       component: WebsiteCounter,
       defaultDimensions: { width: 350, height: 300 },
       defaultProps: {
-        websites: ['google.com', 'github.com', 'mybroadband.co.za'].map(url => {
+        websites: ['google.com', 'github.com', 'mybroadband.co.za'].map((url) => {
           const hostname = url.replace('www.', '');
           return {
             url,
@@ -142,24 +149,26 @@ export class WidgetRegistry {
   }
 
   public getAvailable(): WidgetType[] {
-    return this.getAll().filter(widget => widget.component);
+    return this.getAll().filter((widget) => widget.component);
   }
 
   public getComponentByName(name: string): React.ComponentType<any> | undefined {
-    const widget = Array.from(this.widgets.values()).find(w => w.component.name === name);
+    const widget = Array.from(this.widgets.values()).find((w) => w.component.name === name);
     return widget?.component;
   }
 
   public findByComponentName(componentName: string): WidgetType | undefined {
-    return Array.from(this.widgets.values()).find(widget => {
+    return Array.from(this.widgets.values()).find((widget) => {
       // Check direct name and displayName
-      return widget.component.name === componentName || widget.component.displayName === componentName;
+      return (
+        widget.component.name === componentName || widget.component.displayName === componentName
+      );
     });
   }
 
   public createComponentMap(): Record<string, React.ComponentType<any>> {
     const map: Record<string, React.ComponentType<any>> = {};
-    this.widgets.forEach(widget => {
+    this.widgets.forEach((widget) => {
       // Use multiple keys for better matching
       const componentName = widget.component.name || widget.component.displayName || widget.id;
       map[componentName] = widget.component;
@@ -172,7 +181,7 @@ export class WidgetRegistry {
         map[widget.component.displayName] = widget.component;
       }
     });
-    
+
     console.log('Created component map with keys:', Object.keys(map));
     return map;
   }
@@ -190,10 +199,10 @@ function getBrowserLanguage(): string {
   try {
     // Primary method: Use navigator.language
     const browserLang = navigator.language.split('-')[0]; // Get language code without region
-    
+
     // Available locales in our app - update this when adding new locales
     const availableLocales = ['en', 'af'];
-    
+
     if (availableLocales.includes(browserLang)) {
       return browserLang;
     }
@@ -224,7 +233,7 @@ function getBrowserRegion(): string {
     // Fallback method: Use Date.toLocaleString with timezone option
     const date = new Date();
     const timeZoneGuess = date.toLocaleString('en', { timeZoneName: 'long' }).split(' ').pop();
-    
+
     // Map common timezone abbreviations to IANA identifiers
     const timezoneMap: Record<string, string> = {
       'Eastern Standard Time': 'America/New_York',
@@ -257,17 +266,17 @@ function getBrowserRegion(): string {
     // Another fallback: Use timezone offset to guess region
     const offset = new Date().getTimezoneOffset();
     const offsetMap: Record<number, string> = {
-      480: 'America/Los_Angeles',   // UTC-8
-      420: 'America/Denver',        // UTC-7
-      360: 'America/Chicago',       // UTC-6
-      300: 'America/New_York',      // UTC-5
-      0: 'Europe/London',           // UTC+0
-      [-60]: 'Europe/Berlin',       // UTC+1
-      [-120]: 'Europe/Helsinki',    // UTC+2
-      [-480]: 'Asia/Shanghai',      // UTC+8
-      [-540]: 'Asia/Tokyo',         // UTC+9
-      [-330]: 'Asia/Kolkata',       // UTC+5:30
-      [-600]: 'Australia/Sydney',   // UTC+10
+      480: 'America/Los_Angeles', // UTC-8
+      420: 'America/Denver', // UTC-7
+      360: 'America/Chicago', // UTC-6
+      300: 'America/New_York', // UTC-5
+      0: 'Europe/London', // UTC+0
+      [-60]: 'Europe/Berlin', // UTC+1
+      [-120]: 'Europe/Helsinki', // UTC+2
+      [-480]: 'Asia/Shanghai', // UTC+8
+      [-540]: 'Asia/Tokyo', // UTC+9
+      [-330]: 'Asia/Kolkata', // UTC+5:30
+      [-600]: 'Australia/Sydney', // UTC+10
     };
 
     if (offsetMap[offset]) {
