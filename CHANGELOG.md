@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.0 (2025-10-03)
+
+
+### Features
+
+* Add internationalization (i18n) support ([cb8af85](https://github.com/Ruandv/Quantum-Tab/commit/cb8af85b4a81d763a0b6079ffc83c2cbc188b280))
+* add LocaleWidget for language/locale selection ([f31b8c8](https://github.com/Ruandv/Quantum-Tab/commit/f31b8c8c398ac4b8432cfa444cd47b496486e7a2))
+* Add QuickActionButtonItem component and integrate into QuickActionButtons ([0e1c3c3](https://github.com/Ruandv/Quantum-Tab/commit/0e1c3c394775dc29f3c344e73b01c4ff2379e049))
+* add Spanish localization support and update available languages in LocaleWidget ([6d118df](https://github.com/Ruandv/Quantum-Tab/commit/6d118df5e50b440a43229d956c45158bd3e86df4))
+* added websitecounter ([70484a5](https://github.com/Ruandv/Quantum-Tab/commit/70484a5131b5cbebe3a7c55fb8204e07be3312f5))
+* complete internationalization (i18n) implementation ([0864eb8](https://github.com/Ruandv/Quantum-Tab/commit/0864eb852f8123abf97374142a56da1699a36580))
+* Enhance component functionality with isLocked prop ([3f2f3ab](https://github.com/Ruandv/Quantum-Tab/commit/3f2f3ab0cfdb517d155754f4613fa2335f156422))
+* enhance LocaleWidget functionality and modernize README ([8fcee94](https://github.com/Ruandv/Quantum-Tab/commit/8fcee940d8aabfbb91b1e7deb7426ff5aab71de0))
+* enhance LocaleWidget with custom dropdown and outside click handling ([9f7f327](https://github.com/Ruandv/Quantum-Tab/commit/9f7f3273f8a2bff849660428dafaf3a980e3e548))
+* Enhance widget management and dashboard layout ([4db9c92](https://github.com/Ruandv/Quantum-Tab/commit/4db9c929d0a279b61092bfa288080a1693c6f014))
+* implement widget removal event system and cleanup logic ([01317fc](https://github.com/Ruandv/Quantum-Tab/commit/01317fcbbdca172c03579118551f29db08ce5e1f))
+* Implement widget update functionality and enhance QuickActionButtons ([c9a4fbb](https://github.com/Ruandv/Quantum-Tab/commit/c9a4fbb8a740968dd052c7e22d0b354851373121))
+* Integrate GitHub Widget and enhance background service for pull requests ([a2d89cd](https://github.com/Ruandv/Quantum-Tab/commit/a2d89cd2f2d99ed1ae578e0e407832b7fca619ff))
+* new templates ([#16](https://github.com/Ruandv/Quantum-Tab/issues/16)) ([6cc2b22](https://github.com/Ruandv/Quantum-Tab/commit/6cc2b2238b64921caff0a00c04e9228d54f3a50a))
+* Refactor background service and GitHub API handler for improved logging and performance ([b3f870a](https://github.com/Ruandv/Quantum-Tab/commit/b3f870aa15172874d9c17b0568aec38712459a7c))
+* Refactor NewTab component with improved widget management and storage handling ([9805069](https://github.com/Ruandv/Quantum-Tab/commit/9805069d5657e2f5621d0eeb32822a306a807182))
+* Replace hardcoded date/time names with Intl API in LiveClock ([9552e12](https://github.com/Ruandv/Quantum-Tab/commit/9552e12446ff1865684d369ac398c42497fc919c))
+* simplify locale flag display in LocaleWidget ([7388db1](https://github.com/Ruandv/Quantum-Tab/commit/7388db1bc136bf42018d81f97f97e3b9deb661bf))
+
+
+### Bug Fixes
+
+* enable proper Afrikaans locale switching in LocaleWidget ([3df5f31](https://github.com/Ruandv/Quantum-Tab/commit/3df5f317fd65189526d09d349c2d284118f729c8))
+* resolve React hooks order violation in BackgroundManager lock/unlock ([d5e46b3](https://github.com/Ruandv/Quantum-Tab/commit/d5e46b3ee7e2b8bf47a5c1aa9e6a11ac29b85b4c))
+* resolve React Hooks violation and translation interpolation issues ([274ea24](https://github.com/Ruandv/Quantum-Tab/commit/274ea2406d7af46c8b8afd31dcf4fa58a6e9623b))
+* resolve React hooks violation causing error [#311](https://github.com/Ruandv/Quantum-Tab/issues/311) on first tab load ([e1f00dc](https://github.com/Ruandv/Quantum-Tab/commit/e1f00dc9e93f79a31668d54311e0f0df7b7665c1))
+* Restore widgetRegistry.ts with clean content (no sensitive tokens) ([ed5852c](https://github.com/Ruandv/Quantum-Tab/commit/ed5852c86067758eddc510c8bc3b99ae75ff1428))
+* update widget IDs and component names for consistency in NewTab ([9673946](https://github.com/Ruandv/Quantum-Tab/commit/96739464b008980e2e303b94bf83f0be280809e5))
+
 ## [1.0.0] - 2025-10-03
 
 ### ✨ Features
