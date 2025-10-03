@@ -292,7 +292,11 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                     <div className="form-section">
                                         <h3>{t('widgetManager.modal.sections.chooseType')}</h3>
                                         <div className="widget-types">
-                                            {availableWidgets.map(renderWidgetTypeCard)}
+                                            {availableWidgets.map((widgetType) => (
+                                                <React.Fragment key={widgetType.id}>
+                                                    {renderWidgetTypeCard(widgetType)}
+                                                </React.Fragment>
+                                            ))}
                                         </div>
                                     </div>)}
 
