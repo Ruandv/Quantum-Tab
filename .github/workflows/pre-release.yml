@@ -1,0 +1,90 @@
+name: 🧪 CI/CD Pipeline
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, develop, feature/*]
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔄 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install Dependencies
+        run: npm ci
+
+      - name: 🔍 Type Check
+        run: npm run type-check
+
+      - name: 🧹 Lint Code
+        run: npm run lint
+
+      - name: ✨ Format Check
+        run: npm run format -- --check
+
+      - name: 🏗️ Test Build
+        run: npm run build
+
+      - name: 🔍 Validate Extension
+        run: |
+          # Validate manifest.json exists and has correct structure
+          if [ -f "dist/manifest.json" ]; then
+            node -e "
+              const fs = require('fs');
+              const manifest = JSON.parse(fs.readFileSync('dist/manifest.json', 'utf8'));
+              
+              // Validate required fields
+              if (!manifest.manifest_version) throw new Error('Missing manifest_version');
+              if (!manifest.name) throw new Error('Missing name');
+              if (!manifest.version) throw new Error('Missing version');
+              if (!manifest.description) throw new Error('Missing description');
+              
+              console.log('✅ Manifest validation passed');
+              console.log('📋 Extension Details:');
+              console.log('   Name:', manifest.name);
+              console.log('   Version:', manifest.version);  
+              console.log('   Manifest Version:', manifest.manifest_version);
+            "
+          else
+            echo "❌ dist/manifest.json not found"
+            exit 1
+          fi
+
+      - name: 📦 Create Test Package
+        if: github.event_name == 'pull_request'
+        run: |
+          cd dist
+          zip -r ../test-build.zip .
+          cd ..
+          echo "📦 Test package size: $(du -h test-build.zip | cut -f1)"
+
+      - name: 📤 Upload Build Artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: quantum-tab-test-build-${{ github.sha }}
+          path: test-build.zip
+          retention-days: 7
+
+      - name: 📊 PR Summary
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "## ✅ Build Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All quality checks passed:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ TypeScript compilation" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ ESLint checks" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Prettier formatting" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Extension build" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Manifest validation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📦 Test build artifact has been uploaded for manual testing." >> $GITHUB_STEP_SUMMARY
