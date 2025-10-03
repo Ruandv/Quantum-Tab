@@ -3,7 +3,7 @@ import { BackgroundMessage, BackgroundResponse } from '../types/common';
 import { GitHubService } from '../services/githubService';
 
 // Listen for extension installation or startup
-chrome.runtime.onInstalled.addListener((details) => {
+chrome.runtime.onInstalled.addListener((_details) => {
   // Set up initial state or perform initialization tasks
   chrome.storage.sync.set({
     extensionInstalled: true,
@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     handleGitHubApiRequest(message, sendResponse);
     return true; // Keep message channel open for async response
   }
-  
+
   switch (message.action) {
     case 'getTabInfo':
       if (sender.tab) {
@@ -34,7 +34,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
       }
       break;
-      
+
     case 'updateBadge':
       if (sender.tab && message.text) {
         chrome.action.setBadgeText({
@@ -52,13 +52,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       // Handle page loaded notifications from content script
       sendResponse({ success: true });
       break;
-      
+
     default:
       console.warn('Unknown action:', message.action);
       console.warn('Available actions: getTabInfo, updateBadge, pageLoaded, fetchPullRequests');
       sendResponse({ error: 'Unknown action' });
   }
-  
+
   // Return true to indicate we want to send an asynchronous response
   return true;
 });
@@ -77,12 +77,15 @@ chrome.action.onClicked.addListener((tab) => {
 });
 
 // Listen for storage changes
-chrome.storage.onChanged.addListener((changes, namespace) => {
+chrome.storage.onChanged.addListener((_changes, _namespace) => {
   // Handle storage changes if needed
 });
 
 // GitHub API handler
-const handleGitHubApiRequest = async (message: BackgroundMessage, sendResponse: (response: BackgroundResponse) => void) => {
+const handleGitHubApiRequest = async (
+  message: BackgroundMessage,
+  sendResponse: (response: BackgroundResponse) => void
+) => {
   if (message.action !== 'fetchPullRequests') {
     sendResponse({ action: 'fetchPullRequests', success: false, error: 'Invalid action' });
     return;
@@ -95,7 +98,7 @@ const handleGitHubApiRequest = async (message: BackgroundMessage, sendResponse: 
     sendResponse({
       action: 'fetchPullRequests',
       success: false,
-      error: 'GitHub Personal Access Token is required'
+      error: 'GitHub Personal Access Token is required',
     });
     return;
   }
@@ -104,7 +107,7 @@ const handleGitHubApiRequest = async (message: BackgroundMessage, sendResponse: 
     sendResponse({
       action: 'fetchPullRequests',
       success: false,
-      error: 'Repository URL is required'
+      error: 'Repository URL is required',
     });
     return;
   }
@@ -121,37 +124,33 @@ const handleGitHubApiRequest = async (message: BackgroundMessage, sendResponse: 
     sendResponse({
       action: 'fetchPullRequests',
       success: true,
-      data: pullRequests
+      data: pullRequests,
     });
-
   } catch (error) {
     console.error('GitHub API request failed:', error);
-    
+
     let errorMessage = 'Failed to fetch pull requests';
-    
+
     if (error instanceof Error) {
       errorMessage = error.message;
-      
+
       // Provide more helpful error messages for common issues
       if (error.message.includes('401')) {
         errorMessage = 'Invalid GitHub token. Please check your Personal Access Token.';
       } else if (error.message.includes('404')) {
-        errorMessage = 'Repository not found. Please check the repository URL and token permissions.';
+        errorMessage =
+          'Repository not found. Please check the repository URL and token permissions.';
       } else if (error.message.includes('403')) {
         errorMessage = 'Access forbidden. Check your token permissions or rate limit.';
       }
     }
-    
+
     sendResponse({
       action: 'fetchPullRequests',
       success: false,
-      error: errorMessage
+      error: errorMessage,
     });
   }
 };
 
-// Utility function to log errors
-const logError = (error: Error, context: string) => {
-  console.error(`Error in ${context}:`, error);
-  // You could send this to an analytics service or error tracking
-};
+// Utility functions can be added here as needed

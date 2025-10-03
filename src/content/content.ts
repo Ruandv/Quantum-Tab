@@ -8,24 +8,26 @@ async function trackWebsiteVisit(): Promise<void> {
   try {
     const hostname = window.location.hostname.replace('www.', '');
     const url = window.location.href;
-    
+
     // Get current website counters
     const result = await chrome.storage.local.get('websiteCounters');
     const websiteCounters = result.websiteCounters || [];
-    
+
     // Find if this website is being tracked
     const existingIndex = websiteCounters.findIndex((site: any) => site.hostname === hostname);
-    
+
     if (existingIndex !== -1) {
       // Update existing counter
       websiteCounters[existingIndex].count += 1;
       websiteCounters[existingIndex].lastVisited = Date.now();
       websiteCounters[existingIndex].url = url; // Update to latest URL
-      
+
       // Save updated counters - this will trigger the storage listener in WebsiteCounter component
       await chrome.storage.local.set({ websiteCounters });
-      
-      console.log(`Website visit tracked: ${hostname} (${websiteCounters[existingIndex].count} visits)`);
+
+      console.log(
+        `Website visit tracked: ${hostname} (${websiteCounters[existingIndex].count} visits)`
+      );
     }
   } catch (error) {
     console.error('Failed to track website visit:', error);
@@ -38,14 +40,14 @@ trackWebsiteVisit();
 // Listen for messages from popup or background script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('Content script received message:', message);
-  
+
   switch (message.action) {
     case 'showMessage':
       showNotification(message.message);
       sendResponse({ success: true, action: 'showMessage' });
       break;
-      
-    case 'getPageInfo':
+
+    case 'getPageInfo': {
       const pageInfo = {
         title: document.title,
         url: window.location.href,
@@ -53,19 +55,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       };
       sendResponse({ success: true, data: pageInfo });
       break;
-      
+    }
+
     case 'highlightText':
       if (message.text) {
         highlightTextOnPage(message.text);
         sendResponse({ success: true, action: 'highlightText' });
       }
       break;
-      
+
     default:
       console.log('Unknown action:', message.action);
       sendResponse({ error: 'Unknown action' });
   }
-  
+
   return true; // Indicates we want to send an asynchronous response
 });
 
@@ -76,7 +79,7 @@ function showNotification(message: string): void {
   if (existingNotification) {
     existingNotification.remove();
   }
-  
+
   // Create notification element
   const notification = document.createElement('div');
   notification.id = 'quantum-tab-notification';
@@ -95,9 +98,9 @@ function showNotification(message: string): void {
     max-width: 300px;
     animation: slideInRight 0.3s ease-out;
   `;
-  
+
   notification.textContent = message;
-  
+
   // Add animation keyframes to the page if not already present
   if (!document.getElementById('quantum-tab-styles')) {
     const styles = document.createElement('style');
@@ -126,9 +129,9 @@ function showNotification(message: string): void {
     `;
     document.head.appendChild(styles);
   }
-  
+
   document.body.appendChild(notification);
-  
+
   // Auto-remove after 3 seconds with animation
   setTimeout(() => {
     notification.style.animation = 'slideOutRight 0.3s ease-out';
@@ -144,36 +147,35 @@ function showNotification(message: string): void {
 function highlightTextOnPage(searchText: string): void {
   // Remove existing highlights
   removeExistingHighlights();
-  
+
   if (!searchText.trim()) return;
-  
-  const walker = document.createTreeWalker(
-    document.body,
-    NodeFilter.SHOW_TEXT,
-    null
-  );
-  
+
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+
   const textNodes: Text[] = [];
   let node;
-  
-  while (node = walker.nextNode()) {
+
+  while ((node = walker.nextNode())) {
     textNodes.push(node as Text);
   }
-  
+
   textNodes.forEach((textNode) => {
     const parent = textNode.parentNode;
     if (!parent || parent.nodeName === 'SCRIPT' || parent.nodeName === 'STYLE') {
       return;
     }
-    
+
     const text = textNode.textContent || '';
     const regex = new RegExp(`(${escapeRegExp(searchText)})`, 'gi');
-    
+
     if (regex.test(text)) {
-      const highlightedHTML = text.replace(regex, '<mark style="background-color: yellow; color: black;">$1</mark>');
+      const highlightedHTML = text.replace(
+        regex,
+        '<mark style="background-color: yellow; color: black;">$1</mark>'
+      );
       const wrapper = document.createElement('span');
       wrapper.innerHTML = highlightedHTML;
-      
+
       parent.replaceChild(wrapper, textNode);
     }
   });

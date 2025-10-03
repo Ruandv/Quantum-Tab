@@ -17,90 +17,97 @@ interface ResizableWidgetProps {
 
 type ResizeDirection = 'n' | 's' | 'e' | 'w' | 'ne' | 'nw' | 'se' | 'sw';
 
-const ResizableWidget: React.FC<ResizableWidgetProps> = ({
-  id,
+export const ResizableWidget: React.FC<ResizableWidgetProps> = ({
   children,
-  initialWidth = 300,
-  initialHeight = 200,
-  minWidth = 150,
-  minHeight = 100,
-  maxWidth = 1800,
-  maxHeight = 1600,
+  id: _id,
+  initialWidth = 400,
+  initialHeight = 300,
+  minWidth = 200,
+  minHeight = 150,
+  maxWidth = 800,
+  maxHeight = 600,
   onResize,
   isResizable = true,
-  className = '',
+  className
 }) => {
+
   const [width, setWidth] = useState(initialWidth);
   const [height, setHeight] = useState(initialHeight);
   const [isResizing, setIsResizing] = useState(false);
-  const [resizeDirection, setResizeDirection] = useState<ResizeDirection | null>(null);
-  
+    const [, setResizeDirection] = useState<string | null>(null);
+
   const widgetRef = useRef<HTMLDivElement>(null);
   const startPos = useRef({ x: 0, y: 0 });
   const startSize = useRef({ width: 0, height: 0 });
 
   // Calculate proportional text sizes based on current dimensions
   const textSizes = useWidgetTextSizes({ width, height });
-  
+
   // Combine custom properties with existing styles
-  const widgetStyles = useMemo(() => ({
-    width: `${width}px`,
-    height: `${height}px`,
-    position: 'relative' as const,
-    minWidth: `${minWidth}px`,
-    minHeight: `${minHeight}px`,
-    maxWidth: `${maxWidth}px`,
-    maxHeight: `${maxHeight}px`,
-    ...textSizes.allCssProperties
-  }), [width, height, minWidth, minHeight, maxWidth, maxHeight, textSizes.allCssProperties]);
+  const widgetStyles = useMemo(
+    () => ({
+      width: `${width}px`,
+      height: `${height}px`,
+      position: 'relative' as const,
+      minWidth: `${minWidth}px`,
+      minHeight: `${minHeight}px`,
+      maxWidth: `${maxWidth}px`,
+      maxHeight: `${maxHeight}px`,
+      ...textSizes.allCssProperties,
+    }),
+    [width, height, minWidth, minHeight, maxWidth, maxHeight, textSizes.allCssProperties]
+  );
 
-  const handleMouseDown = useCallback((e: React.MouseEvent, direction: ResizeDirection) => {
-    if (!isResizable) return;
-    
-    e.preventDefault();
-    e.stopPropagation();
-    
-    setIsResizing(true);
-    setResizeDirection(direction);
-    startPos.current = { x: e.clientX, y: e.clientY };
-    startSize.current = { width, height };
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent, direction: ResizeDirection) => {
+      if (!isResizable) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const deltaX = e.clientX - startPos.current.x;
-      const deltaY = e.clientY - startPos.current.y;
-      
-      let newWidth = startSize.current.width;
-      let newHeight = startSize.current.height;
+      e.preventDefault();
+      e.stopPropagation();
 
-      // Calculate new dimensions based on resize direction
-      if (direction.includes('e')) {
-        newWidth = Math.max(minWidth, Math.min(maxWidth, startSize.current.width + deltaX));
-      }
-      if (direction.includes('w')) {
-        newWidth = Math.max(minWidth, Math.min(maxWidth, startSize.current.width - deltaX));
-      }
-      if (direction.includes('s')) {
-        newHeight = Math.max(minHeight, Math.min(maxHeight, startSize.current.height + deltaY));
-      }
-      if (direction.includes('n')) {
-        newHeight = Math.max(minHeight, Math.min(maxHeight, startSize.current.height - deltaY));
-      }
+      setIsResizing(true);
+      setResizeDirection(direction);
+      startPos.current = { x: e.clientX, y: e.clientY };
+      startSize.current = { width, height };
 
-      setWidth(newWidth);
-      setHeight(newHeight);
-      onResize?.({ width: newWidth, height: newHeight });
-    };
+      const handleMouseMove = (e: MouseEvent) => {
+        const deltaX = e.clientX - startPos.current.x;
+        const deltaY = e.clientY - startPos.current.y;
 
-    const handleMouseUp = () => {
-      setIsResizing(false);
-      setResizeDirection(null);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
+        let newWidth = startSize.current.width;
+        let newHeight = startSize.current.height;
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  }, [width, height, isResizable, minWidth, minHeight, maxWidth, maxHeight, onResize]);
+        // Calculate new dimensions based on resize direction
+        if (direction.includes('e')) {
+          newWidth = Math.max(minWidth, Math.min(maxWidth, startSize.current.width + deltaX));
+        }
+        if (direction.includes('w')) {
+          newWidth = Math.max(minWidth, Math.min(maxWidth, startSize.current.width - deltaX));
+        }
+        if (direction.includes('s')) {
+          newHeight = Math.max(minHeight, Math.min(maxHeight, startSize.current.height + deltaY));
+        }
+        if (direction.includes('n')) {
+          newHeight = Math.max(minHeight, Math.min(maxHeight, startSize.current.height - deltaY));
+        }
+
+        setWidth(newWidth);
+        setHeight(newHeight);
+        onResize?.({ width: newWidth, height: newHeight });
+      };
+
+      const handleMouseUp = () => {
+        setIsResizing(false);
+        setResizeDirection(null);
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    },
+    [width, height, isResizable, minWidth, minHeight, maxWidth, maxHeight, onResize]
+  );
 
   const getResizeHandles = () => {
     if (!isResizable) return null;

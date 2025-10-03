@@ -1,7 +1,17 @@
 // Centralized type definitions for the entire application
 
 // Utility type to make all properties required except className, callback functions, and widgetId
-type RequiredProps<T> = Required<Omit<T, 'className' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange'>>;
+type RequiredProps<T> = Required<
+  Omit<
+    T,
+    | 'className'
+    | 'isLocked'
+    | 'widgetId'
+    | 'onBackgroundChange'
+    | 'onButtonsChange'
+    | 'onLocaleChange'
+  >
+>;
 
 export interface Position {
   x: number;
@@ -15,7 +25,7 @@ export interface Dimensions {
 
 export interface DashboardWidget {
   id: string;
-  allowMultiples:boolean;
+  allowMultiples: boolean;
   component: React.ComponentType<any>;
   props?: Record<string, any>;
   dimensions: Dimensions;
@@ -25,15 +35,15 @@ export interface DashboardWidget {
 export interface WidgetType<T = any> {
   id: string;
   name: string;
-  allowMultiples:boolean;
+  allowMultiples: boolean;
   description: string;
   component: React.ComponentType<T>;
   defaultDimensions: Dimensions;
   defaultProps: RequiredProps<T>;
 }
-interface DefaultWidgetProps{
-    isLocked: boolean;
-    widgetId?: string; // Optional widget ID for event handling
+interface DefaultWidgetProps {
+  isLocked: boolean;
+  widgetId?: string; // Optional widget ID for event handling
 }
 
 export interface SavedData {
@@ -161,7 +171,7 @@ export type ResizeDirection = 'n' | 's' | 'e' | 'w' | 'ne' | 'nw' | 'se' | 'sw';
 export const STORAGE_KEYS = {
   WIDGETS: 'quantum-tab-widgets',
   BACKGROUND: 'quantum-tab-background',
-  LOCK_STATE: 'quantum-tab-lock-state'
+  LOCK_STATE: 'quantum-tab-lock-state',
 } as const;
 
 export const DEFAULT_WIDGET_CONSTRAINTS = {
@@ -170,12 +180,12 @@ export const DEFAULT_WIDGET_CONSTRAINTS = {
   MAX_WIDTH: 800,
   MAX_HEIGHT: 600,
   DEFAULT_WIDTH: 300,
-  DEFAULT_HEIGHT: 200
+  DEFAULT_HEIGHT: 200,
 } as const;
 
 export const FILE_UPLOAD_CONSTRAINTS = {
   MAX_SIZE: 5 * 1024 * 1024, // 5MB
-  ALLOWED_TYPES: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp']
+  ALLOWED_TYPES: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'],
 } as const;
 
 // GitHub API Types (based on GitHub REST API v2022-11-28)

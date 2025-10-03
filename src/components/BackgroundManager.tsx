@@ -8,7 +8,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   className = '',
   onBackgroundChange,
   isLocked,
-  widgetId
+  widgetId,
 }: BackgroundManagerProps) => {
   const { t } = useTranslation();
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -31,7 +31,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
           await chrome.storage.local.remove(['quantum-tab-background']);
           console.log('Background image storage cleared for widget:', widgetId);
         }
-        
+
         // Reset background to default if there's a callback
         if (onBackgroundChange) {
           onBackgroundChange('');
@@ -45,32 +45,35 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
     return removeListener;
   }, [widgetId, onBackgroundChange]);
 
-  const handleFileChange = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  const handleFileChange = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
 
-    setError(null);
+      setError(null);
 
-    // Validate file
-    const validation = validateImageFile(file);
-    if (!validation.isValid) {
-      setError(validation.error || t('backgroundManager.errors.invalidFile'));
-      return;
-    }
+      // Validate file
+      const validation = validateImageFile(file);
+      if (!validation.isValid) {
+        setError(validation.error || t('backgroundManager.errors.invalidFile'));
+        return;
+      }
 
-    setIsUploading(true);
+      setIsUploading(true);
 
-    try {
-      const imageUrl = await fileToDataURL(file);
-      setUploadedImage(imageUrl);
-      onBackgroundChange?.(imageUrl);
-    } catch (err) {
-      setError(t('backgroundManager.errors.failedToRead'));
-      console.error('File read error:', err);
-    } finally {
-      setIsUploading(false);
-    }
-  }, [onBackgroundChange, t]);
+      try {
+        const imageUrl = await fileToDataURL(file);
+        setUploadedImage(imageUrl);
+        onBackgroundChange?.(imageUrl);
+      } catch (err) {
+        setError(t('backgroundManager.errors.failedToRead'));
+        console.error('File read error:', err);
+      } finally {
+        setIsUploading(false);
+      }
+    },
+    [onBackgroundChange, t]
+  );
 
   const handleRemoveBackground = useCallback(() => {
     setUploadedImage(null);
@@ -177,15 +180,16 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
         )}
 
         {error && (
-          <div className="error-message" style={{ color: '#ff6b6b', fontSize: '0.8rem', marginTop: '0.5rem' }}>
+          <div
+            className="error-message"
+            style={{ color: '#ff6b6b', fontSize: '0.8rem', marginTop: '0.5rem' }}
+          >
             {error}
           </div>
         )}
       </div>
 
-      <div className="control-buttons">
-        {renderControls()}
-      </div>
+      <div className="control-buttons">{renderControls()}</div>
 
       <input
         type="file"
