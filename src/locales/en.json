@@ -39,6 +39,7 @@
         "chooseType": "Choose Widget Type",
         "dimensions": "Widget Dimensions",
         "position": "Initial Position",
+        "styling": "Widget Styling",
         "properties": "Additional Properties"
       }
     },
@@ -47,7 +48,25 @@
       "height": "Height",
       "xPosition": "X Position",
       "yPosition": "Y Position",
-      "unknownWidget": "{{unknown}} Widget"
+      "unknownWidget": "{{unknown}} Widget",
+      "border": "Border",
+      "radius": "Corner Radius",
+      "blur": "Background Blur",
+      "transparency": "Transparency",
+      "backgroundColor": "Background Color",
+      "red": "Red",
+      "green": "Green",
+      "blue": "Blue",
+      "textAlign": "Text Alignment",
+      "left": "Left",
+      "center": "Center",
+      "right": "Right",
+      "justify": "Content Justify",
+      "justifyStart": "Start",
+      "justifyCenter": "Center",
+      "justifyEnd": "End",
+      "justifyBetween": "Space Between",
+      "justifyAround": "Space Around"
     },
     "units": {
       "pixels": "px"

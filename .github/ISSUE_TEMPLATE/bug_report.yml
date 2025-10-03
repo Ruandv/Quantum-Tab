@@ -1,0 +1,60 @@
+name: 🐞 Bug Report
+description: File a bug report to help us improve
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the details below.
+  - type: input
+    id: summary
+    attributes:
+      label: Bug Summary
+      description: A short, clear description of the bug.
+      placeholder: "The extension crashes when..."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce the problem?
+      placeholder: |
+        1. Go to ...
+        2. Click on ...
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should have happened?
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+  - type: input
+    id: version
+    attributes:
+      label: Extension Version
+      description: Which version of the extension are you using?
+      placeholder: "e.g. 1.4.2"
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome
+        - Edge (not officially supported)
+        - Brave (not officially supported)
+        - Firefox (not officially supported)
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs / Screenshots
+      description: Please paste logs or add screenshots if possible.

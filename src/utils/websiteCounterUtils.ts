@@ -30,23 +30,27 @@ export const websiteCounterUtils = {
   }> {
     try {
       const websites = await this.getTrackedWebsites();
-      
+
       const totalVisits = websites.reduce((sum, site) => sum + site.count, 0);
       const totalWebsites = websites.length;
-      
-      const mostVisited = websites.length > 0 
-        ? websites.reduce((prev, current) => prev.count > current.count ? prev : current)
-        : null;
-      
-      const recentlyVisited = websites.length > 0
-        ? websites.reduce((prev, current) => prev.lastVisited > current.lastVisited ? prev : current)
-        : null;
+
+      const mostVisited =
+        websites.length > 0
+          ? websites.reduce((prev, current) => (prev.count > current.count ? prev : current))
+          : null;
+
+      const recentlyVisited =
+        websites.length > 0
+          ? websites.reduce((prev, current) =>
+              prev.lastVisited > current.lastVisited ? prev : current
+            )
+          : null;
 
       return {
         totalVisits,
         totalWebsites,
         mostVisited,
-        recentlyVisited
+        recentlyVisited,
       };
     } catch (error) {
       console.error('Failed to get counter stats:', error);
@@ -54,10 +58,10 @@ export const websiteCounterUtils = {
         totalVisits: 0,
         totalWebsites: 0,
         mostVisited: null,
-        recentlyVisited: null
+        recentlyVisited: null,
       };
     }
-  }
+  },
 };
 
 export default websiteCounterUtils;

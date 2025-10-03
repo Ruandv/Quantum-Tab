@@ -39,6 +39,7 @@
         "chooseType": "Kies Widget Tipe",
         "dimensions": "Widget Dimensies",
         "position": "Aanvanklike Posisie",
+        "styling": "Widget Styling",
         "properties": "Addisionele Eienskappe"
       }
     },
@@ -47,7 +48,25 @@
       "height": "Hoogte",
       "xPosition": "X Posisie",
       "yPosition": "Y Posisie",
-      "unknownWidget": "{{unknown}} Widget"
+      "unknownWidget": "{{unknown}} Widget",
+      "border": "Rand",
+      "radius": "Hoek Radius",
+      "blur": "Agtergrond Vervaag",
+      "transparency": "Deursigtigheid",
+      "backgroundColor": "Agtergrond Kleur",
+      "red": "Rooi",
+      "green": "Groen",
+      "blue": "Blou",
+      "textAlign": "Teksbelyning",
+      "left": "Links",
+      "center": "Middel",
+      "right": "Regs",
+      "justify": "Inhoud Justering",
+      "justifyStart": "Begin",
+      "justifyCenter": "Middel",
+      "justifyEnd": "Einde",
+      "justifyBetween": "Ruimte Tussen",
+      "justifyAround": "Ruimte Rondom"
     },
     "units": {
       "pixels": "px"
