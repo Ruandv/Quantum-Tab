@@ -8,11 +8,7 @@ import chromeStorage, { SerializedWidget } from '../utils/chromeStorage';
 import { widgetRegistry } from '../utils/widgetRegistry';
 import { debounce, getViewportDimensions } from '../utils/helpers';
 import { dispatchWidgetRemoval } from '../utils/widgetEvents';
-<<<<<<< Updated upstream
-=======
-import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 import NotificationManager from '../utils/notificationManager';
->>>>>>> Stashed changes
 
 const NewTab: React.FC = () => {
     const { t } = useTranslation();

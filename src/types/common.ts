@@ -12,7 +12,17 @@ export interface Dimensions {
   width: number;
   height: number;
 }
-
+export interface CssStyle {
+  border: number;
+  radius: number;
+  blur: number;
+  backgroundColorRed: number;
+  backgroundColorGreen: number;
+  backgroundColorBlue: number;
+  transparency: number;
+  alignment: 'left' | 'center' | 'right'
+  justify: 'flex-start' | 'center' | 'flex-end' | 'space-around' | 'space-between';
+}
 export interface DashboardWidget {
   id: string;
   allowMultiples:boolean;
@@ -161,7 +171,9 @@ export type ResizeDirection = 'n' | 's' | 'e' | 'w' | 'ne' | 'nw' | 'se' | 'sw';
 export const STORAGE_KEYS = {
   WIDGETS: 'quantum-tab-widgets',
   BACKGROUND: 'quantum-tab-background',
-  LOCK_STATE: 'quantum-tab-lock-state'
+  LOCK_STATE: 'quantum-tab-lock-state',
+  DEFAULT_STYLING: 'quantum-tab-default-styling',
+  DEFAULT_POSITION: 'quantum-tab-default-position',
 } as const;
 
 export const DEFAULT_WIDGET_CONSTRAINTS = {
