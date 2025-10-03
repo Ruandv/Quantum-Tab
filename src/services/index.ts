@@ -1,6 +1,6 @@
 /**
  *export { GitHubService } from './githubService';Services module - External API integrations
- * 
+ *
  * This module contains all services that make external API calls
  * to third-party providers, websites, or APIs.
  */

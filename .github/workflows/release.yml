@@ -1,0 +1,122 @@
+name: 🚀 Release Please
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: � Create Release PR or Release
+        uses: google-github-actions/release-please-action@v4
+        id: release
+        with:
+          release-type: node
+          config-file: .release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  build-and-package:
+    runs-on: ubuntu-latest
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    steps:
+      - name: 🔄 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install Dependencies
+        run: npm ci
+
+      - name: 🔍 Type Check
+        run: npm run type-check
+
+      - name: 🧹 Lint Code
+        run: npm run lint
+
+      - name: ✨ Format Check
+        run: npm run format -- --check
+
+      - name: 🏗️ Build Extension
+        run: npm run build
+
+      - name: 🔍 Verify Build Output
+        run: |
+          echo "📂 Build directory contents:"
+          ls -la dist/ || echo "⚠️ dist/ directory not found"
+          
+          if [ -f "dist/manifest.json" ]; then
+            echo "📄 Manifest.json content:"
+            cat dist/manifest.json
+            echo ""
+            echo "🔧 Verifying required files exist:"
+            test -f dist/manifest.json && echo "✅ manifest.json exists"
+            test -f dist/newtab.js && echo "✅ newtab.js exists" || echo "⚠️ newtab.js not found"
+            test -f dist/popup.js && echo "✅ popup.js exists" || echo "⚠️ popup.js not found"
+            test -f dist/background.js && echo "✅ background.js exists" || echo "⚠️ background.js not found"
+          else
+            echo "❌ manifest.json not found in dist/"
+            exit 1
+          fi
+
+      - name: 📦 Package Extension
+        id: package
+        run: |
+          # Get version from release
+          VERSION="${{ needs.release-please.outputs.version }}"
+          PACKAGE_NAME="Quantum_Tab-$(date +%y%m%d)_${VERSION}"
+          
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "package_name=${PACKAGE_NAME}" >> $GITHUB_OUTPUT
+          
+          # Create zip file for Chrome Web Store
+          cd dist
+          zip -r "../${PACKAGE_NAME}.zip" .
+          cd ..
+          
+          # Create source code archive
+          git archive --format=zip --prefix=quantum-tab-${VERSION}/ HEAD > "quantum-tab-source-${VERSION}.zip"
+          
+          echo "📦 Created packages:"
+          ls -la *.zip
+
+      - name: � Upload Release Assets
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.release-please.outputs.tag_name }}
+          files: |
+            ${{ steps.package.outputs.package_name }}.zip
+            quantum-tab-source-${{ needs.release-please.outputs.version }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📊 Build Summary
+        run: |
+          echo "## 🎉 Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version:** ${{ needs.release-please.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Package:** ${{ steps.package.outputs.package_name }}.zip" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag:** ${{ needs.release-please.outputs.tag_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build Status:** ✅ Success" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Files Created:" >> $GITHUB_STEP_SUMMARY
+          echo "- Chrome Extension Package: \`${{ steps.package.outputs.package_name }}.zip\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Source Code Archive: \`quantum-tab-source-${{ needs.release-please.outputs.version }}.zip\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Release:" >> $GITHUB_STEP_SUMMARY
+          echo "- [View Release](https://github.com/${{ github.repository }}/releases/tag/${{ needs.release-please.outputs.tag_name }})" >> $GITHUB_STEP_SUMMARY

@@ -9,7 +9,9 @@
     "lint": "eslint src/**/*.{ts,tsx} --fix",
     "format": "prettier --write src/**/*.{ts,tsx,css,html}",
     "type-check": "tsc --noEmit",
-    "publish": "npm version patch && npm run build && node scripts/create-zip.js"
+    "pre-release": "npm run type-check && npm run lint && npm run format && npm run build",
+    "commit": "git-cz",
+    "prepare": "husky install || true"
   },
   "keywords": [
     "chrome-extension",
@@ -31,8 +33,8 @@
     "@types/chrome": "^0.0.246",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
-    "@typescript-eslint/eslint-plugin": "^6.10.0",
-    "@typescript-eslint/parser": "^6.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.8.1",
     "eslint": "^8.53.0",

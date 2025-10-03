@@ -1,4 +1,4 @@
-import { QuickActionButtonsProps, ActionButton } from '@/types/common';
+import { QuickActionButtonsProps } from '@/types/common';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import QuickActionButtonItem from './QuickActionButtonItem';
@@ -6,22 +6,24 @@ import { addWidgetRemovalListener } from '../utils/widgetEvents';
 
 const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
   className = '',
-  buttons = [{
-    icon: '🐙',
-    label: 'GitHub',
-    url: 'https://github.com',
-  },
-  {
-    icon: '🗞️',
-    label: 'MyBroadband',
-    url: 'https://mybroadband.co.za/',
-  },],
+  buttons = [
+    {
+      icon: '🐙',
+      label: 'GitHub',
+      url: 'https://github.com',
+    },
+    {
+      icon: '🗞️',
+      label: 'MyBroadband',
+      url: 'https://mybroadband.co.za/',
+    },
+  ],
   isLocked,
   onButtonsChange,
-  widgetId
+  widgetId,
 }: QuickActionButtonsProps) => {
   const { t } = useTranslation();
-  
+
   const [showAddPopup, setShowAddPopup] = useState(false);
   const [newButton, setNewButton] = useState({ icon: '', label: '', url: '' });
 
@@ -42,9 +44,8 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
 
   const handleButtonClick = (url: string) => {
     if (!isLocked) {
-      alert(t('quickActionButtons.messages.editState'))
-    }
-    else {
+      alert(t('quickActionButtons.messages.editState'));
+    } else {
       window.open(url, '_blank');
     }
   };
@@ -59,8 +60,7 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
       onButtonsChange?.(updatedButtons);
       setNewButton({ icon: '', label: '', url: '' });
       setShowAddPopup(false);
-    }
-    else {
+    } else {
       alert(t('quickActionButtons.messages.validationError'));
     }
   };
@@ -90,7 +90,11 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
           />
         ))}
         {!isLocked && (
-          <button title={t('quickActionButtons.tooltips.add')} className="action-btn" onClick={handleAddButton}>
+          <button
+            title={t('quickActionButtons.tooltips.add')}
+            className="action-btn"
+            onClick={handleAddButton}
+          >
             <span className="btn-icon">➕</span>
             <span className="btn-label">{t('common.buttons.add')}</span>
           </button>
@@ -99,14 +103,8 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
 
       {/* Add Button Popup */}
       {showAddPopup && (
-        <div 
-          className="add-popup-overlay" 
-          onClick={handleCancelAdd}
-        >
-          <div 
-            className="add-popup" 
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div className="add-popup-overlay" onClick={handleCancelAdd}>
+          <div className="add-popup" onClick={(e) => e.stopPropagation()}>
             <h4>{t('quickActionButtons.popup.title')}</h4>
             <div className="form-group">
               <label>{t('quickActionButtons.popup.labels.icon')}</label>
@@ -165,21 +163,21 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
               />
             </div>
             <div className="popup-buttons">
-              <button 
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
                   handleSaveButton();
-                }} 
+                }}
                 className="save-btn"
                 style={{ pointerEvents: 'all' }}
               >
                 {t('common.buttons.save')}
               </button>
-              <button 
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
                   handleCancelAdd();
-                }} 
+                }}
                 className="cancel-btn"
                 style={{ pointerEvents: 'all' }}
               >

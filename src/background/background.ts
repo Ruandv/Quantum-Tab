@@ -3,7 +3,7 @@ import { BackgroundMessage, BackgroundResponse, STORAGE_KEYS } from '../types/co
 import { GitHubService } from '../services/githubService';
 import { defaultPosition, defaultStyle } from '@/types/defaults';
 // Listen for extension installation or startup
-chrome.runtime.onInstalled.addListener((details) => {
+chrome.runtime.onInstalled.addListener((_details) => {
   // Set up initial state or perform initialization tasks
   chrome.storage.sync.set({
     extensionInstalled: true,
@@ -90,12 +90,15 @@ chrome.action.onClicked.addListener((tab) => {
 });
 
 // Listen for storage changes
-chrome.storage.onChanged.addListener((changes, namespace) => {
+chrome.storage.onChanged.addListener((_changes, _namespace) => {
   // Handle storage changes if needed
 });
 
 // GitHub API handler
-const handleGitHubApiRequest = async (message: BackgroundMessage, sendResponse: (response: BackgroundResponse) => void) => {
+const handleGitHubApiRequest = async (
+  message: BackgroundMessage,
+  sendResponse: (response: BackgroundResponse) => void
+) => {
   if (message.action !== 'fetchPullRequests') {
     sendResponse({ action: 'fetchPullRequests', success: false, error: 'Invalid action' });
     return;
@@ -108,7 +111,7 @@ const handleGitHubApiRequest = async (message: BackgroundMessage, sendResponse: 
     sendResponse({
       action: 'fetchPullRequests',
       success: false,
-      error: 'GitHub Personal Access Token is required'
+      error: 'GitHub Personal Access Token is required',
     });
     return;
   }
@@ -117,7 +120,7 @@ const handleGitHubApiRequest = async (message: BackgroundMessage, sendResponse: 
     sendResponse({
       action: 'fetchPullRequests',
       success: false,
-      error: 'Repository URL is required'
+      error: 'Repository URL is required',
     });
     return;
   }
@@ -134,9 +137,8 @@ const handleGitHubApiRequest = async (message: BackgroundMessage, sendResponse: 
     sendResponse({
       action: 'fetchPullRequests',
       success: true,
-      data: pullRequests
+      data: pullRequests,
     });
-
   } catch (error) {
     console.error('GitHub API request failed:', error);
 
@@ -149,7 +151,8 @@ const handleGitHubApiRequest = async (message: BackgroundMessage, sendResponse: 
       if (error.message.includes('401')) {
         errorMessage = 'Invalid GitHub token. Please check your Personal Access Token.';
       } else if (error.message.includes('404')) {
-        errorMessage = 'Repository not found. Please check the repository URL and token permissions.';
+        errorMessage =
+          'Repository not found. Please check the repository URL and token permissions.';
       } else if (error.message.includes('403')) {
         errorMessage = 'Access forbidden. Check your token permissions or rate limit.';
       }
@@ -158,13 +161,9 @@ const handleGitHubApiRequest = async (message: BackgroundMessage, sendResponse: 
     sendResponse({
       action: 'fetchPullRequests',
       success: false,
-      error: errorMessage
+      error: errorMessage,
     });
   }
 };
 
-// Utility function to log errors
-const logError = (error: Error, context: string) => {
-  console.error(`Error in ${context}:`, error);
-  // You could send this to an analytics service or error tracking
-};
+// Utility functions can be added here as needed

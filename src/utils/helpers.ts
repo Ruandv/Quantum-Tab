@@ -29,7 +29,7 @@ export const constrainPosition = (
 
   return {
     x: clamp(position.x, 0, maxX),
-    y: clamp(position.y, 0, maxY)
+    y: clamp(position.y, 0, maxY),
   };
 };
 
@@ -57,7 +57,7 @@ export const validateImageFile = (file: File): { isValid: boolean; error?: strin
   if (!allowedTypes.includes(file.type)) {
     return {
       isValid: false,
-      error: `Invalid file type. Allowed types: ${allowedTypes.join(', ')}`
+      error: `Invalid file type. Allowed types: ${allowedTypes.join(', ')}`,
     };
   }
 
@@ -65,7 +65,7 @@ export const validateImageFile = (file: File): { isValid: boolean; error?: strin
     const maxSizeMB = FILE_UPLOAD_CONSTRAINTS.MAX_SIZE / (1024 * 1024);
     return {
       isValid: false,
-      error: `File size exceeds ${maxSizeMB}MB limit`
+      error: `File size exceeds ${maxSizeMB}MB limit`,
     };
   }
 
@@ -108,7 +108,7 @@ export const deepClone = <T>(obj: T): T => {
   if (Array.isArray(obj)) return obj.map(deepClone) as unknown as T;
 
   const clonedObj = {} as T;
-  Object.keys(obj).forEach(key => {
+  Object.keys(obj).forEach((key) => {
     clonedObj[key as keyof T] = deepClone(obj[key as keyof T]);
   });
 
@@ -139,7 +139,8 @@ export const isEqual = (a: any, b: any): boolean => {
  * Create a safe string for use in IDs or classes
  */
 export const sanitizeString = (str: string): string => {
-  return str.toLowerCase()
+  return str
+    .toLowerCase()
     .replace(/[^a-z0-9]/g, '-')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
@@ -151,7 +152,7 @@ export const sanitizeString = (str: string): string => {
 export const getViewportDimensions = (): Dimensions => {
   return {
     width: Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0),
-    height: Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
+    height: Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0),
   };
 };
 
@@ -171,7 +172,7 @@ export const findOptimalPosition = (
       const position = { x, y };
 
       // Check for overlaps
-      const hasOverlap = existingWidgets.some(widget => {
+      const hasOverlap = existingWidgets.some((widget) => {
         return !(
           position.x >= widget.position.x + widget.dimensions.width ||
           position.x + dimensions.width <= widget.position.x ||
@@ -189,14 +190,6 @@ export const findOptimalPosition = (
   // Fallback to random position if no optimal position found
   return {
     x: Math.random() * Math.max(0, containerBounds.width - dimensions.width),
-    y: Math.random() * Math.max(0, containerBounds.height - dimensions.height)
+    y: Math.random() * Math.max(0, containerBounds.height - dimensions.height),
   };
 };
-
-export const widgetHasBackgroundColours = (widget) => {
-  return widget.style &&
-    (widget.style.backgroundColorRed &&
-    widget.style.backgroundColorGreen &&
-    widget.style.backgroundColorBlue &&
-    widget.style.transparency);
-}

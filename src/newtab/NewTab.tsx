@@ -167,7 +167,7 @@ const NewTab: React.FC = () => {
                             ...widget,
                             component: restoredComponent,
                             // Ensure style property exists with defaults if missing
-                            style: widget.style ||defaultStyle
+                            style: widget.style || defaultStyle
                         };
                         return restoredWidget;
                     } catch (widgetError) {
@@ -260,12 +260,12 @@ const NewTab: React.FC = () => {
                     // Find the widget type ID for this component
                     const componentName = widget.component.name || widget.component.displayName || 'unknown';
                     console.log(`Saving widget ${widget.id}, component name: ${componentName}`);
-                    
+
                     const widgetType = widgetRegistry.findByComponentName(componentName);
                     const serializedComponent = widgetType?.id || componentName || 'LiveClock';
-                    
+
                     console.log(`Widget ${widget.id}: Found widgetType:`, widgetType?.name, 'Serializing as:', serializedComponent);
-                    
+
                     return {
                         id: widget.id,
                         allowMultiples: widgetType?.allowMultiples || false,
@@ -309,7 +309,7 @@ const NewTab: React.FC = () => {
     const handleRemoveWidget = useCallback((widgetId: string) => {
         // Dispatch the RemoveWidget event before removing the widget
         dispatchWidgetRemoval(widgetId);
-        
+
         // Remove the widget from state
         setWidgets(prev => prev.filter(w => w.id !== widgetId));
     }, []);
@@ -334,9 +334,10 @@ const NewTab: React.FC = () => {
         setIsLocked(prev => !prev);
     }, []);
 
-    // Show loading state
-    if (isLoading) {
-        return (
+
+
+    return (
+        isLoading ? (
             <div style={{
                 position: 'fixed',
                 top: 0,
@@ -352,11 +353,7 @@ const NewTab: React.FC = () => {
             }}>
                 {t('common.loading.dashboard')}
             </div>
-        );
-    }
-
-    return (
-        <div
+        ) : (<div
             className="newtab-container"
             style={{
                 backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
@@ -364,7 +361,7 @@ const NewTab: React.FC = () => {
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
                 minHeight: '100vh',
-                position: 'relative'
+                position: 'relative',
             }}
         >
             <div className="newtab-content">
@@ -398,15 +395,18 @@ const NewTab: React.FC = () => {
                             isLocked={isLocked}
                             onBackgroundChange={handleBackgroundChange}
                             onUpdateWidgetProps={(widgetId: string, newProps: any) => {
-                                setWidgets(prev => prev.map(w =>
-                                    w.id === widgetId ? { ...w, props: { ...w.props, ...newProps } } : w
-                                ));
+                                setWidgets((prev) =>
+                                    prev.map((w) =>
+                                        w.id === widgetId ? { ...w, props: { ...w.props, ...newProps } } : w
+                                    )
+                                );
                             }}
                         />
                     </div>
                 </main>
             </div>
-        </div>
+        </div >
+        )
     );
 };
 

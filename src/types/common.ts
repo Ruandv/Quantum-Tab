@@ -186,12 +186,12 @@ export const DEFAULT_WIDGET_CONSTRAINTS = {
   MAX_WIDTH: 800,
   MAX_HEIGHT: 600,
   DEFAULT_WIDTH: 300,
-  DEFAULT_HEIGHT: 200
+  DEFAULT_HEIGHT: 200,
 } as const;
 
 export const FILE_UPLOAD_CONSTRAINTS = {
   MAX_SIZE: 5 * 1024 * 1024, // 5MB
-  ALLOWED_TYPES: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp']
+  ALLOWED_TYPES: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'],
 } as const;
 
 // GitHub API Types (based on GitHub REST API v2022-11-28)

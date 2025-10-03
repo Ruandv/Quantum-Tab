@@ -9,7 +9,7 @@ const container = document.getElementById('root');
 
 if (container) {
   const root = createRoot(container);
-  
+
   // Wait for i18n to be initialized before rendering
   const renderApp = () => {
     root.render(
@@ -27,7 +27,7 @@ if (container) {
     i18n.on('initialized', () => {
       renderApp();
     });
-    
+
     // Fallback timeout in case initialization doesn't fire the event
     setTimeout(() => {
       if (!i18n.isInitialized) {

@@ -1,12 +1,12 @@
 import React from 'react';
-import { ActionButton, QuickActionButtonItemProps } from '@/types/common';
+import { QuickActionButtonItemProps } from '@/types/common';
 
 const QuickActionButtonItem: React.FC<QuickActionButtonItemProps> = ({
   button,
   index,
   isLocked,
   onButtonClick,
-  onRemoveButton
+  onRemoveButton,
 }) => {
   return (
     <div key={index} className="action-btn-container">
@@ -19,11 +19,7 @@ const QuickActionButtonItem: React.FC<QuickActionButtonItemProps> = ({
         <span className="btn-label">{button.label}</span>
       </button>
       {!isLocked && (
-        <button
-          className="remove-btn"
-          onClick={() => onRemoveButton(index)}
-          title="Remove button"
-        >
+        <button className="remove-btn" onClick={() => onRemoveButton(index)} title="Remove button">
           ×
         </button>
       )}

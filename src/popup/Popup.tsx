@@ -53,8 +53,12 @@ const Popup: React.FC = () => {
         <section className="tab-info">
           <h2>Current Tab</h2>
           <div className="tab-details">
-            <p><strong>Title:</strong> {currentTab.title || 'Unknown'}</p>
-            <p><strong>URL:</strong> {currentTab.url || 'Unknown'}</p>
+            <p>
+              <strong>Title:</strong> {currentTab.title || 'Unknown'}
+            </p>
+            <p>
+              <strong>URL:</strong> {currentTab.url || 'Unknown'}
+            </p>
           </div>
         </section>
 
