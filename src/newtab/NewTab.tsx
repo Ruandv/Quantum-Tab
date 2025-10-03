@@ -2,11 +2,17 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dashboard from '../components/Dashboard';
 import WidgetManager from '../components/WidgetManager';
+import UpdateNotification from '../components/UpdateNotification';
 import { DashboardWidget, Position, Dimensions } from '../types/common';
 import chromeStorage, { SerializedWidget } from '../utils/chromeStorage';
 import { widgetRegistry } from '../utils/widgetRegistry';
 import { debounce, getViewportDimensions } from '../utils/helpers';
 import { dispatchWidgetRemoval } from '../utils/widgetEvents';
+<<<<<<< Updated upstream
+=======
+import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
+import NotificationManager from '../utils/notificationManager';
+>>>>>>> Stashed changes
 
 const NewTab: React.FC = () => {
     const { t } = useTranslation();
@@ -64,6 +70,7 @@ const NewTab: React.FC = () => {
     const [isLocked, setIsLocked] = useState<boolean>(false);
     const [backgroundImage, setBackgroundImage] = useState<string>('');
     const [isLoading, setIsLoading] = useState(true);
+    const [showNotification, setShowNotification] = useState(false);
 
     // Load data from Chrome storage on component mount
     useEffect(() => {
@@ -86,6 +93,16 @@ const NewTab: React.FC = () => {
                 // Set background and lock state
                 setBackgroundImage(savedData.backgroundImage || '');
                 setIsLocked(savedData.isLocked || false);
+
+                // Check for pending notifications
+                chrome.storage.sync.get(['showWelcomeNotification', 'showUpdateNotification'], (result) => {
+                    if (result.showWelcomeNotification || result.showUpdateNotification) {
+                        setShowNotification(true);
+                    }
+                });
+
+                // Make NotificationManager available globally for testing
+                (window as any).NotificationManager = NotificationManager;
 
                 // Handle widgets - force fresh start if data looks corrupted
                 if (!savedData?.widgets?.length || savedData.widgets.some(w => !w.component)) {
@@ -441,6 +458,13 @@ const NewTab: React.FC = () => {
                     </div>
                 </main>
             </div>
+
+            {/* Update/Welcome Notification */}
+            {showNotification && (
+                <UpdateNotification 
+                    onDismiss={() => setShowNotification(false)}
+                />
+            )}
         </div>
     );
 };

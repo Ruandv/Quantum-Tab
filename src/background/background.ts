@@ -3,11 +3,58 @@ import { BackgroundMessage, BackgroundResponse } from '../types/common';
 import { GitHubService } from '../services/githubService';
 
 // Listen for extension installation or startup
+<<<<<<< Updated upstream
 chrome.runtime.onInstalled.addListener((details) => {
   // Set up initial state or perform initialization tasks
   chrome.storage.sync.set({
     extensionInstalled: true,
     installDate: new Date().toISOString(),
+=======
+chrome.runtime.onInstalled.addListener(async (details) => {
+  const currentVersion = chrome.runtime.getManifest().version;
+  const now = new Date().toISOString();
+
+  // Handle different installation scenarios
+  if (details.reason === 'install') {
+    // Fresh installation
+    await chrome.storage.sync.set({
+      extensionInstalled: true,
+      installDate: now,
+      lastVersion: currentVersion,
+      showWelcomeNotification: true,
+      notificationPending: {
+        type: 'install',
+        version: currentVersion,
+        timestamp: now
+      }
+    });
+  } else if (details.reason === 'update') {
+    // Extension was updated
+    const previousVersion = details.previousVersion || 'unknown';
+    await chrome.storage.sync.set({
+      lastVersion: currentVersion,
+      showUpdateNotification: true,
+      notificationPending: {
+        type: 'update',
+        version: currentVersion,
+        previousVersion: previousVersion,
+        timestamp: now
+      }
+    });
+  }
+
+  // Initialize default settings if they don't exist
+  chrome.storage.local.get([STORAGE_KEYS.DEFAULT_STYLING], (result) => {
+    if (!result.defaultPosition) {
+      chrome.storage.local.set({ [STORAGE_KEYS.DEFAULT_STYLING]: defaultStyle });
+    }
+  });
+
+  chrome.storage.local.get([STORAGE_KEYS.DEFAULT_POSITION], (result) => {
+    if (!result.defaultPosition) {
+      chrome.storage.local.set({ [STORAGE_KEYS.DEFAULT_POSITION]: defaultPosition });
+    }
+>>>>>>> Stashed changes
   });
 });
 

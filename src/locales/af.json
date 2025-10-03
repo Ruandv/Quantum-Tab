@@ -128,5 +128,27 @@
     "labels": {
       "language": "Koppelvlak Taal:"
     }
+  },
+  "notifications": {
+    "welcome": {
+      "title": "Welkom by Quantum Tab!",
+      "message": "Dankie dat jy Quantum Tab geïnstalleer het. Transformeer jou nuwe blad ervaring met intelligente widgets en aanpassing.",
+      "featuresTitle": "Wat jy kan doen:",
+      "features": {
+        "widgets": "Voeg interaktiewe widgets by jou dashboard",
+        "customization": "Pas kleure, posisies en styling aan",
+        "languages": "Ondersteuning vir veelvuldige tale",
+        "backgrounds": "Laai pasgemaakte agtergrond beelde op"
+      }
+    },
+    "update": {
+      "title": "Quantum Tab Opgedateer!",
+      "message": "Quantum Tab is opgedateer na weergawe {{version}}."
+    },
+    "buttons": {
+      "getStarted": "Begin",
+      "continue": "Gaan voort",
+      "viewChanges": "Bekyk Veranderinge"
+    }
   }
 }
