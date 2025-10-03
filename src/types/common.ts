@@ -1,7 +1,18 @@
 // Centralized type definitions for the entire application
 
 // Utility type to make all properties required except className, callback functions, and widgetId
-type RequiredProps<T> = Required<Omit<T, 'className' | 'buttons' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange'>>;
+type RequiredProps<T> = Required<
+  Omit<
+    T,
+    | 'className'
+    | 'buttons'
+    | 'isLocked'
+    | 'widgetId'
+    | 'onBackgroundChange'
+    | 'onButtonsChange'
+    | 'onLocaleChange'
+  >
+>;
 
 export interface Position {
   x: number;
@@ -20,7 +31,7 @@ export interface CssStyle {
   backgroundColorGreen: number;
   backgroundColorBlue: number;
   transparency: number;
-  alignment: 'left' | 'center' | 'right'
+  alignment: 'left' | 'center' | 'right';
   justify: 'flex-start' | 'center' | 'flex-end' | 'space-around' | 'space-between';
 }
 export interface DashboardWidget {
@@ -30,7 +41,7 @@ export interface DashboardWidget {
   props?: Record<string, any>;
   dimensions: Dimensions;
   position: Position;
-  style: CssStyle
+  style: CssStyle;
 }
 
 export interface WidgetType<T = any> {
@@ -175,10 +186,8 @@ export const STORAGE_KEYS = {
   LOCK_STATE: 'quantum-tab-lock-state',
   DEFAULT_STYLING: 'quantum-tab-default-styling',
   DEFAULT_POSITION: 'quantum-tab-default-position',
-  DEFAULT_DIMENSIONS: 'quantum-tab-default-dimensions'
+  DEFAULT_DIMENSIONS: 'quantum-tab-default-dimensions',
 } as const;
-
-
 
 export const DEFAULT_WIDGET_CONSTRAINTS = {
   MIN_WIDTH: 150,

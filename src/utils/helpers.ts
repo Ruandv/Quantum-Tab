@@ -129,7 +129,7 @@ export const isEqual = (a: any, b: any): boolean => {
 
     if (keysA.length !== keysB.length) return false;
 
-    return keysA.every(key => isEqual(a[key], b[key]));
+    return keysA.every((key) => isEqual(a[key], b[key]));
   }
 
   return false;

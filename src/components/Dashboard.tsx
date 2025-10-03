@@ -154,107 +154,122 @@ const Dashboard: React.FC<DashboardProps> = ({
     }
   }, [dragState.isDragging, handleMouseMove, handleMouseUp]);
 
-    const renderWidget = useCallback((widget: DashboardWidget, index: number) => {
-        const WidgetComponent = widget.component;
-        const isDragging = dragState.draggedWidgetId === widget.id;
+  const renderWidget = useCallback(
+    (widget: DashboardWidget, index: number) => {
+      const WidgetComponent = widget.component;
+      const isDragging = dragState.draggedWidgetId === widget.id;
 
-        // Safety check to prevent React error #130 - use a stable empty component
-        if (!WidgetComponent) {
-            console.error('Widget component is undefined for widget:', widget);
-            // Return a stable empty widget div instead of null to maintain consistent rendering
-            return (
-                <div 
-                    key={widget.id} 
-                    className="widget-wrapper error-widget"
-                    style={{
-                        position: 'absolute',
-                        left: `${widget.position.x}px`,
-                        top: `${widget.position.y}px`,
-                        width: `${widget.dimensions.width}px`,
-                        height: `${widget.dimensions.height}px`,
-                        border: '2px dashed red',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'red',
-                        fontSize: '12px'
-                    }}
-                >
-                    Error: Missing Component
-                </div>
-            );
-        }
- 
-        const isEmpty = emptyWidgets.has(widget.id);
-        const widgetStyles:CSSProperties = {
-            position: 'absolute',
-            left: `${widget.position.x}px`,
-            top: `${widget.position.y}px`,
-            zIndex: isDragging ? 1000 : 10 + index,
-            cursor: isLocked ? 'default' : 'move',
-            // ...(typeof widget.style.radius == 'number' && widget.style.radius > 0) ? { borderRadius: `${widget.style.radius}px` } : {},
-            // ...(typeof widget.style.border == 'number' && widget.style.border > 0) ? { border: `${widget.style.border}px solid` } : {}
-        };
-        
-        const widgetContentStyles:CSSProperties = {
-            display: 'flex',
-            alignItems: widget.style?.alignment || 'center',
-            justifyContent: widget.style?.justify || 'center',
-        }
+      // Safety check to prevent React error #130 - use a stable empty component
+      if (!WidgetComponent) {
+        console.error('Widget component is undefined for widget:', widget);
+        // Return a stable empty widget div instead of null to maintain consistent rendering
         return (
-            <div
-                key={widget.id}
-                ref={(el) => {
-                    if (el) {
-                        widgetRefs.current.set(widget.id, el);
-                    } else {
-                        widgetRefs.current.delete(widget.id);
-                    }
-                }}
-                className={`widget-wrapper ${isLocked ? 'locked' : 'editable'} ${isDragging ? 'dragging' : ''} ${isEmpty ? 'empty-widget' : ''}`}
-                style={widgetStyles}
-                onMouseDown={(e) => handleMouseDown(e, widget)}
-            >
-                <ResizableWidget
-                    id={widget.id}
-                    initialWidth={widget.dimensions.width}
-                    initialHeight={widget.dimensions.height}
-                    isResizable={!isLocked}
-                    onResize={(dimensions) => handleWidgetResize(widget.id, dimensions)}
-                    widgetStyle={widget.style}
-                >
-                    {!isLocked && handleRemoveWidget && (
-                        <button
-                            className="widget-remove-btn remove-btn"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleRemoveWidget(widget.id);
-                            }}
-                            title="Remove widget"
-                        >
-                            ×
-                        </button>
-                    )}
-                    {!isLocked && (
-                        <div className="widget-drag-indicator" title="Drag to move">
-                            ⋮⋮
-                        </div>
-                    )}
-                    <div className="widget-content" style={widgetContentStyles}> 
-                        <WidgetComponent
-                            isLocked={isLocked}
-                            widgetId={widget.id}
-                            {...(widget.props || {})}
-                            {...(widget.id.includes('background-manager') && onBackgroundChange ? { onBackgroundChange } : undefined)}
-                            {...(widget.id.includes('quick-actions') && onUpdateWidgetProps ? {
-                                onButtonsChange: (buttons: any[]) => onUpdateWidgetProps(widget.id, { buttons })
-                            } : undefined)}
-                        />
-                    </div>
-                </ResizableWidget>
-            </div>
+          <div
+            key={widget.id}
+            className="widget-wrapper error-widget"
+            style={{
+              position: 'absolute',
+              left: `${widget.position.x}px`,
+              top: `${widget.position.y}px`,
+              width: `${widget.dimensions.width}px`,
+              height: `${widget.dimensions.height}px`,
+              border: '2px dashed red',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'red',
+              fontSize: '12px',
+            }}
+          >
+            Error: Missing Component
+          </div>
         );
-    }, [dragState.draggedWidgetId, isLocked, emptyWidgets, handleMouseDown, handleWidgetResize, handleRemoveWidget]);
+      }
+
+      const isEmpty = emptyWidgets.has(widget.id);
+      const widgetStyles: CSSProperties = {
+        position: 'absolute',
+        left: `${widget.position.x}px`,
+        top: `${widget.position.y}px`,
+        zIndex: isDragging ? 1000 : 10 + index,
+        cursor: isLocked ? 'default' : 'move',
+        // ...(typeof widget.style.radius == 'number' && widget.style.radius > 0) ? { borderRadius: `${widget.style.radius}px` } : {},
+        // ...(typeof widget.style.border == 'number' && widget.style.border > 0) ? { border: `${widget.style.border}px solid` } : {}
+      };
+
+      const widgetContentStyles: CSSProperties = {
+        display: 'flex',
+        alignItems: widget.style?.alignment || 'center',
+        justifyContent: widget.style?.justify || 'center',
+      };
+      return (
+        <div
+          key={widget.id}
+          ref={(el) => {
+            if (el) {
+              widgetRefs.current.set(widget.id, el);
+            } else {
+              widgetRefs.current.delete(widget.id);
+            }
+          }}
+          className={`widget-wrapper ${isLocked ? 'locked' : 'editable'} ${isDragging ? 'dragging' : ''} ${isEmpty ? 'empty-widget' : ''}`}
+          style={widgetStyles}
+          onMouseDown={(e) => handleMouseDown(e, widget)}
+        >
+          <ResizableWidget
+            id={widget.id}
+            initialWidth={widget.dimensions.width}
+            initialHeight={widget.dimensions.height}
+            isResizable={!isLocked}
+            onResize={(dimensions) => handleWidgetResize(widget.id, dimensions)}
+            widgetStyle={widget.style}
+          >
+            {!isLocked && handleRemoveWidget && (
+              <button
+                className="widget-remove-btn remove-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveWidget(widget.id);
+                }}
+                title="Remove widget"
+              >
+                ×
+              </button>
+            )}
+            {!isLocked && (
+              <div className="widget-drag-indicator" title="Drag to move">
+                ⋮⋮
+              </div>
+            )}
+            <div className="widget-content" style={widgetContentStyles}>
+              <WidgetComponent
+                isLocked={isLocked}
+                widgetId={widget.id}
+                {...(widget.props || {})}
+                {...(widget.id.includes('background-manager') && onBackgroundChange
+                  ? { onBackgroundChange }
+                  : undefined)}
+                {...(widget.id.includes('quick-actions') && onUpdateWidgetProps
+                  ? {
+                      onButtonsChange: (buttons: any[]) =>
+                        onUpdateWidgetProps(widget.id, { buttons }),
+                    }
+                  : undefined)}
+              />
+            </div>
+          </ResizableWidget>
+        </div>
+      );
+    },
+    [
+      dragState.draggedWidgetId,
+      isLocked,
+      emptyWidgets,
+      handleMouseDown,
+      handleWidgetResize,
+      handleRemoveWidget,
+    ]
+  );
 
   return (
     <div

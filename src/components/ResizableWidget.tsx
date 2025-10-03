@@ -30,13 +30,12 @@ export const ResizableWidget: React.FC<ResizableWidgetProps> = ({
   onResize,
   isResizable = true,
   widgetStyle,
-  className = ''
+  className = '',
 }) => {
-
   const [width, setWidth] = useState(initialWidth);
   const [height, setHeight] = useState(initialHeight);
   const [isResizing, setIsResizing] = useState(false);
-    const [, setResizeDirection] = useState<string | null>(null);
+  const [, setResizeDirection] = useState<string | null>(null);
 
   const widgetRef = useRef<HTMLDivElement>(null);
   const startPos = useRef({ x: 0, y: 0 });
@@ -46,42 +45,60 @@ export const ResizableWidget: React.FC<ResizableWidgetProps> = ({
   const textSizes = useWidgetTextSizes({ width, height });
 
   // Combine custom properties with existing styles
-  const widgetStyles = useMemo(() => ({
-    width: `${width}px`,
-    height: `${height}px`,
-    position: 'relative' as const,
-    minWidth: `${minWidth}px`,
-    minHeight: `${minHeight}px`,
-    maxWidth: `${maxWidth}px`,
-    maxHeight: `${maxHeight}px`,
-    ...textSizes.allCssProperties,
-    // Add background color if provided (but not when blur is active - backdrop handles it)
-    ...(widgetStyle?.backgroundColorRed !== undefined && (!widgetStyle?.blur || widgetStyle.blur <= 0) ? {
-      backgroundColor: `rgba(${widgetStyle.backgroundColorRed}, ${widgetStyle.backgroundColorGreen}, ${widgetStyle.backgroundColorBlue}, ${widgetStyle.transparency})`
-    } : {}),
-    // Add border radius if provided
-    ...(widgetStyle?.radius ? { borderRadius: `${widgetStyle.radius}px` } : {}),
-    // Add border if provided
-    ...(widgetStyle?.border ? { border: `${widgetStyle.border}px solid rgba(255, 255, 255, 0.2)` } : {})
-  }), [width, height, minWidth, minHeight, maxWidth, maxHeight, textSizes.allCssProperties, widgetStyle]);
-  
+  const widgetStyles = useMemo(
+    () => ({
+      width: `${width}px`,
+      height: `${height}px`,
+      position: 'relative' as const,
+      minWidth: `${minWidth}px`,
+      minHeight: `${minHeight}px`,
+      maxWidth: `${maxWidth}px`,
+      maxHeight: `${maxHeight}px`,
+      ...textSizes.allCssProperties,
+      // Add background color if provided (but not when blur is active - backdrop handles it)
+      ...(widgetStyle?.backgroundColorRed !== undefined &&
+      (!widgetStyle?.blur || widgetStyle.blur <= 0)
+        ? {
+            backgroundColor: `rgba(${widgetStyle.backgroundColorRed}, ${widgetStyle.backgroundColorGreen}, ${widgetStyle.backgroundColorBlue}, ${widgetStyle.transparency})`,
+          }
+        : {}),
+      // Add border radius if provided
+      ...(widgetStyle?.radius ? { borderRadius: `${widgetStyle.radius}px` } : {}),
+      // Add border if provided
+      ...(widgetStyle?.border
+        ? { border: `${widgetStyle.border}px solid rgba(255, 255, 255, 0.2)` }
+        : {}),
+    }),
+    [
+      width,
+      height,
+      minWidth,
+      minHeight,
+      maxWidth,
+      maxHeight,
+      textSizes.allCssProperties,
+      widgetStyle,
+    ]
+  );
+
   // Create blur backdrop styles if blur is specified
   const backdropStyles = useMemo(() => {
     if (!widgetStyle?.blur || widgetStyle.blur <= 0) return null;
-    
+
     return {
       position: 'absolute' as const,
       top: 0,
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: widgetStyle?.backgroundColorRed !== undefined 
-        ? `rgba(${widgetStyle.backgroundColorRed}, ${widgetStyle.backgroundColorGreen}, ${widgetStyle.backgroundColorBlue}, ${widgetStyle.transparency})`
-        : 'rgba(255, 255, 255, 0.1)',
+      backgroundColor:
+        widgetStyle?.backgroundColorRed !== undefined
+          ? `rgba(${widgetStyle.backgroundColorRed}, ${widgetStyle.backgroundColorGreen}, ${widgetStyle.backgroundColorBlue}, ${widgetStyle.transparency})`
+          : 'rgba(255, 255, 255, 0.1)',
       filter: `blur(${widgetStyle.blur}px)`,
       borderRadius: widgetStyle?.radius ? `${widgetStyle.radius}px` : 0,
       zIndex: -1,
-      pointerEvents: 'none' as const
+      pointerEvents: 'none' as const,
     };
   }, [widgetStyle]);
 
@@ -167,11 +184,7 @@ export const ResizableWidget: React.FC<ResizableWidgetProps> = ({
     >
       {/* Blur backdrop - positioned behind content */}
       {backdropStyles && (
-        <div 
-          className="widget-blur-backdrop" 
-          style={backdropStyles}
-          aria-hidden="true"
-        />
+        <div className="widget-blur-backdrop" style={backdropStyles} aria-hidden="true" />
       )}
       {children}
       {getResizeHandles()}

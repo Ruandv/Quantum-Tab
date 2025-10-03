@@ -25,7 +25,6 @@ chrome.runtime.onInstalled.addListener((_details) => {
 
 // Listen for extension startup
 chrome.runtime.onStartup.addListener(() => {
-
   // Extension started - ready to handle messages
 });
 

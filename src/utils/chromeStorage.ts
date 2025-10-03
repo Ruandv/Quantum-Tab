@@ -1,8 +1,6 @@
-
 import { Dimensions, Position, CssStyle, STORAGE_KEYS } from '../types/common';
 import { defaultDimensions, defaultPosition, defaultStyle } from '../types/defaults';
 // Storage keys for Chrome extension storage
-
 
 // Interface for serialized widget (component stored as string)
 export interface SerializedWidget {
@@ -23,9 +21,9 @@ export interface SavedData {
   timestamp: number;
 }
 export interface Defaults {
-  styling: CssStyle
-  positioning: Position,
-  dimensions: Dimensions
+  styling: CssStyle;
+  positioning: Position;
+  dimensions: Dimensions;
 }
 /**
  * Chrome Extension Storage Utility
@@ -37,7 +35,7 @@ export const chromeStorage = {
     console.log('Saving widgets to Chrome storage:', widgets);
     try {
       await chrome.storage.local.set({
-        [STORAGE_KEYS.WIDGETS]: widgets
+        [STORAGE_KEYS.WIDGETS]: widgets,
       });
       return true;
     } catch (error) {
@@ -61,7 +59,7 @@ export const chromeStorage = {
   saveBackground: async (backgroundImage: string): Promise<boolean> => {
     try {
       await chrome.storage.local.set({
-        [STORAGE_KEYS.BACKGROUND]: backgroundImage
+        [STORAGE_KEYS.BACKGROUND]: backgroundImage,
       });
       return true;
     } catch (error) {
@@ -85,7 +83,7 @@ export const chromeStorage = {
   saveLockState: async (isLocked: boolean): Promise<boolean> => {
     try {
       await chrome.storage.local.set({
-        [STORAGE_KEYS.LOCK_STATE]: isLocked
+        [STORAGE_KEYS.LOCK_STATE]: isLocked,
       });
       return true;
     } catch (error) {
@@ -111,7 +109,7 @@ export const chromeStorage = {
       await chrome.storage.local.set({
         [STORAGE_KEYS.WIDGETS]: data.widgets,
         [STORAGE_KEYS.BACKGROUND]: data.backgroundImage,
-        [STORAGE_KEYS.LOCK_STATE]: data.isLocked
+        [STORAGE_KEYS.LOCK_STATE]: data.isLocked,
       });
       return true;
     } catch (error) {
@@ -133,7 +131,7 @@ export const chromeStorage = {
         widgets: result[STORAGE_KEYS.WIDGETS] || [],
         backgroundImage: result[STORAGE_KEYS.BACKGROUND] || '',
         isLocked: result[STORAGE_KEYS.LOCK_STATE] || false,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
     } catch (error) {
       console.error('Failed to load all data from Chrome storage:', error);
@@ -141,7 +139,7 @@ export const chromeStorage = {
         widgets: [],
         backgroundImage: '',
         isLocked: false,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
     }
   },
@@ -149,7 +147,7 @@ export const chromeStorage = {
   saveAllDefaults: async (data: Defaults): Promise<boolean> => {
     try {
       await chrome.storage.local.set({
-        [STORAGE_KEYS.DEFAULT_STYLING]: data.styling
+        [STORAGE_KEYS.DEFAULT_STYLING]: data.styling,
       });
       return true;
     } catch (error) {
@@ -163,20 +161,20 @@ export const chromeStorage = {
       const result = await chrome.storage.local.get([
         STORAGE_KEYS.DEFAULT_STYLING,
         STORAGE_KEYS.DEFAULT_POSITION,
-        STORAGE_KEYS.DEFAULT_DIMENSIONS
+        STORAGE_KEYS.DEFAULT_DIMENSIONS,
       ]);
 
       return {
         styling: result[STORAGE_KEYS.DEFAULT_STYLING],
         positioning: result[STORAGE_KEYS.DEFAULT_POSITION],
-        dimensions: result[STORAGE_KEYS.DEFAULT_DIMENSIONS]
+        dimensions: result[STORAGE_KEYS.DEFAULT_DIMENSIONS],
       };
     } catch (error) {
       console.error('Failed to load all defaults from Chrome storage:', error);
       return {
         styling: defaultStyle,
         positioning: defaultPosition,
-        dimensions: defaultDimensions
+        dimensions: defaultDimensions,
       };
     }
   },
@@ -186,7 +184,7 @@ export const chromeStorage = {
       await chrome.storage.local.remove([
         STORAGE_KEYS.WIDGETS,
         STORAGE_KEYS.BACKGROUND,
-        STORAGE_KEYS.LOCK_STATE
+        STORAGE_KEYS.LOCK_STATE,
       ]);
       return true;
     } catch (error) {
@@ -221,7 +219,7 @@ export const chromeStorage = {
   saveWebsiteCounters: async (counters: any[]): Promise<boolean> => {
     try {
       await chrome.storage.local.set({
-        'websiteCounters': counters
+        websiteCounters: counters,
       });
       return true;
     } catch (error) {
@@ -250,13 +248,13 @@ export const chromeStorage = {
 
       return {
         bytesInUse,
-        quotaBytes
+        quotaBytes,
       };
     } catch (error) {
       console.error('Failed to get storage info:', error);
       return {
         bytesInUse: 0,
-        quotaBytes: 10 * 1024 * 1024
+        quotaBytes: 10 * 1024 * 1024,
       };
     }
   },
@@ -268,7 +266,7 @@ export const chromeStorage = {
         callback(changes);
       }
     });
-  }
+  },
 };
 
 export default chromeStorage;
