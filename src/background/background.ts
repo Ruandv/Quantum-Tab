@@ -1,13 +1,25 @@
 // Background service worker for Chrome Extension Manifest V3
-import { BackgroundMessage, BackgroundResponse } from '../types/common';
+import { BackgroundMessage, BackgroundResponse, STORAGE_KEYS } from '../types/common';
 import { GitHubService } from '../services/githubService';
-
+import { defaultPosition, defaultStyle } from '@/types/defaults';
 // Listen for extension installation or startup
 chrome.runtime.onInstalled.addListener((_details) => {
   // Set up initial state or perform initialization tasks
   chrome.storage.sync.set({
     extensionInstalled: true,
     installDate: new Date().toISOString(),
+  });
+
+  chrome.storage.local.get([STORAGE_KEYS.DEFAULT_STYLING], (result) => {
+    if (!result.defaultPosition) {
+      chrome.storage.local.set({ [STORAGE_KEYS.DEFAULT_STYLING]: defaultStyle });
+    }
+  });
+
+  chrome.storage.local.get([STORAGE_KEYS.DEFAULT_POSITION], (result) => {
+    if (!result.defaultPosition) {
+      chrome.storage.local.set({ [STORAGE_KEYS.DEFAULT_POSITION]: defaultPosition });
+    }
   });
 });
 

@@ -5,8 +5,12 @@ import WidgetManager from '../components/WidgetManager';
 import { DashboardWidget, Position, Dimensions } from '../types/common';
 import chromeStorage, { SerializedWidget } from '../utils/chromeStorage';
 import { widgetRegistry } from '../utils/widgetRegistry';
-import { debounce, getViewportDimensions } from '../utils/helpers';
+import { debounce } from '../utils/helpers';
 import { dispatchWidgetRemoval } from '../utils/widgetEvents';
+import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
+
+// Stable fallback component to avoid creating new function instances
+const EmptyWidget: React.FC<any> = () => null;
 
 const NewTab: React.FC = () => {
   const { t } = useTranslation();
@@ -21,39 +25,24 @@ const NewTab: React.FC = () => {
   // Initialize widgets with default configuration
   const getInitialWidgets = useCallback((): DashboardWidget[] => {
     try {
-      const viewport = getViewportDimensions();
+      // Create a stable fallback component reference
+      const ClockComponent = componentMap['live-clock'];
+      if (!ClockComponent) {
+        console.error('Live clock component not found in component map');
+        return [];
+      }
 
       const clockWidget: DashboardWidget = {
         id: 'live-clock-1',
         allowMultiples: true,
-        position: { x: Math.max(50, viewport.width - 350), y: 50 },
-        dimensions: { width: 300, height: 200 },
-        component: componentMap['live-clock'] || (() => null),
+        position: defaultPosition,
+        dimensions: defaultDimensions,
+        component: ClockComponent,
         props: { className: 'default-clock' },
+        style: defaultStyle,
       };
 
-      const backgroundManagerWidget: DashboardWidget = {
-        id: 'background-manager-1',
-        allowMultiples: false,
-        position: { x: 50, y: Math.max(50, viewport.height - 250) },
-        dimensions: { width: 300, height: 200 },
-        component: componentMap['background-manager'] || (() => null),
-        props: { className: 'default-background-manager' },
-      };
-
-      const quickActionWidget: DashboardWidget = {
-        id: 'quick-actions-1',
-        allowMultiples: true,
-        position: {
-          x: Math.max(50, viewport.width - 350),
-          y: Math.max(270, viewport.height - 250),
-        },
-        dimensions: { width: 300, height: 200 },
-        component: componentMap['quick-actions'] || (() => null),
-        props: { className: 'default-quick-actions' },
-      };
-
-      return [clockWidget, backgroundManagerWidget, quickActionWidget];
+      return [clockWidget];
     } catch (error) {
       console.error('Error creating initial widgets:', error);
       return [];
@@ -173,23 +162,28 @@ const NewTab: React.FC = () => {
 
             if (!restoredComponent) {
               console.warn(
-                `Failed to restore component for widget ${widget.id}, falling back to LiveClock`
+                `Failed to restore component for widget ${widget.id}, falling back to EmptyWidget`
               );
-              restoredComponent = componentMap['LiveClock'];
-              componentName = 'LiveClock';
+              restoredComponent = EmptyWidget;
+              componentName = 'EmptyWidget';
             }
 
-            return {
+            const restoredWidget: DashboardWidget = {
               ...widget,
               component: restoredComponent,
+              // Ensure style property exists with defaults if missing
+              style: widget.style || defaultStyle,
             };
+            return restoredWidget;
           } catch (widgetError) {
             console.error(`Error restoring widget ${widget.id}:`, widgetError);
-            // Return widget with LiveClock as fallback
-            return {
+            // Return widget with LiveClock as fallback and default style
+            const fallbackWidget: DashboardWidget = {
               ...widget,
               component: componentMap['LiveClock'],
+              style: widget.style || defaultStyle,
             };
+            return fallbackWidget;
           }
         });
 
@@ -291,6 +285,7 @@ const NewTab: React.FC = () => {
             props: widget.props,
             dimensions: widget.dimensions,
             position: widget.position,
+            style: widget.style,
           };
         });
 
@@ -351,30 +346,25 @@ const NewTab: React.FC = () => {
     setIsLocked((prev) => !prev);
   }, []);
 
-  // Show loading state
-  if (isLoading) {
-    return (
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          background: 'rgba(0, 0, 0, 0.9)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          fontSize: '1.2rem',
-        }}
-      >
-        {t('common.loading.dashboard')}
-      </div>
-    );
-  }
-
-  return (
+  return isLoading ? (
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        background: 'rgba(0, 0, 0, 0.9)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        fontSize: '1.2rem',
+      }}
+    >
+      {t('common.loading.dashboard')}
+    </div>
+  ) : (
     <div
       className="newtab-container"
       style={{

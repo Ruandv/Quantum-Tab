@@ -5,6 +5,7 @@ type RequiredProps<T> = Required<
   Omit<
     T,
     | 'className'
+    | 'buttons'
     | 'isLocked'
     | 'widgetId'
     | 'onBackgroundChange'
@@ -22,7 +23,17 @@ export interface Dimensions {
   width: number;
   height: number;
 }
-
+export interface CssStyle {
+  border: number;
+  radius: number;
+  blur: number;
+  backgroundColorRed: number;
+  backgroundColorGreen: number;
+  backgroundColorBlue: number;
+  transparency: number;
+  alignment: 'left' | 'center' | 'right';
+  justify: 'flex-start' | 'center' | 'flex-end' | 'space-around' | 'space-between';
+}
 export interface DashboardWidget {
   id: string;
   allowMultiples: boolean;
@@ -30,6 +41,7 @@ export interface DashboardWidget {
   props?: Record<string, any>;
   dimensions: Dimensions;
   position: Position;
+  style: CssStyle;
 }
 
 export interface WidgetType<T = any> {
@@ -172,6 +184,9 @@ export const STORAGE_KEYS = {
   WIDGETS: 'quantum-tab-widgets',
   BACKGROUND: 'quantum-tab-background',
   LOCK_STATE: 'quantum-tab-lock-state',
+  DEFAULT_STYLING: 'quantum-tab-default-styling',
+  DEFAULT_POSITION: 'quantum-tab-default-position',
+  DEFAULT_DIMENSIONS: 'quantum-tab-default-dimensions',
 } as const;
 
 export const DEFAULT_WIDGET_CONSTRAINTS = {

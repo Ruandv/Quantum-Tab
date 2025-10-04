@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useRef, useEffect, CSSProperties } from 'react';
 import ResizableWidget from './ResizableWidget';
 import { DashboardWidget, DashboardProps, DragState, Position, Dimensions } from '../types/common';
 import { constrainPosition, getViewportDimensions } from '../utils/helpers';
@@ -159,14 +159,49 @@ const Dashboard: React.FC<DashboardProps> = ({
       const WidgetComponent = widget.component;
       const isDragging = dragState.draggedWidgetId === widget.id;
 
-      // Safety check to prevent React error #130
+      // Safety check to prevent React error #130 - use a stable empty component
       if (!WidgetComponent) {
         console.error('Widget component is undefined for widget:', widget);
-        return null;
+        // Return a stable empty widget div instead of null to maintain consistent rendering
+        return (
+          <div
+            key={widget.id}
+            className="widget-wrapper error-widget"
+            style={{
+              position: 'absolute',
+              left: `${widget.position.x}px`,
+              top: `${widget.position.y}px`,
+              width: `${widget.dimensions.width}px`,
+              height: `${widget.dimensions.height}px`,
+              border: '2px dashed red',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'red',
+              fontSize: '12px',
+            }}
+          >
+            Error: Missing Component
+          </div>
+        );
       }
 
       const isEmpty = emptyWidgets.has(widget.id);
+      const widgetStyles: CSSProperties = {
+        position: 'absolute',
+        left: `${widget.position.x}px`,
+        top: `${widget.position.y}px`,
+        zIndex: isDragging ? 1000 : 10 + index,
+        cursor: isLocked ? 'default' : 'move',
+        // ...(typeof widget.style.radius == 'number' && widget.style.radius > 0) ? { borderRadius: `${widget.style.radius}px` } : {},
+        // ...(typeof widget.style.border == 'number' && widget.style.border > 0) ? { border: `${widget.style.border}px solid` } : {}
+      };
 
+      const widgetContentStyles: CSSProperties = {
+        display: 'flex',
+        alignItems: widget.style?.alignment || 'center',
+        justifyContent: widget.style?.justify || 'center',
+      };
       return (
         <div
           key={widget.id}
@@ -178,13 +213,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             }
           }}
           className={`widget-wrapper ${isLocked ? 'locked' : 'editable'} ${isDragging ? 'dragging' : ''} ${isEmpty ? 'empty-widget' : ''}`}
-          style={{
-            position: 'absolute',
-            left: `${widget.position.x}px`,
-            top: `${widget.position.y}px`,
-            zIndex: isDragging ? 1000 : 10 + index,
-            cursor: isLocked ? 'default' : 'move',
-          }}
+          style={widgetStyles}
           onMouseDown={(e) => handleMouseDown(e, widget)}
         >
           <ResizableWidget
@@ -193,6 +222,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             initialHeight={widget.dimensions.height}
             isResizable={!isLocked}
             onResize={(dimensions) => handleWidgetResize(widget.id, dimensions)}
+            widgetStyle={widget.style}
           >
             {!isLocked && handleRemoveWidget && (
               <button
@@ -211,7 +241,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 ⋮⋮
               </div>
             )}
-            <div className="widget-content">
+            <div className="widget-content" style={widgetContentStyles}>
               <WidgetComponent
                 isLocked={isLocked}
                 widgetId={widget.id}

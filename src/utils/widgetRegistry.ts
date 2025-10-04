@@ -13,6 +13,7 @@ import BackgroundManager from '../components/BackgroundManager';
 import GitHubWidget from '../components/GitHubWidget';
 import WebsiteCounter from '../components/WebsiteCounter';
 import LocaleWidget from '../components/LocaleWidget';
+import { defaultDimensions } from '@/types/defaults';
 
 export class WidgetRegistry {
   private static instance: WidgetRegistry;
@@ -122,7 +123,7 @@ export class WidgetRegistry {
       allowMultiples: false,
       description: 'Change the language/locale of the extension interface',
       component: LocaleWidget,
-      defaultDimensions: { width: 300, height: 200 },
+      defaultDimensions: defaultDimensions,
       defaultProps: {
         selectedLocale: getBrowserLanguage(),
       },

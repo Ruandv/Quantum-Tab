@@ -1,11 +1,6 @@
-import { Dimensions, Position } from '../types/common';
-
+import { Dimensions, Position, CssStyle, STORAGE_KEYS } from '../types/common';
+import { defaultDimensions, defaultPosition, defaultStyle } from '../types/defaults';
 // Storage keys for Chrome extension storage
-const STORAGE_KEYS = {
-  WIDGETS: 'quantum-tab-widgets',
-  BACKGROUND: 'quantum-tab-background',
-  LOCK_STATE: 'quantum-tab-lock-state',
-};
 
 // Interface for serialized widget (component stored as string)
 export interface SerializedWidget {
@@ -15,6 +10,7 @@ export interface SerializedWidget {
   props?: Record<string, any>;
   dimensions: Dimensions;
   position: Position;
+  style: CssStyle;
 }
 
 // Interface for saved data
@@ -24,7 +20,11 @@ export interface SavedData {
   isLocked: boolean;
   timestamp: number;
 }
-
+export interface Defaults {
+  styling: CssStyle;
+  positioning: Position;
+  dimensions: Dimensions;
+}
 /**
  * Chrome Extension Storage Utility
  * Uses chrome.storage.local for persistent data storage
@@ -143,7 +143,41 @@ export const chromeStorage = {
       };
     }
   },
+  // Save all data at once
+  saveAllDefaults: async (data: Defaults): Promise<boolean> => {
+    try {
+      await chrome.storage.local.set({
+        [STORAGE_KEYS.DEFAULT_STYLING]: data.styling,
+      });
+      return true;
+    } catch (error) {
+      console.error('Failed to save all defaults to Chrome storage:', error);
+      return false;
+    }
+  },
 
+  loadAllDefaults: async (): Promise<Defaults> => {
+    try {
+      const result = await chrome.storage.local.get([
+        STORAGE_KEYS.DEFAULT_STYLING,
+        STORAGE_KEYS.DEFAULT_POSITION,
+        STORAGE_KEYS.DEFAULT_DIMENSIONS,
+      ]);
+
+      return {
+        styling: result[STORAGE_KEYS.DEFAULT_STYLING],
+        positioning: result[STORAGE_KEYS.DEFAULT_POSITION],
+        dimensions: result[STORAGE_KEYS.DEFAULT_DIMENSIONS],
+      };
+    } catch (error) {
+      console.error('Failed to load all defaults from Chrome storage:', error);
+      return {
+        styling: defaultStyle,
+        positioning: defaultPosition,
+        dimensions: defaultDimensions,
+      };
+    }
+  },
   // Clear all data
   clearAll: async (): Promise<boolean> => {
     try {
