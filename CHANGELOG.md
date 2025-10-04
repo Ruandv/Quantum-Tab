@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0](https://github.com/Ruandv/Quantum-Tab/compare/v1.0.0...v1.1.0) (2025-10-04)
+
+
+### Features
+
+* Enhance widget error handling and default styles ([6968f67](https://github.com/Ruandv/Quantum-Tab/commit/6968f67eb9e4957ea84c83b0f79f72ce062ee457))
+
 ## 1.0.0 (2025-10-03)
 
 
