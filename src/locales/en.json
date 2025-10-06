@@ -154,5 +154,27 @@
     "labels": {
       "language": "Interface Language:"
     }
+  },
+  "notifications": {
+    "welcome": {
+      "title": "Welcome to Quantum Tab!",
+      "message": "Thank you for installing Quantum Tab. Transform your new tab experience with intelligent widgets and customization.",
+      "featuresTitle": "What you can do:",
+      "features": {
+        "widgets": "Add interactive widgets to your dashboard",
+        "customization": "Customize colors, positions, and styling",
+        "languages": "Support for multiple languages",
+        "backgrounds": "Upload custom background images"
+      }
+    },
+    "update": {
+      "title": "Quantum Tab Updated!",
+      "message": "Quantum Tab has been updated to version {{version}}."
+    },
+    "buttons": {
+      "getStarted": "Get Started",
+      "continue": "Continue",
+      "viewChanges": "View Changes"
+    }
   }
 }
