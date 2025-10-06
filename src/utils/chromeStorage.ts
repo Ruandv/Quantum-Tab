@@ -1,4 +1,4 @@
-import { Dimensions, Position, CssStyle, STORAGE_KEYS } from '../types/common';
+import { Dimensions, Position, CssStyle, STORAGE_KEYS, WebsiteCounterData } from '../types/common';
 import { defaultDimensions, defaultPosition, defaultStyle } from '../types/defaults';
 // Storage keys for Chrome extension storage
 
@@ -216,7 +216,7 @@ export const chromeStorage = {
   },
 
   // Save website counter data
-  saveWebsiteCounters: async (counters: Array<{ url: string; visits: number; name?: string; emoji?: string }>): Promise<boolean> => {
+  saveWebsiteCounters: async (counters: WebsiteCounterData[]): Promise<boolean> => {
     try {
       await chrome.storage.local.set({
         websiteCounters: counters,
@@ -229,7 +229,7 @@ export const chromeStorage = {
   },
 
   // Load website counter data
-  loadWebsiteCounters: async (): Promise<Array<{ url: string; visits: number; name?: string; emoji?: string }>> => {
+  loadWebsiteCounters: async (): Promise<WebsiteCounterData[]> => {
     try {
       const result = await chrome.storage.local.get('websiteCounters');
       return result.websiteCounters || [];
