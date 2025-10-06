@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import QuickActionButtonItem from './QuickActionButtonItem';
 import { addWidgetRemovalListener } from '../utils/widgetEvents';
+import Modal from './modal/modal';
 
 const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
   className = '',
@@ -79,16 +80,6 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
     <div className={`quick-actions-widget ${className}`}>
       <h3 className="widget-title">{t('quickActionButtons.title')}</h3>
       <div className="action-buttons">
-        {buttons.map((button, index) => (
-          <QuickActionButtonItem
-            key={index}
-            button={button}
-            index={index}
-            isLocked={isLocked}
-            onButtonClick={handleButtonClick}
-            onRemoveButton={handleRemoveButton}
-          />
-        ))}
         {!isLocked && (
           <button
             title={t('quickActionButtons.tooltips.add')}
@@ -99,14 +90,27 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
             <span className="btn-label">{t('common.buttons.add')}</span>
           </button>
         )}
+        {buttons.map((button, index) => (
+          <QuickActionButtonItem
+            key={index}
+            button={button}
+            index={index}
+            isLocked={isLocked}
+            onButtonClick={handleButtonClick}
+            onRemoveButton={handleRemoveButton}
+          />
+        ))}
+        
       </div>
 
       {/* Add Button Popup */}
       {showAddPopup && (
-        <div className="add-popup-overlay" onClick={handleCancelAdd}>
-          <div className="add-popup" onClick={(e) => e.stopPropagation()}>
-            <h4>{t('quickActionButtons.popup.title')}</h4>
-            <div className="form-group">
+        <><Modal
+          isOpen={showAddPopup}
+          onClose={handleCancelAdd}
+          content={{
+            title: t('quickActionButtons.popup.title'),
+            content: <><div className="form-group">
               <label>{t('quickActionButtons.popup.labels.icon')}</label>
               <input
                 type="text"
@@ -123,69 +127,50 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
                 placeholder={t('common.placeholders.emoji')}
                 maxLength={2}
                 style={{ pointerEvents: 'all', cursor: 'text' }}
-                autoFocus={false}
-              />
+                autoFocus={false} />
             </div>
-            <div className="form-group">
-              <label>{t('quickActionButtons.popup.labels.label')}</label>
-              <input
-                type="text"
-                value={newButton.label}
-                onChange={(e) => setNewButton({ ...newButton, label: e.target.value })}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  e.currentTarget.focus();
-                }}
-                onMouseDown={(e) => {
-                  e.stopPropagation();
-                }}
-                placeholder={t('common.placeholders.website')}
-                style={{ pointerEvents: 'all', cursor: 'text' }}
-              />
-            </div>
-            <div className="form-group">
-              <label>{t('quickActionButtons.popup.labels.url')}</label>
-              <input
-                type="url"
-                value={newButton.url}
-                onChange={(e) => setNewButton({ ...newButton, url: e.target.value })}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  e.currentTarget.focus();
-                }}
-                onMouseDown={(e) => {
-                  e.stopPropagation();
-                }}
-                placeholder={t('common.placeholders.url')}
-                style={{ pointerEvents: 'all', cursor: 'text' }}
-              />
-            </div>
-            <div className="popup-buttons">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSaveButton();
-                }}
-                className="save-btn"
-                style={{ pointerEvents: 'all' }}
-              >
-                {t('common.buttons.save')}
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleCancelAdd();
-                }}
-                className="cancel-btn"
-                style={{ pointerEvents: 'all' }}
-              >
-                {t('common.buttons.cancel')}
-              </button>
-            </div>
-          </div>
-        </div>
+              <div className="form-group">
+                <label>{t('quickActionButtons.popup.labels.label')}</label>
+                <input
+                  type="text"
+                  value={newButton.label}
+                  onChange={(e) => setNewButton({ ...newButton, label: e.target.value })}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    e.currentTarget.focus();
+                  }}
+                  onMouseDown={(e) => {
+                    e.stopPropagation();
+                  }}
+                  placeholder={t('common.placeholders.website')}
+                  style={{ pointerEvents: 'all', cursor: 'text' }} />
+              </div>
+              <div className="form-group">
+                <label>{t('quickActionButtons.popup.labels.url')}</label>
+                <input
+                  type="url"
+                  value={newButton.url}
+                  onChange={(e) => setNewButton({ ...newButton, url: e.target.value })}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    e.currentTarget.focus();
+                  }}
+                  onMouseDown={(e) => {
+                    e.stopPropagation();
+                  }}
+                  placeholder={t('common.placeholders.url')}
+                  style={{ pointerEvents: 'all', cursor: 'text' }} />
+              </div></>,
+            actions: [
+              { index: 1, text: t('common.buttons.save'), onClick: handleSaveButton },
+              { index: 2, text: t('common.buttons.cancel'), onClick: handleCancelAdd },
+            ],
+          }}
+        >
+        </Modal>
+        </>
       )}
     </div>
   );

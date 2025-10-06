@@ -736,54 +736,6 @@
 }
 
 /* Add Button Popup Styles */
-.add-popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  backdrop-filter: blur(4px);
-  pointer-events: all;
-  cursor: default;
-}
-
-.add-popup-overlay:hover {
-  cursor: pointer;
-}
-
-.add-popup {
-  background: rgba(255, 255, 255, 0.95);
-  /* backdrop-filter: blur(20px); */
-  border-radius: 16px;
-  padding: 0.5rem;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  color: #333;
-  pointer-events: all !important;
-  position: relative;
-  z-index: 1001;
-  cursor: auto;
-}
-
-.add-popup * {
-  cursor: inherit;
-}
-
-.add-popup h4 {
-  margin: 0 0 1.5rem 0;
-  font-size: 1.3rem;
-  font-weight: 600;
-  text-align: center;
-  color: #333;
-  cursor: default;
-}
-
 .form-group {
   margin-bottom: 1rem;
 }
@@ -808,7 +760,7 @@
   pointer-events: all !important;
   cursor: text !important;
   position: relative;
-  z-index: 1002;
+  /* z-index: 1002; */
   user-select: text;
   -webkit-user-select: text;
   -moz-user-select: text;
@@ -869,7 +821,7 @@
 
 /* Header Button Base Styles */
 .header-btn,
-.header-actions .add-widget-btn,
+.header-actions .btn,
 .header-actions .lock-toggle {
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -887,19 +839,19 @@
   white-space: nowrap; /* Prevent text wrapping */
 }
 
-.add-widget-btn {
+.btn {
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 3px 12px rgba(255, 255, 255, 0.1);
 }
 
-.add-widget-btn:hover {
+.btn:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-1px);
   box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
 }
 
-.add-widget-btn .btn-icon {
+.btn .btn-icon {
   font-size: 1rem;
 }
 
@@ -918,64 +870,7 @@
   z-index: 1000;
   backdrop-filter: blur(4px);
 }
-
-.modal-content {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  width: 90%;
-  max-width: 550px;
-  max-height: 85vh;
-  /* backdrop-filter: blur(20px); */
-  color: white;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden; /* Prevent double scrollbars */
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  flex-shrink: 0; /* Prevent header from shrinking */
-}
-
-.modal-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-}
-
-.modal-close {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.25rem;
-  border-radius: 4px;
-  transition: background 0.2s;
-}
-
-.modal-close:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.modal-body {
-  padding: 1.5rem;
-  flex: 1;
-  overflow-y: auto; /* Only the body scrolls */
-  min-height: 0; /* Allow flex item to shrink */
-}
-
-.modal-footer {
-  gap: 1rem;
-  padding: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  flex-shrink: 0; /* Prevent footer from shrinking */
-}
+    
 
 .form-section {
   margin-bottom: 2rem;
@@ -1789,12 +1684,7 @@
 
 /* Form button containers with specific alignments */
 .website-counter-widget .form-buttons,
-.modal-footer {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-end;
-}
-
+ 
 /* Small action buttons (save/cancel) */
 .website-counter-widget .save-website-btn,
 .website-counter-widget .cancel-website-btn,
@@ -1835,7 +1725,7 @@
 .locale-widget {
   padding: 1rem;
   overflow: visible !important;
-  z-index: 1;
+  /* z-index: 1; */
 }
 
 /* Boost locale widget z-index when dropdown is open */

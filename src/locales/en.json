@@ -26,15 +26,22 @@
   },
   "widgetManager": {
     "buttons": {
+      "actions": "Actions",
       "addWidget": "Add Widget",
-      "removeWidget": "Remove Widget"
+      "removeWidget": "Remove Widget",
+      "exportWidgets": "Export Widgets",
+      "importWidgets": "Import Widgets"
     },
     "tooltips": {
       "addWidget": "Add Widget",
-      "removeWidget": "Remove Widget"
+      "removeWidget": "Remove Widget",
+      "exportWidgets": "Export all widgets to a JSON file",
+      "importWidgets": "Import widgets from a JSON file"
     },
     "modal": {
       "title": "Add New Widget",
+      "titleImport": "Import Widgets",
+      "titleImportSecrets": "Widgets Secrets",
       "sections": {
         "chooseType": "Choose Widget Type",
         "dimensions": "Widget Dimensions",

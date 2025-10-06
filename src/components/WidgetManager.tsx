@@ -104,7 +104,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
         })}</React.Fragment>);
       });
       setModalContent({
-        title: '', content: fieldsData, actions: [{
+        title: t('widgetManager.modal.titleImportSecrets'), content: fieldsData, actions: [{
           index: 1, text: 'Cancel', onClick: () => {
             setIsModalOpen(false);
             setModalContent(null);
@@ -114,7 +114,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
         {
           index: 0,
           text: 'Save',
-          onClick: () => {
+          onClick: async () => {
             console.log('Save clicked', data.exportMetadata.secretProps);
             // now we need to go find the widgets where the id matches
             data.exportMetadata.secretProps.map(({ name, key, value }) => {
@@ -129,8 +129,15 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
               props: { ...widget.props }
             }));
 
-            chromeStorage.saveWidgets(serializedWidgets);
-            setModalContent(null);
+            await chromeStorage.saveWidgets(serializedWidgets);
+            await chromeStorage.saveBackground(data.backgroundImage);
+            setModalContent({
+              title: 'Import Successful', content: "Data imported successfully", actions: [{
+                index: 1, text: 'Refresh', onClick: () => {
+                  window.location.reload();
+                }
+              }]
+            });
           }
         }]
       });
@@ -402,7 +409,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                     setData(newData);
                   })}</React.Fragment>);
                 });
-                setModalContent({ title: '', content: fieldsData, actions: [] });
+                setModalContent({ title: t('widgetManager.modal.titleImport'), content: fieldsData, actions: [] });
               }
               else {
                 await chromeStorage.saveWidgets(myData.widgets);
@@ -665,7 +672,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     <div className="widget-manager">
       <div className="widgets-list">
         <button
-          className="add-widget-btn"
+          className="btn add-widget-btn"
           onClick={() => handleAction('addWidget')}
           title={t('widgetManager.tooltips.addWidget')}
         >
@@ -673,7 +680,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
           {t('widgetManager.buttons.addWidget')}
         </button>
         <button
-          className="export-btn"
+          className="btn export-btn"
           onClick={() => handleAction('export')}
           title={t('widgetManager.tooltips.exportWidgets')}
         >
@@ -681,7 +688,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
           {t('widgetManager.buttons.exportWidgets')}
         </button>
         <button
-          className="import-btn"
+          className="btn import-btn"
           onClick={() => handleAction('import')}
           title={t('widgetManager.tooltips.importWidgets')}
         >

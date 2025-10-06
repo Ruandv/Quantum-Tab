@@ -11,7 +11,7 @@ export interface ModalAction {
 export interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
-    content: { title?: string|React.ReactNode; content: ReactNode, actions?: ModalAction[]; };
+    content: { title?: string | React.ReactNode; content: ReactNode, actions?: ModalAction[]; };
 
 }
 
