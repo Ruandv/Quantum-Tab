@@ -37,14 +37,14 @@ export interface CssStyle {
 export interface DashboardWidget {
   id: string;
   allowMultiples: boolean;
-  component: React.ComponentType<any>;
-  props?: Record<string, any>;
+  component: React.ComponentType<Record<string, unknown>>;
+  props?: Record<string, unknown>;
   dimensions: Dimensions;
   position: Position;
   style: CssStyle;
 }
 
-export interface WidgetType<T = any> {
+export interface WidgetType<T = Record<string, unknown>> {
   id: string;
   name: string;
   allowMultiples: boolean;
@@ -158,7 +158,7 @@ export interface DashboardProps {
   onWidgetResize?: (widgetId: string, dimensions: Dimensions) => void;
   onWidgetMove?: (widgetId: string, position: Position) => void;
   onBackgroundChange?: (imageUrl: string) => void;
-  onUpdateWidgetProps?: (widgetId: string, newProps: any) => void;
+  onUpdateWidgetProps?: (widgetId: string, newProps: Record<string, unknown>) => void;
 }
 
 export interface WidgetManagerProps extends DefaultWidgetProps {

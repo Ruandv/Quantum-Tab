@@ -7,8 +7,7 @@ import {
   Dimensions,
   Position,
   CssStyle,
-  isSecureProperty,
-  SavedData
+  isSecureProperty
 } from '../types/common';
 import { widgetRegistry } from '../utils/widgetRegistry';
 import { generateUniqueId, findOptimalPosition, getViewportDimensions } from '../utils/helpers';
@@ -42,7 +41,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     const defaultPosition: Position = (await chromeStorage.loadAllDefaults()).positioning;
     return { defaultStyle, defaultDimensions, defaultPosition };
   }, []);
-  const [data, setData] = useState({ widgets: Array<any>(), backgroundImage: '', isLocked: false, timestamp: Date.now(), exportMetadata: { secretProps: [] } });
+  const [data, setData] = useState<{ widgets: SerializedWidget[], backgroundImage: string, isLocked: boolean, timestamp: number, exportMetadata: { secretProps: Array<{ name: string, key: string, value?: string }> } }>({ widgets: [], backgroundImage: '', isLocked: false, timestamp: Date.now(), exportMetadata: { secretProps: [] } });
   // Function to generate default modal content - moved after all handlers are defined
   const getDefaultModalContent = useCallback(() => (
     <div className="form-section">
@@ -123,7 +122,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                 w.props = { ...w.props, [key]: value };
               }
             });
-            const serializedWidgets = data.widgets.map((widget: any) => ({
+            const serializedWidgets = data.widgets.map((widget) => ({
               ...widget,
               // Ensure props are serializable and match SerializedWidget type
               props: { ...widget.props }
@@ -142,6 +141,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
         }]
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   useEffect(() => {
@@ -227,7 +227,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       name="textAlign"
                       value="left"
                       checked={widgetStyle.alignment === 'left'}
-                      onChange={() => handleStyleChange('alignment', 'left' as any)}
+                      onChange={() => handleStyleChange('alignment', 'left' as unknown as number)}
                     />
                     {t('widgetManager.labels.left')}
                   </label>
@@ -237,7 +237,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       name="textAlign"
                       value="center"
                       checked={widgetStyle.alignment === 'center'}
-                      onChange={() => handleStyleChange('alignment', 'center' as any)}
+                      onChange={() => handleStyleChange('alignment', 'center' as unknown as number)}
                     />
                     {t('widgetManager.labels.center')}
                   </label>
@@ -247,7 +247,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       name="textAlign"
                       value="right"
                       checked={widgetStyle.alignment === 'right'}
-                      onChange={() => handleStyleChange('alignment', 'right' as any)}
+                      onChange={() => handleStyleChange('alignment', 'right' as unknown as number)}
                     />
                     {t('widgetManager.labels.right')}
                   </label>
@@ -262,7 +262,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       name="justify"
                       value="flex-start"
                       checked={widgetStyle.justify === 'flex-start'}
-                      onChange={() => handleStyleChange('justify', 'flex-start' as any)}
+                      onChange={() => handleStyleChange('justify', 'flex-start' as unknown as number)}
                     />
                     {t('widgetManager.labels.justifyStart')}
                   </label>
@@ -272,7 +272,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       name="justify"
                       value="center"
                       checked={widgetStyle.justify === 'center'}
-                      onChange={() => handleStyleChange('justify', 'center' as any)}
+                      onChange={() => handleStyleChange('justify', 'center' as unknown as number)}
                     />
                     {t('widgetManager.labels.justifyCenter')}
                   </label>
@@ -282,7 +282,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       name="justify"
                       value="flex-end"
                       checked={widgetStyle.justify === 'flex-end'}
-                      onChange={() => handleStyleChange('justify', 'flex-end' as any)}
+                      onChange={() => handleStyleChange('justify', 'flex-end' as unknown as number)}
                     />
                     {t('widgetManager.labels.justifyEnd')}
                   </label>
@@ -292,7 +292,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       name="justify"
                       value="space-between"
                       checked={widgetStyle.justify === 'space-between'}
-                      onChange={() => handleStyleChange('justify', 'space-between' as any)}
+                      onChange={() => handleStyleChange('justify', 'space-between' as unknown as number)}
                     />
                     {t('widgetManager.labels.justifyBetween')}
                   </label>
@@ -302,7 +302,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       name="justify"
                       value="space-around"
                       checked={widgetStyle.justify === 'space-around'}
-                      onChange={() => handleStyleChange('justify', 'space-around' as any)}
+                      onChange={() => handleStyleChange('justify', 'space-around' as unknown as number)}
                     />
                     {t('widgetManager.labels.justifyAround')}
                   </label>
@@ -382,6 +382,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
         onClick: handleCloseModal
       }]
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [widgetStyle, selectedWidgetType]);
 
   const handleAction = useCallback(async (action: 'addWidget' | 'import' | 'export') => {
@@ -494,6 +495,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
       default:
         break;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resetModalState]);
 
   const handleCloseModal = useCallback(() => {
@@ -534,7 +536,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
         containerBounds
       );
       setWidgetPosition(optimalPosition);
-    }, [existingWidgets, containerBounds, t, onAddWidget, onBackgroundChange, widgetDimensions, widgetPosition, widgetStyle]);
+    }, [existingWidgets, containerBounds]);
 
   const handleStyleChange = useCallback((property: keyof CssStyle, value: number) => {
     // Convert transparency from percentage to decimal

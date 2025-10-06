@@ -139,7 +139,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     const timeoutId = setTimeout(checkEmptyWidgets, 100);
 
     return () => clearTimeout(timeoutId);
-  }, [widgets]);
+  }, [widgets, isLocked]);
 
   // Global mouse event listeners
   React.useEffect(() => {
@@ -251,7 +251,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                   : undefined)}
                 {...(widget.id.includes('quick-actions') && onUpdateWidgetProps
                   ? {
-                      onButtonsChange: (buttons: any[]) =>
+                      onButtonsChange: (buttons: Array<{ icon: string; label: string; url: string }>) =>
                         onUpdateWidgetProps(widget.id, { buttons }),
                     }
                   : undefined)}
@@ -268,6 +268,8 @@ const Dashboard: React.FC<DashboardProps> = ({
       handleMouseDown,
       handleWidgetResize,
       handleRemoveWidget,
+      onBackgroundChange,
+      onUpdateWidgetProps,
     ]
   );
 
