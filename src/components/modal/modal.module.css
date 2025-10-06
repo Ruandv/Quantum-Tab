@@ -1,0 +1,276 @@
+/* ===================================
+   QUANTUM TAB - MODAL COMPONENT STYLES
+   ===================================
+   
+   Modal styles that match the main newtab.css design system
+   - Consistent gradient backgrounds
+   - White text and semi-transparent elements
+   - Blur effects and proper z-indexing
+   - Responsive design
+   
+   ================================= */
+
+/* Modal Backdrop */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+/* Modal Container */
+.modal {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 550px;
+  max-height: 85vh;
+  color: white;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Modal Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Modal Body */
+.body {
+  padding: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* Modal Footer */
+.footer {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+  justify-content: flex-end;
+}
+
+/* Action Buttons */
+.actionButton {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.actionButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.actionButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.actionButton:disabled:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: none;
+}
+
+/* Primary button variant */
+.actionButton.primary {
+  background: rgba(79, 172, 254, 0.2);
+  border-color: rgba(79, 172, 254, 0.4);
+}
+
+.actionButton.primary:hover {
+  background: rgba(79, 172, 254, 0.3);
+  border-color: rgba(79, 172, 254, 0.5);
+}
+
+/* Danger button variant */
+.actionButton.danger {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.actionButton.danger:hover {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* Success button variant */
+.actionButton.success {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.actionButton.success:hover {
+  background: rgba(34, 197, 94, 0.3);
+  border-color: rgba(34, 197, 94, 0.5);
+}
+
+/* Form Styles within Modal */
+.modal .formSection {
+  margin-bottom: 2rem;
+}
+
+.modal .formSection h3 {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  opacity: 0.9;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+}
+
+/* Input Fields */
+.modal input[type='text'],
+.modal input[type='number'],
+.modal textarea,
+.modal select {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modal input[type='text']:focus,
+.modal input[type='number']:focus,
+.modal textarea:focus,
+.modal select:focus {
+  outline: none;
+  border-color: rgba(79, 172, 254, 0.6);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.2);
+}
+
+.modal input::placeholder,
+.modal textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Form Field Styling */
+.modal .styleField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.modal .styleLabel {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.modal .styleLabel::after {
+  content: ':';
+}
+
+.modal .inputWithUnit {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.modal .inputWithUnit input[type='number'] {
+  padding-right: 2.5rem;
+  width: 100%;
+}
+
+.modal .inputUnit {
+  position: absolute;
+  right: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  font-weight: 500;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .modal {
+    width: 95%;
+    max-height: 90vh;
+  }
+  
+  .header,
+  .body,
+  .footer {
+    padding: 1rem;
+  }
+  
+  .title {
+    font-size: 1.25rem;
+  }
+  
+  .footer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .actionButton {
+    width: 100%;
+  }
+}
