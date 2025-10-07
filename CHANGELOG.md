@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0](https://github.com/Ruandv/Quantum-Tab/compare/v1.1.0...v1.2.0) (2025-10-07)
+
+
+### Features
+
+* Importing and Exporting of data [#5](https://github.com/Ruandv/Quantum-Tab/issues/5) ([#21](https://github.com/Ruandv/Quantum-Tab/issues/21)) ([8397f71](https://github.com/Ruandv/Quantum-Tab/commit/8397f71e06eb7702947f8c3d1dbc7506f2173d50))
+* sprint number widget ([#24](https://github.com/Ruandv/Quantum-Tab/issues/24)) ([19e6ad9](https://github.com/Ruandv/Quantum-Tab/commit/19e6ad9bf0746b596c53e505ed79f80ad338a963))
+
 ## [1.1.0](https://github.com/Ruandv/Quantum-Tab/compare/v1.0.0...v1.1.0) (2025-10-07)
 
 
