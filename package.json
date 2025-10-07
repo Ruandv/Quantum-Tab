@@ -1,6 +1,6 @@
 {
   "name": "quantum-tab",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "New tab. New intelligence.",
   "main": "dist/background.js",
   "scripts": {
