@@ -5,6 +5,7 @@ import {
   GitHubWidgetProps,
   WebsiteCounterProps,
   LocaleWidgetProps,
+  SprintNumberProps,
   WidgetType
 } from '../types/common';
 import LiveClock from '../components/LiveClock';
@@ -13,6 +14,7 @@ import BackgroundManager from '../components/BackgroundManager';
 import GitHubWidget from '../components/GitHubWidget';
 import WebsiteCounter from '../components/WebsiteCounter';
 import LocaleWidget from '../components/LocaleWidget';
+import SprintNumber from '../components/SprintNumber';
 import { defaultDimensions } from '@/types/defaults';
 
 export class WidgetRegistry {
@@ -126,6 +128,20 @@ export class WidgetRegistry {
       defaultDimensions: defaultDimensions,
       defaultProps: {
         selectedLocale: getBrowserLanguage(),
+      },
+    });
+
+    this.register<SprintNumberProps>({
+      id: 'sprint-number',
+      name: 'Sprint Number',
+      allowMultiples: true,
+      description: 'Track and display your current sprint number with dates',
+      component: SprintNumber,
+      defaultDimensions: { width: 300, height: 250 },
+      defaultProps: {
+        startDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
+        numberOfDays: 14,
+        currentSprint: 1,
       },
     });
   }

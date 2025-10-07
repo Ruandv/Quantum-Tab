@@ -22,3 +22,4 @@
 - Add error handling for user inputs and API calls
 - Commit messages should follow the Conventional Commits specification.
 - All commits should be atomic and have clear, descriptive messages and be very detailed.
+- All static text must be internationalized using the i18n framework.

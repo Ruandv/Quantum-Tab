@@ -183,5 +183,25 @@
       "continue": "Continue",
       "viewChanges": "View Changes"
     }
+  },
+  "sprintNumber": {
+    "labels": {
+      "sprint": "Sprint",
+      "start": "Start",
+      "end": "End"
+    },
+    "config": {
+      "startDate": "Sprint Start Date",
+      "numberOfDays": "Sprint Length (Days)",
+      "currentSprint": "Current Sprint Number",
+      "placeholders": {
+        "sprintLength": "Enter sprint length",
+        "sprintNumber": "Enter sprint number"
+      }
+    },
+    "errors": {
+      "invalidDateFormat": "Invalid start date format. Please use YYYY-MM-DD format.",
+      "calculationError": "Error calculating sprint information."
+    }
   }
 }
