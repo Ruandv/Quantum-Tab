@@ -26,15 +26,22 @@
   },
   "widgetManager": {
     "buttons": {
+      "actions": "Aksies",
       "addWidget": "Voeg Widget By",
-      "removeWidget": "Verwyder Widget"
+      "removeWidget": "Verwyder Widget",
+      "exportWidgets": "Voer Widgets Uit",
+      "importWidgets": "Voer Widgets In"
     },
     "tooltips": {
       "addWidget": "Voeg Widget By",
-      "removeWidget": "Verwyder Widget"
+      "removeWidget": "Verwyder Widget",
+      "exportWidgets": "Voer alle widgets uit na 'n JSON lêer",
+      "importWidgets": "Voer widgets in vanaf 'n JSON lêer"
     },
     "modal": {
       "title": "Voeg Nuwe Widget By",
+      "titleImport": "Voer Widgets In",
+      "titleImportSecrets": "Widgets Geheime",
       "sections": {
         "chooseType": "Kies Widget Tipe",
         "dimensions": "Widget Dimensies",

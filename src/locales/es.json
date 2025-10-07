@@ -26,19 +26,27 @@
     },
     "widgetManager": {
         "buttons": {
+            "actions": "Acciones",
             "addWidget": "Agregar Widget",
-            "removeWidget": "Eliminar Widget"
+            "removeWidget": "Eliminar Widget",
+            "exportWidgets": "Exportar Widgets",
+            "importWidgets": "Importar Widgets"
         },
         "tooltips": {
             "addWidget": "Agregar Widget",
-            "removeWidget": "Eliminar Widget"
+            "removeWidget": "Eliminar Widget",
+            "exportWidgets": "Exportar todos los widgets a un archivo JSON",
+            "importWidgets": "Importar widgets desde un archivo JSON"
         },
         "modal": {
             "title": "Agregar Nuevo Widget",
+            "titleImport": "Importar Widgets",
+            "titleImportSecrets": "Secretos de Widgets",
             "sections": {
                 "chooseType": "Elegir Tipo de Widget",
                 "dimensions": "Dimensiones del Widget",
                 "position": "Posición Inicial",
+                "styling": "Estilo del Widget",
                 "properties": "Propiedades Adicionales"
             }
         },
@@ -47,7 +55,25 @@
             "height": "Alto",
             "xPosition": "Posición X",
             "yPosition": "Posición Y",
-            "unknownWidget": "Widget {{unknown}}"
+            "unknownWidget": "Widget {{unknown}}",
+            "border": "Borde",
+            "radius": "Radio de Esquina",
+            "blur": "Desenfoque de Fondo",
+            "transparency": "Transparencia",
+            "backgroundColor": "Color de Fondo",
+            "red": "Rojo",
+            "green": "Verde",
+            "blue": "Azul",
+            "textAlign": "Alineación de Texto",
+            "left": "Izquierda",
+            "center": "Centro",
+            "right": "Derecha",
+            "justify": "Justificar Contenido",
+            "justifyStart": "Inicio",
+            "justifyCenter": "Centro",
+            "justifyEnd": "Final",
+            "justifyBetween": "Espacio Entre",
+            "justifyAround": "Espacio Alrededor"
         },
         "units": {
             "pixels": "px"
@@ -126,8 +152,7 @@
     "localeWidget": {
         "title": "Configuración de Idioma",
         "labels": {
-            "language": "Idioma de la Interfaz:",
-            "current": "Idioma Actual:"
+            "language": "Idioma de la Interfaz:"
         }
     },
     "githubIssues": {
@@ -135,6 +160,28 @@
         "links": {
             "requestFeature": "🧙‍♂️ Solicitar una función",
             "logBug": "🐛 Reportar un error"
+        }
+    },
+    "notifications": {
+        "welcome": {
+            "title": "¡Bienvenido a Quantum Tab!",
+            "message": "Gracias por instalar Quantum Tab. Transforma tu experiencia de nueva pestaña con widgets inteligentes y personalización.",
+            "featuresTitle": "Lo que puedes hacer:",
+            "features": {
+                "widgets": "Agregar widgets interactivos a tu panel",
+                "customization": "Personalizar colores, posiciones y estilos",
+                "languages": "Soporte para múltiples idiomas",
+                "backgrounds": "Subir imágenes de fondo personalizadas"
+            }
+        },
+        "update": {
+            "title": "¡Quantum Tab Actualizado!",
+            "message": "Quantum Tab se ha actualizado a la versión {{version}}."
+        },
+        "buttons": {
+            "getStarted": "Comenzar",
+            "continue": "Continuar",
+            "viewChanges": "Ver Cambios"
         }
     },
     "sprintNumber": {
