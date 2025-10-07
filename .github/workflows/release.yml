@@ -18,8 +18,8 @@ jobs:
       tag_name: ${{ steps.release.outputs.tag_name }}
       version: ${{ steps.release.outputs.version }}
     steps:
-      - name: � Create Release PR or Release
-        uses: google-github-actions/release-please-action@v4
+      - name: 🚀 Create Release PR or Release
+        uses: googleapis/release-please-action@v4
         id: release
         with:
           release-type: node
