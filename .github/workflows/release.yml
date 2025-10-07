@@ -61,7 +61,15 @@ jobs:
             echo "📝 Updating manifest.json from ${MANIFEST_VERSION} to ${VERSION}"
             jq --arg version "$VERSION" '.version = $version' manifest.json > manifest.tmp.json
             mv manifest.tmp.json manifest.json
-            echo "✅ Updated manifest.json version to ${VERSION}"
+            
+            # Commit the manifest.json version update back to repository
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add manifest.json
+            git commit -m "chore: update manifest.json version to ${VERSION} [skip ci]"
+            git push origin HEAD:main
+            
+            echo "✅ Updated and committed manifest.json version to ${VERSION}"
           else
             echo "✅ Manifest version is already correct: ${MANIFEST_VERSION}"
           fi
