@@ -15,9 +15,6 @@
         {"type": "test", "section": "🧪 Tests", "hidden": false},
         {"type": "build", "section": "🏗️ Build System", "hidden": false}
       ],
-      "extra-files": [
-        "manifest.json"
-      ],
       "version-file": "package.json"
     }
   },
