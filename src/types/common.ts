@@ -103,6 +103,9 @@ export interface QuickActionButtonItemProps {
   onRemoveButton: (index: number) => void;
 }
 
+export interface GitHubIssuesProps extends DefaultWidgetProps {
+}
+
 export interface GitHubWidgetProps extends DefaultWidgetProps {
   className?: string;
   patToken?: string;

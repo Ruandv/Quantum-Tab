@@ -438,7 +438,7 @@ const NewTab: React.FC = () => {
                     onDismiss={() => setShowNotification(false)}
                 />
             )}
-            <GitHubIssues />
+            <GitHubIssues isLocked={isLocked} />
         </div>
     );
 };
