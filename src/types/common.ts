@@ -37,14 +37,14 @@ export interface CssStyle {
 export interface DashboardWidget {
   id: string;
   allowMultiples: boolean;
-  component: React.ComponentType<any>;
-  props?: Record<string, any>;
+  component: React.ComponentType<Record<string, unknown>>;
+  props?: Record<string, unknown>;
   dimensions: Dimensions;
   position: Position;
   style: CssStyle;
 }
 
-export interface WidgetType<T = any> {
+export interface WidgetType<T = Record<string, unknown>> {
   id: string;
   name: string;
   allowMultiples: boolean;
@@ -158,7 +158,7 @@ export interface DashboardProps {
   onWidgetResize?: (widgetId: string, dimensions: Dimensions) => void;
   onWidgetMove?: (widgetId: string, position: Position) => void;
   onBackgroundChange?: (imageUrl: string) => void;
-  onUpdateWidgetProps?: (widgetId: string, newProps: any) => void;
+  onUpdateWidgetProps?: (widgetId: string, newProps: Record<string, unknown>) => void;
 }
 
 export interface WidgetManagerProps extends DefaultWidgetProps {
@@ -321,3 +321,24 @@ export interface GitHubApiResponse {
 // Background message types
 export type BackgroundMessage = GitHubApiRequest;
 export type BackgroundResponse = GitHubApiResponse;
+
+/**
+ * Type guard to check if a value is an InternalString
+ * Since InternalString is a branded type, we check for the brand property
+ * @param value - Value to check
+ * @returns True if value is an InternalString
+ */
+export const isSecureProperty = (key: string): boolean => {
+  const secureProps = [
+    'token',
+    'password',
+    'secret',
+    'key',
+    'credential',
+    'auth',
+    'api',
+    'pat', // Personal Access Token
+    'bearer',
+    'patToken']; // Add other secure property names here
+  return secureProps.map(prop => prop.toLowerCase()).includes(key.toLowerCase());
+};

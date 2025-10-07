@@ -129,5 +129,12 @@
             "language": "Idioma de la Interfaz:",
             "current": "Idioma Actual:"
         }
+    },
+    "githubIssues": {
+        "title": "Problemas de GitHub",
+        "links": {
+            "requestFeature": "🧙‍♂️ Solicitar una función",
+            "logBug": "🐛 Reportar un error"
+        }
     }
 }

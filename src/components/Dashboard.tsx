@@ -29,8 +29,8 @@ const Dashboard: React.FC<DashboardProps> = ({
 
     const lowestPoint = widgets.reduce((max, widget) => {
       // Calculate widget bottom including padding (2rem = 32px) and some extra margin
-      const widgetPadding = 64; // 2rem padding * 2 for top and bottom
-      const extraMargin = 40; // Additional breathing room
+      const widgetPadding = 0; // 2rem padding * 2 for top and bottom
+      const extraMargin = 5; // Additional breathing room
       const widgetBottom =
         widget.position.y + widget.dimensions.height + widgetPadding + extraMargin;
       return Math.max(max, widgetBottom);
@@ -139,7 +139,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     const timeoutId = setTimeout(checkEmptyWidgets, 100);
 
     return () => clearTimeout(timeoutId);
-  }, [widgets]);
+  }, [widgets, isLocked]);
 
   // Global mouse event listeners
   React.useEffect(() => {
@@ -165,7 +165,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         // Return a stable empty widget div instead of null to maintain consistent rendering
         return (
           <div
-            key={widget.id}
+            key={widget.id + index}
             className="widget-wrapper error-widget"
             style={{
               position: 'absolute',
@@ -191,7 +191,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         position: 'absolute',
         left: `${widget.position.x}px`,
         top: `${widget.position.y}px`,
-        zIndex: isDragging ? 1000 : 10 + index,
+        zIndex: isDragging ? 1000 : 0,
         cursor: isLocked ? 'default' : 'move',
         // ...(typeof widget.style.radius == 'number' && widget.style.radius > 0) ? { borderRadius: `${widget.style.radius}px` } : {},
         // ...(typeof widget.style.border == 'number' && widget.style.border > 0) ? { border: `${widget.style.border}px solid` } : {}
@@ -251,7 +251,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                   : undefined)}
                 {...(widget.id.includes('quick-actions') && onUpdateWidgetProps
                   ? {
-                      onButtonsChange: (buttons: any[]) =>
+                      onButtonsChange: (buttons: Array<{ icon: string; label: string; url: string }>) =>
                         onUpdateWidgetProps(widget.id, { buttons }),
                     }
                   : undefined)}
@@ -268,6 +268,8 @@ const Dashboard: React.FC<DashboardProps> = ({
       handleMouseDown,
       handleWidgetResize,
       handleRemoveWidget,
+      onBackgroundChange,
+      onUpdateWidgetProps,
     ]
   );
 

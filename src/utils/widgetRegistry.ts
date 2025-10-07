@@ -5,7 +5,7 @@ import {
   GitHubWidgetProps,
   WebsiteCounterProps,
   LocaleWidgetProps,
-  WidgetType,
+  WidgetType
 } from '../types/common';
 import LiveClock from '../components/LiveClock';
 import QuickActionButtons from '../components/QuickActionButtons';

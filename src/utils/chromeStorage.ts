@@ -1,4 +1,4 @@
-import { Dimensions, Position, CssStyle, STORAGE_KEYS } from '../types/common';
+import { Dimensions, Position, CssStyle, STORAGE_KEYS, WebsiteCounterData } from '../types/common';
 import { defaultDimensions, defaultPosition, defaultStyle } from '../types/defaults';
 // Storage keys for Chrome extension storage
 
@@ -7,7 +7,7 @@ export interface SerializedWidget {
   id: string;
   allowMultiples: boolean;
   component: string; // Stored as widget type ID or component name
-  props?: Record<string, any>;
+  props?: Record<string, unknown>;
   dimensions: Dimensions;
   position: Position;
   style: CssStyle;
@@ -194,7 +194,7 @@ export const chromeStorage = {
   },
 
   // Generic get method for custom data
-  get: async (key: string): Promise<any> => {
+  get: async (key: string): Promise<Record<string, unknown>> => {
     try {
       const result = await chrome.storage.local.get(key);
       return result;
@@ -205,7 +205,7 @@ export const chromeStorage = {
   },
 
   // Generic set method for custom data
-  set: async (key: string, value: any): Promise<boolean> => {
+  set: async (key: string, value: unknown): Promise<boolean> => {
     try {
       await chrome.storage.local.set({ [key]: value });
       return true;
@@ -216,7 +216,7 @@ export const chromeStorage = {
   },
 
   // Save website counter data
-  saveWebsiteCounters: async (counters: any[]): Promise<boolean> => {
+  saveWebsiteCounters: async (counters: WebsiteCounterData[]): Promise<boolean> => {
     try {
       await chrome.storage.local.set({
         websiteCounters: counters,
@@ -229,7 +229,7 @@ export const chromeStorage = {
   },
 
   // Load website counter data
-  loadWebsiteCounters: async (): Promise<any[]> => {
+  loadWebsiteCounters: async (): Promise<WebsiteCounterData[]> => {
     try {
       const result = await chrome.storage.local.get('websiteCounters');
       return result.websiteCounters || [];
