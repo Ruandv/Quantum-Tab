@@ -33,6 +33,9 @@ jobs:
     steps:
       - name: 🔄 Checkout Repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
@@ -43,7 +46,9 @@ jobs:
       - name: 📥 Install Dependencies
         run: npm ci
 
-      - name: � Update manifest.json Version
+      - name: 📝 Update manifest.json Version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION="${{ needs.release-please.outputs.version }}"
           echo "Updating manifest.json to version: ${VERSION}"
@@ -67,7 +72,27 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add manifest.json
             git commit -m "chore: update manifest.json version to ${VERSION} [skip ci]"
-            git push origin HEAD:main
+            
+            # Use gh CLI to push with proper permissions
+            gh auth setup-git
+            git push origin HEAD:main || {
+              echo "⚠️ Failed to push to protected main branch"
+              echo "Creating pull request for manifest.json update..."
+              
+              # Create a new branch for the manifest update
+              BRANCH_NAME="chore/update-manifest-${VERSION}"
+              git checkout -b "${BRANCH_NAME}"
+              git push origin "${BRANCH_NAME}"
+              
+              # Create PR using gh CLI
+              gh pr create \
+                --title "chore: update manifest.json version to ${VERSION}" \
+                --body "Auto-generated PR to update manifest.json version to ${VERSION} after release" \
+                --base main \
+                --head "${BRANCH_NAME}"
+              
+              echo "📋 Created PR for manifest.json update"
+            }
             
             echo "✅ Updated and committed manifest.json version to ${VERSION}"
           else
