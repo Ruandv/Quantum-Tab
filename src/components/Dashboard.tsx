@@ -134,7 +134,6 @@ const Dashboard: React.FC<DashboardProps> = ({
       setEmptyWidgets(newEmptyWidgets);
     };
 
-    // Check immediately and after a short delay to ensure DOM is updated
     checkEmptyWidgets();
     const timeoutId = setTimeout(checkEmptyWidgets, 100);
 
