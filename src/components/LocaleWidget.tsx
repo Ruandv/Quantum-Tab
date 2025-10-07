@@ -106,11 +106,6 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
     setIsDropdownOpen(!isDropdownOpen);
   }, [isDropdownOpen]);
 
-  // Get current locale display info
-  const getCurrentLocaleInfo = () => {
-    return availableLocales.find((locale) => locale.code === currentLocale) || availableLocales[0];
-  };
-
   // Return null if locked (after all hooks have been called)
   if (isLocked) {
     return null;
@@ -122,7 +117,6 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
 
       <div className="locale-selector">
         <label className="locale-label">{t('localeWidget.labels.language')}</label>
-
         <div className="custom-dropdown" ref={dropdownRef}>
           <div
             className="dropdown-trigger"
@@ -137,8 +131,8 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
             }}
           >
             <span className="selected-option">
-              <span className="locale-flag">{getCurrentLocaleInfo().flag}</span>
-              <span className="locale-name">{getCurrentLocaleInfo().name}</span>
+              <span className="locale-flag">{availableLocales.find((locale) => locale.code === i18n.language)?.flag}</span>
+              <span className="locale-name">{availableLocales.find((locale) => locale.code === i18n.language)?.name}</span>
             </span>
             <span className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}>▼</span>
           </div>
@@ -161,7 +155,7 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
                 >
                   <span className="locale-flag">{locale.flag}</span>
                   <span className="locale-name">{locale.name}</span>
-                  {locale.code === currentLocale && <span className="checkmark">✓</span>}
+                  {locale.code ===  i18n.language && <span className="checkmark">✓</span>}
                 </div>
               ))}
             </div>
