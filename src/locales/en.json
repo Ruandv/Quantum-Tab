@@ -155,6 +155,13 @@
       "language": "Interface Language:"
     }
   },
+  "githubIssues": {
+    "title": "GitHub Issues",
+    "links": {
+      "requestFeature": "🧙‍♂️ Request a feature",
+      "logBug": "🐛 Log a bug"
+    }
+  },
   "notifications": {
     "welcome": {
       "title": "Welcome to Quantum Tab!",

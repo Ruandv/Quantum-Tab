@@ -148,6 +148,13 @@
       "language": "Koppelvlak Taal:"
     }
   },
+  "githubIssues": {
+    "title": "GitHub Kwessies",
+    "links": {
+      "requestFeature": "🧙‍♂️ Versoek 'n funksie",
+      "logBug": "🐛 Rapporteer 'n fout"
+    }
+  },
   "notifications": {
     "welcome": {
       "title": "Welkom by Quantum Tab!",
