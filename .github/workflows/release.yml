@@ -43,18 +43,38 @@ jobs:
       - name: 📥 Install Dependencies
         run: npm ci
 
-      - name: � Update manifest.json Version
+      - name: 🔍 Verify manifest.json Version
         run: |
           VERSION="${{ needs.release-please.outputs.version }}"
-          echo "Updating manifest.json to version: ${VERSION}"
+          echo "Verifying manifest.json version matches release version: ${VERSION}"
           
-          # Update version in manifest.json using jq
+          # Install jq if not available
           sudo apt-get install -y jq
-          jq --arg version "${VERSION}" '.version = $version' manifest.json > manifest.tmp.json
-          mv manifest.tmp.json manifest.json
           
-          echo "✅ Updated manifest.json version to ${VERSION}"
-          echo "📄 Manifest content:"
+          # Check current manifest version
+          MANIFEST_VERSION=$(jq -r '.version' manifest.json)
+          echo "Current manifest.json version: ${MANIFEST_VERSION}"
+          echo "Expected version: ${VERSION}"
+          
+          if [ "$MANIFEST_VERSION" != "$VERSION" ]; then
+            echo "❌ Manifest version mismatch: $MANIFEST_VERSION != $VERSION"
+            echo "Updating manifest.json..."
+            jq --arg version "$VERSION" '.version = $version' manifest.json > manifest.tmp.json
+            mv manifest.tmp.json manifest.json
+            
+            # Configure git and commit the fix
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add manifest.json
+            git commit -m "fix: update manifest.json version to $VERSION"
+            git push
+            
+            echo "✅ Updated and committed manifest.json version to $VERSION"
+          else
+            echo "✅ Manifest version is correct: $MANIFEST_VERSION"
+          fi
+          
+          echo "📄 Final manifest content:"
           cat manifest.json
 
       - name: �🔍 Type Check
