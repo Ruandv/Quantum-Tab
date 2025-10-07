@@ -136,6 +136,13 @@ export interface LocaleWidgetProps extends DefaultWidgetProps {
   onLocaleChange?: (locale: string) => void;
 }
 
+export interface SprintNumberProps extends DefaultWidgetProps {
+  className?: string;
+  startDate: string; // Format: YYYY-MM-DD
+  numberOfDays: number;
+  currentSprint: number;
+}
+
 export interface ResizableWidgetProps {
   id: string;
   children: React.ReactNode;

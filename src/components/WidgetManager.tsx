@@ -49,7 +49,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
       <div className="widget-types">{availableWidgets.map((widgetType: WidgetType) => {
         const component = existingWidgets.find((widget) => widget.id.startsWith(widgetType.id));
         if (component && component.allowMultiples === false) {
-          return <div key={widgetType.id}></div>;
+          return <></>;
         }
         return (
           <div
@@ -316,20 +316,74 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
               <div className="form-section additional-properties">
                 <h3>{t('widgetManager.modal.sections.properties')}</h3>
                 <div className="properties-grid">
-                  {Object.entries(selectedWidgetType.defaultProps).map(([key, value]) => (
-                    <div key={key} className="property-field">
-                      <label className="property-label">
-                        {key.charAt(0).toUpperCase() +
-                          key.slice(1).replace(/([A-Z])/g, ' $1')}
-                      </label>
-                      <input
-                        type="text"
-                        value={String(value ?? '')}
-                        placeholder={`Enter ${key.toLowerCase()}`}
-                        onChange={(e) => handlePropertyChange(key, e.target.value)}
-                      />
-                    </div>
-                  ))}
+                  {Object.entries(selectedWidgetType.defaultProps).map(([key, value]) => {
+                    // Custom rendering for SprintNumber widget
+                    if (selectedWidgetType.id === 'sprint-number') {
+                      if (key === 'startDate') {
+                        return (
+                          <div key={key} className="property-field">
+                            <label className="property-label">
+                              {t('sprintNumber.config.startDate')}
+                            </label>
+                            <input
+                              type="date"
+                              value={String(value ?? '')}
+                              onChange={(e) => handlePropertyChange(key, e.target.value)}
+                            />
+                          </div>
+                        );
+                      }
+                      if (key === 'numberOfDays') {
+                        return (
+                          <div key={key} className="property-field">
+                            <label className="property-label">
+                              {t('sprintNumber.config.numberOfDays')}
+                            </label>
+                            <input
+                              type="number"
+                              min="1"
+                              max="90"
+                              value={String(value ?? '')}
+                              placeholder={t('sprintNumber.config.placeholders.sprintLength')}
+                              onChange={(e) => handlePropertyChange(key, e.target.value)}
+                            />
+                          </div>
+                        );
+                      }
+                      if (key === 'currentSprint') {
+                        return (
+                          <div key={key} className="property-field">
+                            <label className="property-label">
+                              {t('sprintNumber.config.currentSprint')}
+                            </label>
+                            <input
+                              type="number"
+                              min="1"
+                              value={String(value ?? '')}
+                              placeholder={t('sprintNumber.config.placeholders.sprintNumber')}
+                              onChange={(e) => handlePropertyChange(key, e.target.value)}
+                            />
+                          </div>
+                        );
+                      }
+                    }
+                    
+                    // Default rendering for other widgets
+                    return (
+                      <div key={key} className="property-field">
+                        <label className="property-label">
+                          {key.charAt(0).toUpperCase() +
+                            key.slice(1).replace(/([A-Z])/g, ' $1')}
+                        </label>
+                        <input
+                          type="text"
+                          value={String(value ?? '')}
+                          placeholder={`Enter ${key.toLowerCase()}`}
+                          onChange={(e) => handlePropertyChange(key, e.target.value)}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -561,13 +615,21 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     (key: string, value: string) => {
       if (!selectedWidgetType) return;
 
+      // Parse numeric values for SprintNumber widget
+      let parsedValue: string | number = value;
+      if (selectedWidgetType.id === 'sprint-number') {
+        if (key === 'numberOfDays' || key === 'currentSprint') {
+          parsedValue = parseInt(value, 10) || 0;
+        }
+      }
+
       setSelectedWidgetType((prev) =>
         prev
           ? {
             ...prev,
             defaultProps: {
               ...prev.defaultProps,
-              [key]: value,
+              [key]: parsedValue,
             },
           }
           : null

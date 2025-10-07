@@ -176,5 +176,25 @@
       "continue": "Gaan voort",
       "viewChanges": "Bekyk Veranderinge"
     }
+  },
+  "sprintNumber": {
+    "labels": {
+      "sprint": "Sprint",
+      "start": "Begin",
+      "end": "Einde"
+    },
+    "config": {
+      "startDate": "Sprint Begin Datum",
+      "numberOfDays": "Sprint Lengte (Dae)",
+      "currentSprint": "Huidige Sprint Nommer",
+      "placeholders": {
+        "sprintLength": "Voer sprint lengte in",
+        "sprintNumber": "Voer sprint nommer in"
+      }
+    },
+    "errors": {
+      "invalidDateFormat": "Ongeldige begin datum formaat. Gebruik asseblief JJJJ-MM-DD formaat.",
+      "calculationError": "Fout met berekening van sprint inligting."
+    }
   }
 }
