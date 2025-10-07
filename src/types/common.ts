@@ -1,18 +1,11 @@
 // Centralized type definitions for the entire application
 
-// Utility type to make all properties required except className, callback functions, and widgetId
-type RequiredProps<T> = Required<
-  Omit<
-    T,
-    | 'className'
-    | 'buttons'
-    | 'isLocked'
-    | 'widgetId'
-    | 'onBackgroundChange'
-    | 'onButtonsChange'
-    | 'onLocaleChange'
-  >
->;
+// Define the keys that should be optional in defaultProps
+type OptionalKeys = 'className' | 'buttons' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange';
+
+// Utility type to make all properties required except for specific optional ones
+// but still allow the optional properties to be provided in defaultProps
+type RequiredProps<T> = Required<Omit<T, OptionalKeys & keyof T>> & Partial<Pick<T, OptionalKeys & keyof T>>;
 
 export interface Position {
   x: number;
@@ -56,6 +49,7 @@ export interface WidgetType<T = Record<string, unknown>> {
 interface DefaultWidgetProps {
   isLocked: boolean;
   widgetId?: string; // Optional widget ID for event handling
+  widgetHeading?: string; // Optional widget heading
 }
 
 export interface SavedData {

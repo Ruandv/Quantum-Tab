@@ -317,70 +317,45 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                 <h3>{t('widgetManager.modal.sections.properties')}</h3>
                 <div className="properties-grid">
                   {Object.entries(selectedWidgetType.defaultProps).map(([key, value]) => {
-                    // Custom rendering for SprintNumber widget
-                    if (selectedWidgetType.id === 'sprint-number') {
-                      if (key === 'startDate') {
-                        return (
-                          <div key={key} className="property-field">
-                            <label className="property-label">
-                              {t('sprintNumber.config.startDate')}
-                            </label>
-                            <input
-                              type="date"
-                              value={String(value ?? '')}
-                              onChange={(e) => handlePropertyChange(key, e.target.value)}
-                            />
-                          </div>
-                        );
-                      }
-                      if (key === 'numberOfDays') {
-                        return (
-                          <div key={key} className="property-field">
-                            <label className="property-label">
-                              {t('sprintNumber.config.numberOfDays')}
-                            </label>
-                            <input
-                              type="number"
-                              min="1"
-                              max="90"
-                              value={String(value ?? '')}
-                              placeholder={t('sprintNumber.config.placeholders.sprintLength')}
-                              onChange={(e) => handlePropertyChange(key, e.target.value)}
-                            />
-                          </div>
-                        );
-                      }
-                      if (key === 'currentSprint') {
-                        return (
-                          <div key={key} className="property-field">
-                            <label className="property-label">
-                              {t('sprintNumber.config.currentSprint')}
-                            </label>
-                            <input
-                              type="number"
-                              min="1"
-                              value={String(value ?? '')}
-                              placeholder={t('sprintNumber.config.placeholders.sprintNumber')}
-                              onChange={(e) => handlePropertyChange(key, e.target.value)}
-                            />
-                          </div>
-                        );
-                      }
-                    }
-                    
-                    // Default rendering for other widgets
                     return (
                       <div key={key} className="property-field">
                         <label className="property-label">
                           {key.charAt(0).toUpperCase() +
                             key.slice(1).replace(/([A-Z])/g, ' $1')}
                         </label>
-                        <input
-                          type="text"
-                          value={String(value ?? '')}
-                          placeholder={`Enter ${key.toLowerCase()}`}
-                          onChange={(e) => handlePropertyChange(key, e.target.value)}
-                        />
+                        {
+
+                          typeof value === 'boolean' ? (
+                            <label className="toggle-switch">
+                              <input
+                                type="checkbox"
+                                checked={value}
+                                onChange={(e) => handlePropertyChange(key, e.target.checked.toString())}
+                              />
+                              <span className="slider" />
+                            </label>
+                          ) : !key.toLowerCase().includes('format') && key.toLowerCase().includes('date') && (value.toString().length > 6) ? (
+                            <input
+                              type="date"
+                              value={String(value ?? '')}
+                              onChange={(e) => handlePropertyChange(key, e.target.value)}
+                            />
+                          ) : key.toLowerCase().includes('number') || key.toLowerCase().includes('currentsprint') ? (
+                            <input
+                              type="number"
+                              value={String(value ?? '')}
+                              placeholder={`Enter ${key.toLowerCase()}`}
+                              onChange={(e) => handlePropertyChange(key, e.target.value)}
+                            />
+                          ) : (
+                            <input
+                              type="text"
+                              value={String(value ?? '')}
+                              placeholder={`Enter ${key.toLowerCase()}`}
+                              onChange={(e) => handlePropertyChange(key, e.target.value)}
+                            />
+                          )
+                        }
                       </div>
                     );
                   })}
