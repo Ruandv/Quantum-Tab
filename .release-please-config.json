@@ -16,11 +16,7 @@
         {"type": "build", "section": "🏗️ Build System", "hidden": false}
       ],
       "extra-files": [
-        {
-          "type": "json",
-          "path": "manifest.json",
-          "jsonpath": "$.version"
-        }
+        "manifest.json"
       ],
       "version-file": "package.json"
     }
