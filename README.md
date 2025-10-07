@@ -55,6 +55,10 @@
 |:---:|:---:|:---:|
 | PR monitoring<br/>PAT authentication<br/>Real-time updates | Visit tracking<br/>Favicon display<br/>Statistics & trends | Multi-language UI<br/>Instant switching<br/>Persistent preferences |
 
+| 🏃 **Sprint Number** | | |
+|:---:|:---:|:---:|
+| Track sprint cycles<br/>Auto-calculate sprint dates<br/>Multiple sprint tracking | | |
+
 </div>
 
 ### 🔥 **Core Technologies**
@@ -282,6 +286,25 @@ npm run dev
 
 **Multiple Instances:** ❌ No (single language settings)  
 **Available Languages:** English ![alt text](./public/images/us.png), Afrikaans ![alt text](./public/images/za.png), Spanish ![alt text](./public/images/es.png)
+
+</details>
+
+<details>
+<summary>🏃 <strong>Sprint Number Widget</strong></summary>
+
+**Track your agile sprint cycles with automatic calculations**
+
+✨ **Features:**
+- 📅 Configure sprint start date, length, and current sprint number
+- 🔄 Automatic sprint calculation based on elapsed days
+- 📊 Display current sprint number with start/end dates
+- ⏰ Live updates at midnight each day
+- 🎯 Configurable sprint length (default: 14 days)
+- 📈 Perfect for agile teams and project management
+
+**Multiple Instances:** ✅ Yes (track multiple sprint schedules)  
+**Configuration:** Set once when adding widget  
+**Calculation:** `(Today - StartDate) / SprintLength + BaseSprint`
 
 </details>
 

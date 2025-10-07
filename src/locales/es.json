@@ -136,5 +136,25 @@
             "requestFeature": "🧙‍♂️ Solicitar una función",
             "logBug": "🐛 Reportar un error"
         }
+    },
+    "sprintNumber": {
+        "labels": {
+            "sprint": "Sprint",
+            "start": "Inicio",
+            "end": "Fin"
+        },
+        "config": {
+            "startDate": "Fecha de Inicio del Sprint",
+            "numberOfDays": "Duración del Sprint (Días)",
+            "currentSprint": "Número de Sprint Actual",
+            "placeholders": {
+                "sprintLength": "Ingrese la duración del sprint",
+                "sprintNumber": "Ingrese el número de sprint"
+            }
+        },
+        "errors": {
+            "invalidDateFormat": "Formato de fecha de inicio inválido. Por favor, use el formato AAAA-MM-DD.",
+            "calculationError": "Error al calcular la información del sprint."
+        }
     }
 }
