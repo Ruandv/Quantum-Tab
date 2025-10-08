@@ -10,6 +10,7 @@
     "format": "prettier --write src/**/*.{ts,tsx,css,html}",
     "type-check": "tsc --noEmit",
     "pre-release": "npm run type-check && npm run lint && npm run format && npm run build",
+    "package": "node ./scripts/create-zip.js",
     "commit": "git-cz",
     "prepare": "husky install || true"
   },

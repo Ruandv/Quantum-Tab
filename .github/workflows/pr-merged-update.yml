@@ -1,0 +1,42 @@
+name: Update Slack on PR Merge
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  update-slack:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore Slack PR cache
+        uses: actions/cache@v4
+        with:
+          path: .slack-cache
+          key: slack-pr-tracker-${{ github.repository }}
+
+      - name: Find Slack timestamp
+        id: find-ts
+        run: |
+          ts=$(grep "^${{ github.event.pull_request.number }}=" .slack-cache/tracker.txt | cut -d= -f2)
+          echo "ts=$ts" >> $GITHUB_OUTPUT
+
+      - name: Update Slack message
+        run: |
+          curl -X POST https://slack.com/api/chat.update \
+            -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+            -H "Content-type: application/json" \
+            --data '{
+              "channel": "'"$SLACK_CHANNEL_ID"'",
+              "ts": "'"$SLACK_TS"'",
+              "text": "✅ Merged: <'"$PR_URL"'|'"$PR_TITLE"'>"
+            }'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          SLACK_TS: ${{ steps.find-ts.outputs.ts }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_TITLE: ${{ github.event.pull_request.title }}

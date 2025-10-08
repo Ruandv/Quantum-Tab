@@ -1,0 +1,37 @@
+name: Notify Slack on PR Open
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  notify-slack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore Slack PR cache
+        uses: actions/cache@v4
+        with:
+          path: .slack-cache
+          key: slack-pr-tracker-${{ github.repository }}
+
+      - name: Create cache folder if missing
+        run: mkdir -p .slack-cache
+
+      - name: Send Slack message
+        id: slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "channel": "${{ secrets.SLACK_CHANNEL_ID }}",
+              "text": "🔔 New PR needs review: <${{ github.event.pull_request.html_url }}|${{ github.event.pull_request.title }}>"
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Save Slack timestamp
+        run: |
+          echo "${{ github.event.pull_request.number }}=${{ steps.slack.outputs.ts }}" >> .slack-cache/tracker.txt
