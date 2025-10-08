@@ -41,6 +41,7 @@ export class WidgetRegistry {
       component: LiveClock,
       defaultDimensions: { width: 400, height: 200 },
       defaultProps: {
+        widgetHeading: 'Live Clock',
         timeZone: getBrowserRegion(),
         dateFormat: 'yyyy-MM-dd',
         timeFormat: 'hh:mm a',
@@ -58,6 +59,7 @@ export class WidgetRegistry {
       component: QuickActionButtons,
       defaultDimensions: { width: 350, height: 200 },
       defaultProps: {
+        widgetHeading: 'Quick Actions',
         buttons: [
           {
             icon: '🐙',
@@ -80,7 +82,9 @@ export class WidgetRegistry {
       description: 'Upload and manage custom background images',
       component: BackgroundManager,
       defaultDimensions: { width: 320, height: 320 },
-      defaultProps: {},
+      defaultProps: {
+        widgetHeading: 'Background Manager',
+      },
     });
 
     this.register<GitHubWidgetProps>({
@@ -91,6 +95,7 @@ export class WidgetRegistry {
       component: GitHubWidget,
       defaultDimensions: { width: 400, height: 250 },
       defaultProps: {
+        widgetHeading: 'GitHub Repo',
         patToken: '',
         repositoryUrl: '',
       },
@@ -104,7 +109,8 @@ export class WidgetRegistry {
       component: WebsiteCounter,
       defaultDimensions: { width: 350, height: 300 },
       defaultProps: {
-        websites: ['google.com', 'github.com', 'mybroadband.co.za'].map((url) => {
+        widgetHeading: 'Website Counter',
+        websites: ['google.com', 'github.com'].map((url) => {
           const hostname = url.replace('www.', '');
           return {
             url,
@@ -127,6 +133,7 @@ export class WidgetRegistry {
       component: LocaleWidget,
       defaultDimensions: defaultDimensions,
       defaultProps: {
+        widgetHeading: 'Language Settings',
         selectedLocale: getBrowserLanguage(),
       },
     });
@@ -139,6 +146,7 @@ export class WidgetRegistry {
       component: SprintNumber,
       defaultDimensions: { width: 300, height: 250 },
       defaultProps: {
+        widgetHeading: 'Sprint Number',
         startDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
         numberOfDays: 14,
         currentSprint: 1,
