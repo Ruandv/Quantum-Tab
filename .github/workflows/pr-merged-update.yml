@@ -18,6 +18,18 @@ jobs:
           path: .slack-cache
           key: slack-pr-tracker-${{ github.repository }}
 
+      - name: Validate Slack configuration
+        run: |
+          if [ -z "${{ secrets.SLACK_CHANNEL_ID }}" ]; then
+            echo "::error::SLACK_CHANNEL_ID secret is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.SLACK_BOT_TOKEN }}" ]; then
+            echo "::error::SLACK_BOT_TOKEN secret is not set"
+            exit 1
+          fi
+          echo "Slack configuration is valid"
+
       - name: Find Slack timestamp
         id: find-ts
         run: |
