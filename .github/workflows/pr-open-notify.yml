@@ -40,7 +40,7 @@ jobs:
                   token: ${{ secrets.SLACK_BOT_TOKEN }}
                   payload: |
                       {
-                        "channel": ${{ secrets.SLACK_CHANNEL_ID }}
+                        "channel": "${{ secrets.SLACK_CHANNEL_ID }}",
                         "text": "🔔 New PR needs review: <${{ github.event.pull_request.html_url }}|${{ github.event.pull_request.title }}>"
                       }
               env:
