@@ -37,6 +37,8 @@ const NewTab: React.FC = () => {
 
             const clockWidget: DashboardWidget = {
                 id: 'live-clock-1',
+                name: 'Live Clock',
+                description: 'Real-time clock with customizable timezone and format',
                 allowMultiples: true,
                 position: defaultPosition,
                 dimensions: defaultDimensions,
@@ -188,6 +190,9 @@ const NewTab: React.FC = () => {
                             component: restoredComponent,
                             // Ensure style property exists with defaults if missing
                             style: widget.style || defaultStyle,
+                            // Add name and description from widget registry if missing
+                            name: widget.name || 'Unknown Widget',
+                            description: widget.description || 'Widget description not available',
                         };
                         return restoredWidget;
                     } catch (widgetError) {
@@ -197,6 +202,8 @@ const NewTab: React.FC = () => {
                             ...widget,
                             component: componentMap['LiveClock'],
                             style: widget.style || defaultStyle,
+                            name: widget.name || 'Live Clock',
+                            description: widget.description || 'Real-time clock with customizable timezone and format',
                         };
                         return fallbackWidget;
                     }
@@ -295,6 +302,8 @@ const NewTab: React.FC = () => {
 
                     return {
                         id: widget.id,
+                        name: widget.name,
+                        description: widget.description,
                         allowMultiples: widgetType?.allowMultiples || false,
                         component: serializedComponent,
                         props: widget.props,
@@ -438,7 +447,7 @@ const NewTab: React.FC = () => {
                     onDismiss={() => setShowNotification(false)}
                 />
             )}
-            <GitHubIssues />
+            <GitHubIssues isLocked={isLocked} />
         </div>
     );
 };

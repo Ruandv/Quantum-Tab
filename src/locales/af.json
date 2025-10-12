@@ -203,5 +203,69 @@
       "invalidDateFormat": "Ongeldige begin datum formaat. Gebruik asseblief JJJJ-MM-DD formaat.",
       "calculationError": "Fout met berekening van sprint inligting."
     }
+  },
+  "widgets": {
+    "liveClock": {
+      "name": "Lewendige Klok",
+      "description": "Intydse klok met aanpasbare tydsone en formaat"
+    },
+    "quickActions": {
+      "name": "Vinnige Aksies",
+      "description": "Vinnige toegang knoppies na jou gunsteling webwerwe"
+    },
+    "backgroundManager": {
+      "name": "Agtergrond Bestuurder",
+      "description": "Bestuur en pas jou paneel agtergrond aan"
+    },
+    "githubWidget": {
+      "name": "GitHub Kwessies",
+      "description": "Vertoon en spoor GitHub kwessies en trekversoeke"
+    },
+    "websiteCounter": {
+      "name": "Webwerf Teller",
+      "description": "Spoor en vertoon webwerf besoek statistieke",
+      "loading": "Laai tellers...",
+      "stats": {
+        "totalVisits": "{{count}} totale besoeke",
+        "trackedSites": "{{current}}/{{max}} webwerwe"
+      },
+      "emptyState": {
+        "title": "Geen webwerwe word gevolg nie",
+        "hint": "Voeg 'n webwerf by om besoeke te begin tel"
+      },
+      "buttons": {
+        "addWebsite": "➕ Voeg Webwerf By",
+        "resetAll": "🔄 Stel Alles Terug",
+        "remove": "Verwyder webwerf"
+      },
+      "placeholders": {
+        "websiteUrl": "Voer webwerf URL in (bv. github.com)"
+      },
+      "alerts": {
+        "alreadyTracked": "Hierdie webwerf word reeds gevolg!",
+        "maxReached": "Maksimum van {{max}} webwerwe kan gevolg word.",
+        "invalidUrl": "Voer asseblief 'n geldige webwerf URL in"
+      },
+      "confirm": {
+        "resetCounters": "Is jy seker jy wil alle webwerf tellers terugstel?"
+      },
+      "lastVisited": {
+        "never": "Nooit",
+        "today": "Vandag",
+        "yesterday": "Gister",
+        "daysAgo": "{{days}} dae gelede"
+      },
+      "alt": {
+        "favicon": "{{hostname}} favicon"
+      }
+    },
+    "localeWidget": {
+      "name": "Taal Kieser",
+      "description": "Verander jou voorkeur taal en streek"
+    },
+    "sprintNumber": {
+      "name": "Sprint Teller",
+      "description": "Spoor sprint nommers en projek tydlyne"
+    }
   }
 }

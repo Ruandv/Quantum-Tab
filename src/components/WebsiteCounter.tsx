@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { WebsiteCounterProps, WebsiteCounterData } from '../types/common';
 import chromeStorage from '../utils/chromeStorage';
 import { addWidgetRemovalListener } from '../utils/widgetEvents';
+import i18n from '../i18n';
 
 const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
   className = '',
@@ -11,6 +12,7 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
   isLocked = false,
   sortBy = 'count',
   widgetId,
+  widgetHeading
 }) => {
   const [websiteData, setWebsiteData] = useState<WebsiteCounterData[]>(websites);
   const [isLoading, setIsLoading] = useState(true);
@@ -135,13 +137,13 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
 
       // Check if website is already being tracked
       if (websiteData.some((site) => site.hostname === hostname)) {
-        alert('This website is already being tracked!');
+        alert(i18n.t('websiteCounter.alerts.alreadyTracked'));
         return;
       }
 
       // Check if we've reached the maximum number of websites
       if (websiteData.length >= maxWebsites) {
-        alert(`Maximum of ${maxWebsites} websites can be tracked.`);
+        alert(i18n.t('websiteCounter.alerts.maxReached', { max: maxWebsites }));
         return;
       }
 
@@ -160,7 +162,7 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
       setNewWebsiteUrl('');
       setIsAddingWebsite(false);
     } catch (error) {
-      alert('Please enter a valid website URL');
+      alert(i18n.t('websiteCounter.alerts.invalidUrl'));
     }
   }, [newWebsiteUrl, websiteData, maxWebsites, showFavicons, updateWebsiteData]);
 
@@ -175,7 +177,7 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
 
   // Reset all counters
   const handleResetCounters = useCallback(() => {
-    if (confirm('Are you sure you want to reset all website counters?')) {
+    if (confirm(i18n.t('websiteCounter.confirm.resetCounters'))) {
       const resetData = websiteData.map((site) => ({
         ...site,
         count: 0,
@@ -187,15 +189,15 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
 
   // Format the last visited date
   const formatLastVisited = useCallback((timestamp: number) => {
-    if (timestamp === 0) return 'Never';
+    if (timestamp === 0) return i18n.t('websiteCounter.lastVisited.never');
     const date = new Date(timestamp);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return 'Yesterday';
-    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays === 0) return i18n.t('websiteCounter.lastVisited.today');
+    if (diffDays === 1) return i18n.t('websiteCounter.lastVisited.yesterday');
+    if (diffDays < 7) return i18n.t('websiteCounter.lastVisited.daysAgo', { days: diffDays });
     return date.toLocaleDateString();
   }, []);
 
@@ -209,7 +211,7 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
       <div className={`website-counter-widget ${className}`}>
         <div className="website-counter-loading">
           <div className="loading-spinner"></div>
-          <span>Loading counters...</span>
+          <span>{i18n.t('websiteCounter.loading')}</span>
         </div>
       </div>
     );
@@ -218,11 +220,11 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
   return (
     <div className={`website-counter-widget ${className}`}>
       <div className="widget-header">
-        <h3 className="widget-title">Website Counter</h3>
+        {widgetHeading && <h3 className="widget-title">{widgetHeading}</h3>}
         <div className="counter-stats">
-          <span className="total-visits">{totalVisits} total visits</span>
+          <span className="total-visits">{i18n.t('websiteCounter.stats.totalVisits', { count: totalVisits })}</span>
           <span className="tracked-sites">
-            {websiteData.length}/{maxWebsites} sites
+            {i18n.t('websiteCounter.stats.trackedSites', { current: websiteData.length, max: maxWebsites })}
           </span>
         </div>
       </div>
@@ -231,8 +233,8 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
         {sortedWebsites.length === 0 ? (
           <div className="empty-state">
             <span className="empty-icon">📊</span>
-            <p>No websites being tracked</p>
-            <p className="empty-hint">Add a website to start counting visits</p>
+            <p>{i18n.t('websiteCounter.emptyState.title')}</p>
+            <p className="empty-hint">{i18n.t('websiteCounter.emptyState.hint')}</p>
           </div>
         ) : (
           sortedWebsites.map((site) => (
@@ -241,7 +243,7 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
                 {showFavicons && site.favicon && (
                   <img
                     src={site.favicon}
-                    alt={`${site.hostname} favicon`}
+                    alt={i18n.t('websiteCounter.alt.favicon', { hostname: site.hostname })}
                     className="website-favicon"
                     onError={(e) => {
                       (e.target as HTMLImageElement).style.display = 'none';
@@ -259,7 +261,7 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
                   <button
                     className="remove-website-btn"
                     onClick={() => handleRemoveWebsite(site.hostname)}
-                    title="Remove website"
+                    title={i18n.t('websiteCounter.buttons.remove')}
                   >
                     ✕
                   </button>
@@ -279,11 +281,11 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
                 onClick={() => setIsAddingWebsite(true)}
                 disabled={websiteData.length >= maxWebsites}
               >
-                ➕ Add Website
+                {i18n.t('websiteCounter.buttons.addWebsite')}
               </button>
               {websiteData.length > 0 && (
                 <button className="reset-counters-btn" onClick={handleResetCounters}>
-                  🔄 Reset All
+                  {i18n.t('websiteCounter.buttons.resetAll')}
                 </button>
               )}
             </div>
@@ -293,7 +295,7 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
                 type="text"
                 value={newWebsiteUrl}
                 onChange={(e) => setNewWebsiteUrl(e.target.value)}
-                placeholder="Enter website URL (e.g., github.com)"
+                placeholder={i18n.t('websiteCounter.placeholders.websiteUrl')}
                 className="website-url-input"
                 onKeyPress={(e) => e.key === 'Enter' && handleAddWebsite()}
               />

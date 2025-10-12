@@ -11,6 +11,7 @@ const LiveClock: React.FC<LiveClockProps> = ({
   showTime = true,
   showTimeZone,
   widgetId,
+  widgetHeading,
   // Get dimensions from parent ResizableWidget via CSS custom properties
   // These will be available as CSS variables in the component
 }: LiveClockProps) => {
@@ -134,6 +135,7 @@ const LiveClock: React.FC<LiveClockProps> = ({
 
   return (
     <div className={`live-clock-widget ${className}`}>
+      {widgetHeading && <h3 className="widget-title">{widgetHeading}</h3>}
       <div className="time-display">
         {showTime && <h2 className="current-time">{formatTime(currentTime)}</h2>}
         {showDate && <p className="current-date">{formatDate(currentTime)}</p>}

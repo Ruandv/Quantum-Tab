@@ -14,6 +14,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
   repositoryUrl = '',
   isLocked,
   widgetId,
+  widgetHeading
 }) => {
   const { t } = useTranslation();
 
@@ -21,9 +22,6 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastFetch, setLastFetch] = useState<Date | null>(null);
-  const repositoryName = repositoryUrl
-    ? repositoryUrl.split('/').slice(-2).join('/')
-    : t('githubWidget.labels.unknownRepo', { unknown: t('common.states.unknown') });
 
   // Function to fetch PR data from background service
   const fetchPullRequests = useCallback(async () => {
@@ -110,9 +108,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
 
   return (
     <div className={`github-widget ${className}`}>
-      <h3 className="widget-title">
-        {t('githubWidget.title')} ({repositoryName})
-      </h3>
+      {widgetHeading && <h3 className="widget-title">{widgetHeading}</h3>}
       <div className="github-widget-content">
         {/* Status and Data Section */}
         {isLoading ? (
