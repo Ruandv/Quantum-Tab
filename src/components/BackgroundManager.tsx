@@ -9,6 +9,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   onBackgroundChange,
   isLocked,
   widgetId,
+  widgetHeading
 }: BackgroundManagerProps) => {
   const { t } = useTranslation();
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -168,7 +169,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
 
   return (
     <div className={`background-manager-widget ${className}`}>
-      <h3 className="widget-title">{t('backgroundManager.title')}</h3>
+      {widgetHeading && <h3 className="widget-title">{widgetHeading}</h3>}
 
       <div className="upload-section">
         {!uploadedImage ? (

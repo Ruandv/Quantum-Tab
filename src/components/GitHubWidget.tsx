@@ -14,6 +14,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
   repositoryUrl = '',
   isLocked,
   widgetId,
+  widgetHeading
 }) => {
   const { t } = useTranslation();
 
@@ -110,9 +111,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
 
   return (
     <div className={`github-widget ${className}`}>
-      <h3 className="widget-title">
-        {t('githubWidget.title')} ({repositoryName})
-      </h3>
+      {widgetHeading && <h3 className="widget-title">{widgetHeading}</h3>}
       <div className="github-widget-content">
         {/* Status and Data Section */}
         {isLoading ? (

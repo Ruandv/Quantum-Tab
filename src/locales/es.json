@@ -203,5 +203,69 @@
             "invalidDateFormat": "Formato de fecha de inicio inválido. Por favor, use el formato AAAA-MM-DD.",
             "calculationError": "Error al calcular la información del sprint."
         }
+    },
+    "widgets": {
+        "liveClock": {
+            "name": "Reloj en Vivo",
+            "description": "Reloj en tiempo real con zona horaria y formato personalizables"
+        },
+        "quickActions": {
+            "name": "Acciones Rápidas",
+            "description": "Botones de acceso rápido a tus sitios web favoritos"
+        },
+        "backgroundManager": {
+            "name": "Gestor de Fondo",
+            "description": "Gestiona y personaliza el fondo de tu panel"
+        },
+        "githubWidget": {
+            "name": "Issues de GitHub",
+            "description": "Muestra y rastrea issues y pull requests de GitHub"
+        },
+        "websiteCounter": {
+            "name": "Contador de Sitios",
+            "description": "Rastrea y muestra estadísticas de visitas a sitios web",
+            "loading": "Cargando contadores...",
+            "stats": {
+                "totalVisits": "{{count}} visitas totales",
+                "trackedSites": "{{current}}/{{max}} sitios"
+            },
+            "emptyState": {
+                "title": "No se están rastreando sitios web",
+                "hint": "Agrega un sitio web para comenzar a contar visitas"
+            },
+            "buttons": {
+                "addWebsite": "➕ Agregar Sitio Web",
+                "resetAll": "🔄 Restablecer Todo",
+                "remove": "Eliminar sitio web"
+            },
+            "placeholders": {
+                "websiteUrl": "Ingresa URL del sitio web (ej. github.com)"
+            },
+            "alerts": {
+                "alreadyTracked": "¡Este sitio web ya está siendo rastreado!",
+                "maxReached": "Se puede rastrear un máximo de {{max}} sitios web.",
+                "invalidUrl": "Por favor ingresa una URL de sitio web válida"
+            },
+            "confirm": {
+                "resetCounters": "¿Estás seguro de que quieres restablecer todos los contadores de sitio web?"
+            },
+            "lastVisited": {
+                "never": "Nunca",
+                "today": "Hoy",
+                "yesterday": "Ayer",
+                "daysAgo": "Hace {{days}} días"
+            },
+            "alt": {
+                "favicon": "{{hostname}} favicon"
+            }
+        },
+        "localeWidget": {
+            "name": "Selector de Idioma",
+            "description": "Cambia tu idioma y configuración regional preferidos"
+        },
+        "sprintNumber": {
+            "name": "Contador de Sprint",
+            "description": "Rastrea números de sprint y cronogramas de proyecto"
+        }
     }
 }

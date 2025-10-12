@@ -129,7 +129,7 @@ export class WidgetRegistry {
       id: 'locale-selector',
       name: 'Language Settings',
       allowMultiples: false,
-      description: 'Change the language/locale of the extension interface',
+      description: 'Change your preferred language and locale',
       component: LocaleWidget,
       defaultDimensions: defaultDimensions,
       defaultProps: {
@@ -140,13 +140,13 @@ export class WidgetRegistry {
 
     this.register<SprintNumberProps>({
       id: 'sprint-number',
-      name: 'Sprint Number',
+      name: 'Sprint Counter',
       allowMultiples: true,
-      description: 'Track and display your current sprint number with dates',
+      description: 'Track sprint numbers and project timelines',
       component: SprintNumber,
       defaultDimensions: { width: 300, height: 250 },
       defaultProps: {
-        widgetHeading: 'Sprint Number',
+        widgetHeading: 'Sprint Counter',
         startDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
         numberOfDays: 14,
         currentSprint: 1,
@@ -175,6 +175,40 @@ export class WidgetRegistry {
 
   public getAvailable(): WidgetType[] {
     return this.getAll().filter((widget) => widget.component);
+  }
+
+  // Method to get localized widget information
+  public getLocalizedWidget(widgetId: string, t?: (key: string) => string): WidgetType | undefined {
+    const widget = this.get(widgetId);
+    if (!widget || !t) return widget;
+
+    // Create a localized copy of the widget
+    const localizedWidget = { ...widget };
+    
+    // Map widget IDs to translation keys
+    const translationMap: Record<string, { name: string; description: string }> = {
+      'live-clock': { name: 'widgets.liveClock.name', description: 'widgets.liveClock.description' },
+      'quick-actions': { name: 'widgets.quickActions.name', description: 'widgets.quickActions.description' },
+      'background-manager': { name: 'widgets.backgroundManager.name', description: 'widgets.backgroundManager.description' },
+      'github-widget': { name: 'widgets.githubWidget.name', description: 'widgets.githubWidget.description' },
+      'website-counter': { name: 'widgets.websiteCounter.name', description: 'widgets.websiteCounter.description' },
+      'locale-selector': { name: 'widgets.localeWidget.name', description: 'widgets.localeWidget.description' },
+      'sprint-number': { name: 'widgets.sprintNumber.name', description: 'widgets.sprintNumber.description' },
+    };
+
+    const translations = translationMap[widgetId];
+    if (translations) {
+      localizedWidget.name = t(translations.name);
+      localizedWidget.description = t(translations.description);
+    }
+
+    return localizedWidget;
+  }
+
+  public getAllLocalized(t?: (key: string) => string): WidgetType[] {
+    if (!t) return this.getAll();
+    
+    return this.getAll().map(widget => this.getLocalizedWidget(widget.id, t) || widget);
   }
 
   public getComponentByName(name: string): React.ComponentType<any> | undefined {

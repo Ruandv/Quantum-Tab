@@ -29,6 +29,8 @@ export interface CssStyle {
 }
 export interface DashboardWidget {
   id: string;
+  name: string;
+  description: string;
   allowMultiples: boolean;
   component: React.ComponentType<Record<string, unknown>>;
   props?: Record<string, unknown>;

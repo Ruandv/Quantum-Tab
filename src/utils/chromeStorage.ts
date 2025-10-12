@@ -5,6 +5,8 @@ import { defaultDimensions, defaultPosition, defaultStyle } from '../types/defau
 // Interface for serialized widget (component stored as string)
 export interface SerializedWidget {
   id: string;
+  name: string;
+  description: string;
   allowMultiples: boolean;
   component: string; // Stored as widget type ID or component name
   props?: Record<string, unknown>;

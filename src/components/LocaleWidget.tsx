@@ -9,6 +9,7 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
   onLocaleChange,
   isLocked = false,
   widgetId,
+  widgetHeading
 }: LocaleWidgetProps) => {
   const { t, i18n } = useTranslation();
   const [currentLocale, setCurrentLocale] = useState<string>(selectedLocale || i18n.language);
@@ -113,7 +114,7 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
 
   return (
     <div className={`locale-widget ${className}`}>
-      <h3 className="widget-title">🌐 {t('localeWidget.title')}</h3>
+      {widgetHeading && <h3 className="widget-title">⏱️ {widgetHeading}</h3>}
 
       <div className="locale-selector">
         <label className="locale-label">{t('localeWidget.labels.language')}</label>

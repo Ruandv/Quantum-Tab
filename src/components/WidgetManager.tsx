@@ -29,11 +29,11 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   const [widgetDimensions, setWidgetDimensions] = useState<Dimensions>(defaultDimensions);
   const [widgetPosition, setWidgetPosition] = useState<Position>(defaultPosition);
   const [widgetStyle, setWidgetStyle] = useState<CssStyle>(defaultStyle);
-  const [modalContent, setModalContent] = useState<{
+  const [modalContent, setModalContent] = useState<{ 
     title: string | React.ReactNode; content: React.ReactNode,
     actions: Array<{ index: number, text: string; onClick: () => void }>
   } | null>(null);
-  const availableWidgets = useMemo(() => widgetRegistry.getAvailable(), []);
+  const availableWidgets = useMemo(() => widgetRegistry.getAllLocalized(t), [t]);  
   const containerBounds = useMemo(() => getViewportDimensions(), []);
   const loadDefaults = useCallback(async () => {
     const defaultStyle: CssStyle = (await chromeStorage.loadAllDefaults()).styling;
@@ -156,14 +156,14 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
               <div className="style-row">
                 {renderStyleInput(
                   'border',
-                  widgetStyle.border,
+                  widgetStyle?.border ?? 0,
                   t('widgetManager.labels.border'),
                   0,
                   10
                 )}
                 {renderStyleInput(
                   'radius',
-                  widgetStyle.radius,
+                  widgetStyle?.radius ?? 12,
                   t('widgetManager.labels.radius'),
                   0,
                   50
@@ -172,14 +172,14 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
               <div className="style-row">
                 {renderStyleInput(
                   'blur',
-                  widgetStyle.blur,
+                  widgetStyle?.blur ?? 10,
                   t('widgetManager.labels.blur'),
                   0,
                   20
                 )}
                 {renderStyleInput(
                   'transparency',
-                  Math.round(widgetStyle.transparency * 100),
+                  Math.round((widgetStyle?.transparency ?? 0.5) * 100),
                   t('widgetManager.labels.transparency'),
                   0,
                   100,
@@ -191,7 +191,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                 <div
                   className="color-preview"
                   style={{
-                    backgroundColor: `rgba(${widgetStyle.backgroundColorRed}, ${widgetStyle.backgroundColorGreen}, ${widgetStyle.backgroundColorBlue}, ${widgetStyle.transparency})`,
+                    backgroundColor: `rgba(${widgetStyle?.backgroundColorRed ?? 30}, ${widgetStyle?.backgroundColorGreen ?? 214}, ${widgetStyle?.backgroundColorBlue ?? 230}, ${widgetStyle?.transparency ?? 0.5})`,
                     width: '100%',
                     height: '40px',
                     borderRadius: '4px',
@@ -202,17 +202,17 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                 <div className="color-controls">
                   {renderColorInput(
                     'backgroundColorRed',
-                    widgetStyle.backgroundColorRed,
+                    widgetStyle?.backgroundColorRed ?? 30,
                     t('widgetManager.labels.red')
                   )}
                   {renderColorInput(
                     'backgroundColorGreen',
-                    widgetStyle.backgroundColorGreen,
+                    widgetStyle?.backgroundColorGreen ?? 214,
                     t('widgetManager.labels.green')
                   )}
                   {renderColorInput(
                     'backgroundColorBlue',
-                    widgetStyle.backgroundColorBlue,
+                    widgetStyle?.backgroundColorBlue ?? 230,
                     t('widgetManager.labels.blue')
                   )}
                 </div>
@@ -226,7 +226,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       type="radio"
                       name="textAlign"
                       value="left"
-                      checked={widgetStyle.alignment === 'left'}
+                      checked={(widgetStyle?.alignment ?? 'center') === 'left'}
                       onChange={() => handleStyleChange('alignment', 'left' as unknown as number)}
                     />
                     {t('widgetManager.labels.left')}
@@ -236,7 +236,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       type="radio"
                       name="textAlign"
                       value="center"
-                      checked={widgetStyle.alignment === 'center'}
+                      checked={(widgetStyle?.alignment ?? 'center') === 'center'}
                       onChange={() => handleStyleChange('alignment', 'center' as unknown as number)}
                     />
                     {t('widgetManager.labels.center')}
@@ -246,7 +246,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       type="radio"
                       name="textAlign"
                       value="right"
-                      checked={widgetStyle.alignment === 'right'}
+                      checked={(widgetStyle?.alignment ?? 'center') === 'right'}
                       onChange={() => handleStyleChange('alignment', 'right' as unknown as number)}
                     />
                     {t('widgetManager.labels.right')}
@@ -261,7 +261,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       type="radio"
                       name="justify"
                       value="flex-start"
-                      checked={widgetStyle.justify === 'flex-start'}
+                      checked={(widgetStyle?.justify ?? 'center') === 'flex-start'}
                       onChange={() => handleStyleChange('justify', 'flex-start' as unknown as number)}
                     />
                     {t('widgetManager.labels.justifyStart')}
@@ -271,7 +271,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       type="radio"
                       name="justify"
                       value="center"
-                      checked={widgetStyle.justify === 'center'}
+                      checked={(widgetStyle?.justify ?? 'center') === 'center'}
                       onChange={() => handleStyleChange('justify', 'center' as unknown as number)}
                     />
                     {t('widgetManager.labels.justifyCenter')}
@@ -281,7 +281,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       type="radio"
                       name="justify"
                       value="flex-end"
-                      checked={widgetStyle.justify === 'flex-end'}
+                      checked={(widgetStyle?.justify ?? 'center') === 'flex-end'}
                       onChange={() => handleStyleChange('justify', 'flex-end' as unknown as number)}
                     />
                     {t('widgetManager.labels.justifyEnd')}
@@ -291,7 +291,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       type="radio"
                       name="justify"
                       value="space-between"
-                      checked={widgetStyle.justify === 'space-between'}
+                      checked={(widgetStyle?.justify ?? 'center') === 'space-between'}
                       onChange={() => handleStyleChange('justify', 'space-between' as unknown as number)}
                     />
                     {t('widgetManager.labels.justifyBetween')}
@@ -301,7 +301,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       type="radio"
                       name="justify"
                       value="space-around"
-                      checked={widgetStyle.justify === 'space-around'}
+                      checked={(widgetStyle?.justify ?? 'center') === 'space-around'}
                       onChange={() => handleStyleChange('justify', 'space-around' as unknown as number)}
                     />
                     {t('widgetManager.labels.justifyAround')}
@@ -385,6 +385,8 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
           const newWidget: DashboardWidget = {
             id: generateUniqueId(selectedWidgetType.id),
+            name: selectedWidgetType.name,
+            description: selectedWidgetType.description,
             allowMultiples: selectedWidgetType.allowMultiples,
             component: selectedWidgetType.component,
             dimensions: widgetDimensions,
