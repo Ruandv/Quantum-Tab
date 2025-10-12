@@ -22,9 +22,6 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastFetch, setLastFetch] = useState<Date | null>(null);
-  const repositoryName = repositoryUrl
-    ? repositoryUrl.split('/').slice(-2).join('/')
-    : t('githubWidget.labels.unknownRepo', { unknown: t('common.states.unknown') });
 
   // Function to fetch PR data from background service
   const fetchPullRequests = useCallback(async () => {
