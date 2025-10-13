@@ -18,7 +18,6 @@ import { WIDGET_EVENTS, widgetEventManager, WidgetEvent } from '@/utils/widgetEv
 
 const WidgetManager: React.FC<WidgetManagerProps> = ({
   onAddWidget,
-  onRemoveWidget,
   onEditingWidget,
   existingWidgets,
   onBackgroundChange,
@@ -658,17 +657,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     [selectedWidgetType]
   );
 
-  const getWidgetDisplayName = useCallback(
-    (widget: DashboardWidget): string => {
-      const widgetType = availableWidgets.find((w) => widget.id.startsWith(w.id));
-      return (
-        widgetType?.name ||
-        t('widgetManager.labels.unknownWidget', { unknown: t('common.states.unknown') })
-      );
-    },
-    [availableWidgets, t]
-  );
-
   const renderTextInput = useCallback(
     (
       value: string,
@@ -779,19 +767,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
           <span className="btn-icon">📥</span>
           {t('widgetManager.buttons.importWidgets')}
         </button>
-        {existingWidgets.length > 0 &&
-          existingWidgets.map((widget) => (
-            <div key={widget.id} className="widget-item">
-              <span className="widget-name">{getWidgetDisplayName(widget)}</span>
-              <button
-                className="remove-widget-btn"
-                onClick={() => onRemoveWidget(widget.id)}
-                title={t('widgetManager.tooltips.removeWidget')}
-              >
-                🗑️
-              </button>
-            </div>
-          ))}
       </div>
       {isModalOpen && modalContent !== null && (
         <Modal

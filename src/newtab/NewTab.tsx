@@ -413,7 +413,6 @@ const NewTab: React.FC = () => {
                         </button>
                         <WidgetManager
                             onAddWidget={handleAddWidget}
-                            onRemoveWidget={handleRemoveWidget}
                             onEditingWidget={()=>{}}
                             existingWidgets={widgets}
                             onBackgroundChange={handleBackgroundChange}
