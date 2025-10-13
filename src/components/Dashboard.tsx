@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo, useRef, useEffect, CSSProperties
 import ResizableWidget from './ResizableWidget';
 import { DashboardWidget, DashboardProps, DragState, Position, Dimensions } from '../types/common';
 import { constrainPosition, getViewportDimensions } from '../utils/helpers';
+import { dispatchWidgetEditing } from '@/utils/widgetEvents';
 
 const Dashboard: React.FC<DashboardProps> = ({
   widgets,
@@ -104,6 +105,12 @@ const Dashboard: React.FC<DashboardProps> = ({
       onWidgetResize?.(widgetId, dimensions);
     },
     [onWidgetResize]
+  );
+  const handleEditWidget = useCallback(
+    (widgetId: string) => {
+      dispatchWidgetEditing(widgetId);
+    },
+    []
   );
 
   const handleRemoveWidget = useCallback(
@@ -224,6 +231,17 @@ const Dashboard: React.FC<DashboardProps> = ({
             widgetStyle={widget.style}
           >
             {!isLocked && handleRemoveWidget && (
+              <>
+              <button
+                className="widget-edit-btn edit-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditWidget(widget.id);
+                }}
+                title="Edit widget"
+              >
+                🖉
+              </button>
               <button
                 className="widget-remove-btn remove-btn"
                 onClick={(e) => {
@@ -234,6 +252,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               >
                 ×
               </button>
+              </>
             )}
             {!isLocked && (
               <div className="widget-drag-indicator" title="Drag to move">
@@ -250,9 +269,9 @@ const Dashboard: React.FC<DashboardProps> = ({
                   : undefined)}
                 {...(widget.id.includes('quick-actions') && onUpdateWidgetProps
                   ? {
-                      onButtonsChange: (buttons: Array<{ icon: string; label: string; url: string }>) =>
-                        onUpdateWidgetProps(widget.id, { buttons }),
-                    }
+                    onButtonsChange: (buttons: Array<{ icon: string; label: string; url: string }>) =>
+                      onUpdateWidgetProps(widget.id, { buttons }),
+                  }
                   : undefined)}
               />
             </div>
