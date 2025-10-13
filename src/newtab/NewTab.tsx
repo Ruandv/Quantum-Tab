@@ -414,6 +414,7 @@ const NewTab: React.FC = () => {
                         <WidgetManager
                             onAddWidget={handleAddWidget}
                             onRemoveWidget={handleRemoveWidget}
+                            onEditingWidget={()=>{}}
                             existingWidgets={widgets}
                             onBackgroundChange={handleBackgroundChange}
                             isLocked={isLocked}

@@ -170,6 +170,7 @@ export interface DashboardProps {
 export interface WidgetManagerProps extends DefaultWidgetProps {
   onAddWidget: (widget: DashboardWidget) => void;
   onRemoveWidget: (widgetId: string) => void;
+  onEditingWidget: (widgetId: string) => void;
   existingWidgets: DashboardWidget[];
   onBackgroundChange?: (imageUrl: string) => void;
 }

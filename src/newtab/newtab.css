@@ -1570,6 +1570,27 @@
   cursor: grabbing;
 }
 
+.widget-edit-btn {
+  position: absolute;
+  top: 8px;
+  right: 36px;
+  background: rgba(91, 210, 247, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .widget-remove-btn {
   position: absolute;
   top: 8px;
@@ -1591,8 +1612,14 @@
   justify-content: center;
 }
 
+.widget-wrapper:hover .widget-edit-btn,
 .widget-wrapper:hover .widget-remove-btn {
   opacity: 1;
+}
+
+.widget-edit-btn:hover {
+  background: rgba(91, 210, 247, 1);
+  transform: scale(1.1);
 }
 
 .widget-remove-btn:hover {

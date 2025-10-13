@@ -14,15 +14,58 @@ import { generateUniqueId, findOptimalPosition, getViewportDimensions } from '..
 import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 import chromeStorage, { SerializedWidget } from '@/utils/chromeStorage';
 import Modal from './modal/modal';
+import { WIDGET_EVENTS, widgetEventManager, WidgetEvent } from '@/utils/widgetEvents';
 
 const WidgetManager: React.FC<WidgetManagerProps> = ({
   onAddWidget,
   onRemoveWidget,
+  onEditingWidget,
   existingWidgets,
   onBackgroundChange,
   isLocked,
 }: WidgetManagerProps) => {
   const { t } = useTranslation();
+  useEffect(() => {
+    const handleWidgetEditing = (event: WidgetEvent) => {
+      if (event.widgetId) {
+        const widgeta = existingWidgets.find(w => w.id === event.widgetId);
+        // remove widgetA from existingWidgets to allow re-adding if allowMultiples is false
+        setSelectedWidgetType(widgeta as unknown as WidgetType);
+        setWidgetDimensions(widgeta?.dimensions || defaultDimensions);
+        setWidgetPosition(widgeta?.position || defaultPosition);
+        setWidgetStyle(widgeta?.style || defaultStyle);
+        setModalContent({
+          title: t('widgetManager.modal.title'),
+          content: <div>WE WILL ROCK YOU</div>,
+          actions: [
+            {
+              index: 0,
+              text: t('widgetManager.modal.actions.cancel'),
+              onClick: () => setModalContent(null),
+            },
+            {
+              index: 1,
+              text: t('widgetManager.modal.actions.save'),
+              onClick: () => {
+                // Save changes
+                setModalContent(null);
+              },
+            },
+          ],
+        });
+        existingWidgets = existingWidgets.splice(existingWidgets.indexOf(widgeta!), 1);
+        
+        setIsModalOpen(true);
+        
+      }
+    };
+
+    widgetEventManager.addEventListener(WIDGET_EVENTS.WIDGET_EDITED, handleWidgetEditing);
+
+    return () => {
+      widgetEventManager.removeEventListener(WIDGET_EVENTS.WIDGET_EDITED, handleWidgetEditing);
+    };
+  }, [onEditingWidget]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedWidgetType, setSelectedWidgetType] = useState<WidgetType | null>(null);
