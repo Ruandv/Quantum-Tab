@@ -77,6 +77,7 @@ export const widgetEventManager = new WidgetEventManager();
 export const WIDGET_EVENTS = {
   REMOVE_WIDGET: 'RemoveWidget',
   WIDGET_ADDED: 'WidgetAdded',
+  WIDGET_EDITED: 'WidgetEdited',
   WIDGET_UPDATED: 'WidgetUpdated',
 } as const;
 
@@ -90,6 +91,16 @@ export const dispatchWidgetRemoval = (widgetId: string, data?: any): void => {
     data,
   });
 };
+
+
+export const dispatchWidgetEditing = (widgetId: string): void => {
+  widgetEventManager.dispatchEvent({
+    type: WIDGET_EVENTS.WIDGET_EDITED,
+    widgetId,
+    data: { editing: true },
+  })
+};
+
 
 /**
  * Convenience function to add a removal listener for a specific widget

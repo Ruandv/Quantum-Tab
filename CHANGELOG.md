@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0](https://github.com/Ruandv/Quantum-Tab/compare/v1.3.4...v1.4.0) (2025-10-13)
+
+
+### Features
+
+* allow widget edits ([#47](https://github.com/Ruandv/Quantum-Tab/issues/47)) ([c82a264](https://github.com/Ruandv/Quantum-Tab/commit/c82a264df41e1d66b3e139849369baae24003212))
+* slack pr notification workflows ([#42](https://github.com/Ruandv/Quantum-Tab/issues/42)) ([97e9e64](https://github.com/Ruandv/Quantum-Tab/commit/97e9e6471b7056873382821244a91114159fdf0c))
+* slack pr notification workflows ([#45](https://github.com/Ruandv/Quantum-Tab/issues/45)) ([1fc3f5c](https://github.com/Ruandv/Quantum-Tab/commit/1fc3f5c99181733c9132c02554c9c70bd04e8bc8))
+* slack pr notification workflows (Rollback) ([#46](https://github.com/Ruandv/Quantum-Tab/issues/46)) ([6d97ba5](https://github.com/Ruandv/Quantum-Tab/commit/6d97ba52092bd8c330713182092295a31521aa73))
+
 ## [1.3.4](https://github.com/Ruandv/Quantum-Tab/compare/v1.3.3...v1.3.4) (2025-10-07)
 
 
