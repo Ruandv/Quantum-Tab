@@ -54,6 +54,7 @@ export const ResizableWidget: React.FC<ResizableWidgetProps> = ({
       minHeight: `${minHeight}px`,
       maxWidth: `${maxWidth}px`,
       maxHeight: `${maxHeight}px`,
+      color: `rgb(${widgetStyle?.textColorRed ?? 255}, ${widgetStyle?.textColorGreen ?? 255}, ${widgetStyle?.textColorBlue ?? 255})`,
       ...textSizes.allCssProperties,
       // Add background color if provided (but not when blur is active - backdrop handles it)
       ...(widgetStyle?.backgroundColorRed !== undefined &&

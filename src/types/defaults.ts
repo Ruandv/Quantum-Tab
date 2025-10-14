@@ -11,6 +11,9 @@ export const defaultStyle: CssStyle = {
   transparency: 0.5,
   alignment: 'center',
   justify: 'center',
+  textColorRed: 255,
+  textColorGreen: 255,
+  textColorBlue: 255,
 };
 export const defaultDimensions: Dimensions = {
   width: DEFAULT_WIDGET_CONSTRAINTS.DEFAULT_WIDTH,

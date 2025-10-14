@@ -24,6 +24,9 @@ export interface CssStyle {
   backgroundColorGreen: number;
   backgroundColorBlue: number;
   transparency: number;
+  textColorRed: number;
+  textColorGreen: number;
+  textColorBlue: number;
   alignment: 'left' | 'center' | 'right';
   justify: 'flex-start' | 'center' | 'flex-end' | 'space-around' | 'space-between';
 }

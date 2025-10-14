@@ -61,6 +61,7 @@
       "blur": "Background Blur",
       "transparency": "Transparency",
       "backgroundColor": "Background Color",
+      "textColor": "Text Color",
       "red": "Red",
       "green": "Green",
       "blue": "Blue",
