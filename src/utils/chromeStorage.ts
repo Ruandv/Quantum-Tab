@@ -7,6 +7,7 @@ export interface SerializedWidget {
   id: string;
   name: string;
   description: string;
+  wikiPage: string;
   allowMultiples: boolean;
   component: string; // Stored as widget type ID or component name
   props?: Record<string, unknown>;

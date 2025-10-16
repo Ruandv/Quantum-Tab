@@ -34,6 +34,7 @@ export interface DashboardWidget {
   id: string;
   name: string;
   description: string;
+  wikiPage: string;
   allowMultiples: boolean;
   component: React.ComponentType<Record<string, unknown>>;
   props?: Record<string, unknown>;
@@ -45,6 +46,7 @@ export interface DashboardWidget {
 export interface WidgetType<T = Record<string, unknown>> {
   id: string;
   name: string;
+  wikiPage: string;
   allowMultiples: boolean;
   description: string;
   component: React.ComponentType<T>;

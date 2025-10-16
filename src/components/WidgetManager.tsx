@@ -466,6 +466,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             name: selectedWidgetType.name,
             description: selectedWidgetType.description,
             allowMultiples: selectedWidgetType.allowMultiples,
+            wikiPage: selectedWidgetType.wikiPage,
             component: selectedWidgetType.component,
             dimensions: widgetDimensions,
             position: widgetPosition,
