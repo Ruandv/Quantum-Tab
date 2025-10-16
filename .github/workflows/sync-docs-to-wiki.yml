@@ -1,4 +1,4 @@
-name: Sync Documentation to Wiki
+name: ♻️ Sync Documentation to Wiki
 
 on:
   push:
@@ -28,11 +28,9 @@ jobs:
         run: npm run docs:sync-wiki
 
       - name: Push to wiki
-        uses: Andrew-Chen-Wang/github-wiki-action@v1
+        uses: Andrew-Chen-Wang/github-wiki-action@v4
         with:
-          WIKI_DIR: ./wiki
-          GH_PAT: ${{ secrets.GITHUB_TOKEN }}
-          GH_MAIL: ${{ github.actor }}@users.noreply.github.com
-          GH_NAME: ${{ github.actor }}
-          REPO: ${{ github.repository }}
-          WIKI_PUSH_MESSAGE: "docs: update widget documentation from ${{ github.sha }}"
+          path: ./wiki
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          commit-message: "docs: update widget documentation from ${{ github.sha }}"
