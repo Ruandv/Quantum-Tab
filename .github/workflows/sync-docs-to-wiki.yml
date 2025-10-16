@@ -30,7 +30,5 @@ jobs:
       - name: Push to wiki
         uses: Andrew-Chen-Wang/github-wiki-action@v4
         with:
-          path: ./wiki
+          path: wiki-output
           token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          commit-message: "docs: update widget documentation from ${{ github.sha }}"
