@@ -27,20 +27,15 @@ jobs:
       - name: Generate wiki pages from docs
         run: npm run docs:sync-wiki
 
-      - name: Verify wiki output
+      - name: Verify and list generated files
         run: |
-          echo "📁 Contents of wiki directory:"
-          ls -la wiki/
-          echo "📄 Number of files generated:"
-          find wiki -name "*.md" | wc -l
+          echo "📁 Contents of wiki-output directory:"
+          ls -la wiki-output/ || echo "wiki-output directory not found"
+          echo "📄 Markdown files generated:"
+          find wiki-output -name "*.md" || echo "No markdown files found"
 
       - name: Push to wiki
-          
-          run: |
-            pwsh -Command "
-              git config --global user.email '$ACTION_MAIL'
-              git config --global user.name 'GitHub Actions'
-              git add wiki/*.md
-              git commit -m 'docs: sync documentation to wiki [skip ci]' || echo 'No changes to commit'
-              git push origin HEAD
-            "
+        uses: Andrew-Chen-Wang/github-wiki-action@v4
+        with:
+          path: wiki-output
+          token: ${{ secrets.GITHUB_TOKEN }}

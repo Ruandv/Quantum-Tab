@@ -73,4 +73,4 @@ The GitHub Actions workflow (`.github/workflows/sync-docs-to-wiki.yml`) provides
 ## Scripts
 
 - `npm run docs:sync-wiki-local` - Generate wiki pages locally
-- `npm run docs:sync-wiki` - Generate wiki pages to `wiki-output/` folder (for CI/CD)
+- `npm run docs:sync-wiki` - Generate wiki pages to `wiki/` folder (for CI/CD)

@@ -280,7 +280,7 @@ The repository includes a GitHub Action workflow (`.github/workflows/sync-docs-t
 npm run docs:sync-wiki
 ```
 
-This command generates wiki files in `wiki-output/` folder for CI/CD deployment.
+This command generates wiki files in `wiki/` folder for CI/CD deployment.
 
 </details>
 

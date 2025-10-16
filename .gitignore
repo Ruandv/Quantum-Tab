@@ -73,6 +73,5 @@ Thumbs.db
 *.crx
 *.pem
 
-# Wiki output (generated files)
-wiki/
+# Wiki output (generated files) - only ignore wiki-output, not wiki
 wiki-output/
