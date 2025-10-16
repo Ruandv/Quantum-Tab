@@ -12,7 +12,9 @@
     "pre-release": "npm run type-check && npm run lint && npm run format && npm run build",
     "package": "node ./scripts/create-zip.js",
     "commit": "git-cz",
-    "prepare": "husky install || true"
+    "prepare": "husky install || true",
+    "docs:sync-wiki": "node scripts/sync-docs-to-wiki.js",
+    "docs:sync-wiki-local": "node scripts/local-sync-docs-to-wiki.js"
   },
   "keywords": [
     "chrome-extension",

@@ -442,11 +442,11 @@ const NewTab: React.FC = () => {
                 </main>
             </div>
             {/* Update/Welcome Notification */}
-            {showNotification && (
+            {/* {showNotification && ( */}
                 <UpdateNotification
                     onDismiss={() => setShowNotification(false)}
                 />
-            )}
+            {/* )} */}
             <GitHubIssues isLocked={isLocked} />
         </div>
     );

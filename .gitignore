@@ -72,3 +72,7 @@ Thumbs.db
 *.zip
 *.crx
 *.pem
+
+# Wiki output (generated files)
+wiki/
+wiki-output/

@@ -46,6 +46,11 @@ module.exports = {
           to: '',
           noErrorOnMissing: true,
         },
+        {
+          from: 'docs',
+          to: 'docs',
+          noErrorOnMissing: true,
+        },
       ],
     }),
     new HtmlWebpackPlugin({
