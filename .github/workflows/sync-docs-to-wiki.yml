@@ -27,6 +27,13 @@ jobs:
       - name: Generate wiki pages from docs
         run: npm run docs:sync-wiki
 
+      - name: Verify wiki output
+        run: |
+          echo "📁 Contents of wiki-output directory:"
+          ls -la wiki-output/
+          echo "📄 Number of files generated:"
+          find wiki-output -name "*.md" | wc -l
+
       - name: Push to wiki
         uses: Andrew-Chen-Wang/github-wiki-action@v4
         with:
