@@ -77,12 +77,14 @@ const LiveClock: React.FC<LiveClockProps> = ({
     };
 
     // Replace format tokens with actual values
-    // Sort keys by length (longest first) to avoid partial replacements
+    // Use a regex that matches tokens as whole words or surrounded by non-alphanumeric characters
     let formattedTime = timeFormat;
     Object.keys(formatMap)
       .sort((a, b) => b.length - a.length)
       .forEach((token) => {
-        formattedTime = formattedTime.replace(new RegExp(token, 'g'), formatMap[token]);
+        // Use a regex with word boundaries to avoid partial replacements
+        const regex = new RegExp(`\\b${token}\\b`, 'g');
+        formattedTime = formattedTime.replace(regex, formatMap[token]);
       });
 
     return formattedTime;
@@ -122,12 +124,14 @@ const LiveClock: React.FC<LiveClockProps> = ({
     };
 
     // Replace format tokens with actual values
-    // Sort keys by length (longest first) to avoid partial replacements
+    // Use a regex that matches tokens as whole words or surrounded by non-alphanumeric characters
     let formattedDate = dateFormat;
     Object.keys(formatMap)
       .sort((a, b) => b.length - a.length)
       .forEach((token) => {
-        formattedDate = formattedDate.replace(new RegExp(token, 'g'), formatMap[token]);
+        // Use a regex with word boundaries to avoid partial replacements
+        const regex = new RegExp(`\\b${token}\\b`, 'g');
+        formattedDate = formattedDate.replace(regex, formatMap[token]);
       });
 
     return formattedDate;

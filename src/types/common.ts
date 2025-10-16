@@ -107,8 +107,8 @@ export interface GitHubIssuesProps extends DefaultWidgetProps {
 
 export interface GitHubWidgetProps extends DefaultWidgetProps {
   className?: string;
-  patToken?: string;
-  repositoryUrl?: string;
+  patToken: string;
+  repositoryUrl: string;
 }
 
 export interface BackgroundManagerProps extends DefaultWidgetProps {

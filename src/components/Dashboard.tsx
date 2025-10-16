@@ -106,6 +106,20 @@ const Dashboard: React.FC<DashboardProps> = ({
     },
     [onWidgetResize]
   );
+
+  const handleRequestWidgetInfo = useCallback(
+    (widgetName: string) => {
+      // Create a documentation URL for the widget on GitHub Wiki
+      const baseUrl = 'https://github.com/Ruandv/Quantum-Tab/wiki';
+      const widgetSlug = widgetName.toLowerCase().replace(/\s+/g, '');
+      const docsUrl = `${baseUrl}/${widgetSlug}`;
+
+      // Open documentation in a new tab/window
+      window.open(docsUrl, '_blank', 'noopener,noreferrer');
+    },
+    []
+  );
+
   const handleEditWidget = useCallback(
     (widgetId: string) => {
       dispatchWidgetEditing(widgetId);
@@ -233,6 +247,15 @@ const Dashboard: React.FC<DashboardProps> = ({
             {!isLocked && handleRemoveWidget && (
               <>
               <button
+                className="widget-info-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRequestWidgetInfo(widget.name);
+                }}
+                title="More info ..."
+              >🛈
+              </button>
+              <button
                 className="widget-edit-btn edit-btn"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -286,6 +309,8 @@ const Dashboard: React.FC<DashboardProps> = ({
       handleMouseDown,
       handleWidgetResize,
       handleRemoveWidget,
+      handleRequestWidgetInfo,
+      handleEditWidget,
       onBackgroundChange,
       onUpdateWidgetProps,
     ]

@@ -1,87 +1,34 @@
-import React, { useState, useEffect } from 'react';
-
-interface TabInfo {
-  id?: number;
-  title?: string;
-  url?: string;
-}
+import React from 'react';
 
 const Popup: React.FC = () => {
-  const [currentTab, setCurrentTab] = useState<TabInfo>({});
-  const [message, setMessage] = useState<string>('');
-
-  useEffect(() => {
-    // Get current tab information
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs[0]) {
-        setCurrentTab({
-          id: tabs[0].id,
-          title: tabs[0].title,
-          url: tabs[0].url,
-        });
-      }
-    });
-  }, []);
-
-  const handleSendMessage = () => {
-    if (currentTab.id && message) {
-      chrome.tabs.sendMessage(currentTab.id, { action: 'showMessage', message }, (response) => {
-        console.log('Message sent to content script:', response);
-      });
-    }
-  };
-
-  const handleStorageTest = () => {
-    // Test Chrome storage API
-    chrome.storage.sync.set({ testData: new Date().toISOString() }, () => {
-      console.log('Data saved to storage');
-    });
-
-    chrome.storage.sync.get(['testData'], (result) => {
-      console.log('Data retrieved from storage:', result.testData);
-    });
-  };
+  const version = chrome.runtime.getManifest().version;
 
   return (
     <div className="popup-container">
       <header className="popup-header">
         <h1>Quantum Tab</h1>
-        <p>Chrome Extension with React & TypeScript</p>
+        <p>New tab. New intelligence.</p>
       </header>
 
       <main className="popup-content">
         <section className="tab-info">
-          <h2>Current Tab</h2>
+          <h2>Recent Changes</h2>
           <div className="tab-details">
             <p>
-              <strong>Title:</strong> {currentTab.title || 'Unknown'}
+              <strong>Change log:</strong> <a target='_blank' href={`https://github.com/Ruandv/Quantum-Tab/releases/tag/v${version}`} rel="noreferrer">View Release Notes</a>
+            </p>
+          </div>
+        </section>
+        <section className="tab-info">
+          <h2>Bugs & Requests</h2>
+          <div className="tab-details">
+            <p>
+              <strong>Report a bug:</strong> <a target='_blank' href={`https://github.com/Ruandv/Quantum-Tab/issues/new?template=bug_report.md`} rel="noreferrer">Open an Issue</a>
             </p>
             <p>
-              <strong>URL:</strong> {currentTab.url || 'Unknown'}
+              <strong>Request a feature:</strong> <a target='_blank' href={`https://github.com/Ruandv/Quantum-Tab/issues/new?template=feature_request.md`} rel="noreferrer">Open an Issue</a>
             </p>
           </div>
-        </section>
-
-        <section className="message-section">
-          <h2>Send Message</h2>
-          <div className="input-group">
-            <input
-              type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Enter a message..."
-              className="message-input"
-            />
-            <button onClick={handleSendMessage} className="send-button">
-              Send to Content Script
-            </button>
-          </div>
-        </section>
-
-        <section className="actions">
-          <button onClick={handleStorageTest} className="action-button">
-            Test Storage API
-          </button>
         </section>
       </main>
     </div>

@@ -29,14 +29,14 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss }) =>
 
   const handleDismiss = async () => {
     setIsVisible(false);
-    
+
     // Clear notification flags
     await chrome.storage.sync.set({
       showWelcomeNotification: false,
       showUpdateNotification: false,
       notificationPending: null
     });
-    
+
     // Fade out animation
     setTimeout(() => {
       onDismiss();
@@ -69,7 +69,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss }) =>
             ×
           </button>
         </div>
-        
+
         <div className="notification-content">
           {isInstall && (
             <>
@@ -87,36 +87,31 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss }) =>
               </div>
             </>
           )}
-          
+
           {isUpdate && (
             <>
               <p className="notification-message">
-                {t('notifications.update.message', { 
+                {t('notifications.update.message', {
                   version: notification.version
                 })}
-                {notification.previousVersion && (
-                  <span className="previous-version-text">
-                    {' '}Updated from version {notification.previousVersion}.
-                  </span>
-                )}
               </p>
               <div className="notification-version-info">
-                <span className="version-badge new">
-                  v{notification.version}
-                </span>
                 {notification.previousVersion && (
                   <>
-                    <span className="version-arrow">←</span>
                     <span className="version-badge old">
                       v{notification.previousVersion}
                     </span>
+                    <span className="version-arrow">→</span>
                   </>
                 )}
+                <span className="version-badge new">
+                  v{notification.version}
+                </span>
               </div>
             </>
           )}
         </div>
-        
+
         <div className="notification-actions">
           {isUpdate && (
             <button className="btn-secondary" onClick={handleViewChanges}>
