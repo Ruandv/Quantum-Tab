@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0](https://github.com/Ruandv/Quantum-Tab/compare/v1.4.0...v1.5.0) (2025-10-16)
+
+
+### Features
+
+* add Git Comment Watcher widget and related functionality ([#52](https://github.com/Ruandv/Quantum-Tab/issues/52)) ([d14ff01](https://github.com/Ruandv/Quantum-Tab/commit/d14ff01313758c589f83fd66795e41d8655a2cec))
+* automated documentation ([#53](https://github.com/Ruandv/Quantum-Tab/issues/53)) ([86f8eda](https://github.com/Ruandv/Quantum-Tab/commit/86f8eda672a51493d8db32a8669711bc70fe0bf2))
+
+
+### Bug Fixes
+
+* various small fixes ([#48](https://github.com/Ruandv/Quantum-Tab/issues/48)) ([e5229c3](https://github.com/Ruandv/Quantum-Tab/commit/e5229c3be1f2b0a49d54bb87f36807dfa6a16747))
+
 ## [1.4.0](https://github.com/Ruandv/Quantum-Tab/compare/v1.3.4...v1.4.0) (2025-10-13)
 
 
