@@ -29,7 +29,8 @@ jobs:
         uses: Andrew-Chen-Wang/github-wiki-action@v1
         env:
           WIKI_DIR: ./wiki
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          path: ./wiki
+          GH_PAT: ${{ secrets.GITHUB_TOKEN }}
+          GH_MAIL: ${{ github.actor }}@users.noreply.github.com
+          GH_NAME: ${{ github.actor }}
+          REPO: ${{ github.repository }}
+          WIKI_PUSH_MESSAGE: "docs: update widget documentation from ${{ github.sha }}"
