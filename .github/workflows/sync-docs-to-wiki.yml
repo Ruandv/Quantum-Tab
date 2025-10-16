@@ -27,7 +27,7 @@ jobs:
 
       - name: Push to wiki
         uses: Andrew-Chen-Wang/github-wiki-action@v1
-        env:
+        with:
           WIKI_DIR: ./wiki
           GH_PAT: ${{ secrets.GITHUB_TOKEN }}
           GH_MAIL: ${{ github.actor }}@users.noreply.github.com
