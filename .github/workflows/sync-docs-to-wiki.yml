@@ -1,0 +1,41 @@
+name: ♻️ Sync Documentation to Wiki
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'docs/*.md'
+  workflow_dispatch:
+
+jobs:
+  sync-docs-to-wiki:
+    runs-on: ubuntu-latest
+    env:
+      ACTION_MAIL: ruandv@gmail.com
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate wiki pages from docs
+        run: npm run docs:sync-wiki
+
+      - name: Verify and list generated files
+        run: |
+          echo "📁 Contents of wiki-output directory:"
+          ls -la wiki-output/ || echo "wiki-output directory not found"
+          echo "📄 Markdown files generated:"
+          find wiki-output -name "*.md" || echo "No markdown files found"
+
+      - name: Push to wiki
+        uses: Andrew-Chen-Wang/github-wiki-action@v4
+        with:
+          path: wiki-output
+          token: ${{ secrets.GITHUB_TOKEN }}

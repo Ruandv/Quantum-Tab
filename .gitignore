@@ -72,3 +72,7 @@ Thumbs.db
 *.zip
 *.crx
 *.pem
+
+# Wiki output (generated files) - only ignore wiki-output, not wiki
+wiki-output/
+wiki/

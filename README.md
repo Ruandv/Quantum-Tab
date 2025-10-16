@@ -1,23 +1,10 @@
 
-
-
-
-
-
-
 <div align="center">
 
 ![Quantum Tab Logo](public/icons/icon128.png)
 
 # 🚀 Quantum Tab
 
-
-
-
-
-
-
-    
 
 ### *The Ultimate Chrome Extension Dashboard*
 
@@ -178,6 +165,138 @@ npm run dev
 | 🧹 `npm run lint` | ESLint code quality checks | Code review |
 | ✨ `npm run format` | Prettier code formatting | Code cleanup |
 | 🔍 `npm run type-check` | TypeScript type validation | Type safety |
+| 📚 `npm run docs:sync-wiki-local` | Generate wiki documentation locally | Local wiki updates |
+| 📖 `npm run docs:sync-wiki` | Generate wiki documentation for CI/CD | Production wiki sync |
+
+---
+
+## 📖 **Documentation & Wiki**
+
+<div align="center">
+
+**Comprehensive widget documentation automatically generated from source code**
+
+</div>
+
+### 🎯 **Wiki Documentation System**
+
+Quantum Tab uses an automated documentation generation system that converts widget definitions into comprehensive GitHub Wiki pages. All widget documentation is centralized in [`docs/WIDGET_DOCUMENTATION.md`](docs/WIDGET_DOCUMENTATION.md) and automatically synced to the [GitHub Wiki](https://github.com/Ruandv/Quantum-Tab/wiki).
+
+### 🔄 **How It Works**
+
+<details>
+<summary>📝 <strong>Documentation Workflow</strong></summary>
+
+```mermaid
+graph LR
+    A[Widget Components] --> B[docs/WIDGET_DOCUMENTATION.md]
+    B --> C[npm run docs:sync-wiki-local]
+    C --> D[wiki/ folder]
+    D --> E[Git Push]
+    E --> F[GitHub Wiki]
+```
+
+1. **📄 Source Documentation** - Widget properties and descriptions are maintained in `docs/WIDGET_DOCUMENTATION.md`
+2. **🔧 Local Generation** - Run `npm run docs:sync-wiki-local` to generate individual wiki pages
+3. **📁 Wiki Folder** - Generated markdown files are saved to the local `wiki/` folder
+4. **🔄 Git Sync** - The `wiki/` folder is a Git submodule linked to the GitHub Wiki repository
+5. **🌐 Publish** - Commit and push changes to automatically update the live GitHub Wiki
+
+</details>
+
+<details>
+<summary>🛠️ <strong>Local Wiki Development</strong></summary>
+
+#### **Setting Up Local Wiki**
+
+```bash
+# 1️⃣ Clone the wiki repository
+cd wiki
+git clone https://github.com/Ruandv/Quantum-Tab.wiki.git .
+
+# 2️⃣ Generate wiki pages from documentation
+cd ..
+npm run docs:sync-wiki-local
+
+# 3️⃣ Review generated files
+cd wiki
+ls -la  # See all generated .md files
+
+# 4️⃣ Commit and push changes
+git add .
+git commit -m "docs: update widget documentation"
+git push origin master
+```
+
+#### **Documentation Structure**
+
+The documentation generator automatically creates:
+- **Home.md** - Main wiki landing page with widget index
+- **[widget-name].md** - Individual pages for each widget
+- **timezones.md** - Time zone reference for LiveClock widget
+
+</details>
+
+<details>
+<summary>📚 <strong>Adding New Widget Documentation</strong></summary>
+
+When creating a new widget, add its documentation to `docs/WIDGET_DOCUMENTATION.md`:
+
+```markdown
+### YourNewWidget
+- **Description**: Brief description of what the widget does
+- **Usage**: How and when to use this widget
+
+#### Properties
+- **propertyName**: Description of the property and its purpose
+- **anotherProperty**: Another property description
+```
+
+Then regenerate the wiki:
+
+```bash
+npm run docs:sync-wiki-local
+cd wiki
+git add .
+git commit -m "docs: add YourNewWidget documentation"
+git push
+```
+
+</details>
+
+<details>
+<summary>🤖 <strong>CI/CD Documentation Pipeline</strong></summary>
+
+The repository includes a GitHub Action workflow (`.github/workflows/sync-docs-to-wiki.yml`) that automatically:
+
+1. **Triggers on push** to the main branch when `docs/WIDGET_DOCUMENTATION.md` changes
+2. **Generates wiki pages** using `npm run docs:sync-wiki`
+3. **Publishes to Wiki** using the official GitHub Wiki Action
+4. **Updates live docs** without manual intervention
+
+#### **Production Sync Command**
+
+```bash
+npm run docs:sync-wiki
+```
+
+This command generates wiki files in `wiki/` folder for CI/CD deployment.
+
+</details>
+
+### 📑 **Documentation Best Practices**
+
+✅ **Keep it updated** - Update `docs/WIDGET_DOCUMENTATION.md` when modifying widget properties  
+✅ **Test locally** - Use `npm run docs:sync-wiki-local` to preview changes before pushing  
+✅ **Follow structure** - Maintain consistent formatting for all widget documentation  
+✅ **Include examples** - Add usage examples and common configuration patterns  
+✅ **Alphabetical properties** - List widget properties in alphabetical order
+
+### 🔗 **Quick Links**
+
+- 📖 [View Live Wiki](https://github.com/Ruandv/Quantum-Tab/wiki)
+- 📝 [Documentation Source](docs/WIDGET_DOCUMENTATION.md)
+- 🔄 [Wiki Sync Workflow](docs/WIKI_SYNC_WORKFLOW.md)
 
 ---
 
