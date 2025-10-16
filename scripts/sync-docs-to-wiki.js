@@ -10,7 +10,7 @@ const path = require('path');
 
 function syncDocsToWiki() {
     const docsDir = path.join(__dirname, '..', 'docs');
-    const outputDir = path.join(__dirname, '..', 'wiki-output');
+    const outputDir = path.join(__dirname, '..', 'wiki');
 
     // Create output directory
     if (!fs.existsSync(outputDir)) {
@@ -99,7 +99,7 @@ For detailed configuration options, see the individual widget pages.
 
     console.log(`\n🎉 Successfully generated ${widgets.length + 1} wiki pages in ${outputDir}`);
     console.log('\nNext steps:');
-    console.log('1. Review the generated files in wiki-output/');
+    console.log('1. Review the generated files in wiki/');
     console.log('2. Commit and push to trigger the GitHub Action');
     console.log('3. Or manually copy the files to your GitHub Wiki');
 }

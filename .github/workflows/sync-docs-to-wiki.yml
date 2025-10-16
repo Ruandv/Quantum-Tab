@@ -29,13 +29,18 @@ jobs:
 
       - name: Verify wiki output
         run: |
-          echo "📁 Contents of wiki-output directory:"
-          ls -la wiki-output/
+          echo "📁 Contents of wiki directory:"
+          ls -la wiki/
           echo "📄 Number of files generated:"
-          find wiki-output -name "*.md" | wc -l
+          find wiki -name "*.md" | wc -l
 
       - name: Push to wiki
-        uses: Andrew-Chen-Wang/github-wiki-action@v4
-        with:
-          path: wiki-output
-          token: ${{ secrets.GITHUB_TOKEN }}
+          
+          run: |
+            pwsh -Command "
+              git config --global user.email '$ACTION_MAIL'
+              git config --global user.name 'GitHub Actions'
+              git add wiki/*.md
+              git commit -m 'docs: sync documentation to wiki [skip ci]' || echo 'No changes to commit'
+              git push origin HEAD
+            "
