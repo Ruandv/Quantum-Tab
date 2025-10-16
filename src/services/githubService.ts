@@ -168,22 +168,45 @@ export class GitHubService {
         throw new Error(repoAccess.error || 'Cannot access repository');
       }
 
-      // Build query parameters
-      const queryParams = new URLSearchParams();
+      // Build query parameters or search query
+      let endpoint: string;
+      let pullRequests: GitHubPullRequest[];
 
-      // Default to open PRs only
-      queryParams.set('state', params.state || 'open');
+      if (params.author) {
+        // Use search API to filter by author
+        const searchQuery = `repo:${owner}/${repo} is:pr author:${params.author} is:open`;
+        const searchParams = new URLSearchParams();
+        searchParams.set('q', searchQuery);
+        searchParams.set('sort', params.sort || 'created');
+        searchParams.set('order', params.direction || 'desc');
+        if (params.per_page) searchParams.set('per_page', params.per_page.toString());
+        if (params.page) searchParams.set('page', params.page.toString());
 
-      if (params.head) queryParams.set('head', params.head);
-      if (params.base) queryParams.set('base', params.base);
-      if (params.sort) queryParams.set('sort', params.sort);
-      if (params.direction) queryParams.set('direction', params.direction);
-      if (params.per_page) queryParams.set('per_page', params.per_page.toString());
-      if (params.page) queryParams.set('page', params.page.toString());
+        endpoint = `/search/issues?${searchParams.toString()}`;
 
-      const endpoint = `/repos/${owner}/${repo}/pulls?${queryParams.toString()}`;
+        const searchResponse = await this.makeRequest<{
+          total_count: number;
+          incomplete_results: boolean;
+          items: GitHubPullRequest[];
+        }>(endpoint, token);
 
-      const pullRequests = await this.makeRequest<GitHubPullRequest[]>(endpoint, token);
+        pullRequests = searchResponse.items;
+      } else {
+        // Use regular pulls endpoint
+        const queryParams = new URLSearchParams();
+        queryParams.set('state', params.state || 'open');
+
+        if (params.head) queryParams.set('head', params.head);
+        if (params.base) queryParams.set('base', params.base);
+        if (params.sort) queryParams.set('sort', params.sort);
+        if (params.direction) queryParams.set('direction', params.direction);
+        if (params.per_page) queryParams.set('per_page', params.per_page.toString());
+        if (params.page) queryParams.set('page', params.page.toString());
+
+        endpoint = `/repos/${owner}/${repo}/pulls?${queryParams.toString()}`;
+
+        pullRequests = await this.makeRequest<GitHubPullRequest[]>(endpoint, token);
+      }
 
       return pullRequests;
     } catch (error) {
@@ -302,6 +325,19 @@ export class GitHubService {
         error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
+  }
+
+  /**
+   * Get the authenticated user's information
+   * @param token - GitHub Personal Access Token
+   */
+  static async getCurrentUser(token: string): Promise<{ login: string; id: number; name: string | null }> {
+    if (!token) {
+      throw new Error('GitHub Personal Access Token is required');
+    }
+
+    const endpoint = '/user';
+    return await this.makeRequest<{ login: string; id: number; name: string | null }>(endpoint, token);
   }
 }
 

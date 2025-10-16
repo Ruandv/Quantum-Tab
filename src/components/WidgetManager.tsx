@@ -408,7 +408,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                               <input
                                 type="checkbox"
                                 checked={value}
-                                onChange={(e) => handlePropertyChange(key, e.target.checked.toString())}
+                                onChange={(e) => handlePropertyChange(key, e.target.checked)}
                               />
                               <span className="slider" />
                             </label>
@@ -667,14 +667,14 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   }, []);
 
   const handlePropertyChange = useCallback(
-    (key: string, value: string) => {
+    (key: string, value: string | number | boolean) => {
       if (!selectedWidgetType) return;
 
       // Parse numeric values for SprintNumber widget
-      let parsedValue: string | number = value;
+      let parsedValue: string | number | boolean = value;
       if (selectedWidgetType.id === 'sprint-number') {
         if (key === 'numberOfDays' || key === 'currentSprint') {
-          parsedValue = parseInt(value, 10) || 0;
+          parsedValue = typeof value === 'string' ? (parseInt(value, 10) || 0) : value;
         }
       }
 

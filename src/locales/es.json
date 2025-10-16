@@ -131,6 +131,13 @@
             "files": "archivos"
         }
     },
+    "gitCommentWatcher": {
+        "title": "Observador de Comentarios de Git",
+        "labels": {
+            "newComments": "Nuevos Comentarios",
+            "comments": "comentarios"
+        }
+    },
     "quickActionButtons": {
         "title": "Acceso Rápido",
         "tooltips": {

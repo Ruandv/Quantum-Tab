@@ -131,6 +131,13 @@
       "files": "lêers"
     }
   },
+  "gitCommentWatcher": {
+    "title": "Git Kommentaar Waarnemer",
+    "labels": {
+      "newComments": "Nuwe Kommentaar",
+      "comments": "kommentaar"
+    }
+  },
   "quickActionButtons": {
     "title": "Vinnige Toegang",
     "tooltips": {

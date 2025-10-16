@@ -132,6 +132,13 @@
       "files": "files"
     }
   },
+  "gitCommentWatcher": {
+    "title": "Git Comment Watcher",
+    "labels": {
+      "newComments": "New Comments",
+      "comments": "comments"
+    }
+  },
   "quickActionButtons": {
     "title": "Quick Access",
     "tooltips": {
@@ -219,8 +226,8 @@
       "description": "Manage and customize your dashboard background"
     },
     "githubWidget": {
-      "name": "GitHub Issues",
-      "description": "Display and track GitHub issues and pull requests"
+      "name": "GitHub PR Tracker",
+      "description": "Display and track GitHub pull requests"
     },
     "websiteCounter": {
       "name": "Website Counter",

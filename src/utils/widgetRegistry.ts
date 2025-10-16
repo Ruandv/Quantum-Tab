@@ -3,6 +3,7 @@ import {
   QuickActionButtonsProps,
   BackgroundManagerProps,
   GitHubWidgetProps,
+  GitCommentWatcherProps,
   WebsiteCounterProps,
   LocaleWidgetProps,
   SprintNumberProps,
@@ -12,6 +13,7 @@ import LiveClock from '../components/LiveClock';
 import QuickActionButtons from '../components/QuickActionButtons';
 import BackgroundManager from '../components/BackgroundManager';
 import GitHubWidget from '../components/GitHubWidget';
+import GitCommentWatcher from '../components/GitCommentWatcher';
 import WebsiteCounter from '../components/WebsiteCounter';
 import LocaleWidget from '../components/LocaleWidget';
 import SprintNumber from '../components/SprintNumber';
@@ -98,6 +100,24 @@ export class WidgetRegistry {
         widgetHeading: 'GitHub Repo',
         patToken: '',
         repositoryUrl: '',
+        autoRefresh: true,
+        refreshInterval: 5, // in minutes
+      },
+    });
+
+    this.register<GitCommentWatcherProps>({
+      id: 'git-comment-watcher',
+      name: 'Git Comment Watcher',
+      allowMultiples: true,
+      description: 'Monitor comments on your PR\'s',
+      component: GitCommentWatcher,
+      defaultDimensions: { width: 400, height: 250 },
+      defaultProps: {
+        widgetHeading: 'Git Comment Watcher',
+        patToken: '',
+        repositoryUrl: '',
+        autoRefresh: true,
+        refreshInterval: 5, // in minutes
       },
     });
 
