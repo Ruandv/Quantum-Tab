@@ -6,6 +6,7 @@ import { addWidgetRemovalListener } from '../utils/widgetEvents';
 
 const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   className = '',
+  aiEnabled,
   onBackgroundChange,
   isLocked,
   widgetId,
@@ -170,35 +171,42 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   return (
     <div className={`background-manager-widget ${className}`}>
       {widgetHeading && <h3 className="widget-title">{widgetHeading}</h3>}
+      {aiEnabled === true ? (
+        <span>🤖 </span>
+        // Here we need to show the AI ApiKey
+        // Input text that the user will type to use as the PROMPT for the AI to generate images
+      ) : (
+        <>
+          <div className="upload-section">
+            {!uploadedImage ? (
+              <div className="upload-area" onClick={handleFileSelect}>
+                {renderUploadArea()}
+              </div>
+            ) : (
+              renderPreview()
+            )}
 
-      <div className="upload-section">
-        {!uploadedImage ? (
-          <div className="upload-area" onClick={handleFileSelect}>
-            {renderUploadArea()}
+            {error && (
+              <div
+                className="error-message"
+                style={{ color: '#ff6b6b', fontSize: '0.8rem', marginTop: '0.5rem' }}
+              >
+                {error}
+              </div>
+            )}
           </div>
-        ) : (
-          renderPreview()
-        )}
 
-        {error && (
-          <div
-            className="error-message"
-            style={{ color: '#ff6b6b', fontSize: '0.8rem', marginTop: '0.5rem' }}
-          >
-            {error}
-          </div>
-        )}
-      </div>
+          <div className="control-buttons">{renderControls()}</div>
 
-      <div className="control-buttons">{renderControls()}</div>
-
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        accept="image/*"
-        style={{ display: 'none' }}
-      />
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/*"
+            style={{ display: 'none' }}
+          />
+        </>
+      )}
     </div>
   );
 };

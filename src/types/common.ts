@@ -43,6 +43,7 @@ export interface WidgetType<T = Record<string, unknown>> {
   id: string;
   name: string;
   allowMultiples: boolean;
+  aiEnabled?: boolean;
   description: string;
   component: React.ComponentType<T>;
   defaultDimensions: Dimensions;
@@ -50,6 +51,7 @@ export interface WidgetType<T = Record<string, unknown>> {
 }
 interface DefaultWidgetProps {
   isLocked: boolean;
+  aiEnabled: boolean; // Optional AI enabled flag
   widgetId?: string; // Optional widget ID for event handling
   widgetHeading?: string; // Optional widget heading
 }

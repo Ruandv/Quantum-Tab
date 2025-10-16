@@ -412,6 +412,7 @@ const NewTab: React.FC = () => {
                             {isLocked ? 'Unlock' : 'Lock'}
                         </button>
                         <WidgetManager
+                            aiEnabled={false}
                             onAddWidget={handleAddWidget}
                             onEditingWidget={()=>{}}
                             existingWidgets={widgets}
@@ -447,7 +448,7 @@ const NewTab: React.FC = () => {
                     onDismiss={() => setShowNotification(false)}
                 />
             )}
-            <GitHubIssues isLocked={isLocked} />
+            <GitHubIssues isLocked={isLocked} aiEnabled={false} />
         </div>
     );
 };

@@ -41,6 +41,7 @@ export class WidgetRegistry {
       component: LiveClock,
       defaultDimensions: { width: 400, height: 200 },
       defaultProps: {
+        aiEnabled: false,
         widgetHeading: 'Live Clock',
         timeZone: getBrowserRegion(),
         dateFormat: 'yyyy-MM-dd',
@@ -60,6 +61,7 @@ export class WidgetRegistry {
       defaultDimensions: { width: 350, height: 200 },
       defaultProps: {
         widgetHeading: 'Quick Actions',
+        aiEnabled: false,
         buttons: [
           {
             icon: '🐙',
@@ -79,11 +81,13 @@ export class WidgetRegistry {
       id: 'background-manager',
       name: 'Background Manager',
       allowMultiples: false,
+      aiEnabled: true,
       description: 'Upload and manage custom background images',
       component: BackgroundManager,
       defaultDimensions: { width: 320, height: 320 },
       defaultProps: {
         widgetHeading: 'Background Manager',
+        aiEnabled: true,
       },
     });
 
@@ -95,6 +99,7 @@ export class WidgetRegistry {
       component: GitHubWidget,
       defaultDimensions: { width: 400, height: 250 },
       defaultProps: {
+        aiEnabled: false,
         widgetHeading: 'GitHub Repo',
         patToken: '',
         repositoryUrl: '',
@@ -109,6 +114,7 @@ export class WidgetRegistry {
       component: WebsiteCounter,
       defaultDimensions: { width: 350, height: 300 },
       defaultProps: {
+        aiEnabled: false,
         widgetHeading: 'Website Counter',
         websites: ['google.com', 'github.com'].map((url) => {
           const hostname = url.replace('www.', '');
@@ -134,6 +140,7 @@ export class WidgetRegistry {
       defaultDimensions: defaultDimensions,
       defaultProps: {
         widgetHeading: 'Language Settings',
+        aiEnabled: false,
         selectedLocale: getBrowserLanguage(),
       },
     });
@@ -150,6 +157,7 @@ export class WidgetRegistry {
         startDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
         numberOfDays: 14,
         currentSprint: 1,
+        aiEnabled: false,
       },
     });
   }
