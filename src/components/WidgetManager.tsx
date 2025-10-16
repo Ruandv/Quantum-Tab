@@ -259,6 +259,42 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                   )}
                 </div>
               </div>
+              <div className="section color-section">
+                <h4>{t('widgetManager.labels.textColor')}</h4>
+                <div
+                  className="color-preview"
+                  style={{
+                    display: 'flex',
+                    backgroundColor: `rgba(${widgetStyle?.backgroundColorRed ?? 30}, ${widgetStyle?.backgroundColorGreen ?? 214}, ${widgetStyle?.backgroundColorBlue ?? 230}, ${widgetStyle?.transparency ?? 0.5})`,
+                    color: `rgb(${widgetStyle?.textColorRed ?? 230}, ${widgetStyle?.textColorGreen ?? 114}, ${widgetStyle?.textColorBlue ?? 30})`,
+                    width: '100%',
+                    height: '40px',
+                    textAlign: widgetStyle?.alignment ?? 'center',
+                    justifyContent: widgetStyle?.justify ?? 'center',
+                    borderRadius: '4px',
+                    fontSize: '16px',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    marginBottom: '10px',
+                  }}
+                >{t('widgetManager.labels.textColor')}</div>
+                <div className="color-controls">
+                  {renderColorInput(
+                    'textColorRed',
+                    widgetStyle?.textColorRed ?? 230,
+                    t('widgetManager.labels.red')
+                  )}
+                  {renderColorInput(
+                    'textColorGreen',
+                    widgetStyle?.textColorGreen ?? 114,
+                    t('widgetManager.labels.green')
+                  )}
+                  {renderColorInput(
+                    'textColorBlue',
+                    widgetStyle?.textColorBlue ?? 30,
+                    t('widgetManager.labels.blue')
+                  )}
+                </div>
+              </div>
 
               <div className="section text-align-section">
                 <h4>{t('widgetManager.labels.textAlign')}</h4>
@@ -709,7 +745,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
   const renderColorInput = useCallback(
     (
-      property: 'backgroundColorRed' | 'backgroundColorGreen' | 'backgroundColorBlue',
+      property: 'backgroundColorRed' | 'backgroundColorGreen' | 'backgroundColorBlue' | 'textColorRed' | 'textColorGreen' | 'textColorBlue',
       value: number,
       label: string
     ) => (
