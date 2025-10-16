@@ -10,6 +10,8 @@ on:
 jobs:
   sync-docs-to-wiki:
     runs-on: ubuntu-latest
+    env:
+      ACTION_MAIL: ruandv@gmail.com
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
