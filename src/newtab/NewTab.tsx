@@ -38,6 +38,7 @@ const NewTab: React.FC = () => {
             const clockWidget: DashboardWidget = {
                 id: 'live-clock-1',
                 name: 'Live Clock',
+                wikiPage: 'liveclock',
                 description: 'Real-time clock with customizable timezone and format',
                 allowMultiples: true,
                 position: defaultPosition,
@@ -185,12 +186,14 @@ const NewTab: React.FC = () => {
                             componentName = 'EmptyWidget';
                         }
 
+                        // Try to get widget info from registry for better metadata
+                        const widgetType = widgetRegistry.get(componentName) || widgetRegistry.get(widgetTypeId);
+
                         const restoredWidget: DashboardWidget = {
                             ...widget,
+                            wikiPage: widgetType?.wikiPage || widget.wikiPage || 'Unknown Wiki Page',
                             component: restoredComponent,
-                            // Ensure style property exists with defaults if missing
                             style: widget.style || defaultStyle,
-                            // Add name and description from widget registry if missing
                             name: widget.name || 'Unknown Widget',
                             description: widget.description || 'Widget description not available',
                         };
@@ -200,6 +203,7 @@ const NewTab: React.FC = () => {
                         // Return widget with LiveClock as fallback and default style
                         const fallbackWidget: DashboardWidget = {
                             ...widget,
+                            wikiPage: 'liveclock',
                             component: componentMap['LiveClock'],
                             style: widget.style || defaultStyle,
                             name: widget.name || 'Live Clock',
@@ -304,6 +308,7 @@ const NewTab: React.FC = () => {
                         id: widget.id,
                         name: widget.name,
                         description: widget.description,
+                        wikiPage: widget.wikiPage ||  widget.name.toLowerCase().replace(/\s+/g, ''),
                         allowMultiples: widgetType?.allowMultiples || false,
                         component: serializedComponent,
                         props: widget.props,

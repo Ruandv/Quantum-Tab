@@ -4,26 +4,39 @@
 
 ### BackgroundManager
 - **Description**: Upload and manage custom background images for the dashboard
-- **Usage**: Allows users to upload, select, and manage background images that appear behind all widgets on the dashboard. Supports image file validation and persists selections to Chrome storage.
+- **Usage**: Allows users to upload, select, and manage background images that appear behind all widgets on the dashboard. Supports image file validation (PNG, JPG, JPEG, GIF, WebP) with a 5MB file size limit and persists selections to Chrome storage.
 
 #### Properties
+- **widgetHeading**: Optional heading text displayed at the top of the widget
+
+### GitCommentWatcher
+- **Description**: Monitor GitHub pull requests where you have been mentioned or requested for review
+- **Usage**: Tracks pull requests across repositories where you are involved, highlighting new comments and review requests with visual indicators. Supports auto-refresh to stay updated on PR activity and automatically highlights PRs with new comments for 5 seconds. Uses your GitHub PAT to monitor your assigned reviews and mentions.
+
+#### Properties
+- **autoRefresh**: Boolean indicating whether to automatically refresh PR data at regular intervals (default: false)
+- **patToken**: GitHub Personal Access Token for API authentication (required for accessing your PRs and mentions across repositories)
+- **refreshInterval**: Auto-refresh interval in minutes when autoRefresh is enabled (default: 5 minutes)
+- **repositoryUrl**: GitHub repository URL to monitor in the format `https://github.com/owner/repo` (required)
 - **widgetHeading**: Optional heading text displayed at the top of the widget
 
 ### GitHubWidget
 - **Description**: Monitor and interact with GitHub repositories, displaying pull requests, issues, and repository statistics
-- **Usage**: Connect to a GitHub repository using a Personal Access Token (PAT) to view pull requests, issues, and get repository insights. Fetches data from the GitHub API through a background service worker.
+- **Usage**: Connect to a GitHub repository using a Personal Access Token (PAT) to view all pull requests in the repository. Fetches data from the GitHub API through a background service worker. Supports auto-refresh for real-time updates and displays PR status (Open, Merged, Closed, Draft).
 
 #### Properties
+- **autoRefresh**: Boolean indicating whether to automatically refresh PR data at regular intervals (default: false)
 - **patToken**: GitHub Personal Access Token for API authentication (required for accessing private repositories and increased rate limits)
-- **repositoryUrl**: GitHub repository URL to monitor in the format `https://github.com/owner/repo`
+- **refreshInterval**: Auto-refresh interval in minutes when autoRefresh is enabled (default: 5 minutes)
+- **repositoryUrl**: GitHub repository URL to monitor in the format `https://github.com/owner/repo` (required)
 - **widgetHeading**: Optional heading text displayed at the top of the widget
 
 ### LiveClock
 - **Description**: Real-time clock component with customizable timezone, date, and time formatting
-- **Usage**: Displays the current time and date for any timezone with extensive customization options for format and display. Updates every second to show real-time information.
+- **Usage**: Displays the current time and date for any timezone with extensive customization options for format and display. Updates every second to show real-time information. Perfect for tracking multiple timezones or displaying local time with custom formatting.
 
 #### Properties
-- **dateFormat**: Optional date formatting pattern  
+- **dateFormat**: Optional date formatting pattern (default: 'yyyy-MM-dd')  
   Common Examples:  
   `yyyy-MM-dd` → 2025-10-16  
   `dd MMMM yyyy` → 16 October 2025  
@@ -31,7 +44,7 @@
 - **showDate**: Boolean indicating whether to display the date (default: false)
 - **showTime**: Boolean indicating whether to display the time (default: true)
 - **showTimeZone**: Boolean indicating whether to display the time zone label (default: false)
-- **timeFormat**: Optional time formatting pattern  
+- **timeFormat**: Optional time formatting pattern (default: 'hh:mm a')  
   Common Examples:  
   `HH:mm:ss` → 14:30:05 (24-hour)  
   `h:mm a` → 2:30 pm (12-hour)  
@@ -43,7 +56,7 @@
 
 ### LocaleWidget
 - **Description**: Language and locale settings component for changing the application language
-- **Usage**: Allows users to select their preferred language from available options. Currently supports English, Afrikaans, and Spanish. Changes are applied immediately and persisted across sessions.
+- **Usage**: Allows users to select their preferred language from available options. Currently supports English (🇺🇸), Afrikaans (🇿🇦), and Spanish (🇪🇸). Changes are applied immediately and persisted across sessions. Features a dropdown interface with flag emojis for visual identification.
 
 #### Properties
 - **selectedLocale**: Currently selected locale code (e.g., 'en', 'af', 'es')
@@ -51,10 +64,10 @@
 
 ### QuickActionButtons
 - **Description**: Collection of customizable quick action buttons for accessing favorite websites
-- **Usage**: Displays a grid of buttons that open websites in new tabs when clicked. Users can add, remove, and customize buttons with custom icons, labels, and URLs. Perfect for frequently accessed sites.
+- **Usage**: Displays a grid of buttons that open websites in new tabs when clicked. Users can add, remove, and customize buttons with custom icons (emojis), labels, and URLs. Perfect for frequently accessed sites. Default buttons include GitHub (🐙) and MyBroadband (🗞️).
 
 #### Properties
-- **buttons**: Array of ActionButton objects, each containing:
+- **buttons**: Array of ActionButton objects (default includes GitHub and MyBroadband), each containing:
   - **icon**: Emoji or text icon for the button
   - **label**: Display label for the button
   - **url**: Target URL to open when clicked
@@ -62,26 +75,26 @@
 
 ### SprintNumber
 - **Description**: Sprint counter and timeline tracking component for agile project management
-- **Usage**: Displays the current sprint number and countdown information based on a configurable start date and sprint duration. Automatically calculates the current sprint number and remaining days.
+- **Usage**: Displays the current sprint number and countdown information based on a configurable start date and sprint duration. Automatically calculates the current sprint number based on elapsed days and displays start/end dates for the current sprint. Updates automatically at midnight each day.
 
 #### Properties
-- **currentSprint**: Starting sprint number (required)
-- **numberOfDays**: Number of days per sprint cycle (required)
-- **startDate**: Sprint start date in YYYY-MM-DD format (required)
+- **currentSprint**: Starting sprint number (required) - the base sprint number to calculate from
+- **numberOfDays**: Number of days per sprint cycle (required) - typically 7, 10, or 14 days
+- **startDate**: Sprint start date in YYYY-MM-DD format (required) - the initial sprint start date
 - **widgetHeading**: Optional heading text displayed at the top of the widget
 
 ### WebsiteCounter
 - **Description**: Website visit counter and tracking component
-- **Usage**: Tracks and displays visit counts and last visited times for favorite websites. Users can add websites to track, view visit statistics, and sort by different criteria. Automatically increments count when visiting tracked sites.
+- **Usage**: Tracks and displays visit counts and last visited times for favorite websites. Users can add websites to track, view visit statistics with favicons, and sort by different criteria. Automatically increments count when visiting tracked sites through the content script. Supports a maximum configurable number of tracked websites.
 
 #### Properties
 - **maxWebsites**: Maximum number of websites to track (default: 10)
-- **showFavicons**: Boolean indicating whether to display website favicons (default: true)
-- **sortBy**: Sort order for the website list
+- **showFavicons**: Boolean indicating whether to display website favicons for visual identification (default: true)
+- **sortBy**: Sort order for the website list (default: 'count')
   - `'count'` - Sort by number of visits (highest first)
-  - `'name'` - Sort alphabetically by website name
-  - `'recent'` - Sort by most recently visited
-- **websites**: Array of WebsiteCounterData objects containing tracked website information
+  - `'name'` - Sort alphabetically by website hostname
+  - `'recent'` - Sort by most recently visited (newest first)
+- **websites**: Array of WebsiteCounterData objects containing tracked website information (auto-populated from Chrome storage)
 - **widgetHeading**: Optional heading text displayed at the top of the widget
 
 ## Getting Help

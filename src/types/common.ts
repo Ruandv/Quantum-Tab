@@ -34,6 +34,7 @@ export interface DashboardWidget {
   id: string;
   name: string;
   description: string;
+  wikiPage: string;
   allowMultiples: boolean;
   component: React.ComponentType<Record<string, unknown>>;
   props?: Record<string, unknown>;
@@ -45,12 +46,14 @@ export interface DashboardWidget {
 export interface WidgetType<T = Record<string, unknown>> {
   id: string;
   name: string;
+  wikiPage: string;
   allowMultiples: boolean;
   description: string;
   component: React.ComponentType<T>;
   defaultDimensions: Dimensions;
   defaultProps: RequiredProps<T>;
 }
+
 interface DefaultWidgetProps {
   isLocked: boolean;
   widgetId?: string; // Optional widget ID for event handling
@@ -105,10 +108,19 @@ export interface QuickActionButtonItemProps {
 export interface GitHubIssuesProps extends DefaultWidgetProps {
 }
 
-export interface GitHubWidgetProps extends DefaultWidgetProps {
-  className?: string;
+
+interface GitHubWidgetBaseProps extends DefaultWidgetProps {
   patToken: string;
   repositoryUrl: string;
+  className?: string;
+  autoRefresh?: boolean;
+  refreshInterval?: number; // in minutes
+}
+
+export interface GitHubWidgetProps extends GitHubWidgetBaseProps {
+}
+
+export interface GitCommentWatcherProps extends GitHubWidgetBaseProps {
 }
 
 export interface BackgroundManagerProps extends DefaultWidgetProps {
@@ -310,10 +322,11 @@ export interface GitHubPullRequestsParams {
   direction?: 'asc' | 'desc';
   per_page?: number;
   page?: number;
+  author?: string;
 }
 
 export interface GitHubApiRequest {
-  action: 'fetchPullRequests';
+  action: 'fetchPullRequests' | 'fetchUserPullRequests';
   data: {
     patToken: string;
     repositoryUrl: string;
@@ -321,7 +334,7 @@ export interface GitHubApiRequest {
 }
 
 export interface GitHubApiResponse {
-  action: 'fetchPullRequests';
+  action: 'fetchPullRequests' | 'fetchUserPullRequests';
   success: boolean;
   data?: GitHubPullRequest[];
   error?: string;

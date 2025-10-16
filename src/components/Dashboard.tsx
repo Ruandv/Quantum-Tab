@@ -250,7 +250,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 className="widget-info-btn"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleRequestWidgetInfo(widget.name);
+                  handleRequestWidgetInfo(widget.wikiPage || widget.name);
                 }}
                 title="More info ..."
               >🛈

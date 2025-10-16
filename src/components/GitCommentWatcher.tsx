@@ -1,14 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  GitHubWidgetProps,
-  GitHubPullRequest,
-  BackgroundMessage,
-  BackgroundResponse,
-} from '@/types/common';
+import { GitCommentWatcherProps, GitHubPullRequest, BackgroundMessage, BackgroundResponse } from '@/types/common';
 import { addWidgetRemovalListener } from '../utils/widgetEvents';
 
-const GitHubWidget: React.FC<GitHubWidgetProps> = ({
+const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
   className = '',
   patToken = '',
   repositoryUrl = '',
@@ -24,6 +19,8 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastFetch, setLastFetch] = useState<Date | null>(null);
+  const [changedPrIds, setChangedPrIds] = useState<Set<number>>(new Set());
+  const previousPullRequestsRef = useRef<GitHubPullRequest[]>([]);
 
   // Function to fetch PR data from background service
   const fetchPullRequests = useCallback(async () => {
@@ -33,12 +30,11 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
     }
 
     setIsLoading(true);
-
     setError(null);
 
     try {
       const message: BackgroundMessage = {
-        action: 'fetchPullRequests',
+        action: 'fetchUserPullRequests',
         data: {
           patToken,
           repositoryUrl,
@@ -56,9 +52,46 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
         }
 
         if (response.success && response.data) {
-          setPullRequests(response.data);
+          // Detect changes before updating state
+          const newChangedPrIds = new Set<number>();
+          const newPrs = response.data as GitHubPullRequest[];
+          
+          console.log(`GitCommentWatcher: Refresh detected. Previous PRs: ${previousPullRequestsRef.current.length}, New PRs: ${newPrs.length}`);
+          
+          // Compare with previous PRs to find changes
+          newPrs.forEach(newPr => {
+            const prevPr = previousPullRequestsRef.current.find(pr => pr.id === newPr.id);
+            if (prevPr) {
+              // Check if comments increased
+              const prevComments = (prevPr.comments || 0) + (prevPr.review_comments || 0);
+              const newComments = (newPr.comments || 0) + (newPr.review_comments || 0);
+              console.log(`PR #${newPr.number}: prev=${prevComments}, new=${newComments}`);
+              if (newComments > prevComments) {
+                console.log(`PR #${newPr.number} has new comments!`);
+                newChangedPrIds.add(newPr.id);
+              }
+            } else {
+              // New PR - highlight it
+              console.log(`New PR #${newPr.number} detected`);
+              newChangedPrIds.add(newPr.id);
+            }
+          });
+
+          console.log(`Changed PRs: ${Array.from(newChangedPrIds).length}`);
+
+          // Update state - store new data as previous for next comparison
+          previousPullRequestsRef.current = [...newPrs];
+          setPullRequests(newPrs);
+          setChangedPrIds(newChangedPrIds);
           setLastFetch(new Date());
           setError(null);
+
+          // Clear highlights after 5 seconds
+          if (newChangedPrIds.size > 0) {
+            setTimeout(() => {
+              setChangedPrIds(new Set());
+            }, 5000);
+          }
         } else {
           setError(response.error || t('githubWidget.errors.fetchFailed'));
         }
@@ -102,7 +135,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
     const removeListener = addWidgetRemovalListener(widgetId, async () => {
       // Cleanup: Clear GitHub-related state and any stored PAT tokens or repository URLs
       try {
-        console.log('Cleaning up GitHub widget data for:', widgetId);
+        console.log('Cleaning up GitCommentWatcher data for:', widgetId);
 
         // Clear component state
         setPullRequests([]);
@@ -112,10 +145,10 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
         // If there are any GitHub-specific storage items, clear them here
         // For example, cached PR data or repository-specific settings
         if (typeof chrome !== 'undefined' && chrome.storage) {
-          console.log('GitHub widget storage cleared for widget:', widgetId);
+          console.log('GitCommentWatcher storage cleared for widget:', widgetId);
         }
       } catch (error) {
-        console.error('Failed to cleanup GitHub widget data:', error);
+        console.error('Failed to cleanup GitCommentWatcher data:', error);
       }
     });
 
@@ -123,10 +156,15 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
     return removeListener;
   }, [widgetId]);
 
+  // Calculate if there are new comments
+  const hasNewComments = pullRequests.some(pr =>
+    (pr.comments || 0) > 0 || (pr.review_comments || 0) > 0
+  );
+
   return (
-    <div className={`github-widget ${className}`}>
+    <div className={`git-comment-watcher ${className}`}>
       {widgetHeading && <h3 className="widget-title">{widgetHeading}</h3>}
-      <div className="github-widget-content">
+      <div className="git-comment-watcher-content">
         {/* Status and Data Section */}
         {isLoading ? (
           <div className="github-loading">
@@ -144,11 +182,14 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
             )}
           </div>
         ) : (
-          <div className="github-data">
-            <div className="data-header">
+          <div className="git-comment-watcher-data">
+            <div className="watcher-header">
               <span className="pr-count">
                 📋 {pullRequests.length} {t('githubWidget.pullRequests.count')}
               </span>
+              {hasNewComments && (
+                <span className="comment-badge">💬 {t('gitCommentWatcher.labels.newComments')}</span>
+              )}
               {lastFetch && (
                 <span className="last-updated">
                   {t('githubWidget.pullRequests.updated')}: {lastFetch.toLocaleTimeString()}
@@ -159,7 +200,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
               {pullRequests.map((pr) => (
                 <div
                   key={pr.id}
-                  className={`pr-item pr-${pr.state}`}
+                  className={`pr-item pr-${pr.state} ${pr.comments > 0 || pr.review_comments > 0 ? 'has-comments' : ''} ${changedPrIds.has(pr.id) ? 'pr-changed' : ''}`}
                   onClick={() => window.open(pr.html_url, '_blank')}
                 >
                   <div className="pr-header">
@@ -170,18 +211,13 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
                         ? t('githubWidget.pullRequests.states.merged')
                         : t(`githubWidget.pullRequests.states.${pr.state}`)}
                     </span>
-                    {pr.draft && (
-                      <span className="pr-draft">📝 {t('githubWidget.pullRequests.draft')}</span>
+                    {(pr.comments > 0 || pr.review_comments > 0) && (
+                      <span className="comment-indicator">
+                        💬 {(pr.comments || 0) + (pr.review_comments || 0)} {t('gitCommentWatcher.labels.comments')}
+                      </span>
                     )}
                   </div>
                   <div className="pr-title">{pr.title}</div>
-                  <div className="pr-meta">
-                    {/* <span className="pr-author">👤 {pr.user.login}</span> */}
-                    <span className="pr-changes">
-                      +{pr.additions} -{pr.deletions} ({pr.changed_files}{' '}
-                      {t('githubWidget.labels.files')})
-                    </span>
-                  </div>
                 </div>
               ))}
             </div>
@@ -197,6 +233,6 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
   );
 };
 
-GitHubWidget.displayName = 'GitHubWidget';
+GitCommentWatcher.displayName = 'GitCommentWatcher';
 
-export default GitHubWidget;
+export default GitCommentWatcher;

@@ -3,6 +3,7 @@ import {
   QuickActionButtonsProps,
   BackgroundManagerProps,
   GitHubWidgetProps,
+  GitCommentWatcherProps,
   WebsiteCounterProps,
   LocaleWidgetProps,
   SprintNumberProps,
@@ -12,6 +13,7 @@ import LiveClock from '../components/LiveClock';
 import QuickActionButtons from '../components/QuickActionButtons';
 import BackgroundManager from '../components/BackgroundManager';
 import GitHubWidget from '../components/GitHubWidget';
+import GitCommentWatcher from '../components/GitCommentWatcher';
 import WebsiteCounter from '../components/WebsiteCounter';
 import LocaleWidget from '../components/LocaleWidget';
 import SprintNumber from '../components/SprintNumber';
@@ -36,6 +38,7 @@ export class WidgetRegistry {
     this.register<LiveClockProps>({
       id: 'live-clock',
       name: 'Live Clock',
+      wikiPage: 'liveclock',
       allowMultiples: true,
       description: 'Real-time clock with customizable timezone and format',
       component: LiveClock,
@@ -54,6 +57,7 @@ export class WidgetRegistry {
     this.register<QuickActionButtonsProps>({
       id: 'quick-actions',
       name: 'Quick Actions',
+      wikiPage: 'quickactions',
       allowMultiples: true,
       description: 'Quick access buttons to your favorite websites',
       component: QuickActionButtons,
@@ -78,6 +82,7 @@ export class WidgetRegistry {
     this.register<BackgroundManagerProps>({
       id: 'background-manager',
       name: 'Background Manager',
+      wikiPage: 'backgroundmanager',
       allowMultiples: false,
       description: 'Upload and manage custom background images',
       component: BackgroundManager,
@@ -90,6 +95,7 @@ export class WidgetRegistry {
     this.register<GitHubWidgetProps>({
       id: 'github-widget',
       name: 'GitHub Repository',
+      wikiPage: 'githubwidget',
       allowMultiples: true,
       description: 'Monitor and interact with GitHub repositories',
       component: GitHubWidget,
@@ -98,12 +104,32 @@ export class WidgetRegistry {
         widgetHeading: 'GitHub Repo',
         patToken: '',
         repositoryUrl: '',
+        autoRefresh: true,
+        refreshInterval: 5, // in minutes
+      },
+    });
+
+    this.register<GitCommentWatcherProps>({
+      id: 'git-comment-watcher',
+      name: 'Git Comment Watcher',
+      wikiPage: 'gitcommentwatcher',
+      allowMultiples: true,
+      description: 'Monitor comments on your PR\'s',
+      component: GitCommentWatcher,
+      defaultDimensions: { width: 400, height: 250 },
+      defaultProps: {
+        widgetHeading: 'Git Comment Watcher',
+        patToken: '',
+        repositoryUrl: '',
+        autoRefresh: true,
+        refreshInterval: 5, // in minutes
       },
     });
 
     this.register<WebsiteCounterProps>({
       id: 'website-counter',
       name: 'Website Counter',
+      wikiPage: 'websitecounter',
       allowMultiples: false,
       description: 'Track and count visits to your favorite websites',
       component: WebsiteCounter,
@@ -128,6 +154,7 @@ export class WidgetRegistry {
     this.register<LocaleWidgetProps>({
       id: 'locale-selector',
       name: 'Language Settings',
+      wikiPage: 'localewidget',
       allowMultiples: false,
       description: 'Change your preferred language and locale',
       component: LocaleWidget,
@@ -151,6 +178,7 @@ export class WidgetRegistry {
         numberOfDays: 14,
         currentSprint: 1,
       },
+      wikiPage: 'sprint-number'
     });
   }
 

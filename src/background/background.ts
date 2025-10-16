@@ -76,6 +76,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true; // Keep message channel open for async response
   }
 
+  if (message.action === 'fetchUserPullRequests') {
+    handleUserPullRequestsRequest(message, sendResponse);
+    return true; // Keep message channel open for async response
+  }
+
   switch (message.action) {
     case 'getTabInfo':
       if (sender.tab) {
@@ -199,6 +204,78 @@ const handleGitHubApiRequest = async (
 
     sendResponse({
       action: 'fetchPullRequests',
+      success: false,
+      error: errorMessage,
+    });
+  }
+};
+
+// Handle fetchUserPullRequests action
+const handleUserPullRequestsRequest = async (message: any, sendResponse: (response: any) => void) => {
+  if (message.action !== 'fetchUserPullRequests') {
+    sendResponse({ action: 'fetchUserPullRequests', success: false, error: 'Invalid action' });
+    return;
+  }
+
+  const { patToken, repositoryUrl } = message.data;
+
+  // Validate required parameters
+  if (!patToken) {
+    sendResponse({
+      action: 'fetchUserPullRequests',
+      success: false,
+      error: 'GitHub Personal Access Token is required',
+    });
+    return;
+  }
+
+  if (!repositoryUrl) {
+    sendResponse({
+      action: 'fetchUserPullRequests',
+      success: false,
+      error: 'Repository URL is required',
+    });
+    return;
+  }
+
+  try {
+    // Get the authenticated user
+    const currentUser = await GitHubService.getCurrentUser(patToken);
+
+    // Use the GitHub service to fetch PRs by the current user
+    const pullRequests = await GitHubService.getPullRequests(
+      patToken,
+      repositoryUrl,
+      { state: 'open', per_page: 10, author: currentUser.login }
+    );
+
+    // Return the pull requests
+    sendResponse({
+      action: 'fetchUserPullRequests',
+      success: true,
+      data: pullRequests,
+    });
+  } catch (error) {
+    console.error('GitHub API request failed:', error);
+
+    let errorMessage = 'Failed to fetch pull requests';
+
+    if (error instanceof Error) {
+      errorMessage = error.message;
+
+      // Provide more helpful error messages for common issues
+      if (error.message.includes('401')) {
+        errorMessage = 'Invalid GitHub token. Please check your Personal Access Token.';
+      } else if (error.message.includes('404')) {
+        errorMessage =
+          'Repository not found. Please check the repository URL and token permissions.';
+      } else if (error.message.includes('403')) {
+        errorMessage = 'Access forbidden. Check your token permissions or rate limit.';
+      }
+    }
+
+    sendResponse({
+      action: 'fetchUserPullRequests',
       success: false,
       error: errorMessage,
     });
