@@ -1,0 +1,148 @@
+/* NewTab Page Layout Styles */
+
+.newtabContainer {
+  height: 100vh;
+  background: linear-gradient(135deg, #d3751e 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.newtabContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Header */
+.newtabHeader {
+  position: fixed;
+  padding: 0px 5px;
+  z-index: 100;
+  top: 10px;
+  left: 10px;
+  background-color: rgb(87, 80, 80);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  min-height: 60px;
+}
+
+.headerActions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.logo {
+  text-align: center;
+  flex: 1;
+}
+
+.logoText {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, #ffffff, #f0f0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.25rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tagline {
+  font-size: 1rem;
+  opacity: 0.9;
+  font-weight: 300;
+  letter-spacing: 0.3px;
+}
+
+/* Main Content */
+.newtabMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto;
+  min-height: 0;
+}
+
+.mainDashboard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Footer */
+.newtabFooter {
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  opacity: 0.7;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.statLabel {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.statValue {
+  font-weight: 600;
+}
+
+/* Lock/Unlock Toggle Button */
+.lockToggle {
+  background: linear-gradient(45deg, #4facfe, #00f2fe);
+  box-shadow: 0 3px 12px rgba(79, 172, 254, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: none;
+  color: white;
+  min-height: 36px;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.lockToggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+}
+
+.lockToggle.locked {
+  background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+  box-shadow: 0 3px 12px rgba(255, 107, 107, 0.3);
+}
+
+.lockToggle.locked:hover {
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+.btnIcon {
+  font-size: 1rem;
+}

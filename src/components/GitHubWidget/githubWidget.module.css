@@ -155,10 +155,13 @@
 .prCount {
   font-weight: 600;
   color: white;
+  font-size: var(--widget-body-size, 1rem);
+  line-height: var(--widget-body-line-height, 1.4);
 }
 
 .lastUpdated {
-  font-size: 0.8rem;
+  font-size: var(--widget-small-size, 0.8rem);
+  line-height: var(--widget-small-line-height, 1.4);
   color: rgba(255, 255, 255, 0.6);
 }
 
@@ -281,7 +284,8 @@
   color: var(--color-success);
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
-  font-size: 0.8rem;
+  font-size: var(--widget-small-size, 0.8rem);
+  line-height: var(--widget-small-line-height, 1.4);
   font-weight: 600;
 }
 
@@ -290,6 +294,7 @@
   color: var(--color-success);
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
-  font-size: 0.8rem;
+  font-size: var(--widget-small-size, 0.8rem);
+  line-height: var(--widget-small-line-height, 1.4);
   font-weight: 600;
 }

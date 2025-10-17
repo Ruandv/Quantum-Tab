@@ -1,9 +1,10 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import NewTab from './NewTab';
-import ErrorBoundary from '../components/ErrorBoundary';
+import ErrorBoundary from '../components/ErrorBoundary/errorBoundary';
 import i18n from '../i18n'; // Import i18n instance
-import './newtab.css';
+import '../styles/variables.css';
+import '../styles/global.css';
 
 const container = document.getElementById('root');
 

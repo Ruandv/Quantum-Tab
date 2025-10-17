@@ -87,7 +87,9 @@
 }
 
 .notificationFeatures h4 {
-  font-size: var(--font-size-lg);
+  font-size: var(--widget-subheading-size, 1.2rem);
+  line-height: var(--widget-subheading-line-height, 1.4);
+  font-weight: 600;
   margin-bottom: var(--spacing-sm);
   color: rgba(255, 255, 255, 0.95);
 }
@@ -156,7 +158,8 @@
 }
 
 .versionArrow {
-  font-size: var(--font-size-lg);
+  font-size: var(--widget-subheading-size, 1.2rem);
+  line-height: var(--widget-subheading-line-height, 1.4);
   opacity: 0.7;
 }
 
