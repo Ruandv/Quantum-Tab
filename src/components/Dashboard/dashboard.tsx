@@ -1,8 +1,9 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect, CSSProperties } from 'react';
-import ResizableWidget from './ResizableWidget';
-import { DashboardWidget, DashboardProps, DragState, Position, Dimensions } from '../types/common';
-import { constrainPosition, getViewportDimensions } from '../utils/helpers';
+import ResizableWidget from '../ResizableWidget/resizableWidget';
+import { DashboardWidget, DashboardProps, DragState, Position, Dimensions } from '../../types/common';
+import { constrainPosition, getViewportDimensions } from '../../utils/helpers';
 import { dispatchWidgetEditing } from '@/utils/widgetEvents';
+import styles from './dashboard.module.css';
 
 const Dashboard: React.FC<DashboardProps> = ({
   widgets,
@@ -140,7 +141,7 @@ const Dashboard: React.FC<DashboardProps> = ({
       const newEmptyWidgets = new Set<string>();
 
       widgetRefs.current.forEach((element, widgetId) => {
-        const contentElement = element.querySelector('.widget-content');
+        const contentElement = element.querySelector(`.${styles.widgetContent}`);
         if (contentElement) {
           // Check if content is empty (no text, no child elements, or only whitespace)
           const hasText = contentElement.textContent?.trim().length || 0;
@@ -186,19 +187,13 @@ const Dashboard: React.FC<DashboardProps> = ({
         return (
           <div
             key={widget.id + index}
-            className="widget-wrapper error-widget"
+            className={styles.errorWidget}
             style={{
               position: 'absolute',
               left: `${widget.position.x}px`,
               top: `${widget.position.y}px`,
               width: `${widget.dimensions.width}px`,
               height: `${widget.dimensions.height}px`,
-              border: '2px dashed red',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'red',
-              fontSize: '12px',
             }}
           >
             Error: Missing Component
@@ -232,7 +227,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               widgetRefs.current.delete(widget.id);
             }
           }}
-          className={`widget-wrapper ${isLocked ? 'locked' : 'editable'} ${isDragging ? 'dragging' : ''} ${isEmpty ? 'empty-widget' : ''}`}
+          className={`${styles.widgetWrapper} ${isLocked ? styles.locked : styles.editable} ${isDragging ? styles.dragging : ''} ${isEmpty ? styles.emptyWidget : ''}`}
           style={widgetStyles}
           onMouseDown={(e) => handleMouseDown(e, widget)}
         >
@@ -247,7 +242,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             {!isLocked && handleRemoveWidget && (
               <>
               <button
-                className="widget-info-btn"
+                className={styles.widgetInfoBtn}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleRequestWidgetInfo(widget.wikiPage || widget.name);
@@ -256,7 +251,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               >🛈
               </button>
               <button
-                className="widget-edit-btn edit-btn"
+                className={styles.widgetEditBtn}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleEditWidget(widget.id);
@@ -266,7 +261,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 🖉
               </button>
               <button
-                className="widget-remove-btn remove-btn"
+                className={styles.widgetRemoveBtn}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleRemoveWidget(widget.id);
@@ -278,11 +273,11 @@ const Dashboard: React.FC<DashboardProps> = ({
               </>
             )}
             {!isLocked && (
-              <div className="widget-drag-indicator" title="Drag to move">
+              <div className={styles.widgetDragIndicator} title="Drag to move">
                 ⋮⋮
               </div>
             )}
-            <div className="widget-content" style={widgetContentStyles}>
+            <div className={styles.widgetContent} style={widgetContentStyles}>
               <WidgetComponent
                 isLocked={isLocked}
                 widgetId={widget.id}
@@ -318,7 +313,7 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <div
-      className={`dashboard-container ${className}`}
+      className={`${styles.dashboardContainer} ${className}`}
       style={{
         height: `${containerHeight}px`,
         minHeight: '400px',

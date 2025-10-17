@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useMemo } from 'react';
-import { useWidgetTextSizes } from '../hooks/useProportionalTextSize';
-import { CssStyle } from '../types/common';
+import { useWidgetTextSizes } from '../../hooks/useProportionalTextSize';
+import { CssStyle } from '../../types/common';
+import styles from './resizableWidget.module.css';
 
 interface ResizableWidgetProps {
   id: string;
@@ -157,21 +158,21 @@ export const ResizableWidget: React.FC<ResizableWidgetProps> = ({
   const getResizeHandles = () => {
     if (!isResizable) return null;
 
-    const handles: { direction: ResizeDirection; className: string }[] = [
-      { direction: 'n', className: 'resize-handle resize-n' },
-      { direction: 's', className: 'resize-handle resize-s' },
-      { direction: 'e', className: 'resize-handle resize-e' },
-      { direction: 'w', className: 'resize-handle resize-w' },
-      { direction: 'ne', className: 'resize-handle resize-ne' },
-      { direction: 'nw', className: 'resize-handle resize-nw' },
-      { direction: 'se', className: 'resize-handle resize-se' },
-      { direction: 'sw', className: 'resize-handle resize-sw' },
+    const handles: { direction: ResizeDirection; classNames: string }[] = [
+      { direction: 'n', classNames: `${styles.resizeHandle} ${styles.resizeN}` },
+      { direction: 's', classNames: `${styles.resizeHandle} ${styles.resizeS}` },
+      { direction: 'e', classNames: `${styles.resizeHandle} ${styles.resizeE}` },
+      { direction: 'w', classNames: `${styles.resizeHandle} ${styles.resizeW}` },
+      { direction: 'ne', classNames: `${styles.resizeHandle} ${styles.resizeNe}` },
+      { direction: 'nw', classNames: `${styles.resizeHandle} ${styles.resizeNw}` },
+      { direction: 'se', classNames: `${styles.resizeHandle} ${styles.resizeSe}` },
+      { direction: 'sw', classNames: `${styles.resizeHandle} ${styles.resizeSw}` },
     ];
 
-    return handles.map(({ direction, className }) => (
+    return handles.map(({ direction, classNames }) => (
       <div
         key={direction}
-        className={className}
+        className={classNames}
         onMouseDown={(e) => handleMouseDown(e, direction)}
       />
     ));
@@ -180,12 +181,12 @@ export const ResizableWidget: React.FC<ResizableWidgetProps> = ({
   return (
     <div
       ref={widgetRef}
-      className={`resizable-widget ${className} ${isResizing ? 'resizing' : ''}`}
+      className={`${styles.resizableWidget} ${className} ${isResizing ? styles.resizing : ''}`}
       style={widgetStyles}
     >
       {/* Blur backdrop - positioned behind content */}
       {backdropStyles && (
-        <div className="widget-blur-backdrop" style={backdropStyles} aria-hidden="true" />
+        <div className={styles.widgetBlurBackdrop} style={backdropStyles} aria-hidden="true" />
       )}
       {children}
       {getResizeHandles()}

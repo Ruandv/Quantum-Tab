@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import styles from './updateNotification.module.css';
 
 interface NotificationData {
   type: 'install' | 'update';
@@ -56,27 +57,27 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss }) =>
   const isUpdate = notification.type === 'update';
 
   return (
-    <div className={`update-notification-overlay ${isVisible ? 'visible' : ''}`}>
-      <div className="update-notification">
-        <div className="notification-header">
-          <div className="notification-icon">
+    <div className={`${styles.updateNotificationOverlay} ${isVisible ? styles.visible : ''}`}>
+      <div className={styles.updateNotification}>
+        <div className={styles.notificationHeader}>
+          <div className={styles.notificationIcon}>
             {isInstall ? '🎉' : '✨'}
           </div>
-          <div className="notification-title">
+          <div className={styles.notificationTitle}>
             {isInstall ? t('notifications.welcome.title') : t('notifications.update.title')}
           </div>
-          <button className="notification-close" onClick={handleDismiss}>
+          <button className={styles.notificationClose} onClick={handleDismiss}>
             ×
           </button>
         </div>
 
-        <div className="notification-content">
+        <div className={styles.notificationContent}>
           {isInstall && (
             <>
-              <p className="notification-message">
+              <p className={styles.notificationMessage}>
                 {t('notifications.welcome.message')}
               </p>
-              <div className="notification-features">
+              <div className={styles.notificationFeatures}>
                 <h4>{t('notifications.welcome.featuresTitle')}</h4>
                 <ul>
                   <li>{t('notifications.welcome.features.widgets')}</li>
@@ -90,21 +91,21 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss }) =>
 
           {isUpdate && (
             <>
-              <p className="notification-message">
+              <p className={styles.notificationMessage}>
                 {t('notifications.update.message', {
                   version: notification.version
                 })}
               </p>
-              <div className="notification-version-info">
+              <div className={styles.notificationVersionInfo}>
                 {notification.previousVersion && (
                   <>
-                    <span className="version-badge old">
+                    <span className={`${styles.versionBadge} ${styles.old}`}>
                       v{notification.previousVersion}
                     </span>
-                    <span className="version-arrow">→</span>
+                    <span className={styles.versionArrow}>→</span>
                   </>
                 )}
-                <span className="version-badge new">
+                <span className={`${styles.versionBadge} ${styles.new}`}>
                   v{notification.version}
                 </span>
               </div>
@@ -112,13 +113,13 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss }) =>
           )}
         </div>
 
-        <div className="notification-actions">
+        <div className={styles.notificationActions}>
           {isUpdate && (
-            <button className="btn-secondary" onClick={handleViewChanges}>
+            <button className={`${styles.notificationButton} ${styles.secondaryButton}`} onClick={handleViewChanges}>
               {t('notifications.buttons.viewChanges')}
             </button>
           )}
-          <button className="btn-primary" onClick={handleDismiss}>
+          <button className={`${styles.notificationButton} ${styles.primaryButton}`} onClick={handleDismiss}>
             {isInstall ? t('notifications.buttons.getStarted') : t('notifications.buttons.continue')}
           </button>
         </div>

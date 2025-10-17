@@ -1,0 +1,189 @@
+/* Dashboard Component Styles */
+
+.dashboardContainer {
+  position: relative;
+  width: 100%;
+  min-height: 400px;
+  overflow: visible;
+}
+
+.dashboardContainer.dragOver {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+}
+
+/* Widget Wrapper */
+.widgetWrapper {
+  position: absolute;
+  border-radius: 16px;
+  padding: 0.5rem;
+  transition: all var(--transition-normal);
+  user-select: none;
+  overflow: visible !important;
+}
+
+/* Boost widget wrapper z-index when it contains an open dropdown */
+.widgetWrapper:has(.dropdown-menu) {
+  z-index: 49997 !important;
+}
+
+.widgetWrapper.editable {
+  cursor: move;
+}
+
+.widgetWrapper.editable:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.widgetWrapper.dragging {
+  cursor: grabbing !important;
+  opacity: 0.9;
+  transform: rotate(2deg) scale(1.02);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+  z-index: 1000 !important;
+}
+
+.widgetWrapper.locked {
+  cursor: default;
+}
+
+.widgetDragIndicator {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(79, 172, 254, 0.8);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  padding: 2px 6px;
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  z-index: 15;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+.widgetWrapper:hover .widgetDragIndicator {
+  opacity: 1;
+}
+
+.widgetContent {
+  width: 100%;
+  height: 100%;
+  overflow: visible !important;
+  position: relative;
+}
+
+/* Hide widget-wrapper if marked as empty */
+.widgetWrapper.emptyWidget {
+  display: none !important;
+}
+
+/* Error Widget */
+.errorWidget {
+  border: 2px dashed red;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: red;
+  font-size: 12px;
+}
+
+/* Widget Control Buttons */
+.widgetInfoBtn {
+  position: absolute;
+  top: 8px;
+  right: 66px;
+  background: rgba(135, 247, 91, 0.9);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-full);
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0;
+  transition: all var(--transition-normal);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.widgetEditBtn {
+  position: absolute;
+  top: 8px;
+  right: 36px;
+  background: rgba(91, 210, 247, 0.9);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-full);
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0;
+  transition: all var(--transition-normal);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.widgetRemoveBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 107, 107, 0.9);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-full);
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0;
+  transition: all var(--transition-normal);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.widgetWrapper:hover .widgetEditBtn,
+.widgetWrapper:hover .widgetInfoBtn,
+.widgetWrapper:hover .widgetRemoveBtn {
+  opacity: 1;
+}
+
+.widgetEditBtn:hover {
+  background: rgba(91, 210, 247, 1);
+  transform: scale(1.1);
+}
+
+.widgetInfoBtn:hover {
+  background: rgba(135, 247, 91, 1);
+  transform: scale(1.1);
+}
+
+.widgetRemoveBtn:hover {
+  background: rgba(255, 107, 107, 1);
+  transform: scale(1.1);
+}
+
+/* Edit Mode Visual Feedback */
+.widgetWrapper:not(.locked) {
+  border: 2px dashed transparent;
+  transition: border-color var(--transition-normal);
+}
+
+.widgetWrapper:not(.locked):hover {
+  border-color: rgba(255, 255, 255, 0.3);
+}

@@ -1,0 +1,111 @@
+/* ResizableWidget Component Styles */
+
+.resizableWidget {
+  position: relative;
+  border: 2px solid transparent;
+  border-radius: 15px;
+  transition: border-color var(--transition-normal);
+}
+
+.resizableWidget.resizing {
+  border-color: rgba(79, 172, 254, 0.6);
+  box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
+}
+
+.widgetBlurBackdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Resize Handles */
+.resizeHandle {
+  position: absolute;
+  background: rgba(79, 172, 254, 0.8);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  z-index: 20;
+}
+
+.resizableWidget:hover .resizeHandle {
+  opacity: 1;
+}
+
+.resizeHandle:hover {
+  background: rgba(79, 172, 254, 1);
+}
+
+/* Corner Handles */
+.resizeNe,
+.resizeNw,
+.resizeSe,
+.resizeSw {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--border-radius-full);
+}
+
+.resizeNe {
+  top: -6px;
+  right: -6px;
+  cursor: ne-resize;
+}
+
+.resizeNw {
+  top: -6px;
+  left: -6px;
+  cursor: nw-resize;
+}
+
+.resizeSe {
+  bottom: -6px;
+  right: -6px;
+  cursor: se-resize;
+}
+
+.resizeSw {
+  bottom: -6px;
+  left: -6px;
+  cursor: sw-resize;
+}
+
+/* Edge Handles */
+.resizeN,
+.resizeS {
+  height: 6px;
+  left: 12px;
+  right: 12px;
+  border-radius: 3px;
+}
+
+.resizeE,
+.resizeW {
+  width: 6px;
+  top: 12px;
+  bottom: 12px;
+  border-radius: 3px;
+}
+
+.resizeN {
+  top: -3px;
+  cursor: n-resize;
+}
+
+.resizeS {
+  bottom: -3px;
+  cursor: s-resize;
+}
+
+.resizeE {
+  right: -3px;
+  cursor: e-resize;
+}
+
+.resizeW {
+  left: -3px;
+  cursor: w-resize;
+}

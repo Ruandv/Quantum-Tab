@@ -1,0 +1,185 @@
+/* LocaleWidget Styles */
+
+.localeWidget {
+  padding: var(--spacing-md);
+  overflow: visible !important;
+}
+
+/* Boost locale widget z-index when dropdown is open */
+.localeWidget:has(.dropdownMenu) {
+  z-index: var(--z-dropdown-container) !important;
+}
+
+.widgetTitle {
+  margin: 0 0 var(--spacing-md) 0;
+  text-align: center;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
+}
+
+/* Locale Selector */
+.localeSelector {
+  margin-bottom: var(--spacing-md);
+}
+
+.localeLabel {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-primary);
+  font-size: var(--widget-text-size, 0.9rem);
+  font-weight: 500;
+}
+
+/* Custom Dropdown */
+.customDropdown {
+  position: relative;
+  width: 100%;
+  z-index: var(--z-dropdown);
+}
+
+.dropdownTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-widget-bg-transparent);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--widget-text-size, 0.9rem);
+  backdrop-filter: blur(5px);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.dropdownTrigger:hover {
+  background: var(--color-widget-bg-hover);
+  border-color: var(--color-border-medium);
+}
+
+.dropdownTrigger:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--color-border-bright);
+}
+
+.selectedOption {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.dropdownArrow {
+  font-size: 0.8rem;
+  transition: transform var(--transition-fast);
+  color: var(--color-text-secondary);
+}
+
+.dropdownArrow.open {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: var(--z-dropdown-menu);
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-md);
+  backdrop-filter: blur(10px);
+  margin-top: 0.25rem;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  min-width: 200px;
+}
+
+/* Dropdown Options */
+.dropdownOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dropdownOption:last-child {
+  border-bottom: none;
+}
+
+.dropdownOption:hover {
+  background: var(--color-widget-bg-transparent);
+}
+
+.dropdownOption:focus {
+  outline: none;
+  background: var(--color-widget-bg-hover);
+}
+
+.dropdownOption.selected {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.dropdownOption .selectedOption {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex: 1;
+}
+
+.checkmark {
+  color: #10b981;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* Locale Info */
+.localeInfo {
+  margin-top: var(--spacing-sm);
+}
+
+.localeHint {
+  color: var(--color-text-secondary);
+  font-size: var(--widget-small-size, 0.8rem);
+  line-height: var(--widget-small-line-height, 1.4);
+}
+
+.localeFlag {
+  font-size: 1.2rem;
+  font-family: 'Segoe UI Emoji', 'Segoe UI Symbol', 'Arial', sans-serif;
+}
+
+.localeName {
+  color: var(--color-text-primary);
+  font-size: var(--widget-text-size, 0.9rem);
+  font-weight: 500;
+}
+
+/* Locked Display */
+.localeDisplay.locked {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border-dim);
+}
+
+.localeDisplay.locked .localeFlag {
+  font-size: 1.5rem;
+  font-family: 'Segoe UI Emoji', 'Segoe UI Symbol', 'Arial', sans-serif;
+}
+
+.localeDisplay.locked .localeName {
+  font-size: var(--widget-text-size, 1rem);
+  font-weight: 600;
+}

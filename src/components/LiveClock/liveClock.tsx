@@ -1,6 +1,7 @@
 import { LiveClockProps } from '@/types/common';
 import React, { useState, useEffect } from 'react';
-import { addWidgetRemovalListener } from '../utils/widgetEvents';
+import { addWidgetRemovalListener } from '../../utils/widgetEvents';
+import styles from './liveClock.module.css';
 
 const LiveClock: React.FC<LiveClockProps> = ({
   className = '',
@@ -138,13 +139,13 @@ const LiveClock: React.FC<LiveClockProps> = ({
   };
 
   return (
-    <div className={`live-clock-widget ${className}`}>
-      {widgetHeading && <h3 className="widget-title">{widgetHeading}</h3>}
-      <div className="time-display">
-        {showTime && <h2 className="current-time">{formatTime(currentTime)}</h2>}
-        {showDate && <p className="current-date">{formatDate(currentTime)}</p>}
+    <div className={`${styles.liveClockWidget} ${className}`}>
+      {widgetHeading && <h3 className={styles.widgetTitle}>{widgetHeading}</h3>}
+      <div className={styles.timeDisplay}>
+        {showTime && <h2 className={styles.currentTime}>{formatTime(currentTime)}</h2>}
+        {showDate && <p className={styles.currentDate}>{formatDate(currentTime)}</p>}
       </div>
-      {showTimeZone && <p className="time-zone">{timeZone}</p>}
+      {showTimeZone && <p className={styles.timeZone}>{timeZone}</p>}
     </div>
   );
 };

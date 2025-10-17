@@ -8,13 +8,14 @@ import {
   Position,
   CssStyle,
   isSecureProperty
-} from '../types/common';
-import { widgetRegistry } from '../utils/widgetRegistry';
-import { generateUniqueId, findOptimalPosition, getViewportDimensions } from '../utils/helpers';
+} from '../../types/common';
+import { widgetRegistry } from '../../utils/widgetRegistry';
+import { generateUniqueId, findOptimalPosition, getViewportDimensions } from '../../utils/helpers';
 import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 import chromeStorage, { SerializedWidget } from '@/utils/chromeStorage';
-import Modal from './modal/modal';
+import Modal from '../Modal/modal';
 import { WIDGET_EVENTS, widgetEventManager, WidgetEvent } from '@/utils/widgetEvents';
+import styles from './widgetManager.module.css';
 
 const WidgetManager: React.FC<WidgetManagerProps> = ({
   onAddWidget,
@@ -86,9 +87,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   const [data, setData] = useState<{ widgets: SerializedWidget[], backgroundImage: string, isLocked: boolean, timestamp: number, exportMetadata: { secretProps: Array<{ name: string, key: string, value?: string }> } }>({ widgets: [], backgroundImage: '', isLocked: false, timestamp: Date.now(), exportMetadata: { secretProps: [] } });
   // Function to generate default modal content - moved after all handlers are defined
   const getDefaultModalContent = useCallback(() => (
-    <div className="form-section">
+    <div className={styles.formSection}>
       <h3>{t('widgetManager.modal.sections.chooseType')}</h3>
-      <div className="widget-types">{availableWidgets.map((widgetType: WidgetType) => {
+      <div className={styles.widgetTypes}>{availableWidgets.map((widgetType: WidgetType) => {
         const component = existingWidgets.find((widget) => widget.id.startsWith(widgetType.id));
         if (component && component.allowMultiples === false) {
           return <></>;
@@ -96,7 +97,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
         return (
           <div
             key={widgetType.id}
-            className={`widget-type-card ${selectedWidgetType?.id === widgetType.id ? 'selected' : ''}`}
+            className={`${styles.widgetTypeCard} ${selectedWidgetType?.id === widgetType.id ? styles.selected : ''}`}
             onClick={() => handleWidgetTypeSelect(widgetType)}
           >
             <h4>{widgetType.name}</h4>
@@ -192,10 +193,10 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
       title: (<><p>{t('widgetManager.modal.title')}</p> <sub>({selectedWidgetType.name})</sub></>),
       content:
         <>
-          <div className="section form-section">
+          <div className={`section ${styles.formSection}`}>
             <h3>{t('widgetManager.modal.sections.styling')}</h3>
-            <div className="styling-options">
-              <div className="style-row">
+            <div className={styles.stylingOptions}>
+              <div className={styles.styleRow}>
                 {renderStyleInput(
                   'border',
                   widgetStyle?.border ?? 0,
@@ -211,7 +212,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                   50
                 )}
               </div>
-              <div className="style-row">
+              <div className={styles.styleRow}>
                 {renderStyleInput(
                   'blur',
                   widgetStyle?.blur ?? 10,
@@ -228,10 +229,10 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                   5
                 )}
               </div>
-              <div className="section color-section">
+              <div className={`${styles.section} ${styles.colorSection}`}>
                 <h4>{t('widgetManager.labels.backgroundColor')}</h4>
                 <div
-                  className="color-preview"
+                  className={styles.colorPreview}
                   style={{
                     backgroundColor: `rgba(${widgetStyle?.backgroundColorRed ?? 30}, ${widgetStyle?.backgroundColorGreen ?? 214}, ${widgetStyle?.backgroundColorBlue ?? 230}, ${widgetStyle?.transparency ?? 0.5})`,
                     width: '100%',
@@ -241,7 +242,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                     marginBottom: '10px',
                   }}
                 ></div>
-                <div className="color-controls">
+                <div className={styles.colorControls}>
                   {renderColorInput(
                     'backgroundColorRed',
                     widgetStyle?.backgroundColorRed ?? 30,
@@ -259,10 +260,10 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                   )}
                 </div>
               </div>
-              <div className="section color-section">
+              <div className={`${styles.section} ${styles.colorSection}`}>
                 <h4>{t('widgetManager.labels.textColor')}</h4>
                 <div
-                  className="color-preview"
+                  className={styles.colorPreview}
                   style={{
                     display: 'flex',
                     backgroundColor: `rgba(${widgetStyle?.backgroundColorRed ?? 30}, ${widgetStyle?.backgroundColorGreen ?? 214}, ${widgetStyle?.backgroundColorBlue ?? 230}, ${widgetStyle?.transparency ?? 0.5})`,
@@ -277,7 +278,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                     marginBottom: '10px',
                   }}
                 >{t('widgetManager.labels.textColor')}</div>
-                <div className="color-controls">
+                <div className={styles.colorControls}>
                   {renderColorInput(
                     'textColorRed',
                     widgetStyle?.textColorRed ?? 230,
@@ -296,9 +297,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                 </div>
               </div>
 
-              <div className="section text-align-section">
+              <div className={`${styles.section} ${styles.textAlignSection}`}>
                 <h4>{t('widgetManager.labels.textAlign')}</h4>
-                <div className="text-align-options">
+                <div className={styles.textAlignOptions}>
                   <label>
                     <input
                       type="radio"
@@ -331,9 +332,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                   </label>
                 </div>
               </div>
-              <div className="section justify-section">
+              <div className={`${styles.section} ${styles.justifySection}`}>
                 <h4>{t('widgetManager.labels.justify')}</h4>
-                <div className="justify-options">
+                <div className={styles.justifyOptions}>
                   <label>
                     <input
                       type="radio"
@@ -391,26 +392,26 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
           {selectedWidgetType.defaultProps &&
             Object.entries(selectedWidgetType.defaultProps).length > 0 && (
-              <div className="form-section additional-properties">
+              <div className={`${styles.formSection} ${styles.additionalProperties}`}>
                 <h3>{t('widgetManager.modal.sections.properties')}</h3>
-                <div className="properties-grid">
+                <div className={styles.propertiesGrid}>
                   {Object.entries(selectedWidgetType.defaultProps).map(([key, value]) => {
                     return (
-                      <div key={key} className="property-field">
-                        <label className="property-label">
+                      <div key={key} className={styles.propertyField}>
+                        <label className={styles.propertyLabel}>
                           {key.charAt(0).toUpperCase() +
                             key.slice(1).replace(/([A-Z])/g, ' $1')}
                         </label>
                         {
 
                           typeof value === 'boolean' ? (
-                            <label className="toggle-switch">
+                            <label className={styles.toggleSwitch}>
                               <input
                                 type="checkbox"
                                 checked={value}
                                 onChange={(e) => handlePropertyChange(key, e.target.checked)}
                               />
-                              <span className="slider" />
+                              <span className={styles.slider} />
                             </label>
                           ) : !key.toLowerCase().includes('format') && key.toLowerCase().includes('date') && (value.toString().length > 6) ? (
                             <input
@@ -701,9 +702,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
       property?: string,
       onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     ) => (
-      <div className="style-field">
-        <label className="style-label">{label}</label>
-        <div className="input-with-unit">
+      <div className={styles.styleField}>
+        <label className={styles.styleLabel}>{label}</label>
+        <div className={styles.inputWithUnit}>
           <input
             type="text"
             value={value}
@@ -724,9 +725,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
       max: number = 100,
       step: number = 1
     ) => (
-      <div className="style-field">
-        <label className="style-label">{label}</label>
-        <div className="input-with-unit">
+      <div className={styles.styleField}>
+        <label className={styles.styleLabel}>{label}</label>
+        <div className={styles.inputWithUnit}>
           <input
             type="number"
             value={value}
@@ -735,7 +736,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             step={step}
             onChange={(e) => handleStyleChange(property, parseFloat(e.target.value) || 0)}
           />
-          <span className="input-unit">
+          <span className={styles.inputUnit}>
             {property === 'transparency' ? '%' : property.includes('backgroundColor') ? '' : 'px'}
           </span>
         </div>
@@ -750,16 +751,16 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
       value: number,
       label: string
     ) => (
-      <div className="color-field">
-        <label className="color-label">{label}</label>
-        <div className="color-input-container">
+      <div className={styles.colorField}>
+        <label className={styles.colorLabel}>{label}</label>
+        <div className={styles.colorInputContainer}>
           <input
             type="range"
             value={value}
             min={0}
             max={255}
             onChange={(e) => handleStyleChange(property, parseInt(e.target.value))}
-            className="color-slider"
+            className={styles.colorSlider}
           />
           <input
             type="number"
@@ -767,7 +768,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             min={0}
             max={255}
             onChange={(e) => handleStyleChange(property, parseInt(e.target.value) || 0)}
-            className="color-number"
+            className={styles.colorNumber}
           />
         </div>
       </div>
@@ -778,30 +779,30 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   return isLocked ? (
     <></>
   ) : (
-    <div className="widget-manager">
-      <div className="widgets-list">
+    <div className={styles.widgetManager}>
+      <div className={styles.widgetsList}>
         <button
-          className="btn add-widget-btn"
+          className={styles.btn}
           onClick={() => handleAction('addWidget')}
           title={t('widgetManager.tooltips.addWidget')}
         >
-          <span className="btn-icon">➕</span>
+          <span className={styles.btnIcon}>➕</span>
           {t('widgetManager.buttons.addWidget')}
         </button>
         <button
-          className="btn export-btn"
+          className={styles.btn}
           onClick={() => handleAction('export')}
           title={t('widgetManager.tooltips.exportWidgets')}
         >
-          <span className="btn-icon">📤</span>
+          <span className={styles.btnIcon}>📤</span>
           {t('widgetManager.buttons.exportWidgets')}
         </button>
         <button
-          className="btn import-btn"
+          className={styles.btn}
           onClick={() => handleAction('import')}
           title={t('widgetManager.tooltips.importWidgets')}
         >
-          <span className="btn-icon">📥</span>
+          <span className={styles.btnIcon}>📥</span>
           {t('widgetManager.buttons.importWidgets')}
         </button>
       </div>

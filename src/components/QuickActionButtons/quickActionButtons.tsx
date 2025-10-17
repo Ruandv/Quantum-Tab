@@ -1,9 +1,10 @@
 import { QuickActionButtonsProps } from '@/types/common';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import QuickActionButtonItem from './QuickActionButtonItem';
-import { addWidgetRemovalListener } from '../utils/widgetEvents';
-import Modal from './modal/modal';
+import QuickActionButtonItem from './quickActionButtonItem';
+import { addWidgetRemovalListener } from '../../utils/widgetEvents';
+import Modal from '../Modal/modal';
+import styles from './quickActionButtons.module.css';
 
 const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
   className = '',
@@ -77,17 +78,17 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
   };
 
   return (
-    <div className={`quick-actions-widget ${className}`}>
-      <h3 className="widget-title">{t('quickActionButtons.title')}</h3>
-      <div className="action-buttons">
+    <div className={`${styles.quickActionsWidget} ${className}`}>
+      <h3 className={styles.widgetTitle}>{t('quickActionButtons.title')}</h3>
+      <div className={styles.actionButtons}>
         {!isLocked && (
           <button
             title={t('quickActionButtons.tooltips.add')}
-            className="action-btn"
+            className={styles.actionBtn}
             onClick={handleAddButton}
           >
-            <span className="btn-icon">➕</span>
-            <span className="btn-label">{t('common.buttons.add')}</span>
+            <span className={styles.btnIcon}>➕</span>
+            <span className={styles.btnLabel}>{t('common.buttons.add')}</span>
           </button>
         )}
         {buttons.map((button, index) => (

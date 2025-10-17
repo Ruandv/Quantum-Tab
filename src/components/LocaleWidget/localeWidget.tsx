@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LocaleWidgetProps } from '../types/common';
-import { addWidgetRemovalListener } from '../utils/widgetEvents';
+import { LocaleWidgetProps } from '../../types/common';
+import { addWidgetRemovalListener } from '../../utils/widgetEvents';
+import styles from './localeWidget.module.css';
 
 const LocaleWidget: React.FC<LocaleWidgetProps> = ({
   className = '',
@@ -113,14 +114,14 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
   }
 
   return (
-    <div className={`locale-widget ${className}`}>
-      {widgetHeading && <h3 className="widget-title">⏱️ {widgetHeading}</h3>}
+    <div className={`${styles.localeWidget} ${className}`}>
+      {widgetHeading && <h3 className={styles.widgetTitle}>⏱️ {widgetHeading}</h3>}
 
-      <div className="locale-selector">
-        <label className="locale-label">{t('localeWidget.labels.language')}</label>
-        <div className="custom-dropdown" ref={dropdownRef}>
+      <div className={styles.localeSelector}>
+        <label className={styles.localeLabel}>{t('localeWidget.labels.language')}</label>
+        <div className={styles.customDropdown} ref={dropdownRef}>
           <div
-            className="dropdown-trigger"
+            className={styles.dropdownTrigger}
             onClick={toggleDropdown}
             role="button"
             tabIndex={0}
@@ -131,19 +132,19 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
               }
             }}
           >
-            <span className="selected-option">
-              <span className="locale-flag">{availableLocales.find((locale) => locale.code === i18n.language)?.flag}</span>
-              <span className="locale-name">{availableLocales.find((locale) => locale.code === i18n.language)?.name}</span>
+            <span className={styles.selectedOption}>
+              <span className={styles.localeFlag}>{availableLocales.find((locale) => locale.code === i18n.language)?.flag}</span>
+              <span className={styles.localeName}>{availableLocales.find((locale) => locale.code === i18n.language)?.name}</span>
             </span>
-            <span className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}>▼</span>
+            <span className={`${styles.dropdownArrow} ${isDropdownOpen ? styles.open : ''}`}>▼</span>
           </div>
 
           {isDropdownOpen && (
-            <div className="dropdown-menu">
+            <div className={styles.dropdownMenu}>
               {availableLocales.map((locale) => (
                 <div
                   key={locale.code}
-                  className={`dropdown-option ${locale.code === currentLocale ? 'selected' : ''}`}
+                  className={`${styles.dropdownOption} ${locale.code === currentLocale ? styles.selected : ''}`}
                   onClick={() => handleLocaleChange(locale.code)}
                   role="option"
                   tabIndex={0}
@@ -154,9 +155,9 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
                     }
                   }}
                 >
-                  <span className="locale-flag">{locale.flag}</span>
-                  <span className="locale-name">{locale.name}</span>
-                  {locale.code ===  i18n.language && <span className="checkmark">✓</span>}
+                  <span className={styles.localeFlag}>{locale.flag}</span>
+                  <span className={styles.localeName}>{locale.name}</span>
+                  {locale.code ===  i18n.language && <span className={styles.checkmark}>✓</span>}
                 </div>
               ))}
             </div>

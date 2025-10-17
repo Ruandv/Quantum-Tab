@@ -1,0 +1,77 @@
+/* QuickActionButtons Widget Styles */
+
+.quickActionsWidget {
+  text-align: center;
+}
+
+.widgetTitle {
+  font-size: var(--font-size-lg);
+  margin: 0 0 var(--spacing-md);
+  color: var(--color-text-primary);
+}
+
+.actionButtons {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  flex-direction: row;
+}
+
+.actionBtn {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--border-radius-lg);
+  font-size: var(--widget-button-size, 1rem);
+  line-height: var(--widget-button-line-height, 1.4);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.actionBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.btnIcon {
+  font-size: calc(var(--widget-button-size, 1rem) * 1.5);
+}
+
+.btnLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.actionBtnContainer {
+  position: relative;
+}
+
+.removeBtn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 59, 48, 0.9);
+  border: 2px solid white;
+  border-radius: var(--border-radius-full);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  z-index: 10;
+}
+
+.removeBtn:hover {
+  background: rgba(255, 59, 48, 1);
+  transform: scale(1.1);
+}

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { WebsiteCounterProps, WebsiteCounterData } from '../types/common';
-import chromeStorage from '../utils/chromeStorage';
-import { addWidgetRemovalListener } from '../utils/widgetEvents';
-import i18n from '../i18n';
+import { WebsiteCounterProps, WebsiteCounterData } from '../../types/common';
+import chromeStorage from '../../utils/chromeStorage';
+import { addWidgetRemovalListener } from '../../utils/widgetEvents';
+import i18n from '../../i18n';
+import styles from './websiteCounter.module.css';
 
 const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
   className = '',
@@ -208,8 +209,8 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
 
   if (isLoading) {
     return (
-      <div className={`website-counter-widget ${className}`}>
-        <div className="website-counter-loading">
+      <div className={`${styles.websiteCounterWidget} ${className}`}>
+        <div className={styles.websiteCounterLoading}>
           <div className="loading-spinner"></div>
           <span>{i18n.t('websiteCounter.loading')}</span>
         </div>
@@ -218,48 +219,48 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
   }
 
   return (
-    <div className={`website-counter-widget ${className}`}>
-      <div className="widget-header">
-        {widgetHeading && <h3 className="widget-title">{widgetHeading}</h3>}
-        <div className="counter-stats">
-          <span className="total-visits">{i18n.t('websiteCounter.stats.totalVisits', { count: totalVisits })}</span>
-          <span className="tracked-sites">
+    <div className={`${styles.websiteCounterWidget} ${className}`}>
+      <div className={styles.widgetHeader}>
+        {widgetHeading && <h3 className={styles.widgetTitle}>{widgetHeading}</h3>}
+        <div className={styles.counterStats}>
+          <span className={styles.totalVisits}>{i18n.t('websiteCounter.stats.totalVisits', { count: totalVisits })}</span>
+          <span className={styles.trackedSites}>
             {i18n.t('websiteCounter.stats.trackedSites', { current: websiteData.length, max: maxWebsites })}
           </span>
         </div>
       </div>
 
-      <div className="website-list">
+      <div className={styles.websiteList}>
         {sortedWebsites.length === 0 ? (
-          <div className="empty-state">
-            <span className="empty-icon">📊</span>
+          <div className={styles.emptyState}>
+            <span className={styles.emptyIcon}>📊</span>
             <p>{i18n.t('websiteCounter.emptyState.title')}</p>
-            <p className="empty-hint">{i18n.t('websiteCounter.emptyState.hint')}</p>
+            <p className={styles.emptyHint}>{i18n.t('websiteCounter.emptyState.hint')}</p>
           </div>
         ) : (
           sortedWebsites.map((site) => (
-            <div key={site.hostname} className="website-item">
-              <div className="website-info">
+            <div key={site.hostname} className={styles.websiteItem}>
+              <div className={styles.websiteInfo}>
                 {showFavicons && site.favicon && (
                   <img
                     src={site.favicon}
                     alt={i18n.t('websiteCounter.alt.favicon', { hostname: site.hostname })}
-                    className="website-favicon"
+                    className={styles.websiteFavicon}
                     onError={(e) => {
                       (e.target as HTMLImageElement).style.display = 'none';
                     }}
                   />
                 )}
-                <div className="website-details">
-                  <span className="website-name">{site.hostname}</span>
-                  <span className="last-visited">{formatLastVisited(site.lastVisited)}</span>
+                <div className={styles.websiteDetails}>
+                  <span className={styles.websiteName}>{site.hostname}</span>
+                  <span className={styles.lastVisited}>{formatLastVisited(site.lastVisited)}</span>
                 </div>
               </div>
-              <div className="website-counter">
-                <span className="visit-count">{site.count}</span>
+              <div className={styles.websiteCounter}>
+                <span className={styles.visitCount}>{site.count}</span>
                 {!isLocked && (
                   <button
-                    className="remove-website-btn"
+                    className={styles.removeWebsiteBtn}
                     onClick={() => handleRemoveWebsite(site.hostname)}
                     title={i18n.t('websiteCounter.buttons.remove')}
                   >
@@ -273,38 +274,38 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
       </div>
 
       {!isLocked && (
-        <div className="counter-controls">
+        <div className={styles.counterControls}>
           {!isAddingWebsite ? (
-            <div className="control-buttons">
+            <div className={styles.controlButtons}>
               <button
-                className="add-website-btn"
+                className={styles.addWebsiteBtn}
                 onClick={() => setIsAddingWebsite(true)}
                 disabled={websiteData.length >= maxWebsites}
               >
                 {i18n.t('websiteCounter.buttons.addWebsite')}
               </button>
               {websiteData.length > 0 && (
-                <button className="reset-counters-btn" onClick={handleResetCounters}>
+                <button className={styles.resetCountersBtn} onClick={handleResetCounters}>
                   {i18n.t('websiteCounter.buttons.resetAll')}
                 </button>
               )}
             </div>
           ) : (
-            <div className="add-website-form">
+            <div className={styles.addWebsiteForm}>
               <input
                 type="text"
                 value={newWebsiteUrl}
                 onChange={(e) => setNewWebsiteUrl(e.target.value)}
                 placeholder={i18n.t('websiteCounter.placeholders.websiteUrl')}
-                className="website-url-input"
+                className={styles.websiteUrlInput}
                 onKeyPress={(e) => e.key === 'Enter' && handleAddWebsite()}
               />
-              <div className="form-buttons">
-                <button className="save-website-btn" onClick={handleAddWebsite}>
+              <div className={styles.formButtons}>
+                <button className={styles.saveWebsiteBtn} onClick={handleAddWebsite}>
                   ✓
                 </button>
                 <button
-                  className="cancel-website-btn"
+                  className={styles.cancelWebsiteBtn}
                   onClick={() => {
                     setIsAddingWebsite(false);
                     setNewWebsiteUrl('');
