@@ -10,14 +10,12 @@ import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './githubWidget.module.css';
 
 const GitHubWidget: React.FC<GitHubWidgetProps> = ({
-  className = '',
   patToken = '',
   repositoryUrl = '',
   autoRefresh = false,
   refreshInterval = 5,
   isLocked,
   widgetId,
-  widgetHeading
 }) => {
   const { t } = useTranslation();
 
@@ -125,8 +123,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
   }, [widgetId]);
 
   return (
-    <div className={`${styles.githubWidget} ${className}`}>
-      {widgetHeading && <h3 className={styles.widgetTitle}>{widgetHeading}</h3>}
+    <>
       <div className={styles.githubWidgetContent}>
         {/* Status and Data Section */}
         {isLoading ? (
@@ -194,7 +191,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

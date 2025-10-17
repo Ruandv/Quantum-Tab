@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { WebsiteCounterProps, WebsiteCounterData } from '../../types/common';
 import chromeStorage from '../../utils/chromeStorage';
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
-import i18n from '../../i18n';
 import styles from './websiteCounter.module.css';
 
 const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
-  className = '',
   websites = [],
   showFavicons = true,
   maxWebsites = 10,
   isLocked = false,
   sortBy = 'count',
   widgetId,
-  widgetHeading
 }) => {
   const [websiteData, setWebsiteData] = useState<WebsiteCounterData[]>(websites);
   const [isLoading, setIsLoading] = useState(true);
   const [newWebsiteUrl, setNewWebsiteUrl] = useState('');
   const [isAddingWebsite, setIsAddingWebsite] = useState(false);
   const saveTimeoutRef = useRef<number | null>(null);
+
+  const { t } = useTranslation();
 
   // Load website counter data from storage and listen for changes
   useEffect(() => {
@@ -138,13 +138,13 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
 
       // Check if website is already being tracked
       if (websiteData.some((site) => site.hostname === hostname)) {
-        alert(i18n.t('websiteCounter.alerts.alreadyTracked'));
+        alert(t('widgets.websiteCounter.alerts.alreadyTracked'));
         return;
       }
 
       // Check if we've reached the maximum number of websites
       if (websiteData.length >= maxWebsites) {
-        alert(i18n.t('websiteCounter.alerts.maxReached', { max: maxWebsites }));
+        alert(t('widgets.websiteCounter.alerts.maxReached', { max: maxWebsites }));
         return;
       }
 
@@ -163,9 +163,9 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
       setNewWebsiteUrl('');
       setIsAddingWebsite(false);
     } catch (error) {
-      alert(i18n.t('websiteCounter.alerts.invalidUrl'));
+      alert(t('widgets.websiteCounter.alerts.invalidUrl'));
     }
-  }, [newWebsiteUrl, websiteData, maxWebsites, showFavicons, updateWebsiteData]);
+  }, [newWebsiteUrl, websiteData, maxWebsites, showFavicons, updateWebsiteData, t]);
 
   // Remove a website from tracking
   const handleRemoveWebsite = useCallback(
@@ -178,7 +178,7 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
 
   // Reset all counters
   const handleResetCounters = useCallback(() => {
-    if (confirm(i18n.t('websiteCounter.confirm.resetCounters'))) {
+    if (confirm(t('widgets.websiteCounter.confirm.resetCounters'))) {
       const resetData = websiteData.map((site) => ({
         ...site,
         count: 0,
@@ -186,56 +186,41 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
       }));
       updateWebsiteData(resetData);
     }
-  }, [websiteData, updateWebsiteData]);
+  }, [websiteData, updateWebsiteData, t]);
 
   // Format the last visited date
   const formatLastVisited = useCallback((timestamp: number) => {
-    if (timestamp === 0) return i18n.t('websiteCounter.lastVisited.never');
+    if (timestamp === 0) return t('widgets.websiteCounter.lastVisited.never');
     const date = new Date(timestamp);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return i18n.t('websiteCounter.lastVisited.today');
-    if (diffDays === 1) return i18n.t('websiteCounter.lastVisited.yesterday');
-    if (diffDays < 7) return i18n.t('websiteCounter.lastVisited.daysAgo', { days: diffDays });
+    if (diffDays === 0) return t('widgets.websiteCounter.lastVisited.today');
+    if (diffDays === 1) return t('widgets.websiteCounter.lastVisited.yesterday');
+    if (diffDays < 7) return t('widgets.websiteCounter.lastVisited.daysAgo', { days: diffDays });
     return date.toLocaleDateString();
-  }, []);
-
-  // Calculate total visits
-  const totalVisits = useMemo(() => {
-    return websiteData.reduce((sum, site) => sum + site.count, 0);
-  }, [websiteData]);
+  }, [t]);
 
   if (isLoading) {
     return (
-      <div className={`${styles.websiteCounterWidget} ${className}`}>
+      <>
         <div className={styles.websiteCounterLoading}>
           <div className="loading-spinner"></div>
-          <span>{i18n.t('websiteCounter.loading')}</span>
+          <span>{t('widgets.websiteCounter.loading')}</span>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className={`${styles.websiteCounterWidget} ${className}`}>
-      <div className={styles.widgetHeader}>
-        {widgetHeading && <h3 className={styles.widgetTitle}>{widgetHeading}</h3>}
-        <div className={styles.counterStats}>
-          <span className={styles.totalVisits}>{i18n.t('websiteCounter.stats.totalVisits', { count: totalVisits })}</span>
-          <span className={styles.trackedSites}>
-            {i18n.t('websiteCounter.stats.trackedSites', { current: websiteData.length, max: maxWebsites })}
-          </span>
-        </div>
-      </div>
-
+    <>
       <div className={styles.websiteList}>
         {sortedWebsites.length === 0 ? (
           <div className={styles.emptyState}>
             <span className={styles.emptyIcon}>📊</span>
-            <p>{i18n.t('websiteCounter.emptyState.title')}</p>
-            <p className={styles.emptyHint}>{i18n.t('websiteCounter.emptyState.hint')}</p>
+            <p>{t('widgets.websiteCounter.emptyState.title')}</p>
+            <p className={styles.emptyHint}>{t('widgets.websiteCounter.emptyState.hint')}</p>
           </div>
         ) : (
           sortedWebsites.map((site) => (
@@ -244,7 +229,7 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
                 {showFavicons && site.favicon && (
                   <img
                     src={site.favicon}
-                    alt={i18n.t('websiteCounter.alt.favicon', { hostname: site.hostname })}
+                    alt={t('widgets.websiteCounter.alt.favicon', { hostname: site.hostname })}
                     className={styles.websiteFavicon}
                     onError={(e) => {
                       (e.target as HTMLImageElement).style.display = 'none';
@@ -262,7 +247,7 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
                   <button
                     className={styles.removeWebsiteBtn}
                     onClick={() => handleRemoveWebsite(site.hostname)}
-                    title={i18n.t('websiteCounter.buttons.remove')}
+                    title={t('widgets.websiteCounter.buttons.remove')}
                   >
                     ✕
                   </button>
@@ -282,11 +267,11 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
                 onClick={() => setIsAddingWebsite(true)}
                 disabled={websiteData.length >= maxWebsites}
               >
-                {i18n.t('websiteCounter.buttons.addWebsite')}
+                {t('widgets.websiteCounter.buttons.addWebsite')}
               </button>
               {websiteData.length > 0 && (
                 <button className={styles.resetCountersBtn} onClick={handleResetCounters}>
-                  {i18n.t('websiteCounter.buttons.resetAll')}
+                  {t('widgets.websiteCounter.buttons.resetAll')}
                 </button>
               )}
             </div>
@@ -296,7 +281,7 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
                 type="text"
                 value={newWebsiteUrl}
                 onChange={(e) => setNewWebsiteUrl(e.target.value)}
-                placeholder={i18n.t('websiteCounter.placeholders.websiteUrl')}
+                placeholder={t('widgets.websiteCounter.placeholders.websiteUrl')}
                 className={styles.websiteUrlInput}
                 onKeyPress={(e) => e.key === 'Enter' && handleAddWebsite()}
               />
@@ -318,7 +303,7 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
           )}
         </div>
       )}
-    </div>
+    </>
   );
 };
 

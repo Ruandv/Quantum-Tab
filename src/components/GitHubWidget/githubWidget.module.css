@@ -1,32 +1,16 @@
-/* GitHub Widget Styles */
-
+/* GitHubWidget Styles */
 .githubWidget {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-.widgetTitle {
-  font-size: var(--widget-heading-size, 1.4rem);
-  line-height: var(--widget-heading-line-height, 1.3);
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  opacity: 0.9;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.widgetTitle::before {
-  content: '🐙';
-  font-size: calc(var(--widget-heading-size, 1.4rem) * 1.2);
-  line-height: 1;
+  width: 100%;
 }
 
 .githubWidgetContent {
   display: flex;
   flex-direction: column;
+  width: 100%;
   gap: 1rem;
   flex: 1;
   overflow-y: auto;

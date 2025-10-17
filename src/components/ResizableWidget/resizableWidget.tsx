@@ -31,7 +31,6 @@ export const ResizableWidget: React.FC<ResizableWidgetProps> = ({
   onResize,
   isResizable = true,
   widgetStyle,
-  className = '',
 }) => {
   const [width, setWidth] = useState(initialWidth);
   const [height, setHeight] = useState(initialHeight);
@@ -181,7 +180,7 @@ export const ResizableWidget: React.FC<ResizableWidgetProps> = ({
   return (
     <div
       ref={widgetRef}
-      className={`${styles.resizableWidget} ${className} ${isResizing ? styles.resizing : ''}`}
+      className={`${styles.resizableWidget} ${isResizing ? styles.resizing : ''}`}
       style={widgetStyles}
     >
       {/* Blur backdrop - positioned behind content */}

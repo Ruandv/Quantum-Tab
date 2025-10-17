@@ -1,0 +1,21 @@
+/* ===================================
+   QUANTUM TAB - COMMON WIDGET STYLES
+   ===================================
+   
+   Shared styles used across all widget components.
+   Import these into individual widget CSS modules to maintain consistency.
+   
+   Usage in widget CSS:
+   @import '../../styles/widgetCommon.module.css';
+   
+   ================================= */
+
+/* Common Widget Title Style */
+.widgetTitle {
+  font-size: var(--widget-heading-size, 1.4rem);
+  line-height: var(--widget-heading-line-height, 1.3);
+  font-weight: 600;
+  margin: var(--spacing-md);
+
+  color: var(--color-text-primary);
+}

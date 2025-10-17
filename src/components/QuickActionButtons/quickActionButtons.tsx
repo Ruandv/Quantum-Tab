@@ -7,7 +7,6 @@ import Modal from '../Modal/modal';
 import styles from './quickActionButtons.module.css';
 
 const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
-  className = '',
   buttons = [
     {
       icon: '🐙',
@@ -78,8 +77,7 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
   };
 
   return (
-    <div className={`${styles.quickActionsWidget} ${className}`}>
-      <h3 className={styles.widgetTitle}>{t('quickActionButtons.title')}</h3>
+    <>
       <div className={styles.actionButtons}>
         {!isLocked && (
           <button
@@ -173,7 +171,7 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
         </Modal>
         </>
       )}
-    </div>
+    </>
   );
 };
 

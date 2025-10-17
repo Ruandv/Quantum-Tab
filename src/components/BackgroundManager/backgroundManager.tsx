@@ -4,13 +4,12 @@ import { BackgroundManagerProps } from '../../types/common';
 import { validateImageFile, fileToDataURL } from '../../utils/helpers';
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './backgroundManager.module.css';
+import widgetCommon from '../../styles/widgetCommon.module.css';
 
 const BackgroundManager: React.FC<BackgroundManagerProps> = ({
-  className = '',
   onBackgroundChange,
   isLocked,
   widgetId,
-  widgetHeading
 }: BackgroundManagerProps) => {
   const { t } = useTranslation();
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -169,9 +168,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   }
 
   return (
-    <div className={`${styles.backgroundManagerWidget} ${className}`}>
-      {widgetHeading && <h3 className={styles.widgetTitle}>{widgetHeading}</h3>}
-
+    <>
       <div className={styles.uploadSection}>
         {!uploadedImage ? (
           <div className={styles.uploadArea} onClick={handleFileSelect}>
@@ -200,7 +197,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
         accept="image/*"
         style={{ display: 'none' }}
       />
-    </div>
+    </>
   );
 };
 

@@ -5,12 +5,10 @@ import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './localeWidget.module.css';
 
 const LocaleWidget: React.FC<LocaleWidgetProps> = ({
-  className = '',
   selectedLocale,
   onLocaleChange,
   isLocked = false,
   widgetId,
-  widgetHeading
 }: LocaleWidgetProps) => {
   const { t, i18n } = useTranslation();
   const [currentLocale, setCurrentLocale] = useState<string>(selectedLocale || i18n.language);
@@ -114,9 +112,7 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
   }
 
   return (
-    <div className={`${styles.localeWidget} ${className}`}>
-      {widgetHeading && <h3 className={styles.widgetTitle}>⏱️ {widgetHeading}</h3>}
-
+    <>
       <div className={styles.localeSelector}>
         <label className={styles.localeLabel}>{t('localeWidget.labels.language')}</label>
         <div className={styles.customDropdown} ref={dropdownRef}>
@@ -164,7 +160,7 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

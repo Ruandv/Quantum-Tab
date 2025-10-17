@@ -4,6 +4,7 @@ import { DashboardWidget, DashboardProps, DragState, Position, Dimensions } from
 import { constrainPosition, getViewportDimensions } from '../../utils/helpers';
 import { dispatchWidgetEditing } from '@/utils/widgetEvents';
 import styles from './dashboard.module.css';
+import widgetCommon from '../../styles/widgetCommon.module.css';
 
 const Dashboard: React.FC<DashboardProps> = ({
   widgets,
@@ -207,13 +208,10 @@ const Dashboard: React.FC<DashboardProps> = ({
         left: `${widget.position.x}px`,
         top: `${widget.position.y}px`,
         zIndex: isDragging ? 1000 : 0,
-        cursor: isLocked ? 'default' : 'move',
-        // ...(typeof widget.style.radius == 'number' && widget.style.radius > 0) ? { borderRadius: `${widget.style.radius}px` } : {},
-        // ...(typeof widget.style.border == 'number' && widget.style.border > 0) ? { border: `${widget.style.border}px solid` } : {}
+        cursor: isLocked ? 'default' : 'move'
       };
 
       const widgetContentStyles: CSSProperties = {
-        display: 'flex',
         alignItems: widget.style?.alignment || 'center',
         justifyContent: widget.style?.justify || 'center',
       };
@@ -277,7 +275,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                 ⋮⋮
               </div>
             )}
-            <div className={styles.widgetContent} style={widgetContentStyles}>
+            <div className={`${styles.widgetContent}`} style={widgetContentStyles}>
+              {widget.props.widgetHeading && <h3 className={widgetCommon.widgetTitle} >{widget.props.widgetHeading.toString()}</h3>}
               <WidgetComponent
                 isLocked={isLocked}
                 widgetId={widget.id}

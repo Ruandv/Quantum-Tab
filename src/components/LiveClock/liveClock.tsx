@@ -4,7 +4,6 @@ import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './liveClock.module.css';
 
 const LiveClock: React.FC<LiveClockProps> = ({
-  className = '',
   timeZone,
   dateFormat = 'yyyy-MM-dd',
   timeFormat = 'hh:mm a',
@@ -12,9 +11,6 @@ const LiveClock: React.FC<LiveClockProps> = ({
   showTime = true,
   showTimeZone,
   widgetId,
-  widgetHeading,
-  // Get dimensions from parent ResizableWidget via CSS custom properties
-  // These will be available as CSS variables in the component
 }: LiveClockProps) => {
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -139,14 +135,13 @@ const LiveClock: React.FC<LiveClockProps> = ({
   };
 
   return (
-    <div className={`${styles.liveClockWidget} ${className}`}>
-      {widgetHeading && <h3 className={styles.widgetTitle}>{widgetHeading}</h3>}
+    <>
       <div className={styles.timeDisplay}>
         {showTime && <h2 className={styles.currentTime}>{formatTime(currentTime)}</h2>}
         {showDate && <p className={styles.currentDate}>{formatDate(currentTime)}</p>}
       </div>
       {showTimeZone && <p className={styles.timeZone}>{timeZone}</p>}
-    </div>
+    </>
   );
 };
 

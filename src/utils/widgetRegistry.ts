@@ -130,7 +130,7 @@ export class WidgetRegistry {
       id: 'website-counter',
       name: 'Website Counter',
       wikiPage: 'websitecounter',
-      allowMultiples: false,
+      allowMultiples: true,
       description: 'Track and count visits to your favorite websites',
       component: WebsiteCounter,
       defaultDimensions: { width: 350, height: 300 },

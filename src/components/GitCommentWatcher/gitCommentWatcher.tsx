@@ -6,14 +6,12 @@ import styles from './gitCommentWatcher.module.css';
 import githubStyles from '../GitHubWidget/githubWidget.module.css';
 
 const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
-  className = '',
   patToken = '',
   repositoryUrl = '',
   autoRefresh = false,
   refreshInterval = 5,
   isLocked,
   widgetId,
-  widgetHeading
 }) => {
   const { t } = useTranslation();
 
@@ -164,8 +162,7 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
   );
 
   return (
-    <div className={`${styles.gitCommentWatcher} ${className}`}>
-      {widgetHeading && <h3 className={styles.widgetTitle}>{widgetHeading}</h3>}
+    <>
       <div className={styles.gitCommentWatcherContent}>
         {/* Status and Data Section */}
         {isLoading ? (
@@ -231,7 +228,7 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

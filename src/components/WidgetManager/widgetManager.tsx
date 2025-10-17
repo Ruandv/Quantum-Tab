@@ -270,7 +270,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                     color: `rgb(${widgetStyle?.textColorRed ?? 230}, ${widgetStyle?.textColorGreen ?? 114}, ${widgetStyle?.textColorBlue ?? 30})`,
                     width: '100%',
                     height: '40px',
-                    textAlign: widgetStyle?.alignment ?? 'center',
+                    alignItems: widgetStyle?.alignment ?? 'center',
                     justifyContent: widgetStyle?.justify ?? 'center',
                     borderRadius: '4px',
                     fontSize: '16px',
@@ -305,8 +305,8 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       type="radio"
                       name="textAlign"
                       value="left"
-                      checked={(widgetStyle?.alignment ?? 'center') === 'left'}
-                      onChange={() => handleStyleChange('alignment', 'left' as unknown as number)}
+                      checked={(widgetStyle?.alignment ?? 'center') === 'flex-start'}
+                      onChange={() => handleStyleChange('alignment', 'flex-start' as unknown as number)}
                     />
                     {t('widgetManager.labels.left')}
                   </label>
@@ -325,8 +325,8 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       type="radio"
                       name="textAlign"
                       value="right"
-                      checked={(widgetStyle?.alignment ?? 'center') === 'right'}
-                      onChange={() => handleStyleChange('alignment', 'right' as unknown as number)}
+                      checked={(widgetStyle?.alignment ?? 'center') === 'flex-end'}
+                      onChange={() => handleStyleChange('alignment', 'flex-end' as unknown as number)}
                     />
                     {t('widgetManager.labels.right')}
                   </label>
@@ -649,9 +649,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
       setWidgetPosition(optimalPosition);
     }, [existingWidgets, containerBounds]);
 
-  const handleStyleChange = useCallback((property: keyof CssStyle, value: number) => {
+  const handleStyleChange = useCallback((property: keyof CssStyle, value: number | string) => {
     // Convert transparency from percentage to decimal
-    const finalValue = property === 'transparency' ? value / 100 : value;
+    const finalValue = property === 'transparency' ? (typeof value === 'number' ? value / 100 : 0) : value;
     setWidgetStyle((prev) => {
       const newStyle = { ...prev, [property]: finalValue };
       console.log(`Style changed: ${property} = ${finalValue}`, newStyle);

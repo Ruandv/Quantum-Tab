@@ -1,0 +1,63 @@
+.sprintNumberWidget {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  color: white;
+  text-align: center;
+}
+
+.sprintNumberWidget.error {
+  justify-content: center;
+}
+
+.errorMessage {
+  color: #ff6b6b;
+  font-weight: 500;
+  padding: 10px;
+  font-size: calc(var(--widget-heading-size, 1.4rem) * 1);
+}
+
+.sprintNumber {
+  font-weight: 700;
+  margin: 10px 0;
+  line-height: 1;
+  font-size: calc(var(--widget-heading-size, 1.4rem) * 3.5);
+}
+
+.sprintDates {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0.9;
+  
+}
+
+.dateRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: calc(var(--widget-heading-size, 1.4rem) * 1.15);
+}
+
+.dateLabel {
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.dateValue {
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 400px) {
+  .sprintNumberWidget {
+    padding: 15px;
+  }
+}

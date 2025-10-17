@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SprintNumberProps } from '@/types/common';
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
+import styles from './sprintNumber.module.css';
+import widgetCommon from '../../styles/widgetCommon.module.css';
 
 const SprintNumber: React.FC<SprintNumberProps> = ({
-  className = '',
   startDate,
   numberOfDays,
   currentSprint,
@@ -107,8 +108,8 @@ const SprintNumber: React.FC<SprintNumberProps> = ({
 
   if (error) {
     return (
-      <div className={`sprint-number-widget error ${className}`}>
-        <div className="error-message">
+      <div className={`${styles.sprintNumberWidget} ${styles.error}`}>
+        <div className={styles.errorMessage}>
           {error}
         </div>
       </div>
@@ -116,98 +117,24 @@ const SprintNumber: React.FC<SprintNumberProps> = ({
   }
 
   return (
-    <div className={`sprint-number-widget ${className}`}>
-      <style>{`
-        .sprint-number-widget {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 20px;
-          height: 100%;
-          width: 100%;
-          box-sizing: border-box;
-          color: white;
-          text-align: center;
-        }
-
-        .sprint-number-widget.error {
-          justify-content: center;
-        }
-
-        .error-message {
-          color: #ff6b6b;
-          font-weight: 500;
-          padding: 10px;
-          font-size: calc(var(--widget-font-size, 14px) * 1);
-        }
-
-        .sprint-label {
-          font-weight: 300;
-          opacity: 0.8;
-          margin-bottom: 5px;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          font-size: calc(var(--widget-font-size, 14px) * 1);
-        }
-
-        .sprint-number {
-          font-weight: 700;
-          margin: 10px 0;
-          line-height: 1;
-          font-size: calc(var(--widget-font-size, 14px) * 3.5);
-        }
-
-        .sprint-dates {
-          margin-top: 15px;
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-          opacity: 0.9;
-          font-size: calc(var(--widget-font-size, 14px) * 1.15);
-        }
-
-        .date-row {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-        }
-
-        .date-label {
-          font-weight: 500;
-          opacity: 0.7;
-        }
-
-        .date-value {
-          font-weight: 600;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 400px) {
-          .sprint-number-widget {
-            padding: 15px;
-          }
-        }
-      `}</style>
-
-      <div className="sprint-label">
+    <>
+      <div className={`${widgetCommon.widgetTitle}`}>
         {t('sprintNumber.labels.sprint')}
       </div>
-      <div className="sprint-number">
+      <div className={`${styles.sprintNumber}`}>
         {currentSprintNumber}
       </div>
-      <div className="sprint-dates">
-        <div className="date-row">
-          <span className="date-label">{t('sprintNumber.labels.start')}:</span>
-          <span className="date-value">{formatDate(sprintStartDate)}</span>
+      <div className={`${styles.sprintDates}`}>
+        <div className={`${styles.dateRow}`}>
+          <span className={`${styles.dateLabel}`}>{t('sprintNumber.labels.start')}:</span>
+          <span className={`${styles.dateValue}`}>{formatDate(sprintStartDate)}</span>
         </div>
-        <div className="date-row">
-          <span className="date-label">{t('sprintNumber.labels.end')}:</span>
-          <span className="date-value">{formatDate(sprintEndDate)}</span>
+        <div className={`${styles.dateRow}`}>
+          <span className={`${styles.dateLabel}`}>{t('sprintNumber.labels.end')}:</span>
+          <span className={`${styles.dateValue}`}>{formatDate(sprintEndDate)}</span>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
