@@ -97,14 +97,15 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     const handleWidgetEditing = (event: WidgetEvent) => {
       if (event.widgetId) {
         const widgeta = existingWidgets.find(w => w.id === event.widgetId);
-        const wt  = widgeta as unknown as WidgetType;
-        wt.defaultProps = widgeta?.props || {};
-        setSelectedWidgetType(wt);
-        setWidgetDimensions(widgeta?.dimensions || defaultDimensions);
-        setWidgetPosition(widgeta?.position || defaultPosition);
-        setWidgetStyle(widgeta?.style || defaultStyle);
-        existingWidgets = existingWidgets.splice(existingWidgets.indexOf(widgeta!), 1);
-        setIsModalOpen(true);
+        if (widgeta) {
+          const wt  = widgeta as unknown as WidgetType;
+          wt.defaultProps = widgeta?.props || {};
+          setSelectedWidgetType(wt);
+          setWidgetDimensions(widgeta?.dimensions || defaultDimensions);
+          setWidgetPosition(widgeta?.position || defaultPosition);
+          setWidgetStyle(widgeta?.style || defaultStyle);
+          setIsModalOpen(true);
+        }
       }
     };
 
@@ -113,7 +114,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     return () => {
       widgetEventManager.removeEventListener(WIDGET_EVENTS.WIDGET_EDITED, handleWidgetEditing);
     };
-  }, [onEditingWidget]);
+  }, [existingWidgets, onEditingWidget]);
 
   useEffect(() => {
     if (data.exportMetadata.secretProps && data.exportMetadata.secretProps.length > 0) {
@@ -634,17 +635,20 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     });
   }, []);
 
-  const handleTextInputChange = useCallback((property: string, value: string) => {
-    // Convert transparency from percentage to decimal
-    setWidgetStyle((prev) => {
-      const newInputValue = { ...prev, [property]: value };
-InputChange(property, e.target.value)}
-          />
-        </div>
-      </div>
-    ),
-    [handleTextInputChange]
-  );
+  const handlePropertyChange = useCallback((key: string, value: string | boolean | number) => {
+    if (selectedWidgetType) {
+      setSelectedWidgetType(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          defaultProps: {
+            ...prev.defaultProps,
+            [key]: value
+          }
+        };
+      });
+    }
+  }, [selectedWidgetType]);
 
   const renderStyleInput = useCallback(
     (
@@ -673,6 +677,22 @@ InputChange(property, e.target.value)}
       </div>
     ),
     [handleStyleChange]
+  );
+
+  const renderTextInput = useCallback(
+    (value: string, id: string, label: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void) => (
+      <div className={styles.styleField}>
+        <label className={styles.styleLabel}>{label}</label>
+        <input
+          type="text"
+          id={id}
+          value={value}
+          onChange={onChange}
+          className={styles.textInput}
+        />
+      </div>
+    ),
+    []
   );
 
   const renderColorInput = useCallback(
