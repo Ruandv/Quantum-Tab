@@ -378,8 +378,11 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                     return (
                       <div key={key} className={styles.propertyField}>
                         <label className={styles.propertyLabel}>
-                          {key.charAt(0).toUpperCase() +
-                            key.slice(1).replace(/([A-Z])/g, ' $1')}
+                          {(key.charAt(0).toUpperCase() + key.slice(1))
+                            // Insert a space before a capital letter followed by a lowercase letter
+                            .replace(/([A-Z])(?=[a-z])/g, ' $1')
+                            // Insert a space before a capital letter that follows a lowercase letter or number
+                            .replace(/([^A-Z])([A-Z])/g, '$1 $2')}
                         </label>
                         {
 
