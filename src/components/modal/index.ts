@@ -1,2 +1,1 @@
-export { default } from './modal';
-export type { ModalProps, ModalAction } from './modal';
+export type { ModalDialog, ModalProps, ModalAction } from './modal';

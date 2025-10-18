@@ -15,7 +15,7 @@ export interface ModalProps {
 
 }
 
-const ModalDialog: React.FC<ModalProps> = ({
+export const ModalDialog: React.FC<ModalProps> = ({
     isOpen,
     onClose,
     content,
@@ -64,5 +64,3 @@ const ModalDialog: React.FC<ModalProps> = ({
         </div>
     );
 };
-
-export default ModalDialog;
