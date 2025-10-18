@@ -172,7 +172,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
     return null;
   }
 
-
   const handleAIButtonClick = async (event?: React.SyntheticEvent): Promise<void> => {
     event.preventDefault();
     if (!widgetId) return;
