@@ -25,6 +25,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@google/genai": "^1.25.0",
     "@types/react-beautiful-dnd": "^13.1.8",
     "i18next": "^25.5.2",
     "react": "^18.2.0",

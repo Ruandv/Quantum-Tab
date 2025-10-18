@@ -8,7 +8,7 @@
 export interface WidgetEvent {
   type: string;
   widgetId: string;
-  data?: any;
+  data?: Record<string, unknown>;
 }
 
 export type WidgetEventListener = (event: WidgetEvent) => void;
@@ -84,7 +84,10 @@ export const WIDGET_EVENTS = {
 /**
  * Convenience function to dispatch a widget removal event
  */
-export const dispatchWidgetRemoval = (widgetId: string, data?: any): void => {
+export const dispatchWidgetRemoval = (
+  widgetId: string,
+  data?: Record<string, unknown>
+): void => {
   widgetEventManager.dispatchEvent({
     type: WIDGET_EVENTS.REMOVE_WIDGET,
     widgetId,
@@ -113,7 +116,6 @@ export const addWidgetRemovalListener = (
     if (event.widgetId === widgetId) {
       try {
         await cleanup();
-        console.log(`Cleanup completed for widget: ${widgetId}`);
       } catch (error) {
         console.error(`Cleanup failed for widget ${widgetId}:`, error);
       }

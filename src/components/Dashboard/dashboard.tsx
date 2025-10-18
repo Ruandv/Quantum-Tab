@@ -8,7 +8,6 @@ import widgetCommon from '../../styles/widgetCommon.module.css';
 
 const Dashboard: React.FC<DashboardProps> = ({
   widgets,
-  className = '',
   isLocked = false,
   onRemoveWidget,
   onWidgetResize,
@@ -237,7 +236,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             onResize={(dimensions) => handleWidgetResize(widget.id, dimensions)}
             widgetStyle={widget.style}
           >
-            {!isLocked && handleRemoveWidget && (
+            {!isLocked && (
               <>
               <button
                 className={styles.widgetInfoBtn}
@@ -270,13 +269,8 @@ const Dashboard: React.FC<DashboardProps> = ({
               </button>
               </>
             )}
-            {!isLocked && (
-              <div className={styles.widgetDragIndicator} title="Drag to move">
-                ⋮⋮
-              </div>
-            )}
             <div className={`${styles.widgetContent}`} style={widgetContentStyles}>
-              {widget.props.widgetHeading && <h3 className={widgetCommon.widgetTitle} >{widget.props.widgetHeading.toString()}</h3>}
+              {widget.props.widgetHeading && widget.isRuntimeVisible && <h3 className={widgetCommon.widgetTitle} >{widget.props.widgetHeading.toString()}</h3>}
               <WidgetComponent
                 isLocked={isLocked}
                 widgetId={widget.id}
@@ -312,7 +306,7 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <div
-      className={`${styles.dashboardContainer} ${className}`}
+      className={`${styles.dashboardContainer}`}
       style={{
         height: `${containerHeight}px`,
         minHeight: '400px',

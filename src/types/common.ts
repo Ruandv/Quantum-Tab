@@ -1,7 +1,7 @@
 // Centralized type definitions for the entire application
 
 // Define the keys that should be optional in defaultProps
-type OptionalKeys = 'className' | 'buttons' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange';
+type OptionalKeys = 'buttons' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange';
 
 // Utility type to make all properties required except for specific optional ones
 // but still allow the optional properties to be provided in defaultProps
@@ -36,6 +36,7 @@ export interface DashboardWidget {
   description: string;
   wikiPage: string;
   allowMultiples: boolean;
+  isRuntimeVisible: boolean;
   component: React.ComponentType<Record<string, unknown>>;
   props?: Record<string, unknown>;
   dimensions: Dimensions;
@@ -48,6 +49,7 @@ export interface WidgetType<T = Record<string, unknown>> {
   name: string;
   wikiPage: string;
   allowMultiples: boolean;
+  isRuntimeVisible: boolean;
   description: string;
   component: React.ComponentType<T>;
   defaultDimensions: Dimensions;
@@ -85,7 +87,6 @@ export interface LiveClockProps extends DefaultWidgetProps {
 }
 
 export interface QuickActionButtonsProps extends DefaultWidgetProps {
-  className?: string;
   buttons?: ActionButton[];
   onButtonsChange?: (buttons: ActionButton[]) => void;
 }
@@ -111,7 +112,6 @@ export interface GitHubIssuesProps extends DefaultWidgetProps {
 interface GitHubWidgetBaseProps extends DefaultWidgetProps {
   patToken: string;
   repositoryUrl: string;
-  className?: string;
   autoRefresh?: boolean;
   refreshInterval?: number; // in minutes
 }
@@ -123,7 +123,7 @@ export interface GitCommentWatcherProps extends GitHubWidgetBaseProps {
 }
 
 export interface BackgroundManagerProps extends DefaultWidgetProps {
-  className?: string;
+  isAIEnabled: boolean; // Optional AI feature flag
   onBackgroundChange?: (imageUrl: string) => void;
 }
 
@@ -136,7 +136,6 @@ export interface WebsiteCounterData {
 }
 
 export interface WebsiteCounterProps extends DefaultWidgetProps {
-  className?: string;
   websites?: WebsiteCounterData[];
   showFavicons?: boolean;
   maxWebsites?: number;
@@ -144,13 +143,11 @@ export interface WebsiteCounterProps extends DefaultWidgetProps {
 }
 
 export interface LocaleWidgetProps extends DefaultWidgetProps {
-  className?: string;
   selectedLocale?: string;
   onLocaleChange?: (locale: string) => void;
 }
 
 export interface SprintNumberProps extends DefaultWidgetProps {
-  className?: string;
   startDate: string; // Format: YYYY-MM-DD
   numberOfDays: number;
   currentSprint: number;
@@ -167,12 +164,10 @@ export interface ResizableWidgetProps {
   maxHeight?: number;
   onResize?: (dimensions: Dimensions) => void;
   isResizable?: boolean;
-  className?: string;
 }
 
 export interface DashboardProps {
   widgets: DashboardWidget[];
-  className?: string;
   isLocked?: boolean;
   onRemoveWidget?: (widgetId: string) => void;
   onWidgetResize?: (widgetId: string, dimensions: Dimensions) => void;

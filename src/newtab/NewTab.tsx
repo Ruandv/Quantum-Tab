@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useMemo as ReactUseMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dashboard from '../components/Dashboard/dashboard';
 import WidgetManager from '../components/WidgetManager/widgetManager';
@@ -20,11 +20,7 @@ const NewTab: React.FC = () => {
     const { t } = useTranslation();
 
     // Component mapping for deserialization
-    const componentMap = useMemo(() => {
-        const map = widgetRegistry.createComponentMap();
-        console.log('Component map created with keys:', Object.keys(map));
-        return map;
-    }, []);
+    const componentMap = useMemo(() => widgetRegistry.createComponentMap(), []);
 
     // Initialize widgets with default configuration
     const getInitialWidgets = useCallback((): DashboardWidget[] => {
@@ -42,6 +38,7 @@ const NewTab: React.FC = () => {
                 wikiPage: 'liveclock',
                 description: 'Real-time clock with customizable timezone and format',
                 allowMultiples: true,
+                isRuntimeVisible: true,
                 position: defaultPosition,
                 dimensions: defaultDimensions,
                 component: ClockComponent,
@@ -66,8 +63,6 @@ const NewTab: React.FC = () => {
     // Load data from Chrome storage on component mount
     useEffect(() => {
         const loadInitialData = async () => {
-            console.log('Starting widget initialization...');
-
             // Quick check if chrome.storage is available
             if (!chrome?.storage?.local) {
                 console.warn('Chrome storage not available, using default widgets');
@@ -77,9 +72,7 @@ const NewTab: React.FC = () => {
             }
 
             try {
-                console.log('Loading data from Chrome storage...');
                 const savedData = await chromeStorage.loadAll();
-                console.log('Loaded saved data:', savedData);
 
                 // Set background and lock state
                 setBackgroundImage(savedData.backgroundImage || '');
@@ -98,39 +91,30 @@ const NewTab: React.FC = () => {
 
                 // Handle widgets - force fresh start if data looks corrupted
                 if (!savedData?.widgets?.length || savedData.widgets.some((w) => !w.component)) {
-                    console.log('No valid saved widgets found, using initial widgets');
                     setWidgets(getInitialWidgets());
                     setIsLoading(false);
                     return;
                 }
 
                 // Restore component references with error handling
-                console.log('Available component map keys:', Object.keys(componentMap));
                 const restoredWidgets = savedData.widgets.map((widget) => {
                     try {
-                        console.log(`Restoring widget ${widget.id} with component:`, widget.component);
                         // Default to LiveClock if component info is missing
                         let componentName = 'LiveClock';
                         let widgetTypeId = '';
 
                         // Try to extract widget type ID from saved data
                         const comp = widget.component as any;
-                        console.log(`Restoring widget ${widget.id}, saved component:`, comp);
 
                         if (typeof comp === 'string') {
                             // If it's a string, it might be the widget type ID
                             widgetTypeId = comp;
-                            console.log(
-                                `Widget ${widget.id}: Using string component as widgetTypeId: ${widgetTypeId}`
-                            );
                         } else if (comp?.widgetTypeId) {
                             // If we stored the widget type ID
                             widgetTypeId = comp.widgetTypeId;
-                            console.log(`Widget ${widget.id}: Found widgetTypeId in component: ${widgetTypeId}`);
                         } else if (comp?.name && typeof comp.name === 'string') {
                             // Fallback: try to match by component function name
                             componentName = comp.name;
-                            console.log(`Widget ${widget.id}: Using component name: ${componentName}`);
                         }
 
                         // If we have a widget type ID, get the component from registry
@@ -235,7 +219,6 @@ const NewTab: React.FC = () => {
                 }
                 setWidgets(getInitialWidgets());
             } finally {
-                console.log('Widget initialization complete, stopping loading spinner');
                 setIsLoading(false);
             }
         };
@@ -259,7 +242,6 @@ const NewTab: React.FC = () => {
             setWidgets(getInitialWidgets());
             setBackgroundImage('');
             setIsLocked(false);
-            console.log('Extension reset successfully');
         } catch (error) {
             console.error('Failed to reset extension:', error);
         }
@@ -270,11 +252,9 @@ const NewTab: React.FC = () => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.ctrlKey && event.shiftKey && event.key === 'R') {
                 event.preventDefault();
-                console.log('Manual reset triggered');
                 handleReset();
             } else if (event.ctrlKey && event.shiftKey && event.key === 'L') {
                 event.preventDefault();
-                console.log('Manual loading stop triggered');
                 setIsLoading(false);
                 if (widgets.length === 0) {
                     setWidgets(getInitialWidgets());
@@ -293,22 +273,15 @@ const NewTab: React.FC = () => {
                 const serializedWidgets: SerializedWidget[] = widgets.map((widget) => {
                     // Find the widget type ID for this component
                     const componentName = widget.component.name || widget.component.displayName || 'unknown';
-                    console.log(`Saving widget ${widget.id}, component name: ${componentName}`);
 
                     const widgetType = widgetRegistry.findByComponentName(componentName);
                     const serializedComponent = widgetType?.id || componentName || 'LiveClock';
-
-                    console.log(
-                        `Widget ${widget.id}: Found widgetType:`,
-                        widgetType?.name,
-                        'Serializing as:',
-                        serializedComponent
-                    );
 
                     return {
                         id: widget.id,
                         name: widget.name,
                         description: widget.description,
+                        isRuntimeVisible: widget.isRuntimeVisible,
                         wikiPage: widget.wikiPage ||  widget.name.toLowerCase().replace(/\s+/g, ''),
                         allowMultiples: widgetType?.allowMultiples || false,
                         component: serializedComponent,

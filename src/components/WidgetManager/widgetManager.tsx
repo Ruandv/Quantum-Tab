@@ -25,58 +25,16 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   isLocked,
 }: WidgetManagerProps) => {
   const { t } = useTranslation();
-  useEffect(() => {
-    const handleWidgetEditing = (event: WidgetEvent) => {
-      if (event.widgetId) {
-        const widgeta = existingWidgets.find(w => w.id === event.widgetId);
-        // remove widgetA from existingWidgets to allow re-adding if allowMultiples is false
-        setSelectedWidgetType(widgeta as unknown as WidgetType);
-        setWidgetDimensions(widgeta?.dimensions || defaultDimensions);
-        setWidgetPosition(widgeta?.position || defaultPosition);
-        setWidgetStyle(widgeta?.style || defaultStyle);
-        setModalContent({
-          title: t('widgetManager.modal.title'),
-          content: <div>WE WILL ROCK YOU</div>,
-          actions: [
-            {
-              index: 0,
-              text: t('widgetManager.modal.actions.cancel'),
-              onClick: () => setModalContent(null),
-            },
-            {
-              index: 1,
-              text: t('widgetManager.modal.actions.save'),
-              onClick: () => {
-                // Save changes
-                setModalContent(null);
-              },
-            },
-          ],
-        });
-        existingWidgets = existingWidgets.splice(existingWidgets.indexOf(widgeta!), 1);
-        
-        setIsModalOpen(true);
-        
-      }
-    };
-
-    widgetEventManager.addEventListener(WIDGET_EVENTS.WIDGET_EDITED, handleWidgetEditing);
-
-    return () => {
-      widgetEventManager.removeEventListener(WIDGET_EVENTS.WIDGET_EDITED, handleWidgetEditing);
-    };
-  }, [onEditingWidget]);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedWidgetType, setSelectedWidgetType] = useState<WidgetType | null>(null);
   const [widgetDimensions, setWidgetDimensions] = useState<Dimensions>(defaultDimensions);
   const [widgetPosition, setWidgetPosition] = useState<Position>(defaultPosition);
   const [widgetStyle, setWidgetStyle] = useState<CssStyle>(defaultStyle);
-  const [modalContent, setModalContent] = useState<{ 
+  const [modalContent, setModalContent] = useState<{
     title: string | React.ReactNode; content: React.ReactNode,
     actions: Array<{ index: number, text: string; onClick: () => void }>
   } | null>(null);
-  const availableWidgets = useMemo(() => widgetRegistry.getAllLocalized(t), [t]);  
+  const availableWidgets = useMemo(() => widgetRegistry.getAllLocalized(t), [t]);
   const containerBounds = useMemo(() => getViewportDimensions(), []);
   const loadDefaults = useCallback(async () => {
     const defaultStyle: CssStyle = (await chromeStorage.loadAllDefaults()).styling;
@@ -110,7 +68,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   ), [t, availableWidgets, existingWidgets, selectedWidgetType]);
 
   const resetModalState = useCallback(async () => {
-    console.log("Resetting modal state");
     setSelectedWidgetType(null);
     setModalContent({
       content: getDefaultModalContent(),
@@ -137,6 +94,29 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   }, [modalContent]);
 
   useEffect(() => {
+    const handleWidgetEditing = (event: WidgetEvent) => {
+      if (event.widgetId) {
+        const widgeta = existingWidgets.find(w => w.id === event.widgetId);
+        const wt  = widgeta as unknown as WidgetType;
+        wt.defaultProps = widgeta?.props || {};
+        setSelectedWidgetType(wt);
+        setWidgetDimensions(widgeta?.dimensions || defaultDimensions);
+        setWidgetPosition(widgeta?.position || defaultPosition);
+        setWidgetStyle(widgeta?.style || defaultStyle);
+        existingWidgets = existingWidgets.splice(existingWidgets.indexOf(widgeta!), 1);
+        setIsModalOpen(true);
+
+      }
+    };
+
+    widgetEventManager.addEventListener(WIDGET_EVENTS.WIDGET_EDITED, handleWidgetEditing);
+
+    return () => {
+      widgetEventManager.removeEventListener(WIDGET_EVENTS.WIDGET_EDITED, handleWidgetEditing);
+    };
+  }, [onEditingWidget]);
+
+  useEffect(() => {
     if (data.exportMetadata.secretProps && data.exportMetadata.secretProps.length > 0) {
       const fieldsData = data.exportMetadata.secretProps.map(({ name, key, value }, idx) => {
         return (<React.Fragment key={`${idx}_${key}`}>{renderTextInput(!value ? '' : value, `${name}_${key}`, value, (e) => {
@@ -157,7 +137,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
           index: 0,
           text: 'Save',
           onClick: async () => {
-            console.log('Save clicked', data.exportMetadata.secretProps);
             // now we need to go find the widgets where the id matches
             data.exportMetadata.secretProps.map(({ name, key, value }) => {
               const w = data.widgets.find(widget => widget.id === name);
@@ -446,7 +425,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
         index: 0,
         text: t('widgetManager.buttons.addWidget'),
         onClick: () => {
-          console.log('Add Widget clicked, selectedWidgetType:', selectedWidgetType);
           if (!selectedWidgetType) {
             console.error('No widget type selected!');
             return;
@@ -466,6 +444,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             id: generateUniqueId(selectedWidgetType.id),
             name: selectedWidgetType.name,
             description: selectedWidgetType.description,
+            isRuntimeVisible: selectedWidgetType.isRuntimeVisible,
             allowMultiples: selectedWidgetType.allowMultiples,
             wikiPage: selectedWidgetType.wikiPage,
             component: selectedWidgetType.component,
@@ -595,7 +574,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
           // Clean up the URL object
           URL.revokeObjectURL(downloadUrl);
 
-          console.log('Export completed successfully with InternalString sanitization');
 
         } catch (error) {
           console.error('Export failed:', error);
@@ -637,7 +615,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
   const handleWidgetTypeSelect = useCallback(
     (widgetType: WidgetType) => {
-      console.log("Widget type selected:", widgetType);
       setSelectedWidgetType(widgetType);
       setWidgetDimensions(widgetType.defaultDimensions);
       // Auto-calculate optimal position
@@ -654,7 +631,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     const finalValue = property === 'transparency' ? (typeof value === 'number' ? value / 100 : 0) : value;
     setWidgetStyle((prev) => {
       const newStyle = { ...prev, [property]: finalValue };
-      console.log(`Style changed: ${property} = ${finalValue}`, newStyle);
       return newStyle;
     });
   }, []);
@@ -663,7 +639,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     // Convert transparency from percentage to decimal
     setWidgetStyle((prev) => {
       const newInputValue = { ...prev, [property]: value };
-      console.log(`text changed: ${property} = ${value}`, newInputValue);
       return newInputValue;
     });
   }, []);

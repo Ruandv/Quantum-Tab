@@ -8,6 +8,7 @@ export interface SerializedWidget {
   name: string;
   description: string;
   wikiPage: string;
+  isRuntimeVisible: boolean;
   allowMultiples: boolean;
   component: string; // Stored as widget type ID or component name
   props?: Record<string, unknown>;
@@ -35,7 +36,6 @@ export interface Defaults {
 export const chromeStorage = {
   // Save widget data
   saveWidgets: async (widgets: SerializedWidget[]): Promise<boolean> => {
-    console.log('Saving widgets to Chrome storage:', widgets);
     try {
       await chrome.storage.local.set({
         [STORAGE_KEYS.WIDGETS]: widgets,
@@ -192,6 +192,35 @@ export const chromeStorage = {
       return true;
     } catch (error) {
       console.error('Failed to clear Chrome storage:', error);
+      return false;
+    }
+  },
+  getWidgetData: async (widgetId: string): Promise<Record<string, unknown>> => {
+    try {
+      const result = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
+      const w = result[STORAGE_KEYS.WIDGETS]?.find((widget) => widget.id === widgetId) || {};
+      return w;
+
+    } catch (error) {
+      console.error(`Failed to get widget data for ${widgetId} from Chrome storage:`, error);
+      return {};
+    }
+  },
+  setWidgetData: async (widgetId: string, data: Record<string, unknown>): Promise<boolean> => {
+    try {
+      const result = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
+      const widgets: SerializedWidget[] = result[STORAGE_KEYS.WIDGETS] || [];
+      const widgetIndex = widgets.findIndex((widget) => widget.id === widgetId);
+      if (widgetIndex !== -1) {
+        widgets[widgetIndex] = {
+          ...widgets[widgetIndex],
+          ...data,
+        };
+      }
+      await chrome.storage.local.set({ [STORAGE_KEYS.WIDGETS]: widgets });
+      return true;
+    } catch (error) {
+      console.error(`Failed to set widget data for ${widgetId} in Chrome storage:`, error);
       return false;
     }
   },
