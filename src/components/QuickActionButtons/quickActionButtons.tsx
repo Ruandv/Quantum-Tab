@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import QuickActionButtonItem from './quickActionButtonItem';
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
-import Modal from '../Modal/modal';
+import ModalDialog from '../Modal';
 import styles from './quickActionButtons.module.css';
 
 const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
@@ -104,7 +104,7 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
 
       {/* Add Button Popup */}
       {showAddPopup && (
-        <><Modal
+        <><ModalDialog
           isOpen={showAddPopup}
           onClose={handleCancelAdd}
           content={{
@@ -168,7 +168,7 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
             ],
           }}
         >
-        </Modal>
+        </ModalDialog>
         </>
       )}
     </>
