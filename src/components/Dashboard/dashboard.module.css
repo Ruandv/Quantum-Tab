@@ -49,28 +49,6 @@
   cursor: default;
 }
 
-.widgetDragIndicator {
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(79, 172, 254, 0.8);
-  color: white;
-  border: none;
-  border-radius: var(--border-radius-sm);
-  padding: 2px 6px;
-  font-size: 10px;
-  opacity: 0;
-  transition: opacity var(--transition-normal);
-  z-index: 15;
-  font-weight: bold;
-  pointer-events: none;
-}
-
-.widgetWrapper:hover .widgetDragIndicator {
-  opacity: 1;
-}
-
 .widgetContent {
   display: flex;
   flex-direction: column;

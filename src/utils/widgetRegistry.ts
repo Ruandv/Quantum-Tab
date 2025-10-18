@@ -40,6 +40,7 @@ export class WidgetRegistry {
       name: 'Live Clock',
       wikiPage: 'liveclock',
       allowMultiples: true,
+      isRuntimeVisible: true,
       description: 'Real-time clock with customizable timezone and format',
       component: LiveClock,
       defaultDimensions: { width: 400, height: 200 },
@@ -59,6 +60,7 @@ export class WidgetRegistry {
       name: 'Quick Actions',
       wikiPage: 'quickactions',
       allowMultiples: true,
+      isRuntimeVisible: true,
       description: 'Quick access buttons to your favorite websites',
       component: QuickActionButtons,
       defaultDimensions: { width: 350, height: 200 },
@@ -84,11 +86,13 @@ export class WidgetRegistry {
       name: 'Background Manager',
       wikiPage: 'backgroundmanager',
       allowMultiples: false,
+      isRuntimeVisible: false,
       description: 'Upload and manage custom background images',
       component: BackgroundManager,
       defaultDimensions: { width: 320, height: 320 },
       defaultProps: {
         widgetHeading: 'Background Manager',
+        isAIEnabled: false,
       },
     });
 
@@ -97,6 +101,7 @@ export class WidgetRegistry {
       name: 'GitHub Repository',
       wikiPage: 'githubwidget',
       allowMultiples: true,
+      isRuntimeVisible: true,
       description: 'Monitor and interact with GitHub repositories',
       component: GitHubWidget,
       defaultDimensions: { width: 400, height: 250 },
@@ -114,6 +119,7 @@ export class WidgetRegistry {
       name: 'Git Comment Watcher',
       wikiPage: 'gitcommentwatcher',
       allowMultiples: true,
+      isRuntimeVisible: true,
       description: 'Monitor comments on your PR\'s',
       component: GitCommentWatcher,
       defaultDimensions: { width: 400, height: 250 },
@@ -131,6 +137,7 @@ export class WidgetRegistry {
       name: 'Website Counter',
       wikiPage: 'websitecounter',
       allowMultiples: true,
+      isRuntimeVisible: true,
       description: 'Track and count visits to your favorite websites',
       component: WebsiteCounter,
       defaultDimensions: { width: 350, height: 300 },
@@ -156,6 +163,7 @@ export class WidgetRegistry {
       name: 'Language Settings',
       wikiPage: 'localewidget',
       allowMultiples: false,
+      isRuntimeVisible: false,
       description: 'Change your preferred language and locale',
       component: LocaleWidget,
       defaultDimensions: defaultDimensions,
@@ -169,6 +177,7 @@ export class WidgetRegistry {
       id: 'sprint-number',
       name: 'Sprint Counter',
       allowMultiples: true,
+      isRuntimeVisible: true,
       description: 'Track sprint numbers and project timelines',
       component: SprintNumber,
       defaultDimensions: { width: 300, height: 250 },
@@ -182,7 +191,7 @@ export class WidgetRegistry {
     });
   }
 
-  public register<T = any>(widget: WidgetType<T>): void {
+  public register<T = unknown>(widget: WidgetType<T>): void {
     if (this.widgets.has(widget.id)) {
       console.warn(`Widget with id '${widget.id}' already exists. Overwriting...`);
     }
@@ -239,7 +248,7 @@ export class WidgetRegistry {
     return this.getAll().map(widget => this.getLocalizedWidget(widget.id, t) || widget);
   }
 
-  public getComponentByName(name: string): React.ComponentType<any> | undefined {
+  public getComponentByName(name: string): React.ComponentType<Record<string, unknown>> | undefined {
     const widget = Array.from(this.widgets.values()).find((w) => w.component.name === name);
     return widget?.component;
   }
@@ -253,8 +262,8 @@ export class WidgetRegistry {
     });
   }
 
-  public createComponentMap(): Record<string, React.ComponentType<any>> {
-    const map: Record<string, React.ComponentType<any>> = {};
+  public createComponentMap(): Record<string, React.ComponentType<Record<string, unknown>>> {
+    const map: Record<string, React.ComponentType<Record<string, unknown>>> = {};
     this.widgets.forEach((widget) => {
       // Use multiple keys for better matching
       const componentName = widget.component.name || widget.component.displayName || widget.id;
@@ -269,7 +278,6 @@ export class WidgetRegistry {
       }
     });
 
-    console.log('Created component map with keys:', Object.keys(map));
     return map;
   }
 }

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import styles from './modal.module.css';
+import styles from './modalDialog.module.css';
 
 export interface ModalAction {
     index: number;
@@ -15,7 +15,7 @@ export interface ModalProps {
 
 }
 
-const Modal: React.FC<ModalProps> = ({
+export const ModalDialog: React.FC<ModalProps> = ({
     isOpen,
     onClose,
     content,
@@ -64,5 +64,3 @@ const Modal: React.FC<ModalProps> = ({
         </div>
     );
 };
-
-export default Modal;
