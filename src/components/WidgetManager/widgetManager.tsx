@@ -98,7 +98,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
       if (event.widgetId) {
         const widgeta = existingWidgets.find(w => w.id === event.widgetId);
         if (widgeta) {
-          const wt  = widgeta as unknown as WidgetType;
+          const wt = widgeta as unknown as WidgetType;
           wt.defaultProps = widgeta?.props || {};
           setSelectedWidgetType(wt);
           setWidgetDimensions(widgeta?.dimensions || defaultDimensions);
@@ -497,7 +497,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
               const myData = JSON.parse(text);
               if (myData.exportMetadata.secretProps && myData.exportMetadata.secretProps.length > 0) {
                 const fieldsData = myData.exportMetadata.secretProps.map(({ name, key, value }, idx) => {
-                  return (<React.Fragment key={`${idx}_${key}`}>{renderTextInput(!value ? '' : value, `${name}_${key}`, value, (e) => {
+                  return (<React.Fragment key={`${idx}_${key}`}>{renderTextInput(!value ? '' : value, `${name}_${key}`, `${name}_${key}`, (e) => {
                     const newData = { ...myData };
                     newData.exportMetadata.secretProps[idx].value = e.target.value;
                     setData(newData);
