@@ -13,7 +13,7 @@ import { widgetRegistry } from '../../utils/widgetRegistry';
 import { generateUniqueId, findOptimalPosition, getViewportDimensions } from '../../utils/helpers';
 import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 import chromeStorage, { SerializedWidget } from '@/utils/chromeStorage';
-import Modal from '../Modal/modal';
+import Modal from '../Modal';
 import { WIDGET_EVENTS, widgetEventManager, WidgetEvent } from '@/utils/widgetEvents';
 import styles from './widgetManager.module.css';
 
@@ -638,51 +638,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     // Convert transparency from percentage to decimal
     setWidgetStyle((prev) => {
       const newInputValue = { ...prev, [property]: value };
-      return newInputValue;
-    });
-  }, []);
-
-  const handlePropertyChange = useCallback(
-    (key: string, value: string | number | boolean) => {
-      if (!selectedWidgetType) return;
-
-      // Parse numeric values for SprintNumber widget
-      let parsedValue: string | number | boolean = value;
-      if (selectedWidgetType.id === 'sprint-number') {
-        if (key === 'numberOfDays' || key === 'currentSprint') {
-          parsedValue = typeof value === 'string' ? (parseInt(value, 10) || 0) : value;
-        }
-      }
-
-      setSelectedWidgetType((prev) =>
-        prev
-          ? {
-            ...prev,
-            defaultProps: {
-              ...prev.defaultProps,
-              [key]: parsedValue,
-            },
-          }
-          : null
-      );
-    },
-    [selectedWidgetType]
-  );
-
-  const renderTextInput = useCallback(
-    (
-      value: string,
-      label: string,
-      property?: string,
-      onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-    ) => (
-      <div className={styles.styleField}>
-        <label className={styles.styleLabel}>{label}</label>
-        <div className={styles.inputWithUnit}>
-          <input
-            type="text"
-            value={value}
-            onChange={onChange ? (e) => onChange(e) : (e) => handleTextInputChange(property, e.target.value)}
+InputChange(property, e.target.value)}
           />
         </div>
       </div>
