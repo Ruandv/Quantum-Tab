@@ -1,15 +1,15 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BackgroundManagerProps } from '../types/common';
-import { validateImageFile, fileToDataURL } from '../utils/helpers';
-import { addWidgetRemovalListener } from '../utils/widgetEvents';
+import { BackgroundManagerProps } from '../../types/common';
+import { validateImageFile, fileToDataURL } from '../../utils/helpers';
+import { addWidgetRemovalListener } from '../../utils/widgetEvents';
+import styles from './backgroundManager.module.css';
+import widgetCommon from '../../styles/widgetCommon.module.css';
 
 const BackgroundManager: React.FC<BackgroundManagerProps> = ({
-  className = '',
   onBackgroundChange,
   isLocked,
   widgetId,
-  widgetHeading
 }: BackgroundManagerProps) => {
   const { t } = useTranslation();
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -91,32 +91,32 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   const renderUploadArea = () => {
     if (isUploading) {
       return (
-        <div className="upload-content">
-          <div className="upload-spinner" />
+        <div className={styles.uploadContent}>
+          <div className={styles.uploadSpinner} />
           <span>{t('common.states.uploading')}</span>
         </div>
       );
     }
 
     return (
-      <div className="upload-content">
-        <div className="upload-icon">📁</div>
-        <span className="upload-text">{t('backgroundManager.upload.clickToUpload')}</span>
-        <small className="upload-hint">{t('backgroundManager.upload.supportedFormats')}</small>
+      <div className={styles.uploadContent}>
+        <div className={styles.uploadIcon}>📁</div>
+        <span className={styles.uploadText}>{t('backgroundManager.upload.clickToUpload')}</span>
+        <small className={styles.uploadHint}>{t('backgroundManager.upload.supportedFormats')}</small>
       </div>
     );
   };
 
   const renderPreview = () => (
-    <div className="preview-section">
-      <div className="image-preview">
+    <div className={styles.previewSection}>
+      <div className={styles.imagePreview}>
         <img
           src={uploadedImage!}
           alt={t('backgroundManager.upload.previewAlt')}
-          className="preview-image"
+          className={styles.previewImage}
         />
-        <div className="preview-overlay">
-          <span className="preview-label">{t('backgroundManager.preview.currentBackground')}</span>
+        <div className={styles.previewOverlay}>
+          <span className={styles.previewLabel}>{t('backgroundManager.preview.currentBackground')}</span>
         </div>
       </div>
     </div>
@@ -127,21 +127,21 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       return (
         <>
           <button
-            className="control-btn change-btn"
+            className={`${styles.controlBtn} ${styles.changeBtn}`}
             onClick={handleFileSelect}
             title={t('backgroundManager.tooltips.changeBackground')}
           >
             📁 {t('common.buttons.change')}
           </button>
           <button
-            className="control-btn default-btn"
+            className={`${styles.controlBtn} ${styles.defaultBtn}`}
             onClick={handleRestoreDefault}
             title={t('backgroundManager.tooltips.restoreDefault')}
           >
             🎨 {t('common.buttons.default')}
           </button>
           <button
-            className="control-btn remove-btn"
+            className={`${styles.controlBtn} ${styles.removeBtn}`}
             onClick={handleRemoveBackground}
             title={t('backgroundManager.tooltips.removeBackground')}
           >
@@ -153,7 +153,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
 
     return (
       <button
-        className="control-btn default-btn"
+        className={`${styles.controlBtn} ${styles.defaultBtn}`}
         onClick={handleRestoreDefault}
         title={t('backgroundManager.tooltips.restoreDefault')}
       >
@@ -168,12 +168,10 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   }
 
   return (
-    <div className={`background-manager-widget ${className}`}>
-      {widgetHeading && <h3 className="widget-title">{widgetHeading}</h3>}
-
-      <div className="upload-section">
+    <>
+      <div className={styles.uploadSection}>
         {!uploadedImage ? (
-          <div className="upload-area" onClick={handleFileSelect}>
+          <div className={styles.uploadArea} onClick={handleFileSelect}>
             {renderUploadArea()}
           </div>
         ) : (
@@ -190,7 +188,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
         )}
       </div>
 
-      <div className="control-buttons">{renderControls()}</div>
+      <div className={styles.controlButtons}>{renderControls()}</div>
 
       <input
         type="file"
@@ -199,7 +197,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
         accept="image/*"
         style={{ display: 'none' }}
       />
-    </div>
+    </>
   );
 };
 

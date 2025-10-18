@@ -1,0 +1,146 @@
+/* BackgroundManager Widget Styles */
+
+.backgroundManagerWidget {
+  text-align: center;
+  padding: var(--spacing-md);
+}
+
+/* Upload Section */
+.uploadSection {
+  margin-bottom: var(--spacing-lg);
+}
+
+.uploadArea {
+  border: 2px dashed var(--color-border-light);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-sm);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  background: rgba(255, 255, 255, 0.05);
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uploadArea:hover {
+  border-color: rgba(79, 172, 254, 0.6);
+  background: rgba(79, 172, 254, 0.1);
+  transform: translateY(-2px);
+}
+
+.uploadContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.uploadIcon {
+  font-size: calc(var(--widget-display-size, 2rem) * 0.5);
+  opacity: 0.7;
+}
+
+.uploadText {
+  font-weight: 500;
+  font-size: var(--widget-body-size, 0.9rem);
+  line-height: var(--widget-body-line-height, 1.4);
+  color: var(--color-text-primary);
+}
+
+.uploadHint {
+  color: var(--color-text-secondary);
+  font-size: var(--widget-small-size, 0.8rem);
+  line-height: var(--widget-small-line-height, 1.4);
+}
+
+.uploadSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Preview Section */
+.previewSection {
+  background: var(--color-widget-bg-transparent);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  position: relative;
+}
+
+.imagePreview {
+  position: relative;
+  height: 120px;
+  overflow: hidden;
+}
+
+.previewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--border-radius-md);
+}
+
+.previewOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  padding: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.previewLabel {
+  color: var(--color-text-primary);
+  font-size: var(--widget-small-size, 0.8rem);
+  font-weight: 500;
+}
+
+/* Control Buttons */
+.controlButtons {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: var(--spacing-md);
+}
+
+.controlBtn {
+  background: var(--color-widget-bg-transparent);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-primary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--widget-button-size, 0.8rem);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.controlBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.changeBtn:hover {
+  background: rgba(79, 172, 254, 0.3);
+  border-color: rgba(79, 172, 254, 0.5);
+}
+
+.defaultBtn:hover {
+  background: rgba(124, 58, 237, 0.3);
+  border-color: rgba(124, 58, 237, 0.5);
+}
+
+.removeBtn:hover {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.5);
+}

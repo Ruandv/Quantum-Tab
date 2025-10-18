@@ -27,7 +27,7 @@ export interface CssStyle {
   textColorRed: number;
   textColorGreen: number;
   textColorBlue: number;
-  alignment: 'left' | 'center' | 'right';
+  alignment: 'flex-start' | 'center' | 'flex-end';
   justify: 'flex-start' | 'center' | 'flex-end' | 'space-around' | 'space-between';
 }
 export interface DashboardWidget {
@@ -76,7 +76,6 @@ export interface StorageInfo {
 
 // Component-specific interfaces
 export interface LiveClockProps extends DefaultWidgetProps {
-  className?: string;
   timeZone: string;
   dateFormat?: string; // Optional date format prop
   timeFormat?: string; // Optional time format prop

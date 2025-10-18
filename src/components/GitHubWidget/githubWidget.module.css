@@ -1,0 +1,284 @@
+/* GitHubWidget Styles */
+.githubWidget {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.githubWidgetContent {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.githubParameter {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-md);
+  padding: 0.75rem;
+}
+
+.parameterLabel {
+  display: block;
+  font-size: var(--widget-small-size, 0.8rem);
+  line-height: var(--widget-small-line-height, 1.4);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.parameterValue {
+  font-size: var(--widget-body-size, 0.9rem);
+  line-height: var(--widget-body-line-height, 1.4);
+  color: white;
+  font-family: 'Courier New', monospace;
+  word-break: break-all;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.5rem;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.githubWidgetStatus {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: var(--color-warning-bg);
+  border: 1px solid var(--color-warning-light);
+  border-radius: var(--border-radius-md);
+  text-align: center;
+}
+
+.statusIndicator {
+  font-size: var(--widget-body-size, 0.9rem);
+  line-height: var(--widget-body-line-height, 1.4);
+  color: var(--color-warning);
+}
+
+.githubConfig {
+  margin-bottom: 1rem;
+}
+
+.githubLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  background: var(--color-primary-bg);
+  border: 1px solid var(--color-primary-light);
+  border-radius: var(--border-radius-md);
+}
+
+.loadingText {
+  color: var(--color-primary);
+  font-size: var(--widget-body-size, 1rem);
+  line-height: var(--widget-body-line-height, 1.4);
+  font-weight: 500;
+}
+
+.githubError {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--color-error-bg);
+  border: 1px solid var(--color-error-light);
+  border-radius: var(--border-radius-md);
+  flex-wrap: wrap;
+}
+
+.errorText {
+  color: var(--color-error);
+  font-size: var(--widget-body-size, 0.9rem);
+  line-height: var(--widget-body-line-height, 1.4);
+  flex: 1;
+}
+
+.retryBtn,
+.refreshBtn {
+  background: var(--color-primary-bg);
+  border: 1px solid var(--color-primary-light);
+  color: var(--color-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: var(--widget-button-size, 0.8rem);
+  line-height: var(--widget-button-line-height, 1.4);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.retryBtn:hover,
+.refreshBtn:hover {
+  background: var(--color-primary-light);
+  transform: translateY(-1px);
+}
+
+.githubData {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-md);
+  padding: 1rem;
+}
+
+.dataHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.prCount {
+  font-weight: 600;
+  color: white;
+  font-size: var(--widget-body-size, 1rem);
+  line-height: var(--widget-body-line-height, 1.4);
+}
+
+.lastUpdated {
+  font-size: var(--widget-small-size, 0.8rem);
+  line-height: var(--widget-small-line-height, 1.4);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.prList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+
+.prItem {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 0.75rem;
+  transition: all var(--transition-normal);
+}
+
+.prItem:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+  cursor: pointer;
+}
+
+.prHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prNumber {
+  font-size: var(--widget-body-size, 1rem);
+  line-height: var(--widget-body-line-height, 1.4);
+  font-weight: 600;
+  color: var(--color-primary);
+  font-family: 'Courier New', monospace;
+}
+
+.prState {
+  font-size: var(--widget-small-size, 0.8rem);
+  line-height: var(--widget-small-line-height, 1.4);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  font-weight: 600;
+}
+
+.prStateOpen {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.prStateMerged {
+  background: var(--color-purple-bg);
+  color: var(--color-purple);
+}
+
+.prStateClosed {
+  background: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.prDraft {
+  font-size: calc(var(--widget-small-size, 0.7rem) * 0.9);
+  line-height: var(--widget-small-line-height, 1.4);
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+}
+
+.prTitle {
+  color: white;
+  font-size: var(--widget-body-size, 1rem);
+  line-height: var(--widget-body-line-height, 1.4);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.prMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--widget-small-size, 0.8rem);
+  line-height: var(--widget-small-line-height, 1.4);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.prAuthor {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.prChanges {
+  font-family: 'Courier New', monospace;
+}
+
+.refreshBtn {
+  width: 100%;
+  margin-top: 0.5rem;
+  justify-self: center;
+}
+
+.prItem.hasComments {
+  border-left: 3px solid var(--color-success);
+}
+
+.prItem.prChanged {
+  animation: pr-highlight 2s ease-in-out;
+  border-left: 3px solid rgba(255, 193, 7, 0.8);
+  background: var(--color-warning-bg);
+}
+
+.commentBadge {
+  background: var(--color-success-bg);
+  border: 1px solid var(--color-success-light);
+  color: var(--color-success);
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: var(--widget-small-size, 0.8rem);
+  line-height: var(--widget-small-line-height, 1.4);
+  font-weight: 600;
+}
+
+.commentIndicator {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: var(--widget-small-size, 0.8rem);
+  line-height: var(--widget-small-line-height, 1.4);
+  font-weight: 600;
+}

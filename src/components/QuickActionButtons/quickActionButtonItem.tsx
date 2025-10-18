@@ -1,5 +1,6 @@
 import React from 'react';
 import { QuickActionButtonItemProps } from '@/types/common';
+import styles from './quickActionButtons.module.css';
 
 const QuickActionButtonItem: React.FC<QuickActionButtonItemProps> = ({
   button,
@@ -9,17 +10,17 @@ const QuickActionButtonItem: React.FC<QuickActionButtonItemProps> = ({
   onRemoveButton,
 }) => {
   return (
-    <div key={index} className="action-btn-container">
+    <div key={index} className={styles.actionBtnContainer}>
       <button
-        className="action-btn"
+        className={styles.actionBtn}
         onClick={() => onButtonClick(button.url)}
         title={`Open ${button.label}`}
       >
-        <span className="btn-icon">{button.icon}</span>
-        <span className="btn-label">{button.label}</span>
+        <span className={styles.btnIcon}>{button.icon}</span>
+        <span className={styles.btnLabel}>{button.label}</span>
       </button>
       {!isLocked && (
-        <button className="remove-btn" onClick={() => onRemoveButton(index)} title="Remove button">
+        <button className={styles.removeBtn} onClick={() => onRemoveButton(index)} title="Remove button">
           ×
         </button>
       )}

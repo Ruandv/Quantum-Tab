@@ -9,14 +9,14 @@ import {
   SprintNumberProps,
   WidgetType
 } from '../types/common';
-import LiveClock from '../components/LiveClock';
-import QuickActionButtons from '../components/QuickActionButtons';
-import BackgroundManager from '../components/BackgroundManager';
-import GitHubWidget from '../components/GitHubWidget';
-import GitCommentWatcher from '../components/GitCommentWatcher';
-import WebsiteCounter from '../components/WebsiteCounter';
-import LocaleWidget from '../components/LocaleWidget';
-import SprintNumber from '../components/SprintNumber';
+import LiveClock from '../components/LiveClock/liveClock';
+import QuickActionButtons from '../components/QuickActionButtons/quickActionButtons';
+import BackgroundManager from '../components/BackgroundManager/backgroundManager';
+import GitHubWidget from '../components/GitHubWidget/gitHubWidget';
+import GitCommentWatcher from '../components/GitCommentWatcher/gitCommentWatcher';
+import WebsiteCounter from '../components/WebsiteCounter/websiteCounter';
+import LocaleWidget from '../components/LocaleWidget/localeWidget';
+import SprintNumber from '../components/SprintNumber/sprintNumber';
 import { defaultDimensions } from '@/types/defaults';
 
 export class WidgetRegistry {
@@ -130,7 +130,7 @@ export class WidgetRegistry {
       id: 'website-counter',
       name: 'Website Counter',
       wikiPage: 'websitecounter',
-      allowMultiples: false,
+      allowMultiples: true,
       description: 'Track and count visits to your favorite websites',
       component: WebsiteCounter,
       defaultDimensions: { width: 350, height: 300 },

@@ -6,17 +6,16 @@ import {
   BackgroundMessage,
   BackgroundResponse,
 } from '@/types/common';
-import { addWidgetRemovalListener } from '../utils/widgetEvents';
+import { addWidgetRemovalListener } from '../../utils/widgetEvents';
+import styles from './githubWidget.module.css';
 
 const GitHubWidget: React.FC<GitHubWidgetProps> = ({
-  className = '',
   patToken = '',
   repositoryUrl = '',
   autoRefresh = false,
   refreshInterval = 5,
   isLocked,
   widgetId,
-  widgetHeading
 }) => {
   const { t } = useTranslation();
 
@@ -124,60 +123,59 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
   }, [widgetId]);
 
   return (
-    <div className={`github-widget ${className}`}>
-      {widgetHeading && <h3 className="widget-title">{widgetHeading}</h3>}
-      <div className="github-widget-content">
+    <>
+      <div className={styles.githubWidgetContent}>
         {/* Status and Data Section */}
         {isLoading ? (
-          <div className="github-loading">
+          <div className={styles.githubLoading}>
             <div className="loading-spinner"></div>
-            <span className="loading-text">{t('githubWidget.loading.fetchingPullRequests')}</span>
+            <span className={styles.loadingText}>{t('githubWidget.loading.fetchingPullRequests')}</span>
           </div>
         ) : error ? (
-          <div className="github-error">
+          <div className={styles.githubError}>
             <span className="error-icon">❌</span>
-            <span className="error-text">{error}</span>
+            <span className={styles.errorText}>{error}</span>
             {!isLocked && (
-              <button onClick={fetchPullRequests} className="retry-btn">
+              <button onClick={fetchPullRequests} className={styles.retryBtn}>
                 🔄 {t('common.buttons.retry')}
               </button>
             )}
           </div>
         ) : (
-          <div className="github-data">
-            <div className="data-header">
-              <span className="pr-count">
+          <div className={styles.githubData}>
+            <div className={styles.dataHeader}>
+              <span className={styles.prCount}>
                 📋 {pullRequests.length} {t('githubWidget.pullRequests.count')}
               </span>
               {lastFetch && (
-                <span className="last-updated">
+                <span className={styles.lastUpdated}>
                   {t('githubWidget.pullRequests.updated')}: {lastFetch.toLocaleTimeString()}
                 </span>
               )}
             </div>
-            <div className="pr-list">
+            <div className={styles.prList}>
               {pullRequests.map((pr) => (
                 <div
                   key={pr.id}
-                  className={`pr-item pr-${pr.state}`}
+                  className={`${styles.prItem} ${styles[`prState${pr.state.charAt(0).toUpperCase() + pr.state.slice(1)}`]}`}
                   onClick={() => window.open(pr.html_url, '_blank')}
                 >
-                  <div className="pr-header">
-                    <span className="pr-number">#{pr.number}</span>
-                    <span className={`pr-state pr-state-${pr.state}`}>
+                  <div className={styles.prHeader}>
+                    <span className={styles.prNumber}>#{pr.number}</span>
+                    <span className={`${styles.prState} ${pr.state === 'open' ? styles.prStateOpen : pr.merged ? styles.prStateMerged : styles.prStateClosed}`}>
                       {pr.state === 'open' ? '🟢' : pr.merged ? '🟣' : '🔴'}
                       {pr.merged
                         ? t('githubWidget.pullRequests.states.merged')
                         : t(`githubWidget.pullRequests.states.${pr.state}`)}
                     </span>
                     {pr.draft && (
-                      <span className="pr-draft">📝 {t('githubWidget.pullRequests.draft')}</span>
+                      <span className={styles.prDraft}>📝 {t('githubWidget.pullRequests.draft')}</span>
                     )}
                   </div>
-                  <div className="pr-title">{pr.title}</div>
-                  <div className="pr-meta">
-                    {/* <span className="pr-author">👤 {pr.user.login}</span> */}
-                    <span className="pr-changes">
+                  <div className={styles.prTitle}>{pr.title}</div>
+                  <div className={styles.prMeta}>
+                    {/* <span className={styles.prAuthor}>👤 {pr.user.login}</span> */}
+                    <span className={styles.prChanges}>
                       +{pr.additions} -{pr.deletions} ({pr.changed_files}{' '}
                       {t('githubWidget.labels.files')})
                     </span>
@@ -186,14 +184,14 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
               ))}
             </div>
             {!isLocked && (
-              <button onClick={fetchPullRequests} className="refresh-btn">
+              <button onClick={fetchPullRequests} className={styles.refreshBtn}>
                 🔄 {t('common.buttons.refresh')}
               </button>
             )}
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GitCommentWatcherProps, GitHubPullRequest, BackgroundMessage, BackgroundResponse } from '@/types/common';
-import { addWidgetRemovalListener } from '../utils/widgetEvents';
+import { addWidgetRemovalListener } from '../../utils/widgetEvents';
+import styles from './gitCommentWatcher.module.css';
+import githubStyles from '../GitHubWidget/githubWidget.module.css';
 
 const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
-  className = '',
   patToken = '',
   repositoryUrl = '',
   autoRefresh = false,
   refreshInterval = 5,
   isLocked,
   widgetId,
-  widgetHeading
 }) => {
   const { t } = useTranslation();
 
@@ -162,74 +162,73 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
   );
 
   return (
-    <div className={`git-comment-watcher ${className}`}>
-      {widgetHeading && <h3 className="widget-title">{widgetHeading}</h3>}
-      <div className="git-comment-watcher-content">
+    <>
+      <div className={styles.gitCommentWatcherContent}>
         {/* Status and Data Section */}
         {isLoading ? (
-          <div className="github-loading">
+          <div className={githubStyles.githubLoading}>
             <div className="loading-spinner"></div>
-            <span className="loading-text">{t('githubWidget.loading.fetchingPullRequests')}</span>
+            <span className={githubStyles.loadingText}>{t('githubWidget.loading.fetchingPullRequests')}</span>
           </div>
         ) : error ? (
-          <div className="github-error">
-            <span className="error-icon">❌</span>
-            <span className="error-text">{error}</span>
+          <div className={githubStyles.githubError}>
+            <span className={githubStyles.errorIcon}>❌</span>
+            <span className={githubStyles.errorText}>{error}</span>
             {!isLocked && (
-              <button onClick={fetchPullRequests} className="retry-btn">
+              <button onClick={fetchPullRequests} className={githubStyles.retryBtn}>
                 🔄 {t('common.buttons.retry')}
               </button>
             )}
           </div>
         ) : (
-          <div className="git-comment-watcher-data">
-            <div className="watcher-header">
-              <span className="pr-count">
+          <div className={styles.gitCommentWatcherData}>
+            <div className={styles.watcherHeader}>
+              <span className={githubStyles.prCount}>
                 📋 {pullRequests.length} {t('githubWidget.pullRequests.count')}
               </span>
               {hasNewComments && (
-                <span className="comment-badge">💬 {t('gitCommentWatcher.labels.newComments')}</span>
+                <span className={styles.commentBadge}>💬 {t('gitCommentWatcher.labels.newComments')}</span>
               )}
               {lastFetch && (
-                <span className="last-updated">
+                <span className={githubStyles.lastUpdated}>
                   {t('githubWidget.pullRequests.updated')}: {lastFetch.toLocaleTimeString()}
                 </span>
               )}
             </div>
-            <div className="pr-list">
+            <div className={githubStyles.prList}>
               {pullRequests.map((pr) => (
                 <div
                   key={pr.id}
-                  className={`pr-item pr-${pr.state} ${pr.comments > 0 || pr.review_comments > 0 ? 'has-comments' : ''} ${changedPrIds.has(pr.id) ? 'pr-changed' : ''}`}
+                  className={`${githubStyles.prItem} ${githubStyles[`prState${pr.state.charAt(0).toUpperCase() + pr.state.slice(1)}`]} ${pr.comments > 0 || pr.review_comments > 0 ? styles.prItemHasComments : ''} ${changedPrIds.has(pr.id) ? styles.prItemChanged : ''}`}
                   onClick={() => window.open(pr.html_url, '_blank')}
                 >
-                  <div className="pr-header">
-                    <span className="pr-number">#{pr.number}</span>
-                    <span className={`pr-state pr-state-${pr.state}`}>
+                  <div className={githubStyles.prHeader}>
+                    <span className={githubStyles.prNumber}>#{pr.number}</span>
+                    <span className={`${githubStyles.prState} ${githubStyles[`prState${pr.state.charAt(0).toUpperCase() + pr.state.slice(1)}`]}`}>
                       {pr.state === 'open' ? '🟢' : pr.merged ? '🟣' : '🔴'}
                       {pr.merged
                         ? t('githubWidget.pullRequests.states.merged')
                         : t(`githubWidget.pullRequests.states.${pr.state}`)}
                     </span>
                     {(pr.comments > 0 || pr.review_comments > 0) && (
-                      <span className="comment-indicator">
+                      <span className={githubStyles.commentIndicator}>
                         💬 {(pr.comments || 0) + (pr.review_comments || 0)} {t('gitCommentWatcher.labels.comments')}
                       </span>
                     )}
                   </div>
-                  <div className="pr-title">{pr.title}</div>
+                  <div className={githubStyles.prTitle}>{pr.title}</div>
                 </div>
               ))}
             </div>
             {!isLocked && (
-              <button onClick={fetchPullRequests} className="refresh-btn">
+              <button onClick={fetchPullRequests} className={githubStyles.refreshBtn}>
                 🔄 {t('common.buttons.refresh')}
               </button>
             )}
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

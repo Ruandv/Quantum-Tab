@@ -1,0 +1,68 @@
+/* ===================================
+   QUANTUM TAB - GLOBAL STYLES
+   ===================================
+   Global styles and animations used throughout the application
+   ================================= */
+
+/* Animations */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pr-highlight {
+  0% {
+    background: rgba(255, 193, 7, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    background: rgba(255, 193, 7, 0.5);
+    transform: scale(1.02);
+  }
+  100% {
+    background: rgba(255, 193, 7, 0.1);
+    transform: scale(1);
+  }
+}
+
+/* Common loading spinner */
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Utility classes */
+.text-center {
+  text-align: center;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.gap-sm {
+  gap: var(--spacing-sm);
+}
+
+.gap-md {
+  gap: var(--spacing-md);
+}
+
+.gap-lg {
+  gap: var(--spacing-lg);
+}

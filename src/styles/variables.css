@@ -1,0 +1,76 @@
+/* ===================================
+   QUANTUM TAB - CSS VARIABLES
+   ===================================
+   Shared CSS custom properties used across the application
+   ================================= */
+
+:root {
+  /* Widget proportional text sizing - set by widget size */
+  --widget-display-size: 4rem;
+  --widget-display-line-height: 1.2;
+  --widget-heading-size: 1.4rem;
+  --widget-heading-line-height: 1.3;
+  --widget-subheading-size: 1.3rem;
+  --widget-subheading-line-height: 1.4;
+  --widget-body-size: 0.9rem;
+  --widget-body-line-height: 1.4;
+  --widget-text-size: 0.9rem;
+  --widget-small-size: 0.8rem;
+  --widget-small-line-height: 1.4;
+  --widget-button-size: 1rem;
+  --widget-button-line-height: 1.4;
+
+  /* Colors */
+  --color-primary: rgba(79, 172, 254, 1);
+  --color-primary-light: rgba(79, 172, 254, 0.3);
+  --color-primary-bg: rgba(79, 172, 254, 0.1);
+  
+  --color-success: rgba(34, 197, 94, 1);
+  --color-success-light: rgba(34, 197, 94, 0.3);
+  --color-success-bg: rgba(34, 197, 94, 0.1);
+  
+  --color-warning: rgba(255, 193, 7, 1);
+  --color-warning-light: rgba(255, 193, 7, 0.3);
+  --color-warning-bg: rgba(255, 193, 7, 0.1);
+  
+  --color-error: rgba(239, 68, 68, 1);
+  --color-error-light: rgba(239, 68, 68, 0.3);
+  --color-error-bg: rgba(239, 68, 68, 0.1);
+  
+  --color-purple: rgba(168, 85, 247, 1);
+  --color-purple-light: rgba(168, 85, 247, 0.3);
+  --color-purple-bg: rgba(168, 85, 247, 0.1);
+
+  /* Opacity levels */
+  --opacity-overlay: 0.05;
+  --opacity-border: 0.1;
+  --opacity-hover: 0.15;
+  --opacity-text: 0.9;
+  --opacity-muted: 0.6;
+
+  /* Borders and Radii */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-full: 50%;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 0.75rem;
+  --spacing-lg: 1rem;
+  --spacing-xl: 1.5rem;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* Z-index levels */
+  --z-base: 1;
+  --z-dropdown: 49999;
+  --z-modal: 50000;
+  --z-notification: 10000;
+  --z-tooltip: 1000;
+}

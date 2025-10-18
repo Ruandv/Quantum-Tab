@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import Dashboard from '../components/Dashboard';
-import WidgetManager from '../components/WidgetManager';
-import UpdateNotification from '../components/UpdateNotification';
+import Dashboard from '../components/Dashboard/dashboard';
+import WidgetManager from '../components/WidgetManager/widgetManager';
+import UpdateNotification from '../components/UpdateNotification/updateNotification';
 import { DashboardWidget, Position, Dimensions } from '../types/common';
 import chromeStorage, { SerializedWidget } from '../utils/chromeStorage';
 import { widgetRegistry } from '../utils/widgetRegistry';
@@ -10,7 +10,8 @@ import { debounce } from '../utils/helpers';
 import { dispatchWidgetRemoval } from '../utils/widgetEvents';
 import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 import NotificationManager from '@/utils/notificationManager';
-import GitHubIssues from '@/components/GitHubIssues';
+import GitHubIssues from '@/components/GitHubIssues/gitHubIssues';
+import styles from './newTab.module.css';
 
 // Stable fallback component to avoid creating new function instances
 const EmptyWidget: React.FC<any> = () => null;
@@ -395,7 +396,7 @@ const NewTab: React.FC = () => {
         </div>
     ) : (
         <div
-            className="newtab-container"
+            className={styles.newtabContainer}
             style={{
                 backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
                 backgroundSize: 'cover',
@@ -405,15 +406,15 @@ const NewTab: React.FC = () => {
                 position: 'relative',
             }}
         >
-            <div className="newtab-content">
-                <header className="newtab-header">
-                    <div className="header-actions">
+            <div className={styles.newtabContent}>
+                <header className={styles.newtabHeader}>
+                    <div className={styles.headerActions}>
                         <button
-                            className={`lock-toggle ${isLocked ? 'locked' : ''}`}
+                            className={`${styles.lockToggle} ${isLocked ? styles.locked : ''}`}
                             onClick={handleToggleLock}
                             title={isLocked ? 'Unlock Dashboard' : 'Lock Dashboard'}
                         >
-                            <span className="btn-icon">{isLocked ? '🔒' : '🔓'}</span>
+                            <span className={styles.btnIcon}>{isLocked ? '🔒' : '🔓'}</span>
                             {isLocked ? 'Unlock' : 'Lock'}
                         </button>
                         <WidgetManager
@@ -426,8 +427,8 @@ const NewTab: React.FC = () => {
                     </div>
                 </header>
 
-                <main className="newtab-main">
-                    <div className="main-dashboard">
+                <main className={styles.newtabMain}>
+                    <div className={styles.mainDashboard}>
                         <Dashboard
                             widgets={widgets}
                             onRemoveWidget={handleRemoveWidget}
