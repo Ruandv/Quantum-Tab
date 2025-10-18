@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo, useMemo as ReactUseMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dashboard from '../components/Dashboard/dashboard';
 import WidgetManager from '../components/WidgetManager/widgetManager';
