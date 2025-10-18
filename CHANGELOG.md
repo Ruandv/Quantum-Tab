@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0](https://github.com/Ruandv/Quantum-Tab/compare/v1.5.0...v1.6.0) (2025-10-18)
+
+
+### Features
+
+* ai background manager ([#56](https://github.com/Ruandv/Quantum-Tab/issues/56)) ([8b9aff6](https://github.com/Ruandv/Quantum-Tab/commit/8b9aff6b9441632f9d1d155176eaafe2b081a5a7))
+
 ## [1.5.0](https://github.com/Ruandv/Quantum-Tab/compare/v1.4.0...v1.5.0) (2025-10-16)
 
 
