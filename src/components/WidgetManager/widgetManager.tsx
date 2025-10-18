@@ -13,7 +13,7 @@ import { widgetRegistry } from '../../utils/widgetRegistry';
 import { generateUniqueId, findOptimalPosition, getViewportDimensions } from '../../utils/helpers';
 import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 import chromeStorage, { SerializedWidget } from '@/utils/chromeStorage';
-import { ModalDialog } from '../Modal';
+import { ModalDialog } from '../Modal/modal';
 import { WIDGET_EVENTS, widgetEventManager, WidgetEvent } from '@/utils/widgetEvents';
 import styles from './widgetManager.module.css';
 

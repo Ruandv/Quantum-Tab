@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import QuickActionButtonItem from './quickActionButtonItem';
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
-import { ModalDialog } from '../Modal';
+import { ModalDialog } from '../Modal/modal';
 import styles from './quickActionButtons.module.css';
 
 const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
