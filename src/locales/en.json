@@ -91,7 +91,8 @@
       "currentBackground": "Current Background"
     },
     "buttons": {
-      "defaultGradient": "Default Gradient"
+      "defaultGradient": "Default Gradient",
+      "submit": "Generate AI Background"
     },
     "tooltips": {
       "changeBackground": "Change background image",
@@ -100,7 +101,16 @@
     },
     "errors": {
       "invalidFile": "Invalid file",
-      "failedToRead": "Failed to read file. Please try again."
+      "failedToRead": "Failed to read file. Please try again.",
+      "aiInputRequired": "AI prompt and API key are required"
+    },
+    "labels": {
+      "aiPrompt": "AI Background Prompt",
+      "aiPromptKey": "Gemini API Key"
+    },
+    "placeholders": {
+      "aiPrompt": "Describe the background you want to generate (e.g., 'sunset over mountains with lake')",
+      "aiPromptKey": "Enter your Gemini API key"
     }
   },
   "githubWidget": {

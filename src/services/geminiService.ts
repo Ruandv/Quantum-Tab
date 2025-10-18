@@ -32,10 +32,6 @@ export default class GeminiService {
                 const mimeType = part.inlineData.mimeType || 'image/jpeg';
                 return `data:${mimeType};base64,${imageData}`;
             }
-
-            if (part.text) {
-                return part.text;
-            }
         }
 
         return '';

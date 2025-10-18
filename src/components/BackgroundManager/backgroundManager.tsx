@@ -213,7 +213,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
     const data = await api.generateResponse(promptValue);
     setUploadedImage(data);
     onBackgroundChange?.(data);
-
     setIsUploading(false);
   };
 
