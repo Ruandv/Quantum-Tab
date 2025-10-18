@@ -144,3 +144,49 @@
   background: rgba(239, 68, 68, 0.3);
   border-color: rgba(239, 68, 68, 0.5);
 }
+
+/* AI Input Styles */
+.aiTextarea {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-md);
+  background: var(--color-widget-bg-transparent);
+  color: var(--color-text-primary);
+  font-size: var(--widget-body-size, 0.9rem);
+  line-height: var(--widget-body-line-height, 1.4);
+  resize: vertical;
+  min-height: 80px;
+  margin-bottom: var(--spacing-sm);
+  pointer-events: auto;
+  z-index: 1;
+  position: relative;
+  cursor: text;
+  user-select: text;
+}
+
+.aiTextarea:focus {
+  outline: none;
+  border-color: rgba(79, 172, 254, 0.6);
+  box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.2);
+}
+
+.aiTextarea::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+input.aiTextarea {
+  min-height: auto;
+  resize: none;
+  user-select: text;
+}
+
+.label {
+  display: block;
+  font-size: var(--widget-small-size, 0.8rem);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+  text-align: left;
+}

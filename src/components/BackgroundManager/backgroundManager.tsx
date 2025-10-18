@@ -11,8 +11,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   onBackgroundChange,
   isLocked,
   widgetId,
-  isAIEnabled,
-  widgetHeading
+  isAIEnabled
 }: BackgroundManagerProps) => {
   const { t } = useTranslation();
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -174,7 +173,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   }
 
 
-  const handleAIButtonClick = async (event: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
+  const handleAIButtonClick = async (event?: React.SyntheticEvent): Promise<void> => {
     event.preventDefault();
     if (!widgetId) return;
 
@@ -211,10 +210,10 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
 
     await chromeStorage.setWidgetData(widgetId, { props: updatedProps });
 
-    //const api = GeminiService.getInstance(keyValue);
-    //const data = await api.generateResponse(promptValue);
-    //setUploadedImage(data);
-    //onBackgroundChange?.(data);
+    const api = GeminiService.getInstance(keyValue);
+    const data = await api.generateResponse(promptValue);
+    setUploadedImage(data);
+    onBackgroundChange?.(data);
 
     setIsUploading(false);
   };
@@ -253,13 +252,13 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
             ref={aiKeyRef}
             className={styles.aiTextarea}
             placeholder={t('backgroundManager.placeholders.aiPromptKey')}
-
           />
           <button className={styles.controlBtn} onClick={handleAIButtonClick}>
             {t('backgroundManager.buttons.submit')}
           </button>
         </>
-      )} : {!isUploading && !isAIEnabled && (
+      )}
+      {!isUploading && !isAIEnabled && (
         <>
           <div className={styles.uploadSection}>
             {!uploadedImage ? (

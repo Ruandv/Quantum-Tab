@@ -105,7 +105,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
         setWidgetStyle(widgeta?.style || defaultStyle);
         existingWidgets = existingWidgets.splice(existingWidgets.indexOf(widgeta!), 1);
         setIsModalOpen(true);
-
       }
     };
 
