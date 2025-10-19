@@ -10,6 +10,7 @@ import { debounce } from '../utils/helpers';
 import { dispatchWidgetRemoval } from '../utils/widgetEvents';
 import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 import NotificationManager from '@/utils/notificationManager';
+import { upgradeWidgets } from '../utils/widgetUpgrade';
 import GitHubIssues from '@/components/GitHubIssues/gitHubIssues';
 import styles from './newTab.module.css';
 
@@ -88,6 +89,16 @@ const NewTab: React.FC = () => {
                 // Make NotificationManager available globally for testing
                 (window as any).NotificationManager = NotificationManager;
 
+
+                // Check for and perform widget upgrades if needed
+                const upgradeResult = await upgradeWidgets(savedData.widgets);
+                if (upgradeResult.upgraded) {
+                    console.log('Widget upgrade performed:', upgradeResult.changes);
+                    // Save the upgraded widgets back to storage
+                    await chromeStorage.saveWidgets(upgradeResult.widgets);
+                    // Update savedData with upgraded widgets
+                    savedData.widgets = upgradeResult.widgets;
+                }
 
                 // Handle widgets - force fresh start if data looks corrupted
                 if (!savedData?.widgets?.length || savedData.widgets.some((w) => !w.component)) {

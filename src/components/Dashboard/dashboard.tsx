@@ -270,7 +270,11 @@ const Dashboard: React.FC<DashboardProps> = ({
               </>
             )}
             <div className={`${styles.widgetContent}`} style={widgetContentStyles}>
-              {widget.props.widgetHeading && widget.isRuntimeVisible && (<h3 className={widgetCommon.widgetTitle} >{widget.props.widgetHeading.toString()}</h3>)}
+              <div>
+                <p>{widget?.isRuntimeVisible ? 'Visible' : 'Hidden'}</p>
+                <p>{widget?.props?.widgetHeading?.toString()}</p>
+              </div>
+              {widget.props?.widgetHeading && (widget?.isRuntimeVisible || true) && (<h3 className={widgetCommon.widgetTitle} >{widget.props?.widgetHeading?.toString()}</h3>)}
               <WidgetComponent
                 isLocked={isLocked}
                 widgetId={widget.id}

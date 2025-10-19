@@ -198,6 +198,7 @@ export const STORAGE_KEYS = {
   WIDGETS: 'quantum-tab-widgets',
   BACKGROUND: 'quantum-tab-background',
   LOCK_STATE: 'quantum-tab-lock-state',
+  VERSION: 'quantum-tab-version',
   DEFAULT_STYLING: 'quantum-tab-default-styling',
   DEFAULT_POSITION: 'quantum-tab-default-position',
   DEFAULT_DIMENSIONS: 'quantum-tab-default-dimensions',
