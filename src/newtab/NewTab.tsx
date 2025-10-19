@@ -282,7 +282,7 @@ const NewTab: React.FC = () => {
                         name: widget.name,
                         description: widget.description,
                         isRuntimeVisible: widget.isRuntimeVisible,
-                        wikiPage: widget.wikiPage ||  widget.name.toLowerCase().replace(/\s+/g, ''),
+                        wikiPage: widget.wikiPage || widget.name.toLowerCase().replace(/\s+/g, ''),
                         allowMultiples: widgetType?.allowMultiples || false,
                         component: serializedComponent,
                         props: widget.props,
@@ -318,7 +318,17 @@ const NewTab: React.FC = () => {
 
     // Widget management functions
     const handleAddWidget = useCallback((widget: DashboardWidget) => {
-        setWidgets((prev) => [...prev, widget]);
+            setWidgets((prev) => {
+                // Add the new widget, then filter to keep only the last occurrence for each id
+                const updated = [...prev, widget];
+                const uniqueById = updated.reduceRight<DashboardWidget[]>((acc, curr) => {
+                    if (!acc.some((w) => w.id === curr.id)) {
+                        acc.unshift(curr);
+                    }
+                    return acc;
+                }, []);
+                return uniqueById;
+            });
     }, []);
 
     const handleRemoveWidget = useCallback((widgetId: string) => {
@@ -392,7 +402,7 @@ const NewTab: React.FC = () => {
                         </button>
                         <WidgetManager
                             onAddWidget={handleAddWidget}
-                            onEditingWidget={()=>{}}
+                            onEditingWidget={() => { }}
                             existingWidgets={widgets}
                             onBackgroundChange={handleBackgroundChange}
                             isLocked={isLocked}

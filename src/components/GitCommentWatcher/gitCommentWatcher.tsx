@@ -161,6 +161,15 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
     (pr.comments || 0) > 0 || (pr.review_comments || 0) > 0
   );
 
+  // Handle PR item click
+    const handlePrClick = useCallback((pr: GitHubPullRequest) => {
+      if (!isLocked) {
+        alert(t('quickActionButtons.messages.editState'));
+      } else {
+        window.open(pr.html_url, '_blank');
+      }
+    }, [isLocked, t]);
+
   return (
     <>
       <div className={styles.gitCommentWatcherContent}>
@@ -200,7 +209,7 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
                 <div
                   key={pr.id}
                   className={`${githubStyles.prItem} ${githubStyles[`prState${pr.state.charAt(0).toUpperCase() + pr.state.slice(1)}`]} ${pr.comments > 0 || pr.review_comments > 0 ? styles.prItemHasComments : ''} ${changedPrIds.has(pr.id) ? styles.prItemChanged : ''}`}
-                  onClick={() => window.open(pr.html_url, '_blank')}
+                  onClick={() => handlePrClick(pr)}
                 >
                   <div className={githubStyles.prHeader}>
                     <span className={githubStyles.prNumber}>#{pr.number}</span>

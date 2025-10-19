@@ -442,9 +442,10 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
               onBackgroundChange,
             };
           }
-
+          // check if selectedWidgetType is being edited
+          const isEditing = existingWidgets.some(w => w.id.startsWith(selectedWidgetType.id));
           const newWidget: DashboardWidget = {
-            id: generateUniqueId(selectedWidgetType.id),
+            id: isEditing ? selectedWidgetType.id.toString() : generateUniqueId(selectedWidgetType.id),
             name: selectedWidgetType.name,
             description: selectedWidgetType.description,
             isRuntimeVisible: selectedWidgetType.isRuntimeVisible,

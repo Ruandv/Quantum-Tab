@@ -122,6 +122,15 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
     return removeListener;
   }, [widgetId]);
 
+  // Handle PR item click
+  const handlePrClick = useCallback((pr: GitHubPullRequest) => {
+    if (!isLocked) {
+      alert(t('quickActionButtons.messages.editState'));
+    } else {
+      window.open(pr.html_url, '_blank');
+    }
+  }, [isLocked, t]);
+
   return (
     <>
       <div className={styles.githubWidgetContent}>
@@ -158,7 +167,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
                 <div
                   key={pr.id}
                   className={`${styles.prItem} ${styles[`prState${pr.state.charAt(0).toUpperCase() + pr.state.slice(1)}`]}`}
-                  onClick={() => window.open(pr.html_url, '_blank')}
+                  onClick={() => handlePrClick(pr)}
                 >
                   <div className={styles.prHeader}>
                     <span className={styles.prNumber}>#{pr.number}</span>

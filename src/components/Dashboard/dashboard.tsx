@@ -238,39 +238,39 @@ const Dashboard: React.FC<DashboardProps> = ({
           >
             {!isLocked && (
               <>
-              <button
-                className={styles.widgetInfoBtn}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRequestWidgetInfo(widget.wikiPage || widget.name);
-                }}
-                title="More info ..."
-              >🛈
-              </button>
-              <button
-                className={styles.widgetEditBtn}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEditWidget(widget.id);
-                }}
-                title="Edit widget"
-              >
-                🖉
-              </button>
-              <button
-                className={styles.widgetRemoveBtn}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRemoveWidget(widget.id);
-                }}
-                title="Remove widget"
-              >
-                ×
-              </button>
+                <button
+                  className={styles.widgetInfoBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRequestWidgetInfo(widget.wikiPage || widget.name);
+                  }}
+                  title="More info ..."
+                >🛈
+                </button>
+                <button
+                  className={styles.widgetEditBtn}
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    await handleEditWidget(widget.id);
+                  }}
+                  title="Edit widget"
+                >
+                  🖉
+                </button>
+                <button
+                  className={styles.widgetRemoveBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveWidget(widget.id);
+                  }}
+                  title="Remove widget"
+                >
+                  ×
+                </button>
               </>
             )}
             <div className={`${styles.widgetContent}`} style={widgetContentStyles}>
-              {widget.props.widgetHeading && widget.isRuntimeVisible && <h3 className={widgetCommon.widgetTitle} >{widget.props.widgetHeading.toString()}</h3>}
+              {widget.props.widgetHeading && widget.isRuntimeVisible && (<h3 className={widgetCommon.widgetTitle} >{widget.props.widgetHeading.toString()}</h3>)}
               <WidgetComponent
                 isLocked={isLocked}
                 widgetId={widget.id}
