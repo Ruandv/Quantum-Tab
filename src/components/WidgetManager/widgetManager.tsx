@@ -19,7 +19,6 @@ import styles from './widgetManager.module.css';
 
 const WidgetManager: React.FC<WidgetManagerProps> = ({
   onAddWidget,
-  onEditingWidget,
   existingWidgets,
   onBackgroundChange,
   isLocked,
@@ -96,6 +95,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   useEffect(() => {
     const handleWidgetEditing = (event: WidgetEvent) => {
       if (event.widgetId) {
+        debugger;
         const widgeta = existingWidgets.find(w => w.id === event.widgetId);
         if (widgeta) {
           const wt = widgeta as unknown as WidgetType;
@@ -114,7 +114,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     return () => {
       widgetEventManager.removeEventListener(WIDGET_EVENTS.WIDGET_EDITED, handleWidgetEditing);
     };
-  }, [existingWidgets, onEditingWidget]);
+  }, [existingWidgets]);
 
   useEffect(() => {
     if (data.exportMetadata.secretProps && data.exportMetadata.secretProps.length > 0) {

@@ -331,7 +331,7 @@ const NewTab: React.FC = () => {
             });
     }, []);
 
-    const handleRemoveWidget = useCallback((widgetId: string) => {
+    const handleRemoveWidget = useCallback(async (widgetId: string) => {
         // Dispatch the RemoveWidget event before removing the widget
         dispatchWidgetRemoval(widgetId);
         // Remove the widget from state
@@ -401,7 +401,6 @@ const NewTab: React.FC = () => {
                         </button>
                         <WidgetManager
                             onAddWidget={handleAddWidget}
-                            onEditingWidget={() => { }}
                             existingWidgets={widgets}
                             onBackgroundChange={handleBackgroundChange}
                             isLocked={isLocked}
