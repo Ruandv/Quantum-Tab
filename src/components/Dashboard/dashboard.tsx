@@ -259,9 +259,9 @@ const Dashboard: React.FC<DashboardProps> = ({
                 </button>
                 <button
                   className={styles.widgetRemoveBtn}
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     e.stopPropagation();
-                    handleRemoveWidget(widget.id);
+                    await handleRemoveWidget(widget.id);
                   }}
                   title="Remove widget"
                 >

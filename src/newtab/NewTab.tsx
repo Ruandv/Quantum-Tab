@@ -334,7 +334,6 @@ const NewTab: React.FC = () => {
     const handleRemoveWidget = useCallback((widgetId: string) => {
         // Dispatch the RemoveWidget event before removing the widget
         dispatchWidgetRemoval(widgetId);
-
         // Remove the widget from state
         setWidgets((prev) => prev.filter((w) => w.id !== widgetId));
     }, []);
