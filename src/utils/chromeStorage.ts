@@ -8,7 +8,7 @@ export interface SerializedWidget {
   name: string;
   description: string;
   wikiPage: string;
-  isRuntimeVisible: boolean;
+  isRuntimeVisible?: boolean; // Made optional for backward compatibility
   allowMultiples: boolean;
   component: string; // Stored as widget type ID or component name
   props?: Record<string, unknown>;

@@ -292,7 +292,7 @@ const NewTab: React.FC = () => {
                         id: widget.id,
                         name: widget.name,
                         description: widget.description,
-                        isRuntimeVisible: widget.isRuntimeVisible,
+                        isRuntimeVisible: widget.isRuntimeVisible ?? widgetType?.isRuntimeVisible ?? true,
                         wikiPage: widget.wikiPage || widget.name.toLowerCase().replace(/\s+/g, ''),
                         allowMultiples: widgetType?.allowMultiples || false,
                         component: serializedComponent,

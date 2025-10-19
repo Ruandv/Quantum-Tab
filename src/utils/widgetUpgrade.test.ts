@@ -13,7 +13,7 @@ const mockOldWidgets: SerializedWidget[] = [
     name: 'GitHub Widget',
     description: 'GitHub PR monitoring',
     wikiPage: 'github-widget',
-    isRuntimeVisible: true,
+    // isRuntimeVisible: missing (will be added as true in 1.5.0 upgrade)
     allowMultiples: false,
     component: 'GitHubWidget',
     props: {
@@ -43,7 +43,7 @@ const mockOldWidgets: SerializedWidget[] = [
     name: 'Background Manager',
     description: 'Manage background images',
     wikiPage: 'background-manager',
-    isRuntimeVisible: true,
+    // isRuntimeVisible: missing (will be added as false in 1.5.0 upgrade)
     allowMultiples: false,
     component: 'BackgroundManager',
     props: {
@@ -71,7 +71,7 @@ const mockOldWidgets: SerializedWidget[] = [
     name: 'Live Clock',
     description: 'Shows current time',
     wikiPage: 'live-clock',
-    isRuntimeVisible: true,
+    // isRuntimeVisible: missing (will be added as true in 1.5.0 upgrade)
     allowMultiples: true,
     component: 'LiveClock',
     props: {
@@ -126,6 +126,25 @@ export async function testWidgetUpgrade(): Promise<void> {
     const clockWidget = result.widgets.find(w => w.id === 'live-clock-1');
 
     console.log('\n🔍 Verification:');
+
+    // Check isRuntimeVisible additions (1.0.1 upgrade)
+    if (githubWidget?.isRuntimeVisible === true) {
+      console.log('   ✅ GitHub widget: isRuntimeVisible=true added');
+    } else {
+      console.log('   ❌ GitHub widget: Missing isRuntimeVisible=true');
+    }
+
+    if (backgroundWidget?.isRuntimeVisible === false) {
+      console.log('   ✅ Background Manager: isRuntimeVisible=false added');
+    } else {
+      console.log('   ❌ Background Manager: Missing isRuntimeVisible=false');
+    }
+
+    if (clockWidget?.isRuntimeVisible === true) {
+      console.log('   ✅ Live Clock: isRuntimeVisible=true added');
+    } else {
+      console.log('   ❌ Live Clock: Missing isRuntimeVisible=true');
+    }
 
     // Check GitHub widget upgrades
     if (githubWidget?.props?.autoRefresh === false && githubWidget?.props?.refreshInterval === 5) {

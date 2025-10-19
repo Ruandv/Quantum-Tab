@@ -36,7 +36,7 @@ export interface DashboardWidget {
   description: string;
   wikiPage: string;
   allowMultiples: boolean;
-  isRuntimeVisible: boolean;
+  isRuntimeVisible?: boolean; // Made optional for backward compatibility
   component: React.ComponentType<Record<string, unknown>>;
   props?: Record<string, unknown>;
   dimensions: Dimensions;

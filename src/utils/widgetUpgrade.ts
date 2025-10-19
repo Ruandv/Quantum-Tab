@@ -217,9 +217,27 @@ function upgradeTo_1_4_0(widgets: SerializedWidget[], changes: string[]): Serial
  * Upgrade to version 1.5.0
  * - Added sprint number widget
  * - Enhanced live clock with more format options
+ * - Ensure isRuntimeVisible property is set for all widgets
  */
 function upgradeTo_1_5_0(widgets: SerializedWidget[], changes: string[]): SerializedWidget[] {
+  // Define which widgets should be runtime visible
+  const runtimeVisibleWidgets = new Set([
+    'LiveClock',
+    'QuickActionButtons',
+    'GitHubWidget',
+    'GitCommentWatcher',
+    'WebsiteCounter',
+    'SprintNumber'
+  ]);
+
   return widgets.map(widget => {
+    // Ensure isRuntimeVisible is set based on component type
+    if (widget.isRuntimeVisible === undefined) {
+      const isVisible = runtimeVisibleWidgets.has(widget.component);
+      widget.isRuntimeVisible = isVisible;
+      changes.push(`Added isRuntimeVisible=${isVisible} to ${widget.name} (${widget.id})`);
+    }
+
     if (widget.component === 'LiveClock') {
       if (!widget.props) widget.props = {};
 
