@@ -510,7 +510,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                 await chromeStorage.saveWidgets(myData.widgets);
                 await chromeStorage.saveBackground(myData.backgroundImage);
                 await chromeStorage.saveVersion(myData?.version?.toString() || '1.0.0');
-                debugger;
                 setModalContent({
                   title: 'Import Successful', content: "Data imported successfully", actions: [{
                     index: 1, text: 'Refresh', onClick: () => {
