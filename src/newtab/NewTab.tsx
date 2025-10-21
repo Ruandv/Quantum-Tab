@@ -281,7 +281,7 @@ const NewTab: React.FC = () => {
     const saveToStorage = useCallback(
         debounce(async () => {
             try {
-                const serializedWidgets: SerializedWidget[] = widgets.map((widget) => {
+                const serializedWidgets: SerializedWidget[] = widgets.map((widget: DashboardWidget) => {
                     // Find the widget type ID for this component
                     const componentName = widget.component.name || widget.component.displayName || 'unknown';
 
@@ -300,13 +300,15 @@ const NewTab: React.FC = () => {
                         dimensions: widget.dimensions,
                         position: widget.position,
                         style: widget.style,
+                        metaData: widget.metaData
                     };
                 });
-
+                const version = await chromeStorage.getVersion();
                 const success = await chromeStorage.saveAll({
                     widgets: serializedWidgets,
                     backgroundImage,
                     isLocked,
+                    version,
                     timestamp: Date.now(),
                 });
 

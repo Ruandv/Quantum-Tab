@@ -41,7 +41,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     const defaultPosition: Position = (await chromeStorage.loadAllDefaults()).positioning;
     return { defaultStyle, defaultDimensions, defaultPosition };
   }, []);
-  const [data, setData] = useState<{ widgets: SerializedWidget[], backgroundImage: string, isLocked: boolean, timestamp: number, exportMetadata: { secretProps: Array<{ name: string, key: string, value?: string }> } }>({ widgets: [], backgroundImage: '', isLocked: false, timestamp: Date.now(), exportMetadata: { secretProps: [] } });
+  const [data, setData] = useState<{ widgets: SerializedWidget[], version: string, backgroundImage: string, isLocked: boolean, timestamp: number, exportMetadata: { secretProps: Array<{ name: string, key: string, value?: string }> } }>({ widgets: [], version: '1.0.0', backgroundImage: '', isLocked: false, timestamp: Date.now(), exportMetadata: { secretProps: [] } });
   // Function to generate default modal content - moved after all handlers are defined
   const getDefaultModalContent = useCallback(() => (
     <div className={styles.formSection}>
@@ -49,7 +49,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
       <div className={styles.widgetTypes}>{availableWidgets.map((widgetType: WidgetType) => {
         const component = existingWidgets.find((widget) => widget.id.startsWith(widgetType.id));
         if (component && component.allowMultiples === false) {
-          return <></>;
+          return null;
         }
         return (
           <div
@@ -95,7 +95,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   useEffect(() => {
     const handleWidgetEditing = (event: WidgetEvent) => {
       if (event.widgetId) {
-        debugger;
         const widgeta = existingWidgets.find(w => w.id === event.widgetId);
         if (widgeta) {
           const wt = widgeta as unknown as WidgetType;
@@ -152,6 +151,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
             await chromeStorage.saveWidgets(serializedWidgets);
             await chromeStorage.saveBackground(data.backgroundImage);
+            await chromeStorage.saveVersion(data?.version?.toString() || '1.0.0');
             setModalContent({
               title: 'Import Successful', content: "Data imported successfully", actions: [{
                 index: 1, text: 'Refresh', onClick: () => {
@@ -509,6 +509,8 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
               else {
                 await chromeStorage.saveWidgets(myData.widgets);
                 await chromeStorage.saveBackground(myData.backgroundImage);
+                await chromeStorage.saveVersion(myData?.version?.toString() || '1.0.0');
+                debugger;
                 setModalContent({
                   title: 'Import Successful', content: "Data imported successfully", actions: [{
                     index: 1, text: 'Refresh', onClick: () => {

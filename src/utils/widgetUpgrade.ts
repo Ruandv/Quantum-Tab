@@ -1,5 +1,6 @@
 import { SerializedWidget } from './chromeStorage';
 import { STORAGE_KEYS } from '../types/common';
+import manifest from '../../manifest.json';
 
 /**
  * Widget Upgrade System
@@ -13,7 +14,9 @@ export interface UpgradeResult {
 }
 
 // Current version - should match manifest.json
-const CURRENT_VERSION = '1.5.0';
+// Dynamically read CURRENT_VERSION from manifest.json
+
+const CURRENT_VERSION: string = manifest.version;
 
 // Version history for upgrade paths
 const VERSION_HISTORY = [
@@ -22,7 +25,8 @@ const VERSION_HISTORY = [
   '1.2.0',
   '1.3.0',
   '1.4.0',
-  '1.5.0'
+  '1.5.0',
+   manifest.version
 ];
 
 /**
@@ -222,12 +226,12 @@ function upgradeTo_1_4_0(widgets: SerializedWidget[], changes: string[]): Serial
 function upgradeTo_1_5_0(widgets: SerializedWidget[], changes: string[]): SerializedWidget[] {
   // Define which widgets should be runtime visible
   const runtimeVisibleWidgets = new Set([
-    'LiveClock',
-    'QuickActionButtons',
-    'GitHubWidget',
-    'GitCommentWatcher',
-    'WebsiteCounter',
-    'SprintNumber'
+    'live-clock',
+    'quick-actions',
+    'github-widget',
+    'git-comment-watcher',
+    'website-counter',
+    'sprint-number'
   ]);
 
   return widgets.map(widget => {

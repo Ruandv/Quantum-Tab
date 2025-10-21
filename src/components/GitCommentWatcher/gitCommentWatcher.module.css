@@ -52,4 +52,20 @@
 .prItemChanged {
   animation: pr-highlight 2s ease-in-out;
   border-left: 3px solid rgba(255, 193, 7, 0.8);
+  background: rgba(255, 193, 7, 0.8);
+}
+
+.noPrsMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px;
+  width: 100%;
+}
+ 
+
+.noPrsMessage img {
+  height: 100px;
+  width: auto;
+  object-fit: contain;
 }

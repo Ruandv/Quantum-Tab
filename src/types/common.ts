@@ -42,6 +42,7 @@ export interface DashboardWidget {
   dimensions: Dimensions;
   position: Position;
   style: CssStyle;
+  metaData?: Record<string, unknown>;
 }
 
 export interface WidgetType<T = Record<string, unknown>> {
