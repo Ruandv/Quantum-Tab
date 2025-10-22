@@ -36,12 +36,13 @@ export interface DashboardWidget {
   description: string;
   wikiPage: string;
   allowMultiples: boolean;
-  isRuntimeVisible: boolean;
+  isRuntimeVisible?: boolean; // Made optional for backward compatibility
   component: React.ComponentType<Record<string, unknown>>;
   props?: Record<string, unknown>;
   dimensions: Dimensions;
   position: Position;
   style: CssStyle;
+  metaData?: Record<string, unknown>;
 }
 
 export interface WidgetType<T = Record<string, unknown>> {
@@ -123,7 +124,10 @@ export interface GitCommentWatcherProps extends GitHubWidgetBaseProps {
 }
 
 export interface BackgroundManagerProps extends DefaultWidgetProps {
-  isAIEnabled: boolean; // Optional AI feature flag
+  isAIEnabled: boolean; 
+  autoRefresh?: boolean;
+  refreshInterval?: number; // in minutes
+  backgroundSize: 'cover' | 'contain' | 'auto';
   onBackgroundChange?: (imageUrl: string) => void;
 }
 
@@ -178,7 +182,6 @@ export interface DashboardProps {
 
 export interface WidgetManagerProps extends DefaultWidgetProps {
   onAddWidget: (widget: DashboardWidget) => void;
-  onEditingWidget: (widgetId: string) => void;
   existingWidgets: DashboardWidget[];
   onBackgroundChange?: (imageUrl: string) => void;
 }
@@ -199,6 +202,7 @@ export const STORAGE_KEYS = {
   WIDGETS: 'quantum-tab-widgets',
   BACKGROUND: 'quantum-tab-background',
   LOCK_STATE: 'quantum-tab-lock-state',
+  VERSION: 'quantum-tab-version',
   DEFAULT_STYLING: 'quantum-tab-default-styling',
   DEFAULT_POSITION: 'quantum-tab-default-position',
   DEFAULT_DIMENSIONS: 'quantum-tab-default-dimensions',
@@ -354,6 +358,7 @@ export const isSecureProperty = (key: string): boolean => {
     'auth',
     'api',
     'pat', // Personal Access Token
+    'aikey',
     'bearer',
     'patToken']; // Add other secure property names here
   return secureProps.map(prop => prop.toLowerCase()).includes(key.toLowerCase());

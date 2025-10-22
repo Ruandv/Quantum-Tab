@@ -13,7 +13,7 @@ declare global {
 // Message types for communication between scripts
 export interface ExtensionMessage {
   action: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 // Tab information interface

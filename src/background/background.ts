@@ -211,7 +211,7 @@ const handleGitHubApiRequest = async (
 };
 
 // Handle fetchUserPullRequests action
-const handleUserPullRequestsRequest = async (message: any, sendResponse: (response: any) => void) => {
+const handleUserPullRequestsRequest = async (message: BackgroundMessage, sendResponse: (response: BackgroundResponse) => void) => {
   if (message.action !== 'fetchUserPullRequests') {
     sendResponse({ action: 'fetchUserPullRequests', success: false, error: 'Invalid action' });
     return;

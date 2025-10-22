@@ -10,6 +10,7 @@ import { debounce } from '../utils/helpers';
 import { dispatchWidgetRemoval } from '../utils/widgetEvents';
 import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 import NotificationManager from '@/utils/notificationManager';
+import { upgradeWidgets } from '../utils/widgetUpgrade';
 import GitHubIssues from '@/components/GitHubIssues/gitHubIssues';
 import styles from './newTab.module.css';
 
@@ -57,6 +58,7 @@ const NewTab: React.FC = () => {
     const [widgets, setWidgets] = useState<DashboardWidget[]>([]);
     const [isLocked, setIsLocked] = useState<boolean>(false);
     const [backgroundImage, setBackgroundImage] = useState<string>('');
+    const [backgroundSize, setBackgroundSize] = useState<'cover' | 'contain' | 'auto'>('cover');
     const [isLoading, setIsLoading] = useState(true);
     const [showNotification, setShowNotification] = useState(false);
 
@@ -73,7 +75,6 @@ const NewTab: React.FC = () => {
 
             try {
                 const savedData = await chromeStorage.loadAll();
-
                 // Set background and lock state
                 setBackgroundImage(savedData.backgroundImage || '');
                 setIsLocked(savedData.isLocked || false);
@@ -88,6 +89,16 @@ const NewTab: React.FC = () => {
                 // Make NotificationManager available globally for testing
                 (window as any).NotificationManager = NotificationManager;
 
+
+                // Check for and perform widget upgrades if needed
+                const upgradeResult = await upgradeWidgets(savedData.widgets);
+                if (upgradeResult.upgraded) {
+                    console.log('Widget upgrade performed:', upgradeResult.changes);
+                    // Save the upgraded widgets back to storage
+                    await chromeStorage.saveWidgets(upgradeResult.widgets);
+                    // Update savedData with upgraded widgets
+                    savedData.widgets = upgradeResult.widgets;
+                }
 
                 // Handle widgets - force fresh start if data looks corrupted
                 if (!savedData?.widgets?.length || savedData.widgets.some((w) => !w.component)) {
@@ -270,7 +281,7 @@ const NewTab: React.FC = () => {
     const saveToStorage = useCallback(
         debounce(async () => {
             try {
-                const serializedWidgets: SerializedWidget[] = widgets.map((widget) => {
+                const serializedWidgets: SerializedWidget[] = widgets.map((widget: DashboardWidget) => {
                     // Find the widget type ID for this component
                     const componentName = widget.component.name || widget.component.displayName || 'unknown';
 
@@ -281,21 +292,23 @@ const NewTab: React.FC = () => {
                         id: widget.id,
                         name: widget.name,
                         description: widget.description,
-                        isRuntimeVisible: widget.isRuntimeVisible,
-                        wikiPage: widget.wikiPage ||  widget.name.toLowerCase().replace(/\s+/g, ''),
+                        isRuntimeVisible: widget.isRuntimeVisible ?? widgetType?.isRuntimeVisible ?? true,
+                        wikiPage: widget.wikiPage || widget.name.toLowerCase().replace(/\s+/g, ''),
                         allowMultiples: widgetType?.allowMultiples || false,
                         component: serializedComponent,
                         props: widget.props,
                         dimensions: widget.dimensions,
                         position: widget.position,
                         style: widget.style,
+                        metaData: widget.metaData
                     };
                 });
-
+                const version = await chromeStorage.getVersion();
                 const success = await chromeStorage.saveAll({
                     widgets: serializedWidgets,
                     backgroundImage,
                     isLocked,
+                    version,
                     timestamp: Date.now(),
                 });
 
@@ -313,18 +326,33 @@ const NewTab: React.FC = () => {
     useEffect(() => {
         if (!isLoading) {
             saveToStorage();
+            // get background widget
+            const bg = widgets.find(x=>x.id.toLowerCase().startsWith('background-manager'));
+            if(bg){
+                setBackgroundSize(bg.props.backgroundSize as any)
+            }
+
         }
     }, [widgets, backgroundImage, isLocked, saveToStorage, isLoading]);
 
     // Widget management functions
     const handleAddWidget = useCallback((widget: DashboardWidget) => {
-        setWidgets((prev) => [...prev, widget]);
+            setWidgets((prev) => {
+                // Add the new widget, then filter to keep only the last occurrence for each id
+                const updated = [...prev, widget];
+                const uniqueById = updated.reduceRight<DashboardWidget[]>((acc, curr) => {
+                    if (!acc.some((w) => w.id === curr.id)) {
+                        acc.unshift(curr);
+                    }
+                    return acc;
+                }, []);
+                return uniqueById;
+            });
     }, []);
 
-    const handleRemoveWidget = useCallback((widgetId: string) => {
+    const handleRemoveWidget = useCallback(async (widgetId: string) => {
         // Dispatch the RemoveWidget event before removing the widget
         dispatchWidgetRemoval(widgetId);
-
         // Remove the widget from state
         setWidgets((prev) => prev.filter((w) => w.id !== widgetId));
     }, []);
@@ -372,7 +400,7 @@ const NewTab: React.FC = () => {
             className={styles.newtabContainer}
             style={{
                 backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
-                backgroundSize: 'cover',
+                backgroundSize: backgroundSize,
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
                 minHeight: '100vh',
@@ -392,7 +420,6 @@ const NewTab: React.FC = () => {
                         </button>
                         <WidgetManager
                             onAddWidget={handleAddWidget}
-                            onEditingWidget={()=>{}}
                             existingWidgets={widgets}
                             onBackgroundChange={handleBackgroundChange}
                             isLocked={isLocked}

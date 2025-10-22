@@ -6,7 +6,7 @@ const Popup: React.FC = () => {
   return (
     <div className="popup-container">
       <header className="popup-header">
-        <h1>Quantum Tab</h1>
+        <h1>Quantum Tab <sub>{version}</sub></h1>
         <p>New tab. New intelligence.</p>
       </header>
 

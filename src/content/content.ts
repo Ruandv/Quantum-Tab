@@ -1,6 +1,8 @@
 // Content script that runs on web pages
 // This script has access to the DOM of the current page
 
+import { WebsiteCounterData } from '@/types/common';
+
 console.log('Quantum Tab content script loaded');
 
 // Website visit tracking
@@ -14,7 +16,7 @@ async function trackWebsiteVisit(): Promise<void> {
     const websiteCounters = result.websiteCounters || [];
 
     // Find if this website is being tracked
-    const existingIndex = websiteCounters.findIndex((site: any) => site.hostname === hostname);
+    const existingIndex = websiteCounters.findIndex((site: WebsiteCounterData) => site.hostname === hostname);
 
     if (existingIndex !== -1) {
       // Update existing counter

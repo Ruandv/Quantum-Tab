@@ -158,11 +158,9 @@
   resize: vertical;
   min-height: 80px;
   margin-bottom: var(--spacing-sm);
-  pointer-events: auto;
   z-index: 1;
   position: relative;
   cursor: text;
-  user-select: text;
 }
 
 .aiTextarea:focus {

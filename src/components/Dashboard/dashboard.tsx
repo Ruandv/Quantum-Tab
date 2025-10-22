@@ -52,6 +52,11 @@ const Dashboard: React.FC<DashboardProps> = ({
         return;
       }
 
+      // Don't prevent default for form elements to allow focus and interaction
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.closest('input, textarea, select')) {
+        return;
+      }
+
       e.preventDefault();
       e.stopPropagation();
 
@@ -238,39 +243,39 @@ const Dashboard: React.FC<DashboardProps> = ({
           >
             {!isLocked && (
               <>
-              <button
-                className={styles.widgetInfoBtn}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRequestWidgetInfo(widget.wikiPage || widget.name);
-                }}
-                title="More info ..."
-              >🛈
-              </button>
-              <button
-                className={styles.widgetEditBtn}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEditWidget(widget.id);
-                }}
-                title="Edit widget"
-              >
-                🖉
-              </button>
-              <button
-                className={styles.widgetRemoveBtn}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRemoveWidget(widget.id);
-                }}
-                title="Remove widget"
-              >
-                ×
-              </button>
+                <button
+                  className={styles.widgetInfoBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRequestWidgetInfo(widget.wikiPage || widget.name);
+                  }}
+                  title="More info ..."
+                >🛈
+                </button>
+                <button
+                  className={styles.widgetEditBtn}
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    await handleEditWidget(widget.id);
+                  }}
+                  title="Edit widget"
+                >
+                  🖉
+                </button>
+                <button
+                  className={styles.widgetRemoveBtn}
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    await handleRemoveWidget(widget.id);
+                  }}
+                  title="Remove widget"
+                >
+                  ×
+                </button>
               </>
             )}
             <div className={`${styles.widgetContent}`} style={widgetContentStyles}>
-              {widget.props.widgetHeading && widget.isRuntimeVisible && <h3 className={widgetCommon.widgetTitle} >{widget.props.widgetHeading.toString()}</h3>}
+              {widget.props?.widgetHeading && widget.isRuntimeVisible && (<h3 className={widgetCommon.widgetTitle} >{widget.props?.widgetHeading?.toString()}</h3>)}
               <WidgetComponent
                 isLocked={isLocked}
                 widgetId={widget.id}

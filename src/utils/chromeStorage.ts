@@ -8,13 +8,14 @@ export interface SerializedWidget {
   name: string;
   description: string;
   wikiPage: string;
-  isRuntimeVisible: boolean;
+  isRuntimeVisible?: boolean; // Made optional for backward compatibility
   allowMultiples: boolean;
   component: string; // Stored as widget type ID or component name
   props?: Record<string, unknown>;
   dimensions: Dimensions;
   position: Position;
   style: CssStyle;
+  metaData?: Record<string, unknown>;
 }
 
 // Interface for saved data
@@ -23,6 +24,7 @@ export interface SavedData {
   backgroundImage: string;
   isLocked: boolean;
   timestamp: number;
+  version: string;
 }
 export interface Defaults {
   styling: CssStyle;
@@ -113,11 +115,34 @@ export const chromeStorage = {
         [STORAGE_KEYS.WIDGETS]: data.widgets,
         [STORAGE_KEYS.BACKGROUND]: data.backgroundImage,
         [STORAGE_KEYS.LOCK_STATE]: data.isLocked,
+        [STORAGE_KEYS.VERSION]: data.version
       });
       return true;
     } catch (error) {
       console.error('Failed to save all data to Chrome storage:', error);
       return false;
+    }
+  },
+
+  getVersion: async (): Promise<string> => {
+    try {
+      const result = await chrome.storage.local.get(STORAGE_KEYS.VERSION);
+      return result[STORAGE_KEYS.VERSION] || '1.0.0';
+    }
+    catch (error) {
+      console.error('Failed to get version from Chrome storage:', error);
+      return '1.0.0';
+    }
+  },
+  
+  saveVersion: async (version: string): Promise<string> => {
+    try {
+      await chrome.storage.local.set({ [STORAGE_KEYS.VERSION]: version });
+      return version;
+    }
+    catch (error) {
+      console.error('Failed to get version from Chrome storage:', error);
+      return '1.0.0';
     }
   },
 
@@ -128,12 +153,23 @@ export const chromeStorage = {
         STORAGE_KEYS.WIDGETS,
         STORAGE_KEYS.BACKGROUND,
         STORAGE_KEYS.LOCK_STATE,
+        STORAGE_KEYS.VERSION
       ]);
 
+      // Try to get the version from the manifest if available
+      let version = result[STORAGE_KEYS.VERSION] || '1.0.0';
+      if (typeof chrome !== 'undefined' && chrome.runtime?.getManifest) {
+        try {
+          version = chrome.runtime.getManifest().version || version;
+        } catch {
+          // fallback to existing version
+        }
+      }
       return {
         widgets: result[STORAGE_KEYS.WIDGETS] || [],
         backgroundImage: result[STORAGE_KEYS.BACKGROUND] || '',
         isLocked: result[STORAGE_KEYS.LOCK_STATE] || false,
+        version,
         timestamp: Date.now(),
       };
     } catch (error) {
@@ -142,6 +178,7 @@ export const chromeStorage = {
         widgets: [],
         backgroundImage: '',
         isLocked: false,
+        version: '1.0.0',
         timestamp: Date.now(),
       };
     }
@@ -288,6 +325,39 @@ export const chromeStorage = {
         bytesInUse: 0,
         quotaBytes: 10 * 1024 * 1024,
       };
+    }
+  },
+
+  setWidgetMetaData: async (widgetId: string, metaData: Record<string, unknown>): Promise<boolean> => {
+    try {
+      const result = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
+      const widgets: SerializedWidget[] = result[STORAGE_KEYS.WIDGETS] || [];
+      const widgetIndex = widgets.findIndex((widget) => widget.id === widgetId);
+      if (widgetIndex !== -1) {
+        widgets[widgetIndex] = {
+          ...widgets[widgetIndex],
+          metaData: {
+            ...widgets[widgetIndex].metaData,
+            ...metaData,
+          },
+        };
+      }
+      await chrome.storage.local.set({ [STORAGE_KEYS.WIDGETS]: widgets });
+      return true;
+    } catch (error) {
+      console.error(`Failed to set widget meta data for ${widgetId} in Chrome storage:`, error);
+      return false;
+    }
+  },
+
+  getWidgetMetaData: async (widgetId: string): Promise<Record<string, unknown>> => {
+    try {
+      const result = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
+      const widget = result[STORAGE_KEYS.WIDGETS].find((w) => w.id === widgetId);
+      return widget ? widget.metaData : {};
+    } catch (error) {
+      console.error(`Failed to get widget meta data for ${widgetId} from Chrome storage:`, error);
+      return {};
     }
   },
 

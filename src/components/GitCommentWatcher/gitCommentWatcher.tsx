@@ -4,6 +4,7 @@ import { GitCommentWatcherProps, GitHubPullRequest, BackgroundMessage, Backgroun
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './gitCommentWatcher.module.css';
 import githubStyles from '../GitHubWidget/githubWidget.module.css';
+import chromeStorage from '@/utils/chromeStorage';
 
 const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
   patToken = '',
@@ -55,9 +56,9 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
           // Detect changes before updating state
           const newChangedPrIds = new Set<number>();
           const newPrs = response.data as GitHubPullRequest[];
-          
+
           console.log(`GitCommentWatcher: Refresh detected. Previous PRs: ${previousPullRequestsRef.current.length}, New PRs: ${newPrs.length}`);
-          
+
           // Compare with previous PRs to find changes
           newPrs.forEach(newPr => {
             const prevPr = previousPullRequestsRef.current.find(pr => pr.id === newPr.id);
@@ -76,9 +77,7 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
               newChangedPrIds.add(newPr.id);
             }
           });
-
           console.log(`Changed PRs: ${Array.from(newChangedPrIds).length}`);
-
           // Update state - store new data as previous for next comparison
           previousPullRequestsRef.current = [...newPrs];
           setPullRequests(newPrs);
@@ -108,10 +107,13 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
 
   // Fetch PR data when widget loads or parameters change
   useEffect(() => {
-    if (patToken && repositoryUrl) {
-      fetchPullRequests();
+    // check if lastFetch is null or older than refreshInterval minutes
+    if (lastFetch && (Date.now() - lastFetch.getTime()) > refreshInterval * 60 * 1000) {
+      if (patToken && repositoryUrl) {
+        fetchPullRequests();
+      }
     }
-  }, [fetchPullRequests, patToken, repositoryUrl]);
+  }, [lastFetch]);
 
   // Auto-refresh timer effect
   useEffect(() => {
@@ -156,10 +158,54 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
     return removeListener;
   }, [widgetId]);
 
+  useEffect(() => {
+    if (lastFetch === null) return;
+    // save the lastFetched value to localStorage using chromeStorage
+    const metaData = { pullRequests, lastFetch: lastFetch?.toISOString(), previousPullRequestsRef: previousPullRequestsRef.current };
+    console.log('Saving metaData:', metaData);
+    chromeStorage.setWidgetMetaData(widgetId, metaData)
+  }, [lastFetch, previousPullRequestsRef, pullRequests, widgetId])
+
+
+  useEffect(() => {
+    // Load the lastFetched value and previousPullRequestsRef from localStorage using chromeStorage
+    const loadMetaData = async () => {
+      try {
+        const metaData = await chromeStorage.getWidgetMetaData(widgetId);
+        if (metaData && typeof metaData === 'object') {
+          const myDateTime = metaData.lastFetch ? new Date(metaData.lastFetch as string) : new Date();
+          previousPullRequestsRef.current = Array.isArray(metaData.previousPullRequestsRef)
+            ? metaData.previousPullRequestsRef as GitHubPullRequest[]
+            : [];
+          setLastFetch(myDateTime);
+          setPullRequests(metaData.pullRequests ? metaData.pullRequests as GitHubPullRequest[] : []);
+        }
+        else {
+          console.log('No metaData found for widget:', widgetId);
+          setLastFetch(new Date(2023, 0, 1));
+          previousPullRequestsRef.current = [];
+        }
+      } catch (error) {
+        console.error('Failed to load widget meta data:', error);
+      }
+    };
+    loadMetaData();
+  }, [])
+
+
   // Calculate if there are new comments
   const hasNewComments = pullRequests.some(pr =>
     (pr.comments || 0) > 0 || (pr.review_comments || 0) > 0
   );
+
+  // Handle PR item click
+  const handlePrClick = useCallback((pr: GitHubPullRequest) => {
+    if (!isLocked) {
+      alert(t('quickActionButtons.messages.editState'));
+    } else {
+      window.open(pr.html_url, '_blank');
+    }
+  }, [isLocked, t]);
 
   return (
     <>
@@ -182,6 +228,9 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
           </div>
         ) : (
           <div className={styles.gitCommentWatcherData}>
+            <button onClick={fetchPullRequests} className={githubStyles.refreshBtn}>
+              🔄 {t('common.buttons.refresh')}
+            </button>
             <div className={styles.watcherHeader}>
               <span className={githubStyles.prCount}>
                 📋 {pullRequests.length} {t('githubWidget.pullRequests.count')}
@@ -191,7 +240,7 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
               )}
               {lastFetch && (
                 <span className={githubStyles.lastUpdated}>
-                  {t('githubWidget.pullRequests.updated')}: {lastFetch.toLocaleTimeString()}
+                  {t('githubWidget.pullRequests.updated')}: {lastFetch.toLocaleString()}
                 </span>
               )}
             </div>
@@ -200,7 +249,7 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
                 <div
                   key={pr.id}
                   className={`${githubStyles.prItem} ${githubStyles[`prState${pr.state.charAt(0).toUpperCase() + pr.state.slice(1)}`]} ${pr.comments > 0 || pr.review_comments > 0 ? styles.prItemHasComments : ''} ${changedPrIds.has(pr.id) ? styles.prItemChanged : ''}`}
-                  onClick={() => window.open(pr.html_url, '_blank')}
+                  onClick={() => handlePrClick(pr)}
                 >
                   <div className={githubStyles.prHeader}>
                     <span className={githubStyles.prNumber}>#{pr.number}</span>
@@ -219,12 +268,12 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
                   <div className={githubStyles.prTitle}>{pr.title}</div>
                 </div>
               ))}
+              {pullRequests.length === 0 && (
+                <div className={`${styles.noPrsMessage}`}>
+                  <img src={chrome.runtime.getURL('images/octoCat.png')} alt="No Pull Requests" />
+                </div>
+              )}
             </div>
-            {!isLocked && (
-              <button onClick={fetchPullRequests} className={githubStyles.refreshBtn}>
-                🔄 {t('common.buttons.refresh')}
-              </button>
-            )}
           </div>
         )}
       </div>

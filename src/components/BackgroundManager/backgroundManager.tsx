@@ -17,24 +17,80 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
+  const [backgroundSize, setBackgroundSize] = useState<string>('auto');
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiKey, setAiKey] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const aiPromptRef = useRef<HTMLTextAreaElement>(null);
-  const aiKeyRef = useRef<HTMLInputElement>(null);
+  const backgroundSizeRef = useRef<HTMLSelectElement>(null);
 
   const handleFileSelect = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
+
   useEffect(() => {
     setError(null);
-    if (isAIEnabled && widgetId) {
-      chromeStorage.getWidgetData(widgetId).then((widget) => {
-        const serializedWidget = widget as unknown as SerializedWidget;
-        aiPromptRef.current!.value = serializedWidget.props?.aiPrompt.toString() || '';
-        aiKeyRef.current!.value = serializedWidget.props?.aiKey.toString() || '';
-      });
-    }
-  }, [isAIEnabled, widgetId]);
+    if (!widgetId) return;
+    
+    const doWork = async () => {
+      const widget = await chromeStorage.getWidgetData(widgetId);
+      const serializedWidget = widget as unknown as SerializedWidget;
+      
+      // Always load backgroundSize
+      const storedSize = typeof serializedWidget.props?.backgroundSize === 'string' ? serializedWidget.props.backgroundSize : 'auto';
+      setBackgroundSize(storedSize);
+      
+      // Load metadata
+      const widgetMetaData = await chromeStorage.getWidgetMetaData(widgetId);
+      if (widgetMetaData && typeof widgetMetaData === 'object') {
+        const lastRefreshValue = (widgetMetaData as Record<string, unknown>)['lastRefresh'];
+        const lastRefreshDateTime = typeof lastRefreshValue === 'string' ? new Date(lastRefreshValue) : null;
+        setLastRefresh(lastRefreshDateTime);
+      } else {
+        const sixHoursAgo = new Date();
+        sixHoursAgo.setHours(sixHoursAgo.getHours() - 6);
+        setLastRefresh(sixHoursAgo);
+      }
+      
+      // Load AI data only if AI is enabled
+      if (isAIEnabled) {
+        const storedPrompt = serializedWidget.props?.aiPrompt?.toString() || '';
+        const storedKey = serializedWidget.props?.aiKey?.toString() || '';
+        setAiPrompt(storedPrompt);
+        setAiKey(storedKey);
+      }
+    };
+    
+    doWork();
+  }, [widgetId, isAIEnabled]);
   // Add widget removal event listener for cleanup
+
+  useEffect(() => {
+    if (lastRefresh) {
+      chromeStorage.setWidgetMetaData(widgetId, { lastRefresh: lastRefresh.toISOString() });
+    }
+  }, [lastRefresh, widgetId]);
+
+  useEffect(() => {
+    const doWork = async () => {
+      console.log("Store data")
+      const rawWidgetData = await chromeStorage.getWidgetData(widgetId);
+      const storedProps =
+        rawWidgetData && typeof rawWidgetData === 'object' && 'props' in rawWidgetData && rawWidgetData.props
+          ? (rawWidgetData.props as Record<string, unknown>)
+          : {};
+      const updatedProps = {
+        ...storedProps,
+        aiPrompt,
+        aiKey,
+        backgroundSize,
+      };
+      await chromeStorage.setWidgetData(widgetId, { props: updatedProps });
+    }
+    doWork();
+
+  }, [aiPrompt, aiKey, backgroundSize, widgetId])
+
   useEffect(() => {
     if (!widgetId) return;
 
@@ -176,43 +232,19 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
     event.preventDefault();
     if (!widgetId) return;
 
-    const rawWidgetData = await chromeStorage.getWidgetData(widgetId);
-    const storedProps =
-      rawWidgetData && typeof rawWidgetData === 'object' && 'props' in rawWidgetData && rawWidgetData.props
-        ? (rawWidgetData.props as Record<string, unknown>)
-        : {};
-    const storedPrompt = typeof storedProps['aiPrompt'] === 'string' ? (storedProps['aiPrompt'] as string) : '';
-    const storedKey = typeof storedProps['aiKey'] === 'string' ? (storedProps['aiKey'] as string) : '';
-
-    if (aiPromptRef.current?.value === '' && storedPrompt !== '') {
-      aiPromptRef.current.value = storedPrompt;
-    }
-
-    if (aiKeyRef.current?.value === '' && storedKey !== '') {
-      aiKeyRef.current.value = storedKey;
-    }
-
-    if (!aiPromptRef.current?.value || !aiKeyRef.current?.value) {
+    if (!aiPrompt || !aiKey) {
       setError(t('backgroundManager.errors.aiInputRequired'));
       setIsUploading(false);
       return;
     }
 
     setIsUploading(true);
-    const promptValue = aiPromptRef.current!.value;
-    const keyValue = aiKeyRef.current!.value;
-    const updatedProps = {
-      ...storedProps,
-      aiPrompt: promptValue,
-      aiKey: keyValue,
-    };
 
-    await chromeStorage.setWidgetData(widgetId, { props: updatedProps });
-
-    const api = GeminiService.getInstance(keyValue);
-    const data = await api.generateResponse(promptValue);
+    const api = GeminiService.getInstance(aiKey);
+    const data = await api.generateResponse(aiPrompt);
     setUploadedImage(data);
     onBackgroundChange?.(data);
+    setLastRefresh(new Date());
     setIsUploading(false);
   };
 
@@ -224,6 +256,22 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
           <span>{t('common.states.uploading')}</span>
         </div>
       )}
+      <label htmlFor="backgroundSize" className={styles.label}>
+        {t('backgroundManager.labels.aiBackgroundSize')}
+      </label>
+      <select
+        id="backgroundSize"
+        className={styles.aiTextarea}
+        ref={backgroundSizeRef}
+        value={backgroundSize}
+        onChange={(e) => setBackgroundSize(e.target.value)}
+        aria-label={t('backgroundManager.labels.backgroundMode')}
+        style={{ pointerEvents: 'auto', minHeight: 'auto' }}
+      >
+        <option value="auto">{t('backgroundManager.options.auto')}</option>
+        <option value="cover">{t('backgroundManager.options.cover')}</option>
+        <option value="contain">{t('backgroundManager.options.contain')}</option>
+      </select>
       {!isUploading && isAIEnabled && (
         <>
           {isUploading && (
@@ -237,9 +285,10 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
           </label>
           <textarea
             id="aiPrompt"
-            ref={aiPromptRef}
             className={styles.aiTextarea}
             placeholder={t('backgroundManager.placeholders.aiPrompt')}
+            value={aiPrompt}
+            onChange={(e) => setAiPrompt(e.target.value)}
           />
           <label htmlFor="aiPromptKey" className={styles.label}>
             {t('backgroundManager.labels.aiPromptKey')}
@@ -247,9 +296,10 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
           <input
             type="text"
             id="aiPromptKey"
-            ref={aiKeyRef}
             className={styles.aiTextarea}
             placeholder={t('backgroundManager.placeholders.aiPromptKey')}
+            value={aiKey}
+            onChange={(e) => setAiKey(e.target.value)}
           />
           <button className={styles.controlBtn} onClick={handleAIButtonClick}>
             {t('backgroundManager.buttons.submit')}

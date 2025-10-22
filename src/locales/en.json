@@ -106,11 +106,18 @@
     },
     "labels": {
       "aiPrompt": "AI Background Prompt",
-      "aiPromptKey": "Gemini API Key"
+      "aiPromptKey": "Gemini API Key",
+      "aiBackgroundSize": "Background Size",
+      "backgroundMode": "Background Size Mode"
     },
     "placeholders": {
       "aiPrompt": "Describe the background you want to generate (e.g., 'sunset over mountains with lake')",
       "aiPromptKey": "Enter your Gemini API key"
+    },
+    "options": {
+      "auto": "Auto",
+      "cover": "Cover",
+      "contain": "Contain"
     }
   },
   "githubWidget": {

@@ -24,7 +24,7 @@
   --color-primary: rgba(79, 172, 254, 1);
   --color-primary-light: rgba(79, 172, 254, 0.3);
   --color-primary-bg: rgba(79, 172, 254, 0.1);
-  
+
   --color-success: rgba(34, 197, 94, 1);
   --color-success-light: rgba(34, 197, 94, 0.3);
   --color-success-bg: rgba(34, 197, 94, 0.1);
@@ -40,6 +40,11 @@
   --color-purple: rgba(168, 85, 247, 1);
   --color-purple-light: rgba(168, 85, 247, 0.3);
   --color-purple-bg: rgba(168, 85, 247, 0.1);
+
+  /* Border colors */
+  --color-border-light: rgba(255, 255, 255, 0.1);
+  --color-border-medium: rgba(255, 255, 255, 0.2);
+  --color-border-dim: rgba(255, 255, 255, 0.3); 
 
   /* Opacity levels */
   --opacity-overlay: 0.05;
