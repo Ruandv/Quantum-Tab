@@ -31,15 +31,15 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   useEffect(() => {
     setError(null);
     if (!widgetId) return;
-    
+
     const doWork = async () => {
       const widget = await chromeStorage.getWidgetData(widgetId);
       const serializedWidget = widget as unknown as SerializedWidget;
-      
+
       // Always load backgroundSize
       const storedSize = typeof serializedWidget.props?.backgroundSize === 'string' ? serializedWidget.props.backgroundSize : 'auto';
       setBackgroundSize(storedSize);
-      
+
       // Load metadata
       const widgetMetaData = await chromeStorage.getWidgetMetaData(widgetId);
       if (widgetMetaData && typeof widgetMetaData === 'object') {
@@ -51,7 +51,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
         sixHoursAgo.setHours(sixHoursAgo.getHours() - 6);
         setLastRefresh(sixHoursAgo);
       }
-      
       // Load AI data only if AI is enabled
       if (isAIEnabled) {
         const storedPrompt = serializedWidget.props?.aiPrompt?.toString() || '';
@@ -60,7 +59,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
         setAiKey(storedKey);
       }
     };
-    
     doWork();
   }, [widgetId, isAIEnabled]);
   // Add widget removal event listener for cleanup
@@ -256,91 +254,89 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
           <span>{t('common.states.uploading')}</span>
         </div>
       )}
-      <label htmlFor="backgroundSize" className={styles.label}>
-        {t('backgroundManager.labels.aiBackgroundSize')}
-      </label>
-      <select
-        id="backgroundSize"
-        className={styles.aiTextarea}
-        ref={backgroundSizeRef}
-        value={backgroundSize}
-        onChange={(e) => setBackgroundSize(e.target.value)}
-        aria-label={t('backgroundManager.labels.backgroundMode')}
-        style={{ pointerEvents: 'auto', minHeight: 'auto' }}
-      >
-        <option value="auto">{t('backgroundManager.options.auto')}</option>
-        <option value="cover">{t('backgroundManager.options.cover')}</option>
-        <option value="contain">{t('backgroundManager.options.contain')}</option>
-      </select>
-      {!isUploading && isAIEnabled && (
+
+
+      {!isUploading && (
         <>
-          {isUploading && (
-            <div className={styles.uploadContent}>
-              <div className={styles.uploadSpinner} />
-              <span>{t('common.states.uploading')}</span>
+          <label htmlFor="backgroundSize" className={styles.label}>
+            {t('backgroundManager.labels.aiBackgroundSize')}
+          </label>
+          <select
+            id="backgroundSize"
+            className={styles.aiTextarea}
+            ref={backgroundSizeRef}
+            value={backgroundSize}
+            onChange={(e) => setBackgroundSize(e.target.value)}
+            aria-label={t('backgroundManager.labels.backgroundMode')}
+            style={{ pointerEvents: 'auto', minHeight: 'auto' }}
+          >
+            <option value="auto">{t('backgroundManager.options.auto')}</option>
+            <option value="cover">{t('backgroundManager.options.cover')}</option>
+            <option value="contain">{t('backgroundManager.options.contain')}</option>
+          </select>
+          {isAIEnabled && (
+            <>
+              <label htmlFor="aiPrompt" className={styles.label}>
+                {t('backgroundManager.labels.aiPrompt')}
+              </label>
+              <textarea
+                id="aiPrompt"
+                className={styles.aiTextarea}
+                placeholder={t('backgroundManager.placeholders.aiPrompt')}
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+              />
+              <label htmlFor="aiPromptKey" className={styles.label}>
+                {t('backgroundManager.labels.aiPromptKey')}
+              </label>
+              <input
+                type="text"
+                id="aiPromptKey"
+                className={styles.aiTextarea}
+                placeholder={t('backgroundManager.placeholders.aiPromptKey')}
+                value={aiKey}
+                onChange={(e) => setAiKey(e.target.value)}
+              />
+              <button className={styles.controlBtn} onClick={handleAIButtonClick}>
+                {t('backgroundManager.buttons.submit')}
+              </button>
+            </>
+          )}
+          {!isAIEnabled && (
+            <>
+              <div className={styles.uploadSection}>
+                {!uploadedImage ? (
+                  <div className={styles.uploadArea} onClick={handleFileSelect}>
+                    {renderUploadArea()}
+                  </div>
+                ) : (
+                  renderPreview()
+                )}
+              </div>
+
+              <div className={styles.controlButtons}>{renderControls()}</div>
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                accept="image/*"
+                style={{ display: 'none' }}
+              />
+            </>
+          )}
+          {error && (
+            <div
+              className="error-message"
+              style={{ color: '#ff6b6b', fontSize: '0.8rem', marginTop: '0.5rem' }}
+            >
+              {error}
             </div>
           )}
-          <label htmlFor="aiPrompt" className={styles.label}>
-            {t('backgroundManager.labels.aiPrompt')}
-          </label>
-          <textarea
-            id="aiPrompt"
-            className={styles.aiTextarea}
-            placeholder={t('backgroundManager.placeholders.aiPrompt')}
-            value={aiPrompt}
-            onChange={(e) => setAiPrompt(e.target.value)}
-          />
-          <label htmlFor="aiPromptKey" className={styles.label}>
-            {t('backgroundManager.labels.aiPromptKey')}
-          </label>
-          <input
-            type="text"
-            id="aiPromptKey"
-            className={styles.aiTextarea}
-            placeholder={t('backgroundManager.placeholders.aiPromptKey')}
-            value={aiKey}
-            onChange={(e) => setAiKey(e.target.value)}
-          />
-          <button className={styles.controlBtn} onClick={handleAIButtonClick}>
-            {t('backgroundManager.buttons.submit')}
-          </button>
         </>
-      )}
-      {!isUploading && !isAIEnabled && (
-        <>
-          <div className={styles.uploadSection}>
-            {!uploadedImage ? (
-              <div className={styles.uploadArea} onClick={handleFileSelect}>
-                {renderUploadArea()}
-              </div>
-            ) : (
-              renderPreview()
-            )}
-          </div>
-
-          <div className={styles.controlButtons}>{renderControls()}</div>
-
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            accept="image/*"
-            style={{ display: 'none' }}
-          />
-        </>
-      )}
-      {error && (
-        <div
-          className="error-message"
-          style={{ color: '#ff6b6b', fontSize: '0.8rem', marginTop: '0.5rem' }}
-        >
-          {error}
-        </div>
       )}
     </>
   );
 };
-
 BackgroundManager.displayName = 'BackgroundManager';
-
 export default BackgroundManager;
