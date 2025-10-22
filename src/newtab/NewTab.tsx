@@ -328,7 +328,9 @@ const NewTab: React.FC = () => {
             saveToStorage();
             // get background widget
             const bg = widgets.find(x=>x.id.toLowerCase().startsWith('background-manager'));
-            setBackgroundSize(bg.props.backgroundSize as any)
+            if(bg){
+                setBackgroundSize(bg.props.backgroundSize as any)
+            }
 
         }
     }, [widgets, backgroundImage, isLocked, saveToStorage, isLoading]);
