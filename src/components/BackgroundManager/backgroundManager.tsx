@@ -51,7 +51,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
         sixHoursAgo.setHours(sixHoursAgo.getHours() - 6);
         setLastRefresh(sixHoursAgo);
       }
-
       // Load AI data only if AI is enabled
       if (isAIEnabled) {
         const storedPrompt = serializedWidget.props?.aiPrompt?.toString() || '';
@@ -60,7 +59,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
         setAiKey(storedKey);
       }
     };
-
     doWork();
   }, [widgetId, isAIEnabled]);
   // Add widget removal event listener for cleanup
