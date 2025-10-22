@@ -11,13 +11,13 @@ import {
 } from '../types/common';
 import LiveClock from '../components/LiveClock/liveClock';
 import QuickActionButtons from '../components/QuickActionButtons/quickActionButtons';
-import BackgroundManager from '../components/BackgroundManager/backgroundManager';
 import GitHubWidget from '../components/GitHubWidget/gitHubWidget';
 import GitCommentWatcher from '../components/GitCommentWatcher/gitCommentWatcher';
 import WebsiteCounter from '../components/WebsiteCounter/websiteCounter';
 import LocaleWidget from '../components/LocaleWidget/localeWidget';
 import SprintNumber from '../components/SprintNumber/sprintNumber';
 import { defaultDimensions } from '@/types/defaults';
+import BackgroundManager from '@/components/BackgroundManager/backgroundManager';
 
 export class WidgetRegistry {
   private static instance: WidgetRegistry;

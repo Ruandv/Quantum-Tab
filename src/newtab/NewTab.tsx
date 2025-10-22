@@ -331,7 +331,6 @@ const NewTab: React.FC = () => {
             if(bg){
                 setBackgroundSize(bg.props.backgroundSize as any)
             }
-
         }
     }, [widgets, backgroundImage, isLocked, saveToStorage, isLoading]);
 
