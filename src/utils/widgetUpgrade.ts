@@ -1,6 +1,7 @@
 import { SerializedWidget } from './chromeStorage';
 import { STORAGE_KEYS } from '../types/common';
 import manifest from '../../manifest.json';
+import widgetRegistry from './widgetRegistry';
 
 /**
  * Widget Upgrade System
@@ -26,7 +27,7 @@ const VERSION_HISTORY = [
   '1.3.0',
   '1.4.0',
   '1.5.0',
-   manifest.version
+  manifest.version
 ];
 
 /**
@@ -87,10 +88,6 @@ export const upgradeWidgets = async (widgets: SerializedWidget[]): Promise<Upgra
     const targetVersion = VERSION_HISTORY[i];
     upgradedWidgets = applyVersionUpgrade(upgradedWidgets, targetVersion, changes);
   }
-
-  // Clean up deprecated props
-  upgradedWidgets = cleanupDeprecatedProps(upgradedWidgets, changes);
-
   // Set the new version
   await setStoredVersion(CURRENT_VERSION);
 
@@ -116,6 +113,8 @@ function applyVersionUpgrade(widgets: SerializedWidget[], targetVersion: string,
       return upgradeTo_1_4_0(widgets, changes);
     case '1.5.0':
       return upgradeTo_1_5_0(widgets, changes);
+    case '1.6.0':
+      return upgradeTo_1_6_0(widgets, changes);
     default:
       return widgets;
   }
@@ -239,71 +238,142 @@ function upgradeTo_1_5_0(widgets: SerializedWidget[], changes: string[]): Serial
     if (widget.isRuntimeVisible === undefined) {
       const isVisible = runtimeVisibleWidgets.has(widget.component);
       widget.isRuntimeVisible = isVisible;
+      // check if the widgets name starts with "Unknown Widget"
+      if (widget.name.startsWith("Unknown Widget")) {
+        // split the widgetid by - and concat the till you find a number
+        const nameParts = widget.id.split('-');
+        let properName = '';
+        for (const part of nameParts) {
+          if (isNaN(Number(part))) {
+            properName += `-${part}`;
+          }
+          else {
+            break;
+          }
+        }
+        const res = widgetRegistry.getComponentNameByKey(properName.slice(1));
+        widget.name = res;
+      }
       changes.push(`Added isRuntimeVisible=${isVisible} to ${widget.name} (${widget.id})`);
     }
-
-    if (widget.component === 'LiveClock') {
+    if (widget.component === 'quick-actions') {
       if (!widget.props) widget.props = {};
-
-      // Add new time format options
-      if (widget.props.showTime === undefined) {
-        widget.props.showTime = true;
-        changes.push(`Added showTime=true to ${widget.name} (${widget.id})`);
-      }
-      if (widget.props.showDate === undefined) {
-        widget.props.showDate = true;
-        changes.push(`Added showDate=true to ${widget.name} (${widget.id})`);
-      }
-      if (widget.props.showTimeZone === undefined) {
-        widget.props.showTimeZone = false;
-        changes.push(`Added showTimeZone=false to ${widget.name} (${widget.id})`);
+      const reg = widgetRegistry.findByComponentName("QuickActionButtons");
+      if (reg && reg.defaultProps) {
+        // Merge defaultProps with widget.props, giving priority to widget.props
+        widget.props = {
+          ...reg.defaultProps,
+          ...widget.props
+        };
+        changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
       }
     }
 
-    if (widget.component === 'SprintNumber') {
+    if (widget.component === 'live-clock') {
       if (!widget.props) widget.props = {};
-
-      // Ensure sprint props are present
-      if (widget.props.startDate === undefined) {
-        widget.props.startDate = new Date().toISOString().split('T')[0];
-        changes.push(`Added startDate to ${widget.name} (${widget.id})`);
-      }
-      if (widget.props.numberOfDays === undefined) {
-        widget.props.numberOfDays = 14;
-        changes.push(`Added numberOfDays=14 to ${widget.name} (${widget.id})`);
-      }
-      if (widget.props.currentSprint === undefined) {
-        widget.props.currentSprint = 1;
-        changes.push(`Added currentSprint=1 to ${widget.name} (${widget.id})`);
+      const reg = widgetRegistry.findByComponentName("LiveClock");
+      if (reg && reg.defaultProps) {
+        // Merge defaultProps with widget.props, giving priority to widget.props
+        widget.props = {
+          ...reg.defaultProps,
+          ...widget.props
+        };
+        changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
       }
     }
+
+    if (widget.component === 'sprint-number') {
+      if (!widget.props) widget.props = {};
+      const reg = widgetRegistry.findByComponentName("SprintNumber");
+      if (reg && reg.defaultProps) {
+        // Merge defaultProps with widget.props, giving priority to widget.props
+        widget.props = {
+          ...reg.defaultProps,
+          ...widget.props
+        };
+        changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
+      }
+    }
+    if (widget.component === 'locale-selector') {
+      if (!widget.props) widget.props = {};
+
+      const reg = widgetRegistry.findByComponentName("LocaleWidget");
+      if (reg && reg.defaultProps) {
+        widget.props = {
+          ...reg.defaultProps,
+          ...widget.props
+        };
+        changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
+      }
+    }
+    
+    if (widget.component === 'website-counter') {
+      if (!widget.props) widget.props = {};
+
+      const reg = widgetRegistry.findByComponentName("WebsiteCounter");
+      if (reg && reg.defaultProps) {
+        widget.props = {
+          ...reg.defaultProps,
+          ...widget.props
+        };
+        changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
+      }
+    }
+
+    
+    if (widget.component === 'git-comment-watcher') {
+      if (!widget.props) widget.props = {};
+
+      const reg = widgetRegistry.findByComponentName("GitCommentWatcher");
+      if (reg && reg.defaultProps) {
+        widget.props = {
+          ...reg.defaultProps,
+          ...widget.props
+        };
+        changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
+      }
+    }
+    if (widget.component === 'github-widget') {
+      if (!widget.props) widget.props = {};
+
+      const reg = widgetRegistry.findByComponentName("GitHubWidget");
+      if (reg && reg.defaultProps) {
+        widget.props = {
+          ...reg.defaultProps,
+          ...widget.props
+        };
+        changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
+      }
+    }
+    if (widget.component === 'background-manager') {
+      if (!widget.props) widget.props = {};
+
+      const reg = widgetRegistry.findByComponentName("BackgroundManager");
+      if (reg && reg.defaultProps) {
+        widget.props = {
+          ...reg.defaultProps,
+          ...widget.props
+        };
+        changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
+      }
+    }
+    
 
     return widget;
   });
 }
-
-/**
- * Clean up deprecated props that are no longer used
- */
-function cleanupDeprecatedProps(widgets: SerializedWidget[], changes: string[]): SerializedWidget[] {
-  const deprecatedProps = [
-    'oldProp1', // Add deprecated prop names here
-    'oldProp2',
-  ];
-
+function upgradeTo_1_6_0(widgets: SerializedWidget[], changes: string[]): SerializedWidget[] {
   return widgets.map(widget => {
-    if (widget.props) {
-      let cleaned = false;
-      deprecatedProps.forEach(prop => {
-        if (widget.props && prop in widget.props) {
-          delete widget.props[prop];
-          changes.push(`Removed deprecated prop '${prop}' from ${widget.name} (${widget.id})`);
-          cleaned = true;
-        }
-      });
-
-      if (cleaned) {
-        widget.props = { ...widget.props }; // Ensure immutability
+    if (widget.component === 'github-widget') {
+      // get all the props and set default values if missing
+      if (!widget.props) widget.props = {};
+      if (widget.props.autoRefresh === undefined) {
+        widget.props.autoRefresh = true;
+        changes.push(`Set default autoRefresh=true for ${widget.name} (${widget.id})`);
+      }
+      if (widget.props.refreshInterval === undefined) {
+        widget.props.refreshInterval = 5;
+        changes.push(`Set default refreshInterval=5 for ${widget.name} (${widget.id})`);
       }
     }
     return widget;

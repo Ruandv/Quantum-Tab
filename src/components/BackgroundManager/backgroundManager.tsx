@@ -17,6 +17,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const aiPromptRef = useRef<HTMLTextAreaElement>(null);
   const aiKeyRef = useRef<HTMLInputElement>(null);
@@ -27,14 +28,36 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   useEffect(() => {
     setError(null);
     if (isAIEnabled && widgetId) {
-      chromeStorage.getWidgetData(widgetId).then((widget) => {
+      const doWork = async () => {
+        const widget = await chromeStorage.getWidgetData(widgetId);
         const serializedWidget = widget as unknown as SerializedWidget;
         aiPromptRef.current!.value = serializedWidget.props?.aiPrompt.toString() || '';
         aiKeyRef.current!.value = serializedWidget.props?.aiKey.toString() || '';
-      });
+        const widgetMetaData = await chromeStorage.getWidgetMetaData(widgetId);
+        if (widgetMetaData && typeof widgetMetaData === 'object') {
+          const lastRefreshValue = (widgetMetaData as Record<string, unknown>)['lastRefresh'];
+          const lastRefreshDateTime = typeof lastRefreshValue === 'string' ? new Date(lastRefreshValue) : null;
+          setLastRefresh(lastRefreshDateTime);
+        }
+        else {
+          const sixHoursAgo = new Date();
+          sixHoursAgo.setHours(sixHoursAgo.getHours() - 6);
+          setLastRefresh(sixHoursAgo); // Default to 6 hours ago if no metadata
+        }
+
+      };
+      doWork();
     }
   }, [isAIEnabled, widgetId]);
   // Add widget removal event listener for cleanup
+  
+  useEffect(() => {
+    if(lastRefresh) {
+      console.log('2345 Last refresh time changed:', lastRefresh.toISOString());
+      chromeStorage.setWidgetMetaData(widgetId, { myData: (new Date()), lastRefresh: lastRefresh.toISOString() });
+    }
+  }, [lastRefresh, widgetId]);
+
   useEffect(() => {
     if (!widgetId) return;
 
@@ -213,6 +236,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
     const data = await api.generateResponse(promptValue);
     setUploadedImage(data);
     onBackgroundChange?.(data);
+    setLastRefresh(new Date());
     setIsUploading(false);
   };
 

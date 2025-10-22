@@ -124,7 +124,9 @@ export interface GitCommentWatcherProps extends GitHubWidgetBaseProps {
 }
 
 export interface BackgroundManagerProps extends DefaultWidgetProps {
-  isAIEnabled: boolean; // Optional AI feature flag
+  isAIEnabled: boolean; 
+  autoRefresh?: boolean;
+  refreshInterval?: number; // in minutes
   onBackgroundChange?: (imageUrl: string) => void;
 }
 
@@ -355,6 +357,7 @@ export const isSecureProperty = (key: string): boolean => {
     'auth',
     'api',
     'pat', // Personal Access Token
+    'aikey',
     'bearer',
     'patToken']; // Add other secure property names here
   return secureProps.map(prop => prop.toLowerCase()).includes(key.toLowerCase());

@@ -538,12 +538,12 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
           };
           data.widgets?.map((widget: SerializedWidget) => {
             const sanitizedWidget = { ...widget };
-            if (widget.props) {
+            if (widget.props) {              
               // iterate over the props and sanitize any props that isSecureProperty
               Object.keys(widget.props).forEach((key, _) => {
                 if (isSecureProperty(key)) {
                   sanitizedWidget.props[key] = '[REDACTED]';
-                  exportedData.secretProps.push({ name: widget.id, key });
+                  exportedData.secretProps.push({ name: widget.name, key });
                 }
               });
             }

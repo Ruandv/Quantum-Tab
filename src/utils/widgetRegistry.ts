@@ -93,6 +93,8 @@ export class WidgetRegistry {
       defaultProps: {
         widgetHeading: 'Background Manager',
         isAIEnabled: false,
+        autoRefresh: false,
+        refreshInterval: 360, // 360 minutes = 6 hours
       },
     });
 
@@ -249,12 +251,19 @@ export class WidgetRegistry {
   }
 
   public getComponentByName(name: string): React.ComponentType<Record<string, unknown>> | undefined {
-    const widget = Array.from(this.widgets.values()).find((w) => w.component.name === name);
+    const widget = Array.from(this.widgets.values()).find((w) => w.component.name.toLowerCase() === name.toLowerCase());
     return widget?.component;
+  }
+
+  public getComponentNameByKey(key: string): string {
+    const widget = Array.from(this.widgets.values()).find((w) => w.id === key);
+    return widget?.name || key;
   }
 
   public findByComponentName(componentName: string): WidgetType | undefined {
     return Array.from(this.widgets.values()).find((widget) => {
+      // console.log(widget.component.name,  widget.id);
+
       // Check direct name and displayName
       return (
         widget.component.name === componentName || widget.component.displayName === componentName
