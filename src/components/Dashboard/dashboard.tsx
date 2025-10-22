@@ -52,6 +52,11 @@ const Dashboard: React.FC<DashboardProps> = ({
         return;
       }
 
+      // Don't prevent default for form elements to allow focus and interaction
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.closest('input, textarea, select')) {
+        return;
+      }
+
       e.preventDefault();
       e.stopPropagation();
 

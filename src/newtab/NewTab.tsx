@@ -58,6 +58,7 @@ const NewTab: React.FC = () => {
     const [widgets, setWidgets] = useState<DashboardWidget[]>([]);
     const [isLocked, setIsLocked] = useState<boolean>(false);
     const [backgroundImage, setBackgroundImage] = useState<string>('');
+    const [backgroundSize, setBackgroundSize] = useState<'cover' | 'contain' | 'auto'>('cover');
     const [isLoading, setIsLoading] = useState(true);
     const [showNotification, setShowNotification] = useState(false);
 
@@ -74,7 +75,6 @@ const NewTab: React.FC = () => {
 
             try {
                 const savedData = await chromeStorage.loadAll();
-
                 // Set background and lock state
                 setBackgroundImage(savedData.backgroundImage || '');
                 setIsLocked(savedData.isLocked || false);
@@ -326,6 +326,10 @@ const NewTab: React.FC = () => {
     useEffect(() => {
         if (!isLoading) {
             saveToStorage();
+            // get background widget
+            const bg = widgets.find(x=>x.id.toLowerCase().startsWith('background-manager'));
+            setBackgroundSize(bg.props.backgroundSize as any)
+
         }
     }, [widgets, backgroundImage, isLocked, saveToStorage, isLoading]);
 
@@ -394,7 +398,7 @@ const NewTab: React.FC = () => {
             className={styles.newtabContainer}
             style={{
                 backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
-                backgroundSize: 'cover',
+                backgroundSize: backgroundSize,
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
                 minHeight: '100vh',

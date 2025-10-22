@@ -127,6 +127,7 @@ export interface BackgroundManagerProps extends DefaultWidgetProps {
   isAIEnabled: boolean; 
   autoRefresh?: boolean;
   refreshInterval?: number; // in minutes
+  backgroundSize: 'cover' | 'contain' | 'auto';
   onBackgroundChange?: (imageUrl: string) => void;
 }
 

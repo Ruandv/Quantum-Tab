@@ -95,6 +95,7 @@ export class WidgetRegistry {
         isAIEnabled: false,
         autoRefresh: false,
         refreshInterval: 360, // 360 minutes = 6 hours
+        backgroundSize: 'cover',
       },
     });
 
