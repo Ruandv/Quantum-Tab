@@ -1,6 +1,12 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect, CSSProperties } from 'react';
 import ResizableWidget from '../ResizableWidget/resizableWidget';
-import { DashboardWidget, DashboardProps, DragState, Position, Dimensions } from '../../types/common';
+import {
+  DashboardWidget,
+  DashboardProps,
+  DragState,
+  Position,
+  Dimensions,
+} from '../../types/common';
 import { constrainPosition, getViewportDimensions } from '../../utils/helpers';
 import { dispatchWidgetEditing } from '@/utils/widgetEvents';
 import styles from './dashboard.module.css';
@@ -53,7 +59,12 @@ const Dashboard: React.FC<DashboardProps> = ({
       }
 
       // Don't prevent default for form elements to allow focus and interaction
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.closest('input, textarea, select')) {
+      if (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.tagName === 'SELECT' ||
+        target.closest('input, textarea, select')
+      ) {
         return;
       }
 
@@ -113,25 +124,19 @@ const Dashboard: React.FC<DashboardProps> = ({
     [onWidgetResize]
   );
 
-  const handleRequestWidgetInfo = useCallback(
-    (widgetName: string) => {
-      // Create a documentation URL for the widget on GitHub Wiki
-      const baseUrl = 'https://github.com/Ruandv/Quantum-Tab/wiki';
-      const widgetSlug = widgetName.toLowerCase().replace(/\s+/g, '');
-      const docsUrl = `${baseUrl}/${widgetSlug}`;
+  const handleRequestWidgetInfo = useCallback((widgetName: string) => {
+    // Create a documentation URL for the widget on GitHub Wiki
+    const baseUrl = 'https://github.com/Ruandv/Quantum-Tab/wiki';
+    const widgetSlug = widgetName.toLowerCase().replace(/\s+/g, '');
+    const docsUrl = `${baseUrl}/${widgetSlug}`;
 
-      // Open documentation in a new tab/window
-      window.open(docsUrl, '_blank', 'noopener,noreferrer');
-    },
-    []
-  );
+    // Open documentation in a new tab/window
+    window.open(docsUrl, '_blank', 'noopener,noreferrer');
+  }, []);
 
-  const handleEditWidget = useCallback(
-    (widgetId: string) => {
-      dispatchWidgetEditing(widgetId);
-    },
-    []
-  );
+  const handleEditWidget = useCallback((widgetId: string) => {
+    dispatchWidgetEditing(widgetId);
+  }, []);
 
   const handleRemoveWidget = useCallback(
     (widgetId: string) => {
@@ -212,7 +217,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         left: `${widget.position.x}px`,
         top: `${widget.position.y}px`,
         zIndex: isDragging ? 1000 : 0,
-        cursor: isLocked ? 'default' : 'move'
+        cursor: isLocked ? 'default' : 'move',
       };
 
       const widgetContentStyles: CSSProperties = {
@@ -250,7 +255,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                     handleRequestWidgetInfo(widget.wikiPage || widget.name);
                   }}
                   title="More info ..."
-                >🛈
+                >
+                  🛈
                 </button>
                 <button
                   className={styles.widgetEditBtn}
@@ -275,7 +281,11 @@ const Dashboard: React.FC<DashboardProps> = ({
               </>
             )}
             <div className={`${styles.widgetContent}`} style={widgetContentStyles}>
-              {widget.props?.widgetHeading && widget.isRuntimeVisible && (<h3 className={widgetCommon.widgetTitle} >{widget.props?.widgetHeading?.toString()}</h3>)}
+              {widget.props?.widgetHeading && widget.isRuntimeVisible && (
+                <h3 className={widgetCommon.widgetTitle}>
+                  {widget.props?.widgetHeading?.toString()}
+                </h3>
+              )}
               <WidgetComponent
                 isLocked={isLocked}
                 widgetId={widget.id}
@@ -285,9 +295,10 @@ const Dashboard: React.FC<DashboardProps> = ({
                   : undefined)}
                 {...(widget.id.includes('quick-actions') && onUpdateWidgetProps
                   ? {
-                    onButtonsChange: (buttons: Array<{ icon: string; label: string; url: string }>) =>
-                      onUpdateWidgetProps(widget.id, { buttons }),
-                  }
+                      onButtonsChange: (
+                        buttons: Array<{ icon: string; label: string; url: string }>
+                      ) => onUpdateWidgetProps(widget.id, { buttons }),
+                    }
                   : undefined)}
               />
             </div>

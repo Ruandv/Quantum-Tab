@@ -1,12 +1,17 @@
 // Background service worker for Chrome Extension Manifest V3
 import { BackgroundMessage, BackgroundResponse, STORAGE_KEYS } from '../types/common';
 import { GitHubService } from '../services/githubService';
+import { googleAnalytics } from '../services/googleAnalyticsService';
+import { GA_CONFIG } from '../config/gaConfig';
 import { defaultPosition, defaultStyle } from '@/types/defaults';
 
 // Listen for extension installation or startup
 chrome.runtime.onInstalled.addListener(async (details) => {
   const currentVersion = chrome.runtime.getManifest().version;
   const now = new Date().toISOString();
+
+  // Initialize Google Analytics (values injected at build time via webpack)
+  googleAnalytics.initialize(GA_CONFIG.MEASUREMENT_ID, GA_CONFIG.API_SECRET);
 
   // Handle different installation scenarios
   if (details.reason === 'install') {
@@ -19,9 +24,12 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       notificationPending: {
         type: 'install',
         version: currentVersion,
-        timestamp: now
-      }
+        timestamp: now,
+      },
     });
+
+    // Track extension installation
+    googleAnalytics.trackExtensionInstall(currentVersion);
   } else if (details.reason === 'update') {
     // Extension was updated
     const previousVersion = details.previousVersion || 'unknown';
@@ -32,9 +40,12 @@ chrome.runtime.onInstalled.addListener(async (details) => {
         type: 'update',
         version: currentVersion,
         previousVersion: previousVersion,
-        timestamp: now
-      }
+        timestamp: now,
+      },
     });
+
+    // Track extension update
+    googleAnalytics.trackExtensionUpdate(previousVersion, currentVersion);
   }
 
   // Initialize default settings if they don't exist
@@ -110,9 +121,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       sendResponse({ success: true });
       break;
 
+    case 'trackWidgetAddition':
+      if (message.data && message.data.widgetType && message.data.widgetName) {
+        googleAnalytics.trackWidgetAddition(message.data.widgetType, message.data.widgetName);
+        sendResponse({ success: true });
+      } else {
+        sendResponse({ error: 'Missing widget data for tracking' });
+      }
+      break;
+
     default:
       console.warn('Unknown action:', message.action);
-      console.warn('Available actions: getTabInfo, updateBadge, pageLoaded, fetchPullRequests');
+      console.warn('Available actions: getTabInfo, updateBadge, pageLoaded, trackWidgetAddition, fetchPullRequests');
       sendResponse({ error: 'Unknown action' });
   }
 
@@ -211,7 +231,10 @@ const handleGitHubApiRequest = async (
 };
 
 // Handle fetchUserPullRequests action
-const handleUserPullRequestsRequest = async (message: BackgroundMessage, sendResponse: (response: BackgroundResponse) => void) => {
+const handleUserPullRequestsRequest = async (
+  message: BackgroundMessage,
+  sendResponse: (response: BackgroundResponse) => void
+) => {
   if (message.action !== 'fetchUserPullRequests') {
     sendResponse({ action: 'fetchUserPullRequests', success: false, error: 'Invalid action' });
     return;
@@ -243,11 +266,11 @@ const handleUserPullRequestsRequest = async (message: BackgroundMessage, sendRes
     const currentUser = await GitHubService.getCurrentUser(patToken);
 
     // Use the GitHub service to fetch PRs by the current user
-    const pullRequests = await GitHubService.getPullRequests(
-      patToken,
-      repositoryUrl,
-      { state: 'open', per_page: 10, author: currentUser.login }
-    );
+    const pullRequests = await GitHubService.getPullRequests(patToken, repositoryUrl, {
+      state: 'open',
+      per_page: 10,
+      author: currentUser.login,
+    });
 
     // Return the pull requests
     sendResponse({

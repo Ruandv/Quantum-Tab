@@ -79,14 +79,17 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
       return;
     }
 
-    const intervalId = setInterval(() => {
-      fetchPullRequests();
-    }, refreshInterval * 60 * 1000); // Convert minutes to milliseconds
-    console.log("Auto-refresh interval set:", intervalId);
+    const intervalId = setInterval(
+      () => {
+        fetchPullRequests();
+      },
+      refreshInterval * 60 * 1000
+    ); // Convert minutes to milliseconds
+    console.log('Auto-refresh interval set:', intervalId);
     return () => {
       clearInterval(intervalId);
     };
-  }, [autoRefresh,  refreshInterval, fetchPullRequests, patToken, repositoryUrl]);
+  }, [autoRefresh, refreshInterval, fetchPullRequests, patToken, repositoryUrl]);
 
   // Add widget removal event listener for cleanup
   useEffect(() => {
@@ -117,18 +120,21 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
   }, [widgetId]);
 
   // Handle PR item click
-  const handlePrClick = useCallback((pr: GitHubPullRequest) => {
-    if (!isLocked) {
-      alert(t('quickActionButtons.messages.editState'));
-    } else {
-      window.open(pr.html_url, '_blank');
-    }
-  }, [isLocked, t]);
+  const handlePrClick = useCallback(
+    (pr: GitHubPullRequest) => {
+      if (!isLocked) {
+        alert(t('quickActionButtons.messages.editState'));
+      } else {
+        window.open(pr.html_url, '_blank');
+      }
+    },
+    [isLocked, t]
+  );
 
   // Fetch PR data when widget loads or parameters change
   useEffect(() => {
     // check if lastFetch is null or older than refreshInterval minutes
-    if (lastFetch && (Date.now() - lastFetch.getTime()) > refreshInterval * 60 * 1000) {
+    if (lastFetch && Date.now() - lastFetch.getTime() > refreshInterval * 60 * 1000) {
       if (patToken && repositoryUrl) {
         fetchPullRequests();
       }
@@ -140,19 +146,22 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
     // save the lastFetched value to localStorage using chromeStorage
     const metaData = { pullRequests, lastFetch: lastFetch?.toISOString() };
     console.log(`Saving metaData [${widgetId}]:`, metaData);
-    chromeStorage.setWidgetMetaData(widgetId, metaData)
-  }, [lastFetch, pullRequests, widgetId])
- useEffect(() => {
+    chromeStorage.setWidgetMetaData(widgetId, metaData);
+  }, [lastFetch, pullRequests, widgetId]);
+  useEffect(() => {
     // Load the lastFetched value and previousPullRequestsRef from localStorage using chromeStorage
     const loadMetaData = async () => {
       try {
         const metaData = await chromeStorage.getWidgetMetaData(widgetId);
         if (metaData && typeof metaData === 'object') {
-          const myDateTime = metaData.lastFetch ? new Date(metaData.lastFetch as string) : new Date();
+          const myDateTime = metaData.lastFetch
+            ? new Date(metaData.lastFetch as string)
+            : new Date();
           setLastFetch(myDateTime);
-          setPullRequests(metaData.pullRequests ? metaData.pullRequests as GitHubPullRequest[] : []);
-        }
-        else {
+          setPullRequests(
+            metaData.pullRequests ? (metaData.pullRequests as GitHubPullRequest[]) : []
+          );
+        } else {
           console.log('No metaData found for widget:', widgetId);
           setLastFetch(new Date(2023, 0, 1));
         }
@@ -161,7 +170,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
       }
     };
     loadMetaData();
-  }, [])
+  }, []);
 
   return (
     <>
@@ -170,7 +179,9 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
         {isLoading ? (
           <div className={styles.githubLoading}>
             <div className="loading-spinner"></div>
-            <span className={styles.loadingText}>{t('githubWidget.loading.fetchingPullRequests')}</span>
+            <span className={styles.loadingText}>
+              {t('githubWidget.loading.fetchingPullRequests')}
+            </span>
           </div>
         ) : error ? (
           <div className={styles.githubError}>
@@ -207,14 +218,18 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
                 >
                   <div className={styles.prHeader}>
                     <span className={styles.prNumber}>#{pr.number}</span>
-                    <span className={`${styles.prState} ${pr.state === 'open' ? styles.prStateOpen : pr.merged ? styles.prStateMerged : styles.prStateClosed}`}>
+                    <span
+                      className={`${styles.prState} ${pr.state === 'open' ? styles.prStateOpen : pr.merged ? styles.prStateMerged : styles.prStateClosed}`}
+                    >
                       {pr.state === 'open' ? '🟢' : pr.merged ? '🟣' : '🔴'}
                       {pr.merged
                         ? t('githubWidget.pullRequests.states.merged')
                         : t(`githubWidget.pullRequests.states.${pr.state}`)}
                     </span>
                     {pr.draft && (
-                      <span className={styles.prDraft}>📝 {t('githubWidget.pullRequests.draft')}</span>
+                      <span className={styles.prDraft}>
+                        📝 {t('githubWidget.pullRequests.draft')}
+                      </span>
                     )}
                   </div>
                   <div className={styles.prTitle}>{pr.title}</div>

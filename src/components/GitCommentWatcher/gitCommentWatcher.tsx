@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { GitCommentWatcherProps, GitHubPullRequest, BackgroundMessage, BackgroundResponse } from '@/types/common';
+import {
+  GitCommentWatcherProps,
+  GitHubPullRequest,
+  BackgroundMessage,
+  BackgroundResponse,
+} from '@/types/common';
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './gitCommentWatcher.module.css';
 import githubStyles from '../GitHubWidget/githubWidget.module.css';
@@ -57,11 +62,13 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
           const newChangedPrIds = new Set<number>();
           const newPrs = response.data as GitHubPullRequest[];
 
-          console.log(`GitCommentWatcher: Refresh detected. Previous PRs: ${previousPullRequestsRef.current.length}, New PRs: ${newPrs.length}`);
+          console.log(
+            `GitCommentWatcher: Refresh detected. Previous PRs: ${previousPullRequestsRef.current.length}, New PRs: ${newPrs.length}`
+          );
 
           // Compare with previous PRs to find changes
-          newPrs.forEach(newPr => {
-            const prevPr = previousPullRequestsRef.current.find(pr => pr.id === newPr.id);
+          newPrs.forEach((newPr) => {
+            const prevPr = previousPullRequestsRef.current.find((pr) => pr.id === newPr.id);
             if (prevPr) {
               // Check if comments increased
               const prevComments = (prevPr.comments || 0) + (prevPr.review_comments || 0);
@@ -108,7 +115,7 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
   // Fetch PR data when widget loads or parameters change
   useEffect(() => {
     // check if lastFetch is null or older than refreshInterval minutes
-    if (lastFetch && (Date.now() - lastFetch.getTime()) > refreshInterval * 60 * 1000) {
+    if (lastFetch && Date.now() - lastFetch.getTime() > refreshInterval * 60 * 1000) {
       if (patToken && repositoryUrl) {
         fetchPullRequests();
       }
@@ -121,9 +128,12 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
       return;
     }
 
-    const intervalId = setInterval(() => {
-      fetchPullRequests();
-    }, refreshInterval * 60 * 1000); // Convert minutes to milliseconds
+    const intervalId = setInterval(
+      () => {
+        fetchPullRequests();
+      },
+      refreshInterval * 60 * 1000
+    ); // Convert minutes to milliseconds
 
     return () => {
       clearInterval(intervalId);
@@ -161,11 +171,14 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
   useEffect(() => {
     if (lastFetch === null) return;
     // save the lastFetched value to localStorage using chromeStorage
-    const metaData = { pullRequests, lastFetch: lastFetch?.toISOString(), previousPullRequestsRef: previousPullRequestsRef.current };
+    const metaData = {
+      pullRequests,
+      lastFetch: lastFetch?.toISOString(),
+      previousPullRequestsRef: previousPullRequestsRef.current,
+    };
     console.log('Saving metaData:', metaData);
-    chromeStorage.setWidgetMetaData(widgetId, metaData)
-  }, [lastFetch, previousPullRequestsRef, pullRequests, widgetId])
-
+    chromeStorage.setWidgetMetaData(widgetId, metaData);
+  }, [lastFetch, previousPullRequestsRef, pullRequests, widgetId]);
 
   useEffect(() => {
     // Load the lastFetched value and previousPullRequestsRef from localStorage using chromeStorage
@@ -173,14 +186,17 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
       try {
         const metaData = await chromeStorage.getWidgetMetaData(widgetId);
         if (metaData && typeof metaData === 'object') {
-          const myDateTime = metaData.lastFetch ? new Date(metaData.lastFetch as string) : new Date();
+          const myDateTime = metaData.lastFetch
+            ? new Date(metaData.lastFetch as string)
+            : new Date();
           previousPullRequestsRef.current = Array.isArray(metaData.previousPullRequestsRef)
-            ? metaData.previousPullRequestsRef as GitHubPullRequest[]
+            ? (metaData.previousPullRequestsRef as GitHubPullRequest[])
             : [];
           setLastFetch(myDateTime);
-          setPullRequests(metaData.pullRequests ? metaData.pullRequests as GitHubPullRequest[] : []);
-        }
-        else {
+          setPullRequests(
+            metaData.pullRequests ? (metaData.pullRequests as GitHubPullRequest[]) : []
+          );
+        } else {
           console.log('No metaData found for widget:', widgetId);
           setLastFetch(new Date(2023, 0, 1));
           previousPullRequestsRef.current = [];
@@ -190,22 +206,24 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
       }
     };
     loadMetaData();
-  }, [])
-
+  }, []);
 
   // Calculate if there are new comments
-  const hasNewComments = pullRequests.some(pr =>
-    (pr.comments || 0) > 0 || (pr.review_comments || 0) > 0
+  const hasNewComments = pullRequests.some(
+    (pr) => (pr.comments || 0) > 0 || (pr.review_comments || 0) > 0
   );
 
   // Handle PR item click
-  const handlePrClick = useCallback((pr: GitHubPullRequest) => {
-    if (!isLocked) {
-      alert(t('quickActionButtons.messages.editState'));
-    } else {
-      window.open(pr.html_url, '_blank');
-    }
-  }, [isLocked, t]);
+  const handlePrClick = useCallback(
+    (pr: GitHubPullRequest) => {
+      if (!isLocked) {
+        alert(t('quickActionButtons.messages.editState'));
+      } else {
+        window.open(pr.html_url, '_blank');
+      }
+    },
+    [isLocked, t]
+  );
 
   return (
     <>
@@ -214,7 +232,9 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
         {isLoading ? (
           <div className={githubStyles.githubLoading}>
             <div className="loading-spinner"></div>
-            <span className={githubStyles.loadingText}>{t('githubWidget.loading.fetchingPullRequests')}</span>
+            <span className={githubStyles.loadingText}>
+              {t('githubWidget.loading.fetchingPullRequests')}
+            </span>
           </div>
         ) : error ? (
           <div className={githubStyles.githubError}>
@@ -236,7 +256,9 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
                 📋 {pullRequests.length} {t('githubWidget.pullRequests.count')}
               </span>
               {hasNewComments && (
-                <span className={styles.commentBadge}>💬 {t('gitCommentWatcher.labels.newComments')}</span>
+                <span className={styles.commentBadge}>
+                  💬 {t('gitCommentWatcher.labels.newComments')}
+                </span>
               )}
               {lastFetch && (
                 <span className={githubStyles.lastUpdated}>
@@ -253,7 +275,9 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
                 >
                   <div className={githubStyles.prHeader}>
                     <span className={githubStyles.prNumber}>#{pr.number}</span>
-                    <span className={`${githubStyles.prState} ${githubStyles[`prState${pr.state.charAt(0).toUpperCase() + pr.state.slice(1)}`]}`}>
+                    <span
+                      className={`${githubStyles.prState} ${githubStyles[`prState${pr.state.charAt(0).toUpperCase() + pr.state.slice(1)}`]}`}
+                    >
                       {pr.state === 'open' ? '🟢' : pr.merged ? '🟣' : '🔴'}
                       {pr.merged
                         ? t('githubWidget.pullRequests.states.merged')
@@ -261,7 +285,8 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
                     </span>
                     {(pr.comments > 0 || pr.review_comments > 0) && (
                       <span className={githubStyles.commentIndicator}>
-                        💬 {(pr.comments || 0) + (pr.review_comments || 0)} {t('gitCommentWatcher.labels.comments')}
+                        💬 {(pr.comments || 0) + (pr.review_comments || 0)}{' '}
+                        {t('gitCommentWatcher.labels.comments')}
                       </span>
                     )}
                   </div>

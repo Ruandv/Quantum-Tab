@@ -11,7 +11,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   onBackgroundChange,
   isLocked,
   widgetId,
-  isAIEnabled
+  isAIEnabled,
 }: BackgroundManagerProps) => {
   const { t } = useTranslation();
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -37,14 +37,18 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       const serializedWidget = widget as unknown as SerializedWidget;
 
       // Always load backgroundSize
-      const storedSize = typeof serializedWidget.props?.backgroundSize === 'string' ? serializedWidget.props.backgroundSize : 'auto';
+      const storedSize =
+        typeof serializedWidget.props?.backgroundSize === 'string'
+          ? serializedWidget.props.backgroundSize
+          : 'auto';
       setBackgroundSize(storedSize);
 
       // Load metadata
       const widgetMetaData = await chromeStorage.getWidgetMetaData(widgetId);
       if (widgetMetaData && typeof widgetMetaData === 'object') {
         const lastRefreshValue = (widgetMetaData as Record<string, unknown>)['lastRefresh'];
-        const lastRefreshDateTime = typeof lastRefreshValue === 'string' ? new Date(lastRefreshValue) : null;
+        const lastRefreshDateTime =
+          typeof lastRefreshValue === 'string' ? new Date(lastRefreshValue) : null;
         setLastRefresh(lastRefreshDateTime);
       } else {
         const sixHoursAgo = new Date();
@@ -71,10 +75,13 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
 
   useEffect(() => {
     const doWork = async () => {
-      console.log("Store data")
+      console.log('Store data');
       const rawWidgetData = await chromeStorage.getWidgetData(widgetId);
       const storedProps =
-        rawWidgetData && typeof rawWidgetData === 'object' && 'props' in rawWidgetData && rawWidgetData.props
+        rawWidgetData &&
+        typeof rawWidgetData === 'object' &&
+        'props' in rawWidgetData &&
+        rawWidgetData.props
           ? (rawWidgetData.props as Record<string, unknown>)
           : {};
       const updatedProps = {
@@ -84,10 +91,9 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
         backgroundSize,
       };
       await chromeStorage.setWidgetData(widgetId, { props: updatedProps });
-    }
+    };
     doWork();
-
-  }, [aiPrompt, aiKey, backgroundSize, widgetId])
+  }, [aiPrompt, aiKey, backgroundSize, widgetId]);
 
   useEffect(() => {
     if (!widgetId) return;
@@ -161,7 +167,9 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       <div className={styles.uploadContent}>
         <div className={styles.uploadIcon}>📁</div>
         <span className={styles.uploadText}>{t('backgroundManager.upload.clickToUpload')}</span>
-        <small className={styles.uploadHint}>{t('backgroundManager.upload.supportedFormats')}</small>
+        <small className={styles.uploadHint}>
+          {t('backgroundManager.upload.supportedFormats')}
+        </small>
       </div>
     );
   };
@@ -175,7 +183,9 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
           className={styles.previewImage}
         />
         <div className={styles.previewOverlay}>
-          <span className={styles.previewLabel}>{t('backgroundManager.preview.currentBackground')}</span>
+          <span className={styles.previewLabel}>
+            {t('backgroundManager.preview.currentBackground')}
+          </span>
         </div>
       </div>
     </div>
@@ -254,7 +264,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
           <span>{t('common.states.uploading')}</span>
         </div>
       )}
-
 
       {!isUploading && (
         <>

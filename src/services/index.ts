@@ -6,6 +6,7 @@
  */
 
 export { default as GitHubService } from './githubService';
+export { googleAnalytics } from './googleAnalyticsService';
 
 // Future services can be exported here:
 // export { default as TwitterService } from './twitterService';

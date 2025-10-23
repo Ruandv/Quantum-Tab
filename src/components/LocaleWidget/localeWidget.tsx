@@ -129,10 +129,16 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
             }}
           >
             <span className={styles.selectedOption}>
-              <span className={styles.localeFlag}>{availableLocales.find((locale) => locale.code === i18n.language)?.flag}</span>
-              <span className={styles.localeName}>{availableLocales.find((locale) => locale.code === i18n.language)?.name}</span>
+              <span className={styles.localeFlag}>
+                {availableLocales.find((locale) => locale.code === i18n.language)?.flag}
+              </span>
+              <span className={styles.localeName}>
+                {availableLocales.find((locale) => locale.code === i18n.language)?.name}
+              </span>
             </span>
-            <span className={`${styles.dropdownArrow} ${isDropdownOpen ? styles.open : ''}`}>▼</span>
+            <span className={`${styles.dropdownArrow} ${isDropdownOpen ? styles.open : ''}`}>
+              ▼
+            </span>
           </div>
 
           {isDropdownOpen && (
@@ -153,7 +159,7 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
                 >
                   <span className={styles.localeFlag}>{locale.flag}</span>
                   <span className={styles.localeName}>{locale.name}</span>
-                  {locale.code ===  i18n.language && <span className={styles.checkmark}>✓</span>}
+                  {locale.code === i18n.language && <span className={styles.checkmark}>✓</span>}
                 </div>
               ))}
             </div>

@@ -18,8 +18,8 @@ export class NotificationManager {
       notificationPending: {
         type: 'install',
         version: currentVersion,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
   }
 
@@ -34,8 +34,8 @@ export class NotificationManager {
         type: 'update',
         version: currentVersion,
         previousVersion: previousVersion || '1.0.1',
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
   }
 
@@ -46,7 +46,7 @@ export class NotificationManager {
     await chrome.storage.sync.set({
       showWelcomeNotification: false,
       showUpdateNotification: false,
-      notificationPending: null
+      notificationPending: null,
     });
   }
 

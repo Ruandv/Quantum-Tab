@@ -7,6 +7,9 @@
     "activeTab",
     "storage"
   ],
+  "host_permissions": [
+    "https://www.google-analytics.com/*"
+  ],
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },

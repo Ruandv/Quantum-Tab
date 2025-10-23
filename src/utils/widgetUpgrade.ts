@@ -20,15 +20,7 @@ export interface UpgradeResult {
 const CURRENT_VERSION: string = manifest.version;
 
 // Version history for upgrade paths
-const VERSION_HISTORY = [
-  '1.0.0',
-  '1.1.0',
-  '1.2.0',
-  '1.3.0',
-  '1.4.0',
-  '1.5.0',
-  manifest.version
-];
+const VERSION_HISTORY = ['1.0.0', '1.1.0', '1.2.0', '1.3.0', '1.4.0', '1.5.0', manifest.version];
 
 /**
  * Get stored version from chrome storage
@@ -94,14 +86,18 @@ export const upgradeWidgets = async (widgets: SerializedWidget[]): Promise<Upgra
   return {
     upgraded: true,
     widgets: upgradedWidgets,
-    changes
+    changes,
   };
 };
 
 /**
  * Apply upgrade logic for a specific version
  */
-function applyVersionUpgrade(widgets: SerializedWidget[], targetVersion: string, changes: string[]): SerializedWidget[] {
+function applyVersionUpgrade(
+  widgets: SerializedWidget[],
+  targetVersion: string,
+  changes: string[]
+): SerializedWidget[] {
   switch (targetVersion) {
     case '1.1.0':
       return upgradeTo_1_1_0(widgets, changes);
@@ -125,7 +121,7 @@ function applyVersionUpgrade(widgets: SerializedWidget[], targetVersion: string,
  * - Added autoRefresh and refreshInterval props to GitHub widgets
  */
 function upgradeTo_1_1_0(widgets: SerializedWidget[], changes: string[]): SerializedWidget[] {
-  return widgets.map(widget => {
+  return widgets.map((widget) => {
     if (widget.component === 'GitHubWidget' || widget.component === 'GitCommentWatcher') {
       if (!widget.props) widget.props = {};
 
@@ -148,7 +144,7 @@ function upgradeTo_1_1_0(widgets: SerializedWidget[], changes: string[]): Serial
  * - Added AI features to BackgroundManager
  */
 function upgradeTo_1_2_0(widgets: SerializedWidget[], changes: string[]): SerializedWidget[] {
-  return widgets.map(widget => {
+  return widgets.map((widget) => {
     if (widget.component === 'BackgroundManager') {
       if (!widget.props) widget.props = {};
 
@@ -175,7 +171,7 @@ function upgradeTo_1_2_0(widgets: SerializedWidget[], changes: string[]): Serial
  * - Added website counter features
  */
 function upgradeTo_1_3_0(widgets: SerializedWidget[], changes: string[]): SerializedWidget[] {
-  return widgets.map(widget => {
+  return widgets.map((widget) => {
     if (widget.component === 'WebsiteCounter') {
       if (!widget.props) widget.props = {};
 
@@ -202,7 +198,7 @@ function upgradeTo_1_3_0(widgets: SerializedWidget[], changes: string[]): Serial
  * - Added locale widget features
  */
 function upgradeTo_1_4_0(widgets: SerializedWidget[], changes: string[]): SerializedWidget[] {
-  return widgets.map(widget => {
+  return widgets.map((widget) => {
     if (widget.component === 'LocaleWidget') {
       if (!widget.props) widget.props = {};
 
@@ -230,24 +226,23 @@ function upgradeTo_1_5_0(widgets: SerializedWidget[], changes: string[]): Serial
     'github-widget',
     'git-comment-watcher',
     'website-counter',
-    'sprint-number'
+    'sprint-number',
   ]);
 
-  return widgets.map(widget => {
+  return widgets.map((widget) => {
     // Ensure isRuntimeVisible is set based on component type
     if (widget.isRuntimeVisible === undefined) {
       const isVisible = runtimeVisibleWidgets.has(widget.component);
       widget.isRuntimeVisible = isVisible;
       // check if the widgets name starts with "Unknown Widget"
-      if (widget.name.startsWith("Unknown Widget")) {
+      if (widget.name.startsWith('Unknown Widget')) {
         // split the widgetid by - and concat the till you find a number
         const nameParts = widget.id.split('-');
         let properName = '';
         for (const part of nameParts) {
           if (isNaN(Number(part))) {
             properName += `-${part}`;
-          }
-          else {
+          } else {
             break;
           }
         }
@@ -258,12 +253,12 @@ function upgradeTo_1_5_0(widgets: SerializedWidget[], changes: string[]): Serial
     }
     if (widget.component === 'quick-actions') {
       if (!widget.props) widget.props = {};
-      const reg = widgetRegistry.findByComponentName("QuickActionButtons");
+      const reg = widgetRegistry.findByComponentName('QuickActionButtons');
       if (reg && reg.defaultProps) {
         // Merge defaultProps with widget.props, giving priority to widget.props
         widget.props = {
           ...reg.defaultProps,
-          ...widget.props
+          ...widget.props,
         };
         changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
       }
@@ -271,12 +266,12 @@ function upgradeTo_1_5_0(widgets: SerializedWidget[], changes: string[]): Serial
 
     if (widget.component === 'live-clock') {
       if (!widget.props) widget.props = {};
-      const reg = widgetRegistry.findByComponentName("LiveClock");
+      const reg = widgetRegistry.findByComponentName('LiveClock');
       if (reg && reg.defaultProps) {
         // Merge defaultProps with widget.props, giving priority to widget.props
         widget.props = {
           ...reg.defaultProps,
-          ...widget.props
+          ...widget.props,
         };
         changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
       }
@@ -284,12 +279,12 @@ function upgradeTo_1_5_0(widgets: SerializedWidget[], changes: string[]): Serial
 
     if (widget.component === 'sprint-number') {
       if (!widget.props) widget.props = {};
-      const reg = widgetRegistry.findByComponentName("SprintNumber");
+      const reg = widgetRegistry.findByComponentName('SprintNumber');
       if (reg && reg.defaultProps) {
         // Merge defaultProps with widget.props, giving priority to widget.props
         widget.props = {
           ...reg.defaultProps,
-          ...widget.props
+          ...widget.props,
         };
         changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
       }
@@ -297,38 +292,37 @@ function upgradeTo_1_5_0(widgets: SerializedWidget[], changes: string[]): Serial
     if (widget.component === 'locale-selector') {
       if (!widget.props) widget.props = {};
 
-      const reg = widgetRegistry.findByComponentName("LocaleWidget");
+      const reg = widgetRegistry.findByComponentName('LocaleWidget');
       if (reg && reg.defaultProps) {
         widget.props = {
           ...reg.defaultProps,
-          ...widget.props
+          ...widget.props,
         };
         changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
       }
     }
-    
+
     if (widget.component === 'website-counter') {
       if (!widget.props) widget.props = {};
 
-      const reg = widgetRegistry.findByComponentName("WebsiteCounter");
+      const reg = widgetRegistry.findByComponentName('WebsiteCounter');
       if (reg && reg.defaultProps) {
         widget.props = {
           ...reg.defaultProps,
-          ...widget.props
+          ...widget.props,
         };
         changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
       }
     }
 
-    
     if (widget.component === 'git-comment-watcher') {
       if (!widget.props) widget.props = {};
 
-      const reg = widgetRegistry.findByComponentName("GitCommentWatcher");
+      const reg = widgetRegistry.findByComponentName('GitCommentWatcher');
       if (reg && reg.defaultProps) {
         widget.props = {
           ...reg.defaultProps,
-          ...widget.props
+          ...widget.props,
         };
         changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
       }
@@ -336,11 +330,11 @@ function upgradeTo_1_5_0(widgets: SerializedWidget[], changes: string[]): Serial
     if (widget.component === 'github-widget') {
       if (!widget.props) widget.props = {};
 
-      const reg = widgetRegistry.findByComponentName("GitHubWidget");
+      const reg = widgetRegistry.findByComponentName('GitHubWidget');
       if (reg && reg.defaultProps) {
         widget.props = {
           ...reg.defaultProps,
-          ...widget.props
+          ...widget.props,
         };
         changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
       }
@@ -348,22 +342,21 @@ function upgradeTo_1_5_0(widgets: SerializedWidget[], changes: string[]): Serial
     if (widget.component === 'background-manager') {
       if (!widget.props) widget.props = {};
 
-      const reg = widgetRegistry.findByComponentName("BackgroundManager");
+      const reg = widgetRegistry.findByComponentName('BackgroundManager');
       if (reg && reg.defaultProps) {
         widget.props = {
           ...reg.defaultProps,
-          ...widget.props
+          ...widget.props,
         };
         changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
       }
     }
-    
 
     return widget;
   });
 }
 function upgradeTo_1_6_0(widgets: SerializedWidget[], changes: string[]): SerializedWidget[] {
-  return widgets.map(widget => {
+  return widgets.map((widget) => {
     if (widget.component === 'github-widget') {
       // get all the props and set default values if missing
       if (!widget.props) widget.props = {};

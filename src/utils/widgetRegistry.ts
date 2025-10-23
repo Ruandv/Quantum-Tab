@@ -7,7 +7,7 @@ import {
   WebsiteCounterProps,
   LocaleWidgetProps,
   SprintNumberProps,
-  WidgetType
+  WidgetType,
 } from '../types/common';
 import LiveClock from '../components/LiveClock/liveClock';
 import QuickActionButtons from '../components/QuickActionButtons/quickActionButtons';
@@ -123,7 +123,7 @@ export class WidgetRegistry {
       wikiPage: 'gitcommentwatcher',
       allowMultiples: true,
       isRuntimeVisible: true,
-      description: 'Monitor comments on your PR\'s',
+      description: "Monitor comments on your PR's",
       component: GitCommentWatcher,
       defaultDimensions: { width: 400, height: 250 },
       defaultProps: {
@@ -190,7 +190,7 @@ export class WidgetRegistry {
         numberOfDays: 14,
         currentSprint: 1,
       },
-      wikiPage: 'sprint-number'
+      wikiPage: 'sprint-number',
     });
   }
 
@@ -224,16 +224,37 @@ export class WidgetRegistry {
 
     // Create a localized copy of the widget
     const localizedWidget = { ...widget };
-    
+
     // Map widget IDs to translation keys
     const translationMap: Record<string, { name: string; description: string }> = {
-      'live-clock': { name: 'widgets.liveClock.name', description: 'widgets.liveClock.description' },
-      'quick-actions': { name: 'widgets.quickActions.name', description: 'widgets.quickActions.description' },
-      'background-manager': { name: 'widgets.backgroundManager.name', description: 'widgets.backgroundManager.description' },
-      'github-widget': { name: 'widgets.githubWidget.name', description: 'widgets.githubWidget.description' },
-      'website-counter': { name: 'widgets.websiteCounter.name', description: 'widgets.websiteCounter.description' },
-      'locale-selector': { name: 'widgets.localeWidget.name', description: 'widgets.localeWidget.description' },
-      'sprint-number': { name: 'widgets.sprintNumber.name', description: 'widgets.sprintNumber.description' },
+      'live-clock': {
+        name: 'widgets.liveClock.name',
+        description: 'widgets.liveClock.description',
+      },
+      'quick-actions': {
+        name: 'widgets.quickActions.name',
+        description: 'widgets.quickActions.description',
+      },
+      'background-manager': {
+        name: 'widgets.backgroundManager.name',
+        description: 'widgets.backgroundManager.description',
+      },
+      'github-widget': {
+        name: 'widgets.githubWidget.name',
+        description: 'widgets.githubWidget.description',
+      },
+      'website-counter': {
+        name: 'widgets.websiteCounter.name',
+        description: 'widgets.websiteCounter.description',
+      },
+      'locale-selector': {
+        name: 'widgets.localeWidget.name',
+        description: 'widgets.localeWidget.description',
+      },
+      'sprint-number': {
+        name: 'widgets.sprintNumber.name',
+        description: 'widgets.sprintNumber.description',
+      },
     };
 
     const translations = translationMap[widgetId];
@@ -247,12 +268,16 @@ export class WidgetRegistry {
 
   public getAllLocalized(t?: (key: string) => string): WidgetType[] {
     if (!t) return this.getAll();
-    
-    return this.getAll().map(widget => this.getLocalizedWidget(widget.id, t) || widget);
+
+    return this.getAll().map((widget) => this.getLocalizedWidget(widget.id, t) || widget);
   }
 
-  public getComponentByName(name: string): React.ComponentType<Record<string, unknown>> | undefined {
-    const widget = Array.from(this.widgets.values()).find((w) => w.component.name.toLowerCase() === name.toLowerCase());
+  public getComponentByName(
+    name: string
+  ): React.ComponentType<Record<string, unknown>> | undefined {
+    const widget = Array.from(this.widgets.values()).find(
+      (w) => w.component.name.toLowerCase() === name.toLowerCase()
+    );
     return widget?.component;
   }
 

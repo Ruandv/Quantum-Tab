@@ -189,18 +189,21 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
   }, [websiteData, updateWebsiteData, t]);
 
   // Format the last visited date
-  const formatLastVisited = useCallback((timestamp: number) => {
-    if (timestamp === 0) return t('widgets.websiteCounter.lastVisited.never');
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const formatLastVisited = useCallback(
+    (timestamp: number) => {
+      if (timestamp === 0) return t('widgets.websiteCounter.lastVisited.never');
+      const date = new Date(timestamp);
+      const now = new Date();
+      const diffMs = now.getTime() - date.getTime();
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return t('widgets.websiteCounter.lastVisited.today');
-    if (diffDays === 1) return t('widgets.websiteCounter.lastVisited.yesterday');
-    if (diffDays < 7) return t('widgets.websiteCounter.lastVisited.daysAgo', { days: diffDays });
-    return date.toLocaleDateString();
-  }, [t]);
+      if (diffDays === 0) return t('widgets.websiteCounter.lastVisited.today');
+      if (diffDays === 1) return t('widgets.websiteCounter.lastVisited.yesterday');
+      if (diffDays < 7) return t('widgets.websiteCounter.lastVisited.daysAgo', { days: diffDays });
+      return date.toLocaleDateString();
+    },
+    [t]
+  );
 
   if (isLoading) {
     return (

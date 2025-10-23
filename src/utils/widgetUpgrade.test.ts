@@ -35,8 +35,8 @@ const mockOldWidgets: SerializedWidget[] = [
       textColorGreen: 0,
       textColorBlue: 0,
       alignment: 'center',
-      justify: 'center'
-    }
+      justify: 'center',
+    },
   },
   {
     id: 'background-manager-1',
@@ -63,8 +63,8 @@ const mockOldWidgets: SerializedWidget[] = [
       textColorGreen: 0,
       textColorBlue: 0,
       alignment: 'center',
-      justify: 'center'
-    }
+      justify: 'center',
+    },
   },
   {
     id: 'live-clock-1',
@@ -92,9 +92,9 @@ const mockOldWidgets: SerializedWidget[] = [
       textColorGreen: 0,
       textColorBlue: 0,
       alignment: 'center',
-      justify: 'center'
-    }
-  }
+      justify: 'center',
+    },
+  },
 ];
 
 /**
@@ -121,9 +121,9 @@ export async function testWidgetUpgrade(): Promise<void> {
     });
 
     // Verify specific upgrades
-    const githubWidget = result.widgets.find(w => w.id === 'github-widget-1');
-    const backgroundWidget = result.widgets.find(w => w.id === 'background-manager-1');
-    const clockWidget = result.widgets.find(w => w.id === 'live-clock-1');
+    const githubWidget = result.widgets.find((w) => w.id === 'github-widget-1');
+    const backgroundWidget = result.widgets.find((w) => w.id === 'background-manager-1');
+    const clockWidget = result.widgets.find((w) => w.id === 'live-clock-1');
 
     console.log('\n🔍 Verification:');
 
@@ -154,25 +154,28 @@ export async function testWidgetUpgrade(): Promise<void> {
     }
 
     // Check Background Manager upgrades
-    if (backgroundWidget?.props?.isAIEnabled === false &&
-        backgroundWidget?.props?.aiPrompt === '' &&
-        backgroundWidget?.props?.aiKey === '') {
+    if (
+      backgroundWidget?.props?.isAIEnabled === false &&
+      backgroundWidget?.props?.aiPrompt === '' &&
+      backgroundWidget?.props?.aiKey === ''
+    ) {
       console.log('   ✅ Background Manager: AI props added');
     } else {
       console.log('   ❌ Background Manager: Missing expected AI props');
     }
 
     // Check Live Clock upgrades
-    if (clockWidget?.props?.showTime === true &&
-        clockWidget?.props?.showDate === true &&
-        clockWidget?.props?.showTimeZone === false) {
+    if (
+      clockWidget?.props?.showTime === true &&
+      clockWidget?.props?.showDate === true &&
+      clockWidget?.props?.showTimeZone === false
+    ) {
       console.log('   ✅ Live Clock: Format options added');
     } else {
       console.log('   ❌ Live Clock: Missing expected format props');
     }
 
     console.log('\n🎉 Widget upgrade test completed successfully!');
-
   } catch (error) {
     console.error('❌ Widget upgrade test failed:', error);
   }

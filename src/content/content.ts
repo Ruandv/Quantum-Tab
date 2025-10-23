@@ -16,7 +16,9 @@ async function trackWebsiteVisit(): Promise<void> {
     const websiteCounters = result.websiteCounters || [];
 
     // Find if this website is being tracked
-    const existingIndex = websiteCounters.findIndex((site: WebsiteCounterData) => site.hostname === hostname);
+    const existingIndex = websiteCounters.findIndex(
+      (site: WebsiteCounterData) => site.hostname === hostname
+    );
 
     if (existingIndex !== -1) {
       // Update existing counter

@@ -255,22 +255,22 @@
     width: 95%;
     max-height: 90vh;
   }
-  
+
   .header,
   .body,
   .footer {
     padding: 1rem;
   }
-  
+
   .title {
     font-size: 1.25rem;
   }
-  
+
   .footer {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .actionButton {
     width: 100%;
   }

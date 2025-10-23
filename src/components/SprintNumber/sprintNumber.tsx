@@ -22,7 +22,7 @@ const SprintNumber: React.FC<SprintNumberProps> = ({
     try {
       // Validate and parse the start date
       const parsedStartDate = new Date(startDate);
-      
+
       if (isNaN(parsedStartDate.getTime())) {
         setError(t('sprintNumber.errors.invalidDateFormat'));
         return;
@@ -38,15 +38,17 @@ const SprintNumber: React.FC<SprintNumberProps> = ({
 
       // Calculate how many sprints have passed
       const sprintsPassed = Math.floor(diffInDays / numberOfDays);
-      
+
       // Calculate the current sprint number
       const calculatedSprintNumber = currentSprint + sprintsPassed;
       setCurrentSprintNumber(calculatedSprintNumber);
 
       // Calculate current sprint start and end dates
       const currentSprintStartDate = new Date(parsedStartDate);
-      currentSprintStartDate.setDate(currentSprintStartDate.getDate() + (sprintsPassed * numberOfDays));
-      
+      currentSprintStartDate.setDate(
+        currentSprintStartDate.getDate() + sprintsPassed * numberOfDays
+      );
+
       const currentSprintEndDate = new Date(currentSprintStartDate);
       currentSprintEndDate.setDate(currentSprintEndDate.getDate() + numberOfDays - 1);
 
@@ -70,11 +72,14 @@ const SprintNumber: React.FC<SprintNumberProps> = ({
     const midnightTimer = setTimeout(() => {
       // Force re-render by updating a dependency
       setCurrentSprintNumber((prev) => prev);
-      
+
       // Set up daily interval
-      const dailyInterval = setInterval(() => {
-        setCurrentSprintNumber((prev) => prev);
-      }, 24 * 60 * 60 * 1000); // 24 hours
+      const dailyInterval = setInterval(
+        () => {
+          setCurrentSprintNumber((prev) => prev);
+        },
+        24 * 60 * 60 * 1000
+      ); // 24 hours
 
       return () => clearInterval(dailyInterval);
     }, msUntilMidnight);
@@ -109,21 +114,15 @@ const SprintNumber: React.FC<SprintNumberProps> = ({
   if (error) {
     return (
       <div className={`${styles.sprintNumberWidget} ${styles.error}`}>
-        <div className={styles.errorMessage}>
-          {error}
-        </div>
+        <div className={styles.errorMessage}>{error}</div>
       </div>
     );
   }
 
   return (
     <>
-      <div className={`${widgetCommon.widgetTitle}`}>
-        {t('sprintNumber.labels.sprint')}
-      </div>
-      <div className={`${styles.sprintNumber}`}>
-        {currentSprintNumber}
-      </div>
+      <div className={`${widgetCommon.widgetTitle}`}>{t('sprintNumber.labels.sprint')}</div>
+      <div className={`${styles.sprintNumber}`}>{currentSprintNumber}</div>
       <div className={`${styles.sprintDates}`}>
         <div className={`${styles.dateRow}`}>
           <span className={`${styles.dateLabel}`}>{t('sprintNumber.labels.start')}:</span>

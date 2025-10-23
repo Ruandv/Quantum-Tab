@@ -331,13 +331,18 @@ export class GitHubService {
    * Get the authenticated user's information
    * @param token - GitHub Personal Access Token
    */
-  static async getCurrentUser(token: string): Promise<{ login: string; id: number; name: string | null }> {
+  static async getCurrentUser(
+    token: string
+  ): Promise<{ login: string; id: number; name: string | null }> {
     if (!token) {
       throw new Error('GitHub Personal Access Token is required');
     }
 
     const endpoint = '/user';
-    return await this.makeRequest<{ login: string; id: number; name: string | null }>(endpoint, token);
+    return await this.makeRequest<{ login: string; id: number; name: string | null }>(
+      endpoint,
+      token
+    );
   }
 }
 

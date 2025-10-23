@@ -1,11 +1,18 @@
 // Centralized type definitions for the entire application
 
 // Define the keys that should be optional in defaultProps
-type OptionalKeys = 'buttons' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange';
+type OptionalKeys =
+  | 'buttons'
+  | 'isLocked'
+  | 'widgetId'
+  | 'onBackgroundChange'
+  | 'onButtonsChange'
+  | 'onLocaleChange';
 
 // Utility type to make all properties required except for specific optional ones
 // but still allow the optional properties to be provided in defaultProps
-type RequiredProps<T> = Required<Omit<T, OptionalKeys & keyof T>> & Partial<Pick<T, OptionalKeys & keyof T>>;
+type RequiredProps<T> = Required<Omit<T, OptionalKeys & keyof T>> &
+  Partial<Pick<T, OptionalKeys & keyof T>>;
 
 export interface Position {
   x: number;
@@ -106,9 +113,7 @@ export interface QuickActionButtonItemProps {
   onRemoveButton: (index: number) => void;
 }
 
-export interface GitHubIssuesProps extends DefaultWidgetProps {
-}
-
+export interface GitHubIssuesProps extends DefaultWidgetProps {}
 
 interface GitHubWidgetBaseProps extends DefaultWidgetProps {
   patToken: string;
@@ -117,14 +122,12 @@ interface GitHubWidgetBaseProps extends DefaultWidgetProps {
   refreshInterval?: number; // in minutes
 }
 
-export interface GitHubWidgetProps extends GitHubWidgetBaseProps {
-}
+export interface GitHubWidgetProps extends GitHubWidgetBaseProps {}
 
-export interface GitCommentWatcherProps extends GitHubWidgetBaseProps {
-}
+export interface GitCommentWatcherProps extends GitHubWidgetBaseProps {}
 
 export interface BackgroundManagerProps extends DefaultWidgetProps {
-  isAIEnabled: boolean; 
+  isAIEnabled: boolean;
   autoRefresh?: boolean;
   refreshInterval?: number; // in minutes
   backgroundSize: 'cover' | 'contain' | 'auto';
@@ -360,6 +363,7 @@ export const isSecureProperty = (key: string): boolean => {
     'pat', // Personal Access Token
     'aikey',
     'bearer',
-    'patToken']; // Add other secure property names here
-  return secureProps.map(prop => prop.toLowerCase()).includes(key.toLowerCase());
+    'patToken',
+  ]; // Add other secure property names here
+  return secureProps.map((prop) => prop.toLowerCase()).includes(key.toLowerCase());
 };

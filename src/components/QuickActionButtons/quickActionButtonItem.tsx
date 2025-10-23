@@ -20,7 +20,11 @@ const QuickActionButtonItem: React.FC<QuickActionButtonItemProps> = ({
         <span className={styles.btnLabel}>{button.label}</span>
       </button>
       {!isLocked && (
-        <button className={styles.removeBtn} onClick={() => onRemoveButton(index)} title="Remove button">
+        <button
+          className={styles.removeBtn}
+          onClick={() => onRemoveButton(index)}
+          title="Remove button"
+        >
           ×
         </button>
       )}

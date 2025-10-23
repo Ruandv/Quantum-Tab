@@ -1,8 +1,14 @@
-const path = require('path');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import webpack from 'webpack';
+import process from 'process';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const config = {
   entry: {
     popup: './src/popup/index.tsx',
     newtab: './src/newtab/index.tsx',
@@ -50,6 +56,10 @@ module.exports = {
     },
   },
   plugins: [
+    new webpack.DefinePlugin({
+      GA_MEASUREMENT_ID: JSON.stringify(process.env.GA_MEASUREMENT_ID || 'GA_MEASUREMENT_ID'),
+      GA_API_SECRET: JSON.stringify(process.env.GA_API_SECRET || 'GA_API_SECRET'),
+    }),
     new CopyWebpackPlugin({
       patterns: [
         {
@@ -92,3 +102,5 @@ module.exports = {
     },
   },
 };
+
+export default config;

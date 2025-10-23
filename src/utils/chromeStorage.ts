@@ -115,7 +115,7 @@ export const chromeStorage = {
         [STORAGE_KEYS.WIDGETS]: data.widgets,
         [STORAGE_KEYS.BACKGROUND]: data.backgroundImage,
         [STORAGE_KEYS.LOCK_STATE]: data.isLocked,
-        [STORAGE_KEYS.VERSION]: data.version
+        [STORAGE_KEYS.VERSION]: data.version,
       });
       return true;
     } catch (error) {
@@ -128,19 +128,17 @@ export const chromeStorage = {
     try {
       const result = await chrome.storage.local.get(STORAGE_KEYS.VERSION);
       return result[STORAGE_KEYS.VERSION] || '1.0.0';
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Failed to get version from Chrome storage:', error);
       return '1.0.0';
     }
   },
-  
+
   saveVersion: async (version: string): Promise<string> => {
     try {
       await chrome.storage.local.set({ [STORAGE_KEYS.VERSION]: version });
       return version;
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Failed to get version from Chrome storage:', error);
       return '1.0.0';
     }
@@ -153,7 +151,7 @@ export const chromeStorage = {
         STORAGE_KEYS.WIDGETS,
         STORAGE_KEYS.BACKGROUND,
         STORAGE_KEYS.LOCK_STATE,
-        STORAGE_KEYS.VERSION
+        STORAGE_KEYS.VERSION,
       ]);
 
       // Try to get the version from the manifest if available
@@ -237,7 +235,6 @@ export const chromeStorage = {
       const result = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
       const w = result[STORAGE_KEYS.WIDGETS]?.find((widget) => widget.id === widgetId) || {};
       return w;
-
     } catch (error) {
       console.error(`Failed to get widget data for ${widgetId} from Chrome storage:`, error);
       return {};
@@ -328,7 +325,10 @@ export const chromeStorage = {
     }
   },
 
-  setWidgetMetaData: async (widgetId: string, metaData: Record<string, unknown>): Promise<boolean> => {
+  setWidgetMetaData: async (
+    widgetId: string,
+    metaData: Record<string, unknown>
+  ): Promise<boolean> => {
     try {
       const result = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
       const widgets: SerializedWidget[] = result[STORAGE_KEYS.WIDGETS] || [];

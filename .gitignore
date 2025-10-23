@@ -77,5 +77,7 @@ Thumbs.db
 wiki-output/
 wiki/
 
-# Timestamped documentation files (generated temporary docs)
-docs/WIDGET_DOCUMENTATION_*_*_*.md
+# Environment variables
+.env
+.env.local
+.env.production
