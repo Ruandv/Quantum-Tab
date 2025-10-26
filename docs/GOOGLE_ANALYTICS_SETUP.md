@@ -41,7 +41,7 @@ export GA_API_SECRET="your_api_secret_here"
 npm run build
 ```
 
-The webpack build process embeds these credentials into the extension code.
+**Note:** The build works without environment variables set. GA will use placeholder values until you configure real credentials.
 
 ### 5. Distribute the Built Extension
 
@@ -62,47 +62,26 @@ For automated builds (GitHub Actions, etc.), set the environment variables in yo
 
 ---
 
-## Alternative: Using a .env File
+## Alternative: Using a .env File (Now Automatic!)
 
 You can create a `.env` file in your project root:
 
 ```bash
-# Create .env file
-echo "GA_MEASUREMENT_ID=G-XXXXXXXXXX" > .env
-echo "GA_API_SECRET=your_api_secret_here" >> .env
+# Copy the example file
+cp .env.example .env
+
+# Edit with your credentials
+GA_MEASUREMENT_ID=G-XXXXXXXXXX
+GA_API_SECRET=your_api_secret_here
 ```
 
-Then source it before building:
+**The build process now automatically loads `.env` files!** Just run:
 
 ```bash
-# Linux/Mac
-source .env && npm run build
-
-# Windows PowerShell
-. .\.env; npm run build
-
-# Windows Command Prompt
-for /f "tokens=*" %i in (.env) do set %i && npm run build
+npm run build
 ```
 
 **Note:** The `.env` file is already in `.gitignore`, so it won't be committed.
-
-### Using dotenv (Optional)
-
-If you prefer programmatic loading, install dotenv:
-
-```bash
-npm install --save-dev dotenv
-```
-
-Then create a build script that loads the .env file:
-
-```javascript
-// In package.json scripts
-"build": "node -r dotenv/config webpack --mode production"
-```
-
-But **dotenv is not required** - webpack can read environment variables directly.
 
 If you prefer not to use environment variables, you can directly edit `src/config/gaConfig.ts`:
 

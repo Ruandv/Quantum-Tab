@@ -3,7 +3,7 @@ export class GoogleAnalyticsService {
   private static instance: GoogleAnalyticsService;
   private measurementId: string;
   private apiSecret: string;
-  private clientId: string;
+  private clientId: string | null = null;
   private sessionId: string;
   private initialized = false;
 
@@ -11,7 +11,6 @@ export class GoogleAnalyticsService {
     // Initialize with default values - these should be configured
     this.measurementId = '';
     this.apiSecret = '';
-    this.clientId = this.generateClientId();
     this.sessionId = this.generateSessionId();
   }
 
@@ -45,6 +44,11 @@ export class GoogleAnalyticsService {
     if (!this.isConfigured()) {
       console.warn('Google Analytics not configured. Skipping event:', eventName);
       return;
+    }
+
+    // Ensure clientId is initialized
+    if (!this.clientId) {
+      this.clientId = await this.generateClientId();
     }
 
     try {
@@ -126,16 +130,22 @@ export class GoogleAnalyticsService {
   /**
    * Generate a unique client ID for this extension instance
    */
-  private generateClientId(): string {
-    // Use chrome.storage to persist client ID across sessions
-    const stored = localStorage.getItem('ga_client_id');
-    if (stored) {
-      return stored;
-    }
+  private async generateClientId(): Promise<string> {
+    // Use chrome.storage.local to persist client ID across sessions
+    try {
+      const result = await chrome.storage.local.get(['ga_client_id']);
+      if (result.ga_client_id) {
+        return result.ga_client_id;
+      }
 
-    const clientId = Date.now().toString() + Math.random().toString(36).substring(2);
-    localStorage.setItem('ga_client_id', clientId);
-    return clientId;
+      const clientId = Date.now().toString() + Math.random().toString(36).substring(2);
+      await chrome.storage.local.set({ ga_client_id: clientId });
+      return clientId;
+    } catch (error) {
+      // Fallback if storage is not available
+      console.warn('Storage not available, using temporary client ID');
+      return Date.now().toString() + Math.random().toString(36).substring(2);
+    }
   }
 
   /**

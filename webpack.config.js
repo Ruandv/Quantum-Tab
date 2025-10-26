@@ -3,10 +3,13 @@ import { fileURLToPath } from 'url';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack from 'webpack';
-import process from 'process';
+import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Load environment variables from .env file
+const env = dotenv.config().parsed || {};
 
 const config = {
   entry: {
@@ -57,8 +60,8 @@ const config = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      GA_MEASUREMENT_ID: JSON.stringify(process.env.GA_MEASUREMENT_ID || 'GA_MEASUREMENT_ID'),
-      GA_API_SECRET: JSON.stringify(process.env.GA_API_SECRET || 'GA_API_SECRET'),
+      GA_MEASUREMENT_ID: JSON.stringify(env.GA_MEASUREMENT_ID || 'GA_MEASUREMENT_ID'),
+      GA_API_SECRET: JSON.stringify(env.GA_API_SECRET || 'GA_API_SECRET'),
     }),
     new CopyWebpackPlugin({
       patterns: [
