@@ -4,12 +4,16 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack from 'webpack';
 import dotenv from 'dotenv';
+import process from 'process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load environment variables from .env file
-const env = dotenv.config().parsed || {};
+// Load environment variables from .env file so they are available via process.env
+dotenv.config({ path: path.resolve(__dirname, '.env') });
+
+const gaMeasurementId = process.env.GA_MEASUREMENT_ID ?? '';
+const gaApiSecret = process.env.GA_API_SECRET ?? '';
 
 const config = {
   entry: {
@@ -58,10 +62,12 @@ const config = {
       '@': path.resolve(__dirname, 'src'),
     },
   },
-  plugins: [
+  plugins: [ 
     new webpack.DefinePlugin({
-      GA_MEASUREMENT_ID: JSON.stringify(env.GA_MEASUREMENT_ID || 'GA_MEASUREMENT_ID'),
-      GA_API_SECRET: JSON.stringify(env.GA_API_SECRET || 'GA_API_SECRET'),
+      'process.env.GA_MEASUREMENT_ID': JSON.stringify(gaMeasurementId),
+      'process.env.GA_API_SECRET': JSON.stringify(gaApiSecret),
+      GA_MEASUREMENT_ID: JSON.stringify(gaMeasurementId || 'GA_MEASUREMENT_ID'),
+      GA_API_SECRET: JSON.stringify(gaApiSecret || 'GA_API_SECRET'),
     }),
     new CopyWebpackPlugin({
       patterns: [

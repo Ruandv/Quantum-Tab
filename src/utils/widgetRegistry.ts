@@ -18,6 +18,7 @@ import LocaleWidget from '../components/LocaleWidget/localeWidget';
 import SprintNumber from '../components/SprintNumber/sprintNumber';
 import { defaultDimensions } from '@/types/defaults';
 import BackgroundManager from '@/components/BackgroundManager/backgroundManager';
+import { GoogleAnalyticsService } from '@/services/googleAnalyticsService';
 
 export class WidgetRegistry {
   private static instance: WidgetRegistry;
@@ -199,7 +200,7 @@ export class WidgetRegistry {
       console.warn(`Widget with id '${widget.id}' already exists. Overwriting...`);
     }
     this.widgets.set(widget.id, widget as WidgetType);
-  }
+  } 
 
   public unregister(widgetId: string): boolean {
     return this.widgets.delete(widgetId);

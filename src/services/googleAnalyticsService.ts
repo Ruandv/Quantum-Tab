@@ -1,3 +1,5 @@
+import { GA_CONFIG } from '../config/gaConfig';
+
 // Google Analytics service for Chrome Extension using Measurement Protocol v4
 export class GoogleAnalyticsService {
   private static instance: GoogleAnalyticsService;
@@ -8,10 +10,10 @@ export class GoogleAnalyticsService {
   private initialized = false;
 
   private constructor() {
-    // Initialize with default values - these should be configured
     this.measurementId = '';
     this.apiSecret = '';
     this.sessionId = this.generateSessionId();
+    this.applyConfigDefaults();
   }
 
   public static getInstance(): GoogleAnalyticsService {
@@ -25,6 +27,15 @@ export class GoogleAnalyticsService {
    * Initialize the GA service with measurement ID and API secret
    */
   public initialize(measurementId: string, apiSecret: string): void {
+    console.log("Initializing Google Analytics Service");
+    if (!this.hasUsableValue(measurementId, 'GA_MEASUREMENT_ID') || !this.hasUsableValue(apiSecret, 'GA_API_SECRET')) {
+      this.measurementId = '';
+      this.apiSecret = '';
+      this.initialized = false;
+      console.warn('Invalid GA configuration provided. GA will not be initialized.');
+      return;
+    }
+
     this.measurementId = measurementId;
     this.apiSecret = apiSecret;
     this.initialized = true;
@@ -153,6 +164,22 @@ export class GoogleAnalyticsService {
    */
   private generateSessionId(): string {
     return Date.now().toString();
+  }
+
+  private applyConfigDefaults(): void {
+    const configMeasurementId = GA_CONFIG.MEASUREMENT_ID;
+    const configApiSecret = GA_CONFIG.API_SECRET;
+
+    if (this.hasUsableValue(configMeasurementId, 'GA_MEASUREMENT_ID') && this.hasUsableValue(configApiSecret, 'GA_API_SECRET')) {
+      this.measurementId = configMeasurementId;
+      this.apiSecret = configApiSecret;
+      this.initialized = true;
+    }
+  }
+
+  private hasUsableValue(value: string, placeholder: string): boolean {
+    const trimmedValue = value?.trim();
+    return Boolean(trimmedValue && trimmedValue !== placeholder);
   }
 }
 

@@ -2,6 +2,7 @@ import { LiveClockProps } from '@/types/common';
 import React, { useState, useEffect } from 'react';
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './liveClock.module.css';
+import { GoogleAnalyticsService } from '@/services/googleAnalyticsService';
 
 const LiveClock: React.FC<LiveClockProps> = ({
   timeZone,
@@ -31,7 +32,8 @@ const LiveClock: React.FC<LiveClockProps> = ({
       // Cleanup: Clear any LiveClock-specific storage or timers
       try {
         console.log('Cleaning up LiveClock widget data for:', widgetId);
-
+        const ga = await GoogleAnalyticsService.getInstance();
+        await ga.sendEvent('widget_removed', { widgetId , widgetName: LiveClock.displayName});
         // Clear any clock-specific storage if it exists
         if (typeof chrome !== 'undefined' && chrome.storage) {
           console.log('LiveClock widget storage cleared for widget:', widgetId);

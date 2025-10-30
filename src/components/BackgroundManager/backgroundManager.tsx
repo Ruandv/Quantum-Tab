@@ -6,6 +6,7 @@ import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './backgroundManager.module.css';
 import chromeStorage, { SerializedWidget } from '@/utils/chromeStorage';
 import GeminiService from '@/services/geminiService';
+import { GoogleAnalyticsService } from '@/services/googleAnalyticsService';
 
 const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   onBackgroundChange,
@@ -105,7 +106,8 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
           await chrome.storage.local.remove(['quantum-tab-background']);
           console.log('Background image storage cleared for widget:', widgetId);
         }
-
+        const ga = await GoogleAnalyticsService.getInstance();
+        await ga.sendEvent('widget_removed', { widgetId , widgetName: BackgroundManager.displayName});
         // Reset background to default if there's a callback
         if (onBackgroundChange) {
           onBackgroundChange('');

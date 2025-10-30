@@ -4,6 +4,7 @@ import { SprintNumberProps } from '@/types/common';
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './sprintNumber.module.css';
 import widgetCommon from '../../styles/widgetCommon.module.css';
+import { GoogleAnalyticsService } from '@/services/googleAnalyticsService';
 
 const SprintNumber: React.FC<SprintNumberProps> = ({
   startDate,
@@ -94,6 +95,8 @@ const SprintNumber: React.FC<SprintNumberProps> = ({
     const removeListener = addWidgetRemovalListener(widgetId, async () => {
       try {
         console.log('Cleaning up SprintNumber widget data for:', widgetId);
+        const ga = await GoogleAnalyticsService.getInstance();
+        await ga.sendEvent('widget_removed', { widgetId , widgetName: SprintNumber.displayName});
         // No specific storage to clean up for this widget
       } catch (error) {
         console.error('Failed to cleanup SprintNumber widget data:', error);
@@ -136,5 +139,5 @@ const SprintNumber: React.FC<SprintNumberProps> = ({
     </>
   );
 };
-
+SprintNumber.displayName = 'SprintNumber';
 export default SprintNumber;

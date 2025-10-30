@@ -5,6 +5,7 @@ import QuickActionButtonItem from './quickActionButtonItem';
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import { ModalDialog } from '../ModalDialog/modalDialog';
 import styles from './quickActionButtons.module.css';
+import { GoogleAnalyticsService } from '@/services/googleAnalyticsService';
 
 const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
   buttons = [
@@ -33,9 +34,8 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
     if (!widgetId) return;
 
     const removeListener = addWidgetRemovalListener(widgetId, async () => {
-      // No specific storage cleanup needed - QuickActionButtons data is stored
-      // as part of the widget configuration in 'quantum-tab-widgets' and is
-      // automatically removed when the widget is deleted from the dashboard
+      const ga = await GoogleAnalyticsService.getInstance();
+      await ga.sendEvent('widget_removed', { widgetId , widgetName: QuickActionButtons.displayName});
       console.log('QuickActionButtons widget removed:', widgetId);
     });
 

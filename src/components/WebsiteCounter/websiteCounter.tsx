@@ -4,6 +4,7 @@ import { WebsiteCounterProps, WebsiteCounterData } from '../../types/common';
 import chromeStorage from '../../utils/chromeStorage';
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './websiteCounter.module.css';
+import { GoogleAnalyticsService } from '@/services/googleAnalyticsService';
 
 const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
   websites = [],
@@ -56,6 +57,7 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
       }
+      GoogleAnalyticsService.getInstance().sendEvent('widget_removed', { widgetId, widgetName: WebsiteCounter.displayName });
     };
   }, []);
 

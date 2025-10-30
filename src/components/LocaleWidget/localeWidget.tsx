@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { LocaleWidgetProps } from '../../types/common';
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './localeWidget.module.css';
+import { GoogleAnalyticsService } from '@/services/googleAnalyticsService';
 
 const LocaleWidget: React.FC<LocaleWidgetProps> = ({
   selectedLocale,
@@ -60,6 +61,8 @@ const LocaleWidget: React.FC<LocaleWidgetProps> = ({
           await chrome.storage.local.remove(['quantum-tab-userLocale']);
           console.log('User locale storage cleared for widget:', widgetId);
         }
+        const ga = await GoogleAnalyticsService.getInstance();
+                await ga.sendEvent('widget_removed', { widgetId , widgetName: LocaleWidget.displayName});
       } catch (error) {
         console.error('Failed to reset language during widget cleanup:', error);
       }

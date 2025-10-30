@@ -11,6 +11,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   const now = new Date().toISOString();
 
   // Initialize Google Analytics (values injected at build time via webpack)
+  console.log("Configuring Google Analytics BACKGROUND");
   googleAnalytics.initialize(GA_CONFIG.MEASUREMENT_ID, GA_CONFIG.API_SECRET);
 
   // Handle different installation scenarios

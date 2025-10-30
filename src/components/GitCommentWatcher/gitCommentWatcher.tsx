@@ -10,6 +10,7 @@ import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './gitCommentWatcher.module.css';
 import githubStyles from '../GitHubWidget/githubWidget.module.css';
 import chromeStorage from '@/utils/chromeStorage';
+import { GoogleAnalyticsService } from '@/services/googleAnalyticsService';
 
 const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
   patToken = '',
@@ -159,6 +160,8 @@ const GitCommentWatcher: React.FC<GitCommentWatcherProps> = ({
         if (typeof chrome !== 'undefined' && chrome.storage) {
           console.log('GitCommentWatcher storage cleared for widget:', widgetId);
         }
+        const ga = await GoogleAnalyticsService.getInstance();
+        await ga.sendEvent('widget_removed', { widgetId , widgetName: GitCommentWatcher.displayName});
       } catch (error) {
         console.error('Failed to cleanup GitCommentWatcher data:', error);
       }

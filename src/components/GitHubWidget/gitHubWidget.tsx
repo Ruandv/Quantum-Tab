@@ -9,6 +9,7 @@ import {
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './githubWidget.module.css';
 import chromeStorage from '@/utils/chromeStorage';
+import { GoogleAnalyticsService } from '@/services/googleAnalyticsService';
 
 const GitHubWidget: React.FC<GitHubWidgetProps> = ({
   patToken = '',
@@ -110,6 +111,9 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
         if (typeof chrome !== 'undefined' && chrome.storage) {
           console.log('GitHub widget storage cleared for widget:', widgetId);
         }
+
+        const ga = await GoogleAnalyticsService.getInstance();
+        await ga.sendEvent('widget_removed', { widgetId , widgetName: GitHubWidget.displayName});
       } catch (error) {
         console.error('Failed to cleanup GitHub widget data:', error);
       }
@@ -148,6 +152,7 @@ const GitHubWidget: React.FC<GitHubWidgetProps> = ({
     console.log(`Saving metaData [${widgetId}]:`, metaData);
     chromeStorage.setWidgetMetaData(widgetId, metaData);
   }, [lastFetch, pullRequests, widgetId]);
+
   useEffect(() => {
     // Load the lastFetched value and previousPullRequestsRef from localStorage using chromeStorage
     const loadMetaData = async () => {

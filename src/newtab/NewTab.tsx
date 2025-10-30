@@ -13,12 +13,16 @@ import NotificationManager from '@/utils/notificationManager';
 import { upgradeWidgets } from '../utils/widgetUpgrade';
 import GitHubIssues from '@/components/GitHubIssues/gitHubIssues';
 import styles from './newTab.module.css';
+import { googleAnalytics } from '@/services';
+import { GA_CONFIG } from '../config/gaConfig';
+import { GoogleAnalyticsService } from '@/services/googleAnalyticsService';
 
 // Stable fallback component to avoid creating new function instances
 const EmptyWidget: React.FC<any> = () => null;
 
 const NewTab: React.FC = () => {
   const { t } = useTranslation();
+  let ga:GoogleAnalyticsService|null = null;
 
   // Component mapping for deserialization
   const componentMap = useMemo(() => widgetRegistry.createComponentMap(), []);
@@ -62,6 +66,12 @@ const NewTab: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showNotification, setShowNotification] = useState(false);
 
+  useEffect(() => {
+    // Initialize Google Analytics for New Tab
+    console.log("Configuring Google Analytics NEWTAB");
+    googleAnalytics.initialize(GA_CONFIG.MEASUREMENT_ID, GA_CONFIG.API_SECRET);
+    ga = GoogleAnalyticsService.getInstance();
+  }, []);
   // Load data from Chrome storage on component mount
   useEffect(() => {
     const loadInitialData = async () => {
@@ -340,6 +350,7 @@ const NewTab: React.FC = () => {
     setWidgets((prev) => {
       // Add the new widget, then filter to keep only the last occurrence for each id
       const updated = [...prev, widget];
+      ga.sendEvent('widget_added', { widget_id: widget.id, widget_name: widget.name });
       const uniqueById = updated.reduceRight<DashboardWidget[]>((acc, curr) => {
         if (!acc.some((w) => w.id === curr.id)) {
           acc.unshift(curr);
