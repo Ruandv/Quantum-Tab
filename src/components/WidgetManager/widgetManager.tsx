@@ -148,7 +148,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
               // Ensure props are serializable and match SerializedWidget type
               props: { ...widget.props }
             }));
-
             await chromeStorage.saveWidgets(serializedWidgets);
             await chromeStorage.saveBackground(data.backgroundImage);
             await chromeStorage.saveVersion(data?.version?.toString() || '1.0.0');
@@ -538,7 +537,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
           };
           data.widgets?.map((widget: SerializedWidget) => {
             const sanitizedWidget = { ...widget };
-            if (widget.props) {              
+            if (widget.props) {
               // iterate over the props and sanitize any props that isSecureProperty
               Object.keys(widget.props).forEach((key, _) => {
                 if (isSecureProperty(key)) {
@@ -550,12 +549,24 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             exportedData.widgets.push(sanitizedWidget);
           });
           // Create export data with sanitized widgets
+          // Dynamically read the version from the manifest.json file
+          let manifestVersion = '1.0.0';
+          try {
+            if (typeof chrome !== 'undefined' && chrome.runtime?.getManifest) {
+              // Chrome extension environment
+              manifestVersion = chrome.runtime.getManifest().version || '1.0.0';
+            }
+          } catch (e) {
+            // Fallback to default version if manifest is not accessible
+            manifestVersion = '1.0.0';
+          }
+
           const exportData = {
             ...data,
             widgets: exportedData.widgets,
             exportMetadata: {
               exportedAt: new Date().toISOString(),
-              version: '1.0.0',
+              version: manifestVersion,
               securityNote: 'InternalString properties (tokens, credentials, sensitive data) have been removed for security',
               secretProps: exportedData.secretProps
             }

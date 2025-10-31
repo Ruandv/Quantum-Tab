@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BackgroundManagerProps } from '../../types/common';
+import { BackgroundManagerProps, STORAGE_KEYS } from '../../types/common';
 import { validateImageFile, fileToDataURL } from '../../utils/helpers';
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './backgroundManager.module.css';
@@ -64,14 +64,19 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   // Add widget removal event listener for cleanup
 
   useEffect(() => {
-    if (lastRefresh) {
-      chromeStorage.setWidgetMetaData(widgetId, { lastRefresh: lastRefresh.toISOString() });
-    }
-  }, [lastRefresh, widgetId]);
+    const doWork = async () => {
+      if (lastRefresh) {
+        await chromeStorage.setWidgetMetaData(widgetId, {
+          lastRefresh: lastRefresh.toISOString(),
+          backgroundImage: uploadedImage
+        });
+      }
+    };
+    doWork();
+  }, [lastRefresh, widgetId, uploadedImage]); 
 
   useEffect(() => {
     const doWork = async () => {
-      console.log("Store data")
       const rawWidgetData = await chromeStorage.getWidgetData(widgetId);
       const storedProps =
         rawWidgetData && typeof rawWidgetData === 'object' && 'props' in rawWidgetData && rawWidgetData.props
@@ -96,7 +101,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       // Cleanup: Remove the background image from storage when widget is removed
       try {
         if (typeof chrome !== 'undefined' && chrome.storage) {
-          await chrome.storage.local.remove(['quantum-tab-background']);
           console.log('Background image storage cleared for widget:', widgetId);
         }
 

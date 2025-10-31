@@ -200,7 +200,6 @@ export type ResizeDirection = 'n' | 's' | 'e' | 'w' | 'ne' | 'nw' | 'se' | 'sw';
 // Constants
 export const STORAGE_KEYS = {
   WIDGETS: 'quantum-tab-widgets',
-  BACKGROUND: 'quantum-tab-background',
   LOCK_STATE: 'quantum-tab-lock-state',
   VERSION: 'quantum-tab-version',
   DEFAULT_STYLING: 'quantum-tab-default-styling',

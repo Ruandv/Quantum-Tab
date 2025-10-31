@@ -1,4 +1,4 @@
-import { SerializedWidget } from './chromeStorage';
+import chromeStorage, { SerializedWidget } from './chromeStorage';
 import { STORAGE_KEYS } from '../types/common';
 import manifest from '../../manifest.json';
 import widgetRegistry from './widgetRegistry';
@@ -86,7 +86,7 @@ export const upgradeWidgets = async (widgets: SerializedWidget[]): Promise<Upgra
   // Apply all upgrades from stored version to current
   for (let i = storedVersionIndex + 1; i <= currentVersionIndex; i++) {
     const targetVersion = VERSION_HISTORY[i];
-    upgradedWidgets = applyVersionUpgrade(upgradedWidgets, targetVersion, changes);
+    upgradedWidgets = await applyVersionUpgrade(upgradedWidgets, targetVersion, changes);
   }
   // Set the new version
   await setStoredVersion(CURRENT_VERSION);
@@ -101,7 +101,7 @@ export const upgradeWidgets = async (widgets: SerializedWidget[]): Promise<Upgra
 /**
  * Apply upgrade logic for a specific version
  */
-function applyVersionUpgrade(widgets: SerializedWidget[], targetVersion: string, changes: string[]): SerializedWidget[] {
+async function applyVersionUpgrade(widgets: SerializedWidget[], targetVersion: string, changes: string[]): Promise<SerializedWidget[]> {
   switch (targetVersion) {
     case '1.1.0':
       return upgradeTo_1_1_0(widgets, changes);
@@ -115,8 +115,9 @@ function applyVersionUpgrade(widgets: SerializedWidget[], targetVersion: string,
       return upgradeTo_1_5_0(widgets, changes);
     case '1.6.0':
       return upgradeTo_1_6_0(widgets, changes);
+    case '1.8.0':
     default:
-      return widgets;
+      return await upgradeTo_1_8_0(widgets, changes);
   }
 }
 
@@ -306,7 +307,7 @@ function upgradeTo_1_5_0(widgets: SerializedWidget[], changes: string[]): Serial
         changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
       }
     }
-    
+
     if (widget.component === 'website-counter') {
       if (!widget.props) widget.props = {};
 
@@ -320,7 +321,7 @@ function upgradeTo_1_5_0(widgets: SerializedWidget[], changes: string[]): Serial
       }
     }
 
-    
+
     if (widget.component === 'git-comment-watcher') {
       if (!widget.props) widget.props = {};
 
@@ -357,7 +358,7 @@ function upgradeTo_1_5_0(widgets: SerializedWidget[], changes: string[]): Serial
         changes.push(`Merged defaultProps into props for ${widget.name} (${widget.id})`);
       }
     }
-    
+
 
     return widget;
   });
@@ -378,4 +379,21 @@ function upgradeTo_1_6_0(widgets: SerializedWidget[], changes: string[]): Serial
     }
     return widget;
   });
+}
+
+async function upgradeTo_1_8_0(widgets: SerializedWidget[], changes: string[]): Promise<SerializedWidget[]> {
+  const saveData = await chromeStorage.loadAll();
+  const updatedWidgets = await Promise.all(
+    widgets.map(async widget => {
+      if (widget.component === 'background-manager') {
+        if (!widget.metaData) widget.metaData = {};
+        if (saveData && saveData['backgroundImage']) {
+          widget.metaData.backgroundImage = saveData['backgroundImage'];
+          changes.push(`Moved backgroundImage to metaData for ${widget.name} (${widget.id})`);
+        }
+      }
+      return widget;
+    })
+  );
+  return updatedWidgets;
 }

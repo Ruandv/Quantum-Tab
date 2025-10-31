@@ -76,7 +76,8 @@ const NewTab: React.FC = () => {
             try {
                 const savedData = await chromeStorage.loadAll();
                 // Set background and lock state
-                setBackgroundImage(savedData.backgroundImage || '');
+                const backgroundImage = await chromeStorage.loadBackground();
+                setBackgroundImage(backgroundImage|| '');
                 setIsLocked(savedData.isLocked || false);
 
                 // Check for pending notifications
@@ -306,7 +307,6 @@ const NewTab: React.FC = () => {
                 const version = await chromeStorage.getVersion();
                 const success = await chromeStorage.saveAll({
                     widgets: serializedWidgets,
-                    backgroundImage,
                     isLocked,
                     version,
                     timestamp: Date.now(),
