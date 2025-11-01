@@ -22,7 +22,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   const [aiPrompt, setAiPrompt] = useState('');
   const [aiKey, setAiKey] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const backgroundSizeRef = useRef<HTMLSelectElement>(null);
 
   const handleFileSelect = useCallback(() => {
     fileInputRef.current?.click();
@@ -64,14 +63,19 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   // Add widget removal event listener for cleanup
 
   useEffect(() => {
-    if (lastRefresh) {
-      chromeStorage.setWidgetMetaData(widgetId, { lastRefresh: lastRefresh.toISOString() });
-    }
-  }, [lastRefresh, widgetId]);
+    const doWork = async () => {
+      if (lastRefresh) {
+        await chromeStorage.setWidgetMetaData(widgetId, {
+          lastRefresh: lastRefresh.toISOString(),
+          backgroundImage: uploadedImage
+        });
+      }
+    };
+    doWork();
+  }, [lastRefresh, widgetId, uploadedImage]); 
 
   useEffect(() => {
     const doWork = async () => {
-      console.log("Store data")
       const rawWidgetData = await chromeStorage.getWidgetData(widgetId);
       const storedProps =
         rawWidgetData && typeof rawWidgetData === 'object' && 'props' in rawWidgetData && rawWidgetData.props
@@ -96,7 +100,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       // Cleanup: Remove the background image from storage when widget is removed
       try {
         if (typeof chrome !== 'undefined' && chrome.storage) {
-          await chrome.storage.local.remove(['quantum-tab-background']);
           console.log('Background image storage cleared for widget:', widgetId);
         }
 
@@ -128,7 +131,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       }
 
       setIsUploading(true);
-
       try {
         const imageUrl = await fileToDataURL(file);
         setUploadedImage(imageUrl);
@@ -258,22 +260,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
 
       {!isUploading && (
         <>
-          <label htmlFor="backgroundSize" className={styles.label}>
-            {t('backgroundManager.labels.aiBackgroundSize')}
-          </label>
-          <select
-            id="backgroundSize"
-            className={styles.aiTextarea}
-            ref={backgroundSizeRef}
-            value={backgroundSize}
-            onChange={(e) => setBackgroundSize(e.target.value)}
-            aria-label={t('backgroundManager.labels.backgroundMode')}
-            style={{ pointerEvents: 'auto', minHeight: 'auto' }}
-          >
-            <option value="auto">{t('backgroundManager.options.auto')}</option>
-            <option value="cover">{t('backgroundManager.options.cover')}</option>
-            <option value="contain">{t('backgroundManager.options.contain')}</option>
-          </select>
           {isAIEnabled && (
             <>
               <label htmlFor="aiPrompt" className={styles.label}>

@@ -55,6 +55,7 @@ export interface WidgetType<T = Record<string, unknown>> {
   component: React.ComponentType<T>;
   defaultDimensions: Dimensions;
   defaultProps: RequiredProps<T>;
+  metaData?: { lastRefresh: Date, backgroundImage: string }
 }
 
 interface DefaultWidgetProps {
@@ -124,7 +125,7 @@ export interface GitCommentWatcherProps extends GitHubWidgetBaseProps {
 }
 
 export interface BackgroundManagerProps extends DefaultWidgetProps {
-  isAIEnabled: boolean; 
+  isAIEnabled: boolean;
   autoRefresh?: boolean;
   refreshInterval?: number; // in minutes
   backgroundSize: 'cover' | 'contain' | 'auto';
@@ -200,7 +201,6 @@ export type ResizeDirection = 'n' | 's' | 'e' | 'w' | 'ne' | 'nw' | 'se' | 'sw';
 // Constants
 export const STORAGE_KEYS = {
   WIDGETS: 'quantum-tab-widgets',
-  BACKGROUND: 'quantum-tab-background',
   LOCK_STATE: 'quantum-tab-lock-state',
   VERSION: 'quantum-tab-version',
   DEFAULT_STYLING: 'quantum-tab-default-styling',

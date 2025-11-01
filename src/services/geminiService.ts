@@ -21,11 +21,14 @@ export default class GeminiService {
             contents: {
                 "parts": [
                     {
-                        "text": "Generate a details image based on the following description: " + prompt
+                        "text": "Generate a detailed image based on the following description: " + prompt
                     }
                 ]
             }
         });
+        if (response.usageMetadata && typeof response.usageMetadata.totalTokenCount === 'number') {
+            console.log(`Total tokens used: ${response.usageMetadata.totalTokenCount}`);
+        }
         for (const part of response.candidates[0].content.parts) {
             if (part.inlineData) {
                 const imageData = part.inlineData.data;

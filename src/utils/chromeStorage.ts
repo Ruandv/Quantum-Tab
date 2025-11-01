@@ -21,7 +21,6 @@ export interface SerializedWidget {
 // Interface for saved data
 export interface SavedData {
   widgets: SerializedWidget[];
-  backgroundImage: string;
   isLocked: boolean;
   timestamp: number;
   version: string;
@@ -63,9 +62,16 @@ export const chromeStorage = {
   // Save background image
   saveBackground: async (backgroundImage: string): Promise<boolean> => {
     try {
-      await chrome.storage.local.set({
-        [STORAGE_KEYS.BACKGROUND]: backgroundImage,
-      });
+      // find the backgroundManager widget and get its background from metaData
+      const widgets = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
+      const backgroundManager = widgets[STORAGE_KEYS.WIDGETS].find((widget) => widget.component === 'background-manager');
+      if (backgroundManager && backgroundManager.metaData) {
+        backgroundManager.metaData.backgroundImage = backgroundImage;
+      }
+      else if (backgroundManager) {
+        backgroundManager.metaData = { background: backgroundImage };
+      }
+      await chromeStorage.setWidgetData(backgroundManager.id, backgroundManager);
       return true;
     } catch (error) {
       console.error('Failed to save background to Chrome storage:', error);
@@ -76,10 +82,12 @@ export const chromeStorage = {
   // Load background image
   loadBackground: async (): Promise<string> => {
     try {
-      const result = await chrome.storage.local.get(STORAGE_KEYS.BACKGROUND);
-      return result[STORAGE_KEYS.BACKGROUND] || '';
+      // find the backgroundManager widget and get its background from metaData
+      const widgets = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS) as SerializedWidget[];
+      const backgroundManager = widgets[STORAGE_KEYS.WIDGETS].find((widget) => widget.component === 'background-manager');
+      return backgroundManager?.metaData?.backgroundImage || '';
     } catch (error) {
-      console.error('Failed to load background from Chrome storage:', error);
+      console.warn('Failed to load background from Chrome storage:', error);
       return '';
     }
   },
@@ -113,7 +121,6 @@ export const chromeStorage = {
     try {
       await chrome.storage.local.set({
         [STORAGE_KEYS.WIDGETS]: data.widgets,
-        [STORAGE_KEYS.BACKGROUND]: data.backgroundImage,
         [STORAGE_KEYS.LOCK_STATE]: data.isLocked,
         [STORAGE_KEYS.VERSION]: data.version
       });
@@ -134,7 +141,7 @@ export const chromeStorage = {
       return '1.0.0';
     }
   },
-  
+
   saveVersion: async (version: string): Promise<string> => {
     try {
       await chrome.storage.local.set({ [STORAGE_KEYS.VERSION]: version });
@@ -151,7 +158,7 @@ export const chromeStorage = {
     try {
       const result = await chrome.storage.local.get([
         STORAGE_KEYS.WIDGETS,
-        STORAGE_KEYS.BACKGROUND,
+        'quantum-tab-background',
         STORAGE_KEYS.LOCK_STATE,
         STORAGE_KEYS.VERSION
       ]);
@@ -167,16 +174,15 @@ export const chromeStorage = {
       }
       return {
         widgets: result[STORAGE_KEYS.WIDGETS] || [],
-        backgroundImage: result[STORAGE_KEYS.BACKGROUND] || '',
+        backgroundImage: result['quantum-tab-background'] || '',
         isLocked: result[STORAGE_KEYS.LOCK_STATE] || false,
         version,
         timestamp: Date.now(),
-      };
+      } as any;
     } catch (error) {
       console.error('Failed to load all data from Chrome storage:', error);
       return {
         widgets: [],
-        backgroundImage: '',
         isLocked: false,
         version: '1.0.0',
         timestamp: Date.now(),
@@ -223,7 +229,6 @@ export const chromeStorage = {
     try {
       await chrome.storage.local.remove([
         STORAGE_KEYS.WIDGETS,
-        STORAGE_KEYS.BACKGROUND,
         STORAGE_KEYS.LOCK_STATE,
       ]);
       return true;

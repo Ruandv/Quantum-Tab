@@ -15,7 +15,7 @@ import GitHubIssues from '@/components/GitHubIssues/gitHubIssues';
 import styles from './newTab.module.css';
 
 // Stable fallback component to avoid creating new function instances
-const EmptyWidget: React.FC<any> = () => null;
+const EmptyWidget: React.FC<unknown> = () => null;
 
 const NewTab: React.FC = () => {
     const { t } = useTranslation();
@@ -76,7 +76,8 @@ const NewTab: React.FC = () => {
             try {
                 const savedData = await chromeStorage.loadAll();
                 // Set background and lock state
-                setBackgroundImage(savedData.backgroundImage || '');
+                const backgroundImage = await chromeStorage.loadBackground();
+                setBackgroundImage(backgroundImage || '');
                 setIsLocked(savedData.isLocked || false);
 
                 // Check for pending notifications
@@ -87,6 +88,7 @@ const NewTab: React.FC = () => {
                 });
 
                 // Make NotificationManager available globally for testing
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (window as any).NotificationManager = NotificationManager;
 
 
@@ -246,107 +248,83 @@ const NewTab: React.FC = () => {
         });
     }, [getInitialWidgets, componentMap]);
 
-    // Debug function to reset everything
-    const handleReset = useCallback(async () => {
-        try {
-            await chromeStorage.clearAll();
-            setWidgets(getInitialWidgets());
-            setBackgroundImage('');
-            setIsLocked(false);
-        } catch (error) {
-            console.error('Failed to reset extension:', error);
-        }
-    }, [getInitialWidgets]);
+    // Create stable debounced function
+    const debouncedSave = useMemo(
+        () =>
+            debounce(async (widgetsToSave: DashboardWidget[], bgImage: string, locked: boolean) => {
+                console.log('Saving dashboard data to Chrome storage...');
+                try {
+                    const serializedWidgets: SerializedWidget[] = widgetsToSave.map((widget: DashboardWidget) => {
+                        // Find the widget type ID for this component
+                        const componentName = widget.component.name || widget.component.displayName || 'unknown';
 
-    // Add keyboard shortcuts
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.ctrlKey && event.shiftKey && event.key === 'R') {
-                event.preventDefault();
-                handleReset();
-            } else if (event.ctrlKey && event.shiftKey && event.key === 'L') {
-                event.preventDefault();
-                setIsLoading(false);
-                if (widgets.length === 0) {
-                    setWidgets(getInitialWidgets());
+                        const widgetType = widgetRegistry.findByComponentName(componentName);
+                        const serializedComponent = widgetType?.id || componentName || 'LiveClock';
+
+                        return {
+                            id: widget.id,
+                            name: widget.name,
+                            description: widget.description,
+                            isRuntimeVisible: widget.isRuntimeVisible ?? widgetType?.isRuntimeVisible ?? true,
+                            wikiPage: widget.wikiPage || widget.name.toLowerCase().replace(/\s+/g, ''),
+                            allowMultiples: widgetType?.allowMultiples || false,
+                            component: serializedComponent,
+                            props: widget.props,
+                            dimensions: widget.dimensions,
+                            position: widget.position,
+                            style: widget.style,
+                            metaData: widget.metaData
+                        };
+                    });
+                    const version = await chromeStorage.getVersion();
+                    const success = await chromeStorage.saveAll({
+                        widgets: serializedWidgets,
+                        isLocked: locked,
+                        version,
+                        timestamp: Date.now(),
+                    });
+
+                    if (!success) {
+                        console.error('Failed to save dashboard data to Chrome storage');
+                    }
+                } catch (error) {
+                    console.error('Error saving to Chrome storage:', error);
                 }
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [handleReset, widgets.length, getInitialWidgets]);
-
-    // Optimized save function with debouncing
-    const saveToStorage = useCallback(
-        debounce(async () => {
-            try {
-                const serializedWidgets: SerializedWidget[] = widgets.map((widget: DashboardWidget) => {
-                    // Find the widget type ID for this component
-                    const componentName = widget.component.name || widget.component.displayName || 'unknown';
-
-                    const widgetType = widgetRegistry.findByComponentName(componentName);
-                    const serializedComponent = widgetType?.id || componentName || 'LiveClock';
-
-                    return {
-                        id: widget.id,
-                        name: widget.name,
-                        description: widget.description,
-                        isRuntimeVisible: widget.isRuntimeVisible ?? widgetType?.isRuntimeVisible ?? true,
-                        wikiPage: widget.wikiPage || widget.name.toLowerCase().replace(/\s+/g, ''),
-                        allowMultiples: widgetType?.allowMultiples || false,
-                        component: serializedComponent,
-                        props: widget.props,
-                        dimensions: widget.dimensions,
-                        position: widget.position,
-                        style: widget.style,
-                        metaData: widget.metaData
-                    };
-                });
-                const version = await chromeStorage.getVersion();
-                const success = await chromeStorage.saveAll({
-                    widgets: serializedWidgets,
-                    backgroundImage,
-                    isLocked,
-                    version,
-                    timestamp: Date.now(),
-                });
-
-                if (!success) {
-                    console.error('Failed to save dashboard data to Chrome storage');
-                }
-            } catch (error) {
-                console.error('Error saving to Chrome storage:', error);
-            }
-        }, 1000),
-        [widgets, backgroundImage, isLocked]
+            }, 1000),
+        []
     );
 
-    // Auto-save when state changes
+    // Optimized save function with debouncing
+    const saveToStorage = useCallback(() => {
+        debouncedSave(widgets, backgroundImage, isLocked);
+    }, [debouncedSave, widgets, backgroundImage, isLocked]);
+
+    // // Auto-save when state changes
     useEffect(() => {
         if (!isLoading) {
             saveToStorage();
             // get background widget
-            const bg = widgets.find(x=>x.id.toLowerCase().startsWith('background-manager'));
-            if(bg){
-                setBackgroundSize(bg.props.backgroundSize as any)
+            const bg = widgets.find(x => x.id.toLowerCase().startsWith('background-manager'));
+            if (bg) {
+                setBackgroundSize(bg.props.backgroundSize as 'auto' | 'cover' | 'contain');
             }
         }
     }, [widgets, backgroundImage, isLocked, saveToStorage, isLoading]);
 
     // Widget management functions
     const handleAddWidget = useCallback((widget: DashboardWidget) => {
-            setWidgets((prev) => {
-                // Add the new widget, then filter to keep only the last occurrence for each id
-                const updated = [...prev, widget];
-                const uniqueById = updated.reduceRight<DashboardWidget[]>((acc, curr) => {
-                    if (!acc.some((w) => w.id === curr.id)) {
-                        acc.unshift(curr);
-                    }
-                    return acc;
-                }, []);
-                return uniqueById;
-            });
+        console.log('Adding widget:', widget);
+        setWidgets((prev) => {
+            // Add the new widget, then filter to keep only the last occurrence for each id
+            const updated = [...prev, widget];
+            const uniqueById = updated.reduceRight<DashboardWidget[]>((acc, curr) => {
+                if (!acc.some((w) => w.id === curr.id)) {
+                    acc.unshift(curr);
+                }
+                return acc;
+            }, []);
+            return uniqueById;
+        });
     }, []);
 
     const handleRemoveWidget = useCallback(async (widgetId: string) => {
@@ -368,9 +346,18 @@ const NewTab: React.FC = () => {
         );
     }, []);
 
-    const handleBackgroundChange = useCallback((newBackground: string) => {
+    const handleBackgroundChange = useCallback(async (newBackground: string) => {
+        await chromeStorage.saveBackground(newBackground)
+        // load the widget again to get updated props
+        const bg = widgets.find(x => x.id.toLowerCase().startsWith('background-manager'));
+        if (bg) {
+            bg.metaData = {
+                ...bg.metaData,
+                backgroundImage: newBackground
+            }
+        }
         setBackgroundImage(newBackground);
-    }, []);
+    }, [widgets]);
 
     const handleToggleLock = useCallback(() => {
         setIsLocked((prev) => !prev);
@@ -435,6 +422,7 @@ const NewTab: React.FC = () => {
                             onWidgetMove={handleWidgetMove}
                             isLocked={isLocked}
                             onBackgroundChange={handleBackgroundChange}
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             onUpdateWidgetProps={(widgetId: string, newProps: any) => {
                                 setWidgets((prev) =>
                                     prev.map((w) =>
