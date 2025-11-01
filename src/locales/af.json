@@ -211,6 +211,11 @@
       "calculationError": "Fout met berekening van sprint inligting."
     }
   },
+  "quarterIndicator": {
+    "labels": {
+      "quarter": "Kwartaal"
+    }
+  },
   "widgets": {
     "liveClock": {
       "name": "Lewendige Klok",

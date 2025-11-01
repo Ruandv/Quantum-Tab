@@ -7,7 +7,8 @@ import {
   WebsiteCounterProps,
   LocaleWidgetProps,
   SprintNumberProps,
-  WidgetType
+  WidgetType,
+  QuarterIndicatorProps
 } from '../types/common';
 import LiveClock from '../components/LiveClock/liveClock';
 import QuickActionButtons from '../components/QuickActionButtons/quickActionButtons';
@@ -18,6 +19,7 @@ import LocaleWidget from '../components/LocaleWidget/localeWidget';
 import SprintNumber from '../components/SprintNumber/sprintNumber';
 import { defaultDimensions } from '@/types/defaults';
 import BackgroundManager from '@/components/BackgroundManager/backgroundManager';
+import QuarterIndicator from '@/components/QuarterIndicator/quaterIndicator';
 
 export class WidgetRegistry {
   private static instance: WidgetRegistry;
@@ -192,6 +194,21 @@ export class WidgetRegistry {
         currentSprint: 1,
       },
       wikiPage: 'sprint-number'
+    });
+
+    this.register<QuarterIndicatorProps>({
+      id: 'quarter-indicator',
+      name: 'Quarter Indicator',
+      allowMultiples: true,
+      isRuntimeVisible: true,
+      description: 'Track quarterly progress and milestones',
+      component: QuarterIndicator,
+      defaultDimensions: { width: 300, height: 250 },
+      defaultProps: {
+        widgetHeading: 'Quarter Indicator',
+        startDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
+      },
+      wikiPage: 'quarter-indicator'
     });
   }
 

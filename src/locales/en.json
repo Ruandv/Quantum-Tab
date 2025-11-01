@@ -229,6 +229,11 @@
       "calculationError": "Error calculating sprint information."
     }
   },
+  "quarterIndicator": {
+    "labels": {
+      "quarter": "Quarter"
+    }
+  },
   "widgets": {
     "liveClock": {
       "name": "Live Clock",

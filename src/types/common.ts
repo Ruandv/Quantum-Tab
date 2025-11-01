@@ -152,6 +152,9 @@ export interface LocaleWidgetProps extends DefaultWidgetProps {
   onLocaleChange?: (locale: string) => void;
 }
 
+export interface QuarterIndicatorProps extends DefaultWidgetProps {
+  startDate: string; // Format: YYYY-MM-DD
+}
 export interface SprintNumberProps extends DefaultWidgetProps {
   startDate: string; // Format: YYYY-MM-DD
   numberOfDays: number;
