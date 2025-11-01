@@ -99,7 +99,7 @@ export const upgradeWidgets = async (widgets: SerializedWidget[]): Promise<Upgra
 /**
  * Apply upgrade logic for a specific version
  */
-async function applyVersionUpgrade(widgets: SerializedWidget[], targetVersion: string, changes: string[]): Promise<SerializedWidget[]> {
+async function applyVersionUpgrade(widgets: SerializedWidget[], targetVersion: string): Promise<SerializedWidget[]> {
   switch (targetVersion) {
     default:
       return widgets;
