@@ -3,7 +3,19 @@
 .widgetManager {
   position: relative;
 }
-
+.filter{
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.filter div{
+  border-radius: 12px;
+  padding: 0.3rem 0.8rem;
+  background: rgba(255, 255, 255, 0.1);
+}
 /* Modal Overlay */
 .modalOverlay {
   position: fixed;
@@ -85,6 +97,7 @@
 /* Form Sections */
 .formSection {
   margin-bottom: var(--spacing-xl);
+  min-height: 527px;
 }
 
 .formSection h3 {
