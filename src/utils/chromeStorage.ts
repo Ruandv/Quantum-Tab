@@ -87,7 +87,7 @@ export const chromeStorage = {
       const backgroundManager = widgets[STORAGE_KEYS.WIDGETS].find((widget) => widget.component === 'background-manager');
       return backgroundManager?.metaData?.backgroundImage || '';
     } catch (error) {
-      console.error('Failed to load background from Chrome storage:', error);
+      console.warn('Failed to load background from Chrome storage:', error);
       return '';
     }
   },

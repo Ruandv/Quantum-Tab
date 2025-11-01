@@ -97,6 +97,7 @@ export class WidgetRegistry {
         refreshInterval: 360, // 360 minutes = 6 hours
         backgroundSize: 'cover',
       },
+      metaData: { lastRefresh: new Date(), backgroundImage: '' }
     });
 
     this.register<GitHubWidgetProps>({
@@ -224,7 +225,7 @@ export class WidgetRegistry {
 
     // Create a localized copy of the widget
     const localizedWidget = { ...widget };
-    
+
     // Map widget IDs to translation keys
     const translationMap: Record<string, { name: string; description: string }> = {
       'live-clock': { name: 'widgets.liveClock.name', description: 'widgets.liveClock.description' },
@@ -247,7 +248,7 @@ export class WidgetRegistry {
 
   public getAllLocalized(t?: (key: string) => string): WidgetType[] {
     if (!t) return this.getAll();
-    
+
     return this.getAll().map(widget => this.getLocalizedWidget(widget.id, t) || widget);
   }
 

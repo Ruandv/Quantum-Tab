@@ -132,7 +132,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       }
 
       setIsUploading(true);
-
       try {
         const imageUrl = await fileToDataURL(file);
         setUploadedImage(imageUrl);
@@ -262,22 +261,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
 
       {!isUploading && (
         <>
-          <label htmlFor="backgroundSize" className={styles.label}>
-            {t('backgroundManager.labels.aiBackgroundSize')}
-          </label>
-          <select
-            id="backgroundSize"
-            className={styles.aiTextarea}
-            ref={backgroundSizeRef}
-            value={backgroundSize}
-            onChange={(e) => setBackgroundSize(e.target.value)}
-            aria-label={t('backgroundManager.labels.backgroundMode')}
-            style={{ pointerEvents: 'auto', minHeight: 'auto' }}
-          >
-            <option value="auto">{t('backgroundManager.options.auto')}</option>
-            <option value="cover">{t('backgroundManager.options.cover')}</option>
-            <option value="contain">{t('backgroundManager.options.contain')}</option>
-          </select>
           {isAIEnabled && (
             <>
               <label htmlFor="aiPrompt" className={styles.label}>

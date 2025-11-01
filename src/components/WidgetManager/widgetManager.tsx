@@ -455,6 +455,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             position: widgetPosition,
             props: widgetProps,
             style: widgetStyle,
+            metaData: selectedWidgetType.metaData || { lastRefresh: new Date() },
           };
 
           onAddWidget(newWidget);
