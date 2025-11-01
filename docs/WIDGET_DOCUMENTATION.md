@@ -62,6 +62,14 @@
 - **selectedLocale**: Currently selected locale code (e.g., 'en', 'af', 'es')
 - **widgetHeading**: Optional heading text displayed at the top of the widget
 
+### QuarterIndicator
+- **Description**: Quarter counter component for tracking project quarters or fiscal periods
+- **Usage**: Displays the current quarter number based on a configurable start date. Automatically calculates which quarter you're in based on the elapsed time since the start date, with each quarter being 3 months (90 days). Perfect for tracking fiscal quarters, project phases, or any 3-month cycles.
+
+#### Properties
+- **startDate**: Quarter start date in YYYY-MM-DD format (required) - the initial quarter start date from which all quarters are calculated
+- **widgetHeading**: Optional heading text displayed at the top of the widget
+
 ### QuickActionButtons
 - **Description**: Collection of customizable quick action buttons for accessing favorite websites
 - **Usage**: Displays a grid of buttons that open websites in new tabs when clicked. Users can add, remove, and customize buttons with custom icons (emojis), labels, and URLs. Perfect for frequently accessed sites. Default buttons include GitHub (🐙) and MyBroadband (🗞️).
