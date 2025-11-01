@@ -15,7 +15,7 @@ import GitHubIssues from '@/components/GitHubIssues/gitHubIssues';
 import styles from './newTab.module.css';
 
 // Stable fallback component to avoid creating new function instances
-const EmptyWidget: React.FC<any> = () => null;
+const EmptyWidget: React.FC<unknown> = () => null;
 
 const NewTab: React.FC = () => {
     const { t } = useTranslation();
@@ -88,6 +88,7 @@ const NewTab: React.FC = () => {
                 });
 
                 // Make NotificationManager available globally for testing
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (window as any).NotificationManager = NotificationManager;
 
 
@@ -329,7 +330,7 @@ const NewTab: React.FC = () => {
             // get background widget
             const bg = widgets.find(x=>x.id.toLowerCase().startsWith('background-manager'));
             if(bg){
-                setBackgroundSize(bg.props.backgroundSize as any)
+                setBackgroundSize(bg.props.backgroundSize as 'auto' | 'cover' | 'contain');
             }
         }
     }, [widgets, backgroundImage, isLocked, saveToStorage, isLoading]);
@@ -435,6 +436,7 @@ const NewTab: React.FC = () => {
                             onWidgetMove={handleWidgetMove}
                             isLocked={isLocked}
                             onBackgroundChange={handleBackgroundChange}
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             onUpdateWidgetProps={(widgetId: string, newProps: any) => {
                                 setWidgets((prev) =>
                                     prev.map((w) =>

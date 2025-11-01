@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BackgroundManagerProps, STORAGE_KEYS } from '../../types/common';
+import { BackgroundManagerProps } from '../../types/common';
 import { validateImageFile, fileToDataURL } from '../../utils/helpers';
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './backgroundManager.module.css';
