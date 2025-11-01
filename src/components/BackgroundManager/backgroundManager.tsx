@@ -22,7 +22,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   const [aiPrompt, setAiPrompt] = useState('');
   const [aiKey, setAiKey] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const backgroundSizeRef = useRef<HTMLSelectElement>(null);
 
   const handleFileSelect = useCallback(() => {
     fileInputRef.current?.click();
