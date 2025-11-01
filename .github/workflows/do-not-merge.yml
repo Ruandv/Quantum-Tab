@@ -1,0 +1,29 @@
+name: Do Not Merge PR Check
+
+on:
+    pull_request:
+        types: [opened, edited, labeled, unlabeled, synchronize]
+
+jobs:
+    check-do-not-merge:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check for "Do Not Merge" labels
+              id: check_labels
+              uses: actions/github-script@v7
+              with:
+                script: |
+                    const DO_NOT_MERGE_LABELS = [
+                        'do not merge',
+                        'wip',
+                        'blocked'
+                    ];
+                    const labels = context.payload.pull_request.labels.map(label => label.name.toLowerCase());
+                    const hasDoNotMerge = DO_NOT_MERGE_LABELS.some(tag => labels.includes(tag));
+                    core.setOutput('do_not_merge', hasDoNotMerge.toString());
+
+            - name: Fail if "Do Not Merge" label is present
+              if: steps.check_labels.outputs.do_not_merge == 'true'
+              run: |
+                    echo "❌ This PR has a 'Do Not Merge' label."
+                    exit 1
