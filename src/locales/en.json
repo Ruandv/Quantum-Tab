@@ -47,7 +47,13 @@
         "dimensions": "Widget Dimensions",
         "position": "Initial Position",
         "styling": "Widget Styling",
-        "properties": "Additional Properties"
+        "properties": "Additional Properties",
+        "filter": {
+          "all": "All",
+          "general": "General",
+          "git": "Git",
+          "business": "Business"
+        }
       }
     },
     "labels": {

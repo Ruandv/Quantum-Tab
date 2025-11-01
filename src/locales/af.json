@@ -47,7 +47,13 @@
         "dimensions": "Widget Dimensies",
         "position": "Aanvanklike Posisie",
         "styling": "Widget Styling",
-        "properties": "Addisionele Eienskappe"
+        "properties": "Addisionele Eienskappe",
+        "filter": {
+          "all": "Alles",
+          "general": "Algemeen",
+          "git": "Git",
+          "business": "Besigheid"
+        }
       }
     },
     "labels": {
