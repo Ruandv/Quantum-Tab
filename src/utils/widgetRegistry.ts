@@ -216,6 +216,7 @@ export class WidgetRegistry {
         widgetHeading: 'Quarter Indicator',
         startDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
       },
+      group: 'business',
       wikiPage: 'quarter-indicator'
     });
   }
