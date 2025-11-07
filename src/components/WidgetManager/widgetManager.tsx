@@ -34,10 +34,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     title: string | React.ReactNode; content: React.ReactNode,
     actions: Array<{ index: number, text: string; onClick: () => void }>
   } | null>(null);
-  const availableWidgets = useMemo(() => widgetRegistry.getAllLocalized(t), [t]);
+  const availableWidgets = useMemo(() => widgetRegistry.getAllLocalized(t), [t]).filter(widget => !widget.isDepricated);
   const containerBounds = useMemo(() => getViewportDimensions(), []);
   const filteredWidgets = useMemo(() => {
-    console.log('Current filter in useMemo:', filter);
     if (filter === 'all') return availableWidgets;
     return availableWidgets.filter(widget => widget.group === filter);
   }, [availableWidgets, filter]);
@@ -58,9 +57,10 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
       <h3>{t('widgetManager.modal.sections.chooseType')}</h3>
       <p className={styles.filter}><div onClick={() => filterWidgets('all')}>{t('widgetManager.modal.sections.filter.all')}</div><div onClick={() => filterWidgets('general')}>{t('widgetManager.modal.sections.filter.general')}</div><div onClick={() => filterWidgets('git')}>{t('widgetManager.modal.sections.filter.git')}</div><div onClick={() => filterWidgets('business')}>{t('widgetManager.modal.sections.filter.business')}</div></p>
       <div className={styles.widgetTypes}>{filteredWidgets.map((widgetType: WidgetType) => {
-        const component = existingWidgets.find((widget) => widget.id.startsWith(widgetType.id));
+        const component = existingWidgets.find((widget) => widget.id.startsWith(widgetType.id) && widgetType.isDepricated !== true);
+        debugger;
         console.log('Evaluating widget type:', widgetType.name, 'Group:', widgetType.group, 'Current filter:', filter);
-        if (component && component.allowMultiples === false && (filter !== 'all' && widgetType.group !== filter)) {
+        if (component && component.allowMultiples === false &&  (filter !== 'all' && widgetType.group !== filter)) {
           return null;
         }
         return (
@@ -481,6 +481,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             description: selectedWidgetType.description,
             isRuntimeVisible: selectedWidgetType.isRuntimeVisible,
             allowMultiples: selectedWidgetType.allowMultiples,
+            isDepricated: selectedWidgetType.isDepricated,
             wikiPage: selectedWidgetType.wikiPage,
             component: selectedWidgetType.component,
             dimensions: widgetDimensions,

@@ -36,6 +36,7 @@ export interface DashboardWidget {
   description: string;
   wikiPage: string;
   allowMultiples: boolean;
+  isDepricated?: boolean; // Made optional for backward compatibility
   isRuntimeVisible?: boolean; // Made optional for backward compatibility
   component: React.ComponentType<Record<string, unknown>>;
   props?: Record<string, unknown>;
@@ -51,6 +52,7 @@ export interface WidgetType<T = Record<string, unknown>> {
   wikiPage: string;
   allowMultiples: boolean;
   isRuntimeVisible: boolean;
+  isDepricated?: boolean; // Made optional for backward compatibility
   description: string;
   component: React.ComponentType<T>;
   defaultDimensions: Dimensions;
@@ -126,7 +128,6 @@ export interface GitCommentWatcherProps extends GitHubWidgetBaseProps {
 }
 
 export interface GitHubGuruProps extends GitHubWidgetBaseProps {
-  widgetHeading?: string;
 }
 
 export interface WebsiteCounterProps extends DefaultWidgetProps {

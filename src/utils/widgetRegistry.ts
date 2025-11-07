@@ -109,6 +109,7 @@ export class WidgetRegistry {
 
     this.register<GitHubWidgetProps>({
       id: 'github-widget',
+      isDepricated: true,
       name: 'GitHub Repository',
       wikiPage: 'githubwidget',
       allowMultiples: true,
@@ -128,6 +129,7 @@ export class WidgetRegistry {
 
     this.register<GitCommentWatcherProps>({
       id: 'git-comment-watcher',
+      isDepricated: true,
       name: 'Git Comment Watcher',
       wikiPage: 'gitcommentwatcher',
       allowMultiples: true,
