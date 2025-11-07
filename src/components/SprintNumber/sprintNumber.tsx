@@ -40,7 +40,7 @@ const SprintNumber: React.FC<SprintNumberProps> = ({
       const sprintsPassed = Math.floor(diffInDays / numberOfDays);
       
       // Calculate the current sprint number
-      const calculatedSprintNumber = currentSprint + sprintsPassed;
+      const calculatedSprintNumber = Number(currentSprint) + Number(sprintsPassed);
       setCurrentSprintNumber(calculatedSprintNumber);
 
       // Calculate current sprint start and end dates

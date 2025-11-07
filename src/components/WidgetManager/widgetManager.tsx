@@ -29,26 +29,38 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   const [widgetDimensions, setWidgetDimensions] = useState<Dimensions>(defaultDimensions);
   const [widgetPosition, setWidgetPosition] = useState<Position>(defaultPosition);
   const [widgetStyle, setWidgetStyle] = useState<CssStyle>(defaultStyle);
+  const [filter, setFilter] = useState<string>('all');
   const [modalContent, setModalContent] = useState<{
     title: string | React.ReactNode; content: React.ReactNode,
     actions: Array<{ index: number, text: string; onClick: () => void }>
   } | null>(null);
   const availableWidgets = useMemo(() => widgetRegistry.getAllLocalized(t), [t]);
   const containerBounds = useMemo(() => getViewportDimensions(), []);
+  const filteredWidgets = useMemo(() => {
+    console.log('Current filter in useMemo:', filter);
+    if (filter === 'all') return availableWidgets;
+    return availableWidgets.filter(widget => widget.group === filter);
+  }, [availableWidgets, filter]);
+  
   const loadDefaults = useCallback(async () => {
     const defaultStyle: CssStyle = (await chromeStorage.loadAllDefaults()).styling;
     const defaultDimensions: Dimensions = (await chromeStorage.loadAllDefaults()).dimensions;
     const defaultPosition: Position = (await chromeStorage.loadAllDefaults()).positioning;
     return { defaultStyle, defaultDimensions, defaultPosition };
   }, []);
+  const filterWidgets = (group: string) => {
+    setFilter(group);
+  };
   const [data, setData] = useState<{ widgets: SerializedWidget[], version: string, backgroundImage: string, isLocked: boolean, timestamp: number, exportMetadata: { secretProps: Array<{ name: string, key: string, value?: string }> } }>({ widgets: [], version: '1.0.0', backgroundImage: '', isLocked: false, timestamp: Date.now(), exportMetadata: { secretProps: [] } });
   // Function to generate default modal content - moved after all handlers are defined
   const getDefaultModalContent = useCallback(() => (
     <div className={styles.formSection}>
       <h3>{t('widgetManager.modal.sections.chooseType')}</h3>
-      <div className={styles.widgetTypes}>{availableWidgets.map((widgetType: WidgetType) => {
+      <p className={styles.filter}><div onClick={() => filterWidgets('all')}>{t('widgetManager.modal.sections.filter.all')}</div><div onClick={() => filterWidgets('general')}>{t('widgetManager.modal.sections.filter.general')}</div><div onClick={() => filterWidgets('git')}>{t('widgetManager.modal.sections.filter.git')}</div><div onClick={() => filterWidgets('business')}>{t('widgetManager.modal.sections.filter.business')}</div></p>
+      <div className={styles.widgetTypes}>{filteredWidgets.map((widgetType: WidgetType) => {
         const component = existingWidgets.find((widget) => widget.id.startsWith(widgetType.id));
-        if (component && component.allowMultiples === false) {
+        console.log('Evaluating widget type:', widgetType.name, 'Group:', widgetType.group, 'Current filter:', filter);
+        if (component && component.allowMultiples === false && (filter !== 'all' && widgetType.group !== filter)) {
           return null;
         }
         return (
@@ -64,7 +76,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
       })}</div>
     </div>
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  ), [t, availableWidgets, existingWidgets, selectedWidgetType]);
+  ), [t, availableWidgets, existingWidgets, selectedWidgetType, filteredWidgets]);
 
   const resetModalState = useCallback(async () => {
     setSelectedWidgetType(null);
@@ -87,6 +99,26 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     setWidgetPosition(r.defaultPosition);
     setWidgetStyle(r.defaultStyle);
   }, [getDefaultModalContent, loadDefaults, t]);
+
+  // Update modal content when filter changes
+  useEffect(() => {
+    if (isModalOpen && !selectedWidgetType) {
+      setModalContent({
+        content: getDefaultModalContent(),
+        title: t('widgetManager.modal.title'),
+        actions: [
+          {
+            index: 1,
+            text: t('common.buttons.cancel'),
+            onClick: () => {
+              setIsModalOpen(false);
+              setModalContent(null);
+              setSelectedWidgetType(null);
+            }
+          }]
+      });
+    }
+  }, [filter, isModalOpen, selectedWidgetType, getDefaultModalContent, t]);
 
   useEffect(() => {
     setIsModalOpen(modalContent === null ? false : true);

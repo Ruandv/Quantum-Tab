@@ -55,6 +55,7 @@ export class WidgetRegistry {
         showDate: false,
         showTimeZone: false,
       },
+      group: 'general'
     });
 
     this.register<QuickActionButtonsProps>({
@@ -63,6 +64,7 @@ export class WidgetRegistry {
       wikiPage: 'quickactions',
       allowMultiples: true,
       isRuntimeVisible: true,
+      group: 'general',
       description: 'Quick access buttons to your favorite websites',
       component: QuickActionButtons,
       defaultDimensions: { width: 350, height: 200 },
@@ -89,6 +91,7 @@ export class WidgetRegistry {
       wikiPage: 'backgroundmanager',
       allowMultiples: false,
       isRuntimeVisible: false,
+      group: 'general',
       description: 'Upload and manage custom background images',
       component: BackgroundManager,
       defaultDimensions: { width: 320, height: 320 },
@@ -108,6 +111,7 @@ export class WidgetRegistry {
       wikiPage: 'githubwidget',
       allowMultiples: true,
       isRuntimeVisible: true,
+      group: 'git',
       description: 'Monitor and interact with GitHub repositories',
       component: GitHubWidget,
       defaultDimensions: { width: 400, height: 250 },
@@ -126,6 +130,7 @@ export class WidgetRegistry {
       wikiPage: 'gitcommentwatcher',
       allowMultiples: true,
       isRuntimeVisible: true,
+      group: 'git',
       description: 'Monitor comments on your PR\'s',
       component: GitCommentWatcher,
       defaultDimensions: { width: 400, height: 250 },
@@ -144,6 +149,7 @@ export class WidgetRegistry {
       wikiPage: 'websitecounter',
       allowMultiples: true,
       isRuntimeVisible: true,
+      group: 'general',
       description: 'Track and count visits to your favorite websites',
       component: WebsiteCounter,
       defaultDimensions: { width: 350, height: 300 },
@@ -170,6 +176,7 @@ export class WidgetRegistry {
       wikiPage: 'localewidget',
       allowMultiples: false,
       isRuntimeVisible: false,
+      group: 'general',
       description: 'Change your preferred language and locale',
       component: LocaleWidget,
       defaultDimensions: defaultDimensions,
@@ -184,6 +191,7 @@ export class WidgetRegistry {
       name: 'Sprint Counter',
       allowMultiples: true,
       isRuntimeVisible: true,
+      group: 'business',
       description: 'Track sprint numbers and project timelines',
       component: SprintNumber,
       defaultDimensions: { width: 300, height: 250 },

@@ -55,7 +55,8 @@ export interface WidgetType<T = Record<string, unknown>> {
   component: React.ComponentType<T>;
   defaultDimensions: Dimensions;
   defaultProps: RequiredProps<T>;
-  metaData?: { lastRefresh: Date, backgroundImage: string }
+  metaData?: { lastRefresh: Date, backgroundImage: string },
+  group: string;
 }
 
 interface DefaultWidgetProps {
