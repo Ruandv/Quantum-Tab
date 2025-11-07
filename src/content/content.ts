@@ -44,21 +44,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('Content script received message:', message);
 
   switch (message.action) {
-    case 'showMessage':
-      showNotification(message.message);
-      sendResponse({ success: true, action: 'showMessage' });
-      break;
-
-    case 'getPageInfo': {
-      const pageInfo = {
-        title: document.title,
-        url: window.location.href,
-        textContent: document.body.innerText.slice(0, 200) + '...',
-      };
-      sendResponse({ success: true, data: pageInfo });
-      break;
-    }
-
     case 'highlightText':
       if (message.text) {
         highlightTextOnPage(message.text);
@@ -73,76 +58,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   return true; // Indicates we want to send an asynchronous response
 });
-
-// Function to show a notification on the page
-function showNotification(message: string): void {
-  // Remove existing notification if any
-  const existingNotification = document.getElementById('quantum-tab-notification');
-  if (existingNotification) {
-    existingNotification.remove();
-  }
-
-  // Create notification element
-  const notification = document.createElement('div');
-  notification.id = 'quantum-tab-notification';
-  notification.style.cssText = `
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 16px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 14px;
-    max-width: 300px;
-    animation: slideInRight 0.3s ease-out;
-  `;
-
-  notification.textContent = message;
-
-  // Add animation keyframes to the page if not already present
-  if (!document.getElementById('quantum-tab-styles')) {
-    const styles = document.createElement('style');
-    styles.id = 'quantum-tab-styles';
-    styles.textContent = `
-      @keyframes slideInRight {
-        from {
-          transform: translateX(100%);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
-      }
-      @keyframes slideOutRight {
-        from {
-          transform: translateX(0);
-          opacity: 1;
-        }
-        to {
-          transform: translateX(100%);
-          opacity: 0;
-        }
-      }
-    `;
-    document.head.appendChild(styles);
-  }
-
-  document.body.appendChild(notification);
-
-  // Auto-remove after 3 seconds with animation
-  setTimeout(() => {
-    notification.style.animation = 'slideOutRight 0.3s ease-out';
-    setTimeout(() => {
-      if (notification.parentNode) {
-        notification.remove();
-      }
-    }, 300);
-  }, 3000);
-}
 
 // Function to highlight text on the page
 function highlightTextOnPage(searchText: string): void {

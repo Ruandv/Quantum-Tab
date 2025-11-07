@@ -137,6 +137,26 @@
       "files": "lêers"
     }
   },
+  "githubGuru": {
+    "title": "GitHub Guru",
+    "tabs": {
+      "allPRs": "Alle TV's",
+      "myPRs": "My TV's"
+    },
+    "labels": {
+      "approvals": "goedkeurings"
+    },
+    "buttons": {
+      "dismissNotification": "Maak kennisgewing toe"
+    },
+    "notifications": {
+      "newActivity": "Nuwe Aktiwiteit"
+    },
+    "messages": {
+      "noPRs": "Geen oop trekversoeke gevind nie",
+      "noUserPRs": "Jy het geen oop trekversoeke nie"
+    }
+  },
   "gitCommentWatcher": {
     "title": "Git Kommentaar Waarnemer",
     "labels": {
@@ -239,6 +259,10 @@
       "name": "GitHub Kwessies",
       "description": "Vertoon en spoor GitHub kwessies en trekversoeke"
     },
+    "githubGuru": {
+      "name": "GitHub Guru",
+      "description": "Monitor alle TV's en jou TV's met kennisgewings"
+    },
     "websiteCounter": {
       "name": "Webwerf Teller",
       "description": "Spoor en vertoon webwerf besoek statistieke",
@@ -262,10 +286,12 @@
       "alerts": {
         "alreadyTracked": "Hierdie webwerf word reeds gevolg!",
         "maxReached": "Maksimum van {{max}} webwerwe kan gevolg word.",
-        "invalidUrl": "Voer asseblief 'n geldige webwerf URL in"
+        "invalidUrl": "Voer asseblief 'n geldige webwerf URL in",
+        "permissionDenied": "Quantum Tab kan nie {{hostname}} volg sonder die ekstra toestemming nie."
       },
       "confirm": {
-        "resetCounters": "Is jy seker jy wil alle webwerf tellers terugstel?"
+        "resetCounters": "Is jy seker jy wil alle webwerf tellers terugstel?",
+        "allowTracking": "Laat Quantum Tab toe om besoeke aan {{hostname}} te volg?"
       },
       "lastVisited": {
         "never": "Nooit",

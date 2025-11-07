@@ -1,4 +1,4 @@
-import { GitHubPullRequest, GitHubApiError, GitHubPullRequestsParams } from '../types/common';
+import { GitHubPullRequest, GitHubApiError, GitHubPullRequestsParams, GitHubReview, GitHubPullRequestWithReviews } from '../types/common';
 
 /**
  * GitHub Service for interacting with GitHub REST API v2022-11-28
@@ -328,9 +328,63 @@ export class GitHubService {
   }
 
   /**
-   * Get the authenticated user's information
-   * @param token - GitHub Personal Access Token
+   * Get reviews for a specific pull request
    */
+  static async getPullRequestReviews(
+    token: string,
+    repositoryUrl: string,
+    pullNumber: number
+  ): Promise<GitHubReview[]> {
+    if (!token) {
+      throw new Error('GitHub Personal Access Token is required');
+    }
+
+    const { owner, repo } = this.parseRepositoryUrl(repositoryUrl);
+    const endpoint = `/repos/${owner}/${repo}/pulls/${pullNumber}/reviews`;
+
+    return await this.makeRequest<GitHubReview[]>(endpoint, token);
+  }
+
+  /**
+   * Fetch pull requests for a repository with review data
+   * @param token - GitHub Personal Access Token
+   * @param repositoryUrl - GitHub repository URL
+   * @param params - Optional parameters for filtering and pagination
+   */
+  static async getPullRequestsWithReviews(
+    token: string,
+    repositoryUrl: string,
+    params: GitHubPullRequestsParams = {}
+  ): Promise<GitHubPullRequestWithReviews[]> {
+    // First get the basic PR data
+    const pullRequests = await this.getPullRequests(token, repositoryUrl, params);
+
+    // For each PR, fetch reviews and calculate approval count
+    const prsWithReviews: GitHubPullRequestWithReviews[] = await Promise.all(
+      pullRequests.slice(0, 10).map(async (pr) => { // Limit to 10 most recent
+        try {
+          const reviews = await this.getPullRequestReviews(token, repositoryUrl, pr.number);
+          const approvalCount = reviews.filter(review => review.state === 'APPROVED').length;
+
+          return {
+            ...pr,
+            reviews,
+            approvalCount,
+          };
+        } catch (error) {
+          console.warn(`Failed to fetch reviews for PR #${pr.number}:`, error);
+          // Return PR without review data if fetching fails
+          return {
+            ...pr,
+            reviews: [],
+            approvalCount: 0,
+          };
+        }
+      })
+    );
+
+    return prsWithReviews;
+  }
   static async getCurrentUser(token: string): Promise<{ login: string; id: number; name: string | null }> {
     if (!token) {
       throw new Error('GitHub Personal Access Token is required');
