@@ -137,8 +137,60 @@
             "files": "archivos"
         }
     },
+    "githubGuru": {
+        "title": "GitHub Guru",
+        "loading": {
+            "fetchingPullRequests": "Obteniendo solicitudes de extracción...",
+            "fetchingReviews": "Obteniendo revisiones..."
+        },
+        "errors": {
+            "patTokenRequired": "Se requiere el Token PAT y la URL del repositorio",
+            "extensionError": "Error de extensión",
+            "fetchFailed": "Error al obtener solicitudes de extracción",
+            "reviewsFetchFailed": "Error al obtener revisiones",
+            "unknownError": "Ocurrió un error {{unknown}}"
+        },
+        "tabs": {
+            "allPrs": "Todas las PRs",
+            "myPrs": "Mis PRs"
+        },
+        "pullRequests": {
+            "count": "Solicitudes de Extracción",
+            "updated": "Actualizado",
+            "draft": "Borrador",
+            "states": {
+                "merged": "FUSIONADO",
+                "open": "ABIERTO",
+                "closed": "CERRADO"
+            },
+            "approvals": "aprobaciones",
+            "changesRequested": "cambios solicitados",
+            "pendingReviews": "revisiones pendientes"
+        },
+        "notifications": {
+            "newChanges": "Nuevos cambios en tu PR",
+            "dismiss": "Descartar",
+            "dismissed": "Descartado"
+        },
+        "buttons": {
+            "refreshData": "Actualizar Datos",
+            "acknowledgeAll": "Marcar Todo como Leído"
+        },
+        "labels": {
+            "unknownRepo": "Repositorio {{unknown}}",
+            "files": "archivos",
+            "noPrs": "No hay solicitudes de extracción pendientes",
+            "noMyPrs": "No tienes solicitudes de extracción pendientes"
+        },
+        "config": {
+            "patToken": "Token PAT de GitHub",
+            "repositoryUrl": "URL del Repositorio",
+            "refreshInterval": "Intervalo de Actualización (minutos)",
+            "widgetHeading": "Encabezado del Widget",
+            "autoRefresh": "Actualización Automática"
+        }
+    },
     "gitCommentWatcher": {
-        "title": "Observador de Comentarios de Git",
         "labels": {
             "newComments": "Nuevos Comentarios",
             "comments": "comentarios"
@@ -238,6 +290,10 @@
         "githubWidget": {
             "name": "Issues de GitHub",
             "description": "Muestra y rastrea issues y pull requests de GitHub"
+        },
+        "githubGuru": {
+            "name": "GitHub Guru",
+            "description": "Monitorea solicitudes de extracción con notificaciones inteligentes"
         },
         "websiteCounter": {
             "name": "Contador de Sitios",

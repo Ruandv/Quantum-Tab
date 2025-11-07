@@ -137,6 +137,26 @@
       "files": "lêers"
     }
   },
+  "githubGuru": {
+    "title": "GitHub Guru",
+    "tabs": {
+      "allPRs": "Alle TV's",
+      "myPRs": "My TV's"
+    },
+    "labels": {
+      "approvals": "goedkeurings"
+    },
+    "buttons": {
+      "dismissNotification": "Maak kennisgewing toe"
+    },
+    "notifications": {
+      "newActivity": "Nuwe Aktiwiteit"
+    },
+    "messages": {
+      "noPRs": "Geen oop trekversoeke gevind nie",
+      "noUserPRs": "Jy het geen oop trekversoeke nie"
+    }
+  },
   "gitCommentWatcher": {
     "title": "Git Kommentaar Waarnemer",
     "labels": {
@@ -238,6 +258,10 @@
     "githubWidget": {
       "name": "GitHub Kwessies",
       "description": "Vertoon en spoor GitHub kwessies en trekversoeke"
+    },
+    "githubGuru": {
+      "name": "GitHub Guru",
+      "description": "Monitor alle TV's en jou TV's met kennisgewings"
     },
     "websiteCounter": {
       "name": "Webwerf Teller",

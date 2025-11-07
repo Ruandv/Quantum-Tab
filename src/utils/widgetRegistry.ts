@@ -8,7 +8,8 @@ import {
   LocaleWidgetProps,
   SprintNumberProps,
   WidgetType,
-  QuarterIndicatorProps
+  QuarterIndicatorProps,
+  GitHubGuruProps
 } from '../types/common';
 import LiveClock from '../components/LiveClock/liveClock';
 import QuickActionButtons from '../components/QuickActionButtons/quickActionButtons';
@@ -20,6 +21,7 @@ import SprintNumber from '../components/SprintNumber/sprintNumber';
 import { defaultDimensions } from '@/types/defaults';
 import BackgroundManager from '@/components/BackgroundManager/backgroundManager';
 import QuarterIndicator from '@/components/QuarterIndicator/quaterIndicator';
+import GitHubGuru from '@/components/GitHubGuru/gitHubGuru';
 
 export class WidgetRegistry {
   private static instance: WidgetRegistry;
@@ -143,6 +145,25 @@ export class WidgetRegistry {
       },
     });
 
+    this.register<GitHubGuruProps>({
+      id: 'github-guru',
+      name: 'GitHub Guru',
+      wikiPage: 'github-guru',
+      allowMultiples: true,
+      isRuntimeVisible: true,
+      group: 'git',
+      description: 'Monitor all PRs and your PRs with notifications',
+      component: GitHubGuru,
+      defaultDimensions: { width: 450, height: 300 },
+      defaultProps: {
+        widgetHeading: 'GitHub Guru',
+        patToken: '',
+        repositoryUrl: '',
+        autoRefresh: true,
+        refreshInterval: 5, // in minutes
+      },
+    });
+
     this.register<WebsiteCounterProps>({
       id: 'website-counter',
       name: 'Website Counter',
@@ -258,6 +279,7 @@ export class WidgetRegistry {
       'quick-actions': { name: 'widgets.quickActions.name', description: 'widgets.quickActions.description' },
       'background-manager': { name: 'widgets.backgroundManager.name', description: 'widgets.backgroundManager.description' },
       'github-widget': { name: 'widgets.githubWidget.name', description: 'widgets.githubWidget.description' },
+      'github-guru': { name: 'widgets.githubGuru.name', description: 'widgets.githubGuru.description' },
       'website-counter': { name: 'widgets.websiteCounter.name', description: 'widgets.websiteCounter.description' },
       'locale-selector': { name: 'widgets.localeWidget.name', description: 'widgets.localeWidget.description' },
       'sprint-number': { name: 'widgets.sprintNumber.name', description: 'widgets.sprintNumber.description' },

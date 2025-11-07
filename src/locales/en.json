@@ -155,6 +155,26 @@
       "files": "files"
     }
   },
+  "githubGuru": {
+    "title": "GitHub Guru",
+    "tabs": {
+      "allPRs": "All PRs",
+      "myPRs": "My PRs"
+    },
+    "labels": {
+      "approvals": "approvals"
+    },
+    "buttons": {
+      "dismissNotification": "Dismiss notification"
+    },
+    "notifications": {
+      "newActivity": "New Activity"
+    },
+    "messages": {
+      "noPRs": "No open pull requests found",
+      "noUserPRs": "You have no open pull requests"
+    }
+  },
   "gitCommentWatcher": {
     "title": "Git Comment Watcher",
     "labels": {
@@ -256,6 +276,10 @@
     "githubWidget": {
       "name": "GitHub PR Tracker",
       "description": "Display and track GitHub pull requests"
+    },
+    "githubGuru": {
+      "name": "GitHub Guru",
+      "description": "Monitor all PRs and your PRs with notifications"
     },
     "websiteCounter": {
       "name": "Website Counter",

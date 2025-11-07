@@ -170,11 +170,11 @@ const handleGitHubApiRequest = async (
   }
 
   try {
-    // Use the GitHub service to fetch real data
-    const pullRequests = await GitHubService.getPullRequests(
+    // Use the GitHub service to fetch real data with reviews
+    const pullRequests = await GitHubService.getPullRequestsWithReviews(
       patToken,
       repositoryUrl,
-      { state: 'open', per_page: 10 } // Fetch up to 10 open PRs
+      { state: 'open', per_page: 10, sort: 'updated', direction: 'desc' } // Fetch up to 10 open PRs, most recently updated first
     );
 
     // Return the pull requests directly - they already match our GitHubPullRequest interface

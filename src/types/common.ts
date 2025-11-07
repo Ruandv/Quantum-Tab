@@ -125,32 +125,36 @@ export interface GitHubWidgetProps extends GitHubWidgetBaseProps {
 export interface GitCommentWatcherProps extends GitHubWidgetBaseProps {
 }
 
-export interface BackgroundManagerProps extends DefaultWidgetProps {
-  isAIEnabled: boolean;
-  autoRefresh?: boolean;
-  refreshInterval?: number; // in minutes
-  backgroundSize: 'cover' | 'contain' | 'auto';
-  onBackgroundChange?: (imageUrl: string) => void;
-}
-
-export interface WebsiteCounterData {
-  url: string;
-  hostname: string;
-  count: number;
-  lastVisited: number; // timestamp
-  favicon?: string;
+export interface GitHubGuruProps extends GitHubWidgetBaseProps {
+  widgetHeading?: string;
 }
 
 export interface WebsiteCounterProps extends DefaultWidgetProps {
   websites?: WebsiteCounterData[];
   showFavicons?: boolean;
   maxWebsites?: number;
-  sortBy?: 'count' | 'name' | 'recent';
+  sortBy?: 'count' | 'name' | 'lastVisited' | 'recent';
+}
+
+export interface WebsiteCounterData {
+  url: string;
+  hostname: string;
+  count: number;
+  lastVisited: number;
+  favicon?: string;
 }
 
 export interface LocaleWidgetProps extends DefaultWidgetProps {
   selectedLocale?: string;
   onLocaleChange?: (locale: string) => void;
+}
+
+export interface BackgroundManagerProps extends DefaultWidgetProps {
+  isAIEnabled: boolean;
+  autoRefresh?: boolean;
+  refreshInterval?: number; // in minutes
+  backgroundSize: 'cover' | 'contain' | 'auto';
+  onBackgroundChange?: (imageUrl: string) => void;
 }
 
 export interface QuarterIndicatorProps extends DefaultWidgetProps {
@@ -306,6 +310,26 @@ export interface GitHubPullRequest {
   patch_url: string;
 }
 
+// GitHub Review interfaces
+export interface GitHubReview {
+  id: number;
+  node_id: string;
+  user: GitHubUser;
+  body: string;
+  state: 'APPROVED' | 'CHANGES_REQUESTED' | 'COMMENTED' | 'DISMISSED' | 'PENDING';
+  html_url: string;
+  pull_request_url: string;
+  commit_id: string;
+  submitted_at: string | null;
+  author_association: string;
+}
+
+export interface GitHubPullRequestWithReviews extends GitHubPullRequest {
+  reviews?: GitHubReview[];
+  approvalCount?: number;
+  hasNewActivity?: boolean;
+}
+
 export interface GitHubApiError {
   message: string;
   documentation_url?: string;
@@ -338,7 +362,7 @@ export interface GitHubApiRequest {
 export interface GitHubApiResponse {
   action: 'fetchPullRequests' | 'fetchUserPullRequests';
   success: boolean;
-  data?: GitHubPullRequest[];
+  data?: GitHubPullRequestWithReviews[];
   error?: string;
 }
 
