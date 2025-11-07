@@ -217,6 +217,11 @@
             "calculationError": "Error al calcular la información del sprint."
         }
     },
+    "quarterIndicator": {
+        "labels": {
+            "quarter": "Trimestre"
+        }
+    },
     "widgets": {
         "liveClock": {
             "name": "Reloj en Vivo",
