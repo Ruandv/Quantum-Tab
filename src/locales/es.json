@@ -318,10 +318,12 @@
             "alerts": {
                 "alreadyTracked": "¡Este sitio web ya está siendo rastreado!",
                 "maxReached": "Se puede rastrear un máximo de {{max}} sitios web.",
-                "invalidUrl": "Por favor ingresa una URL de sitio web válida"
+                "invalidUrl": "Por favor ingresa una URL de sitio web válida",
+                "permissionDenied": "Quantum Tab no puede rastrear {{hostname}} sin el permiso adicional."
             },
             "confirm": {
-                "resetCounters": "¿Estás seguro de que quieres restablecer todos los contadores de sitio web?"
+                "resetCounters": "¿Estás seguro de que quieres restablecer todos los contadores de sitio web?",
+                "allowTracking": "¿Permitir que Quantum Tab rastree visitas a {{hostname}}?"
             },
             "lastVisited": {
                 "never": "Nunca",

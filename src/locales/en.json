@@ -165,7 +165,8 @@
       "approvals": "approvals"
     },
     "buttons": {
-      "dismissNotification": "Dismiss notification"
+      "dismissNotification": "Dismiss notification",
+      "clearCredentials": "Clear Credentials"
     },
     "notifications": {
       "newActivity": "New Activity"
@@ -173,6 +174,9 @@
     "messages": {
       "noPRs": "No open pull requests found",
       "noUserPRs": "You have no open pull requests"
+    },
+    "confirm": {
+      "clearCredentials": "Are you sure you want to clear your GitHub credentials? This will remove your PAT token."
     }
   },
   "gitCommentWatcher": {
@@ -304,10 +308,12 @@
       "alerts": {
         "alreadyTracked": "This website is already being tracked!",
         "maxReached": "Maximum of {{max}} websites can be tracked.",
-        "invalidUrl": "Please enter a valid website URL"
+        "invalidUrl": "Please enter a valid website URL",
+        "permissionDenied": "Quantum Tab can't track {{hostname}} without the extra permission."
       },
       "confirm": {
-        "resetCounters": "Are you sure you want to reset all website counters?"
+        "resetCounters": "Are you sure you want to reset all website counters?",
+        "allowTracking": "Allow Quantum Tab to track visits to {{hostname}}?"
       },
       "lastVisited": {
         "never": "Never",

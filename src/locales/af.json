@@ -286,10 +286,12 @@
       "alerts": {
         "alreadyTracked": "Hierdie webwerf word reeds gevolg!",
         "maxReached": "Maksimum van {{max}} webwerwe kan gevolg word.",
-        "invalidUrl": "Voer asseblief 'n geldige webwerf URL in"
+        "invalidUrl": "Voer asseblief 'n geldige webwerf URL in",
+        "permissionDenied": "Quantum Tab kan nie {{hostname}} volg sonder die ekstra toestemming nie."
       },
       "confirm": {
-        "resetCounters": "Is jy seker jy wil alle webwerf tellers terugstel?"
+        "resetCounters": "Is jy seker jy wil alle webwerf tellers terugstel?",
+        "allowTracking": "Laat Quantum Tab toe om besoeke aan {{hostname}} te volg?"
       },
       "lastVisited": {
         "never": "Nooit",

@@ -4,8 +4,12 @@
   "version": "1.7.0",
   "description": "New tab. New intelligence.",
   "permissions": [
-    "activeTab",
-    "storage"
+    "storage",
+    "scripting"
+  ],
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://*/*"
   ],
   "chrome_url_overrides": {
     "newtab": "newtab.html"
@@ -23,16 +27,6 @@
   "background": {
     "service_worker": "background.js"
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "content.js"
-      ]
-    }
-  ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
   },

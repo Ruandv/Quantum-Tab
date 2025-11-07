@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next';
 import { WebsiteCounterProps, WebsiteCounterData } from '../../types/common';
 import chromeStorage from '../../utils/chromeStorage';
+import websiteCounterUtils from '../../utils/websiteCounterUtils';
 import { addWidgetRemovalListener } from '../../utils/widgetEvents';
 import styles from './websiteCounter.module.css';
 
@@ -67,6 +68,11 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
       // Cleanup: Clear website counter data and storage
       try {
         console.log('Cleaning up WebsiteCounter widget data for:', widgetId);
+
+        const trackedSites = await chromeStorage.loadWebsiteCounters();
+        await Promise.all(
+          trackedSites.map((site) => websiteCounterUtils.disableTrackingForWebsite(site))
+        );
 
         // Clear website counter data from storage
         if (typeof chrome !== 'undefined' && chrome.storage) {
@@ -148,6 +154,16 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
         return;
       }
 
+      if (!confirm(t('widgets.websiteCounter.confirm.allowTracking', { hostname }))) {
+        return;
+      }
+
+      const trackingEnabled = await websiteCounterUtils.enableTrackingForWebsite(url);
+      if (!trackingEnabled) {
+        alert(t('widgets.websiteCounter.alerts.permissionDenied', { hostname }));
+        return;
+      }
+
       const newSite: WebsiteCounterData = {
         url: url.href,
         hostname,
@@ -169,12 +185,25 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
 
   // Remove a website from tracking
   const handleRemoveWebsite = useCallback(
-    (hostname: string) => {
-      const updatedData = websiteData.filter((site) => site.hostname !== hostname);
+    async (site: WebsiteCounterData) => {
+      await websiteCounterUtils.disableTrackingForWebsite(site);
+      const updatedData = websiteData.filter((item) => item.hostname !== site.hostname);
       updateWebsiteData(updatedData);
     },
     [websiteData, updateWebsiteData]
   );
+
+  useEffect(() => {
+    if (isLoading || websiteData.length === 0) {
+      return;
+    }
+
+    const ensureTracking = async () => {
+      await Promise.all(websiteData.map((site) => websiteCounterUtils.ensureTrackingForWebsite(site)));
+    };
+
+    ensureTracking();
+  }, [isLoading, websiteData]);
 
   // Reset all counters
   const handleResetCounters = useCallback(() => {
@@ -246,7 +275,7 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
                 {!isLocked && (
                   <button
                     className={styles.removeWebsiteBtn}
-                    onClick={() => handleRemoveWebsite(site.hostname)}
+                    onClick={() => handleRemoveWebsite(site)}
                     title={t('widgets.websiteCounter.buttons.remove')}
                   >
                     ✕
