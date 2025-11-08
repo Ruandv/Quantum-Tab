@@ -158,6 +158,9 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
         return;
       }
 
+      // Runtime permission request for host access (Chrome Web Store compliance)
+      // This prompt appears when users add websites to track, providing clear consent
+      // for content script injection on specific domains only
       const trackingEnabled = await websiteCounterUtils.enableTrackingForWebsite(url);
       if (!trackingEnabled) {
         alert(t('widgets.websiteCounter.alerts.permissionDenied', { hostname }));
