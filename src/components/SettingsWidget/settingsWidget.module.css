@@ -1,0 +1,143 @@
+/* SettingsWidget Styles */
+.settingsWidget {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1rem;
+}
+
+.tabButton {
+  background: none;
+  border: none;
+  padding: 0.75rem 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  font-size: var(--widget-body-size, 0.9rem);
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.tabButton:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tabButton.active {
+  color: white;
+  border-bottom-color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tabContent {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.tabContent::-webkit-scrollbar {
+  width: 4px;
+}
+
+.tabContent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tabContent::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, var(--opacity-border));
+  border-radius: 2px;
+}
+
+.section {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-md);
+  padding: 1rem;
+}
+
+.sectionTitle {
+  font-size: var(--widget-heading-size, 1.2rem);
+  font-weight: 600;
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: block;
+  font-size: var(--widget-small-size, 0.8rem);
+  line-height: var(--widget-small-line-height, 1.4);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-sm);
+  color: white;
+  font-size: var(--widget-body-size, 0.9rem);
+}
+
+.button {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--border-radius-sm);
+  color: white;
+  cursor: pointer;
+  font-size: var(--widget-body-size, 0.9rem);
+  margin-right: 0.5rem;
+}
+
+.button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+}
+
+.listItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: 0.5rem;
+}
+
+.itemName {
+  font-weight: 600;
+  color: white;
+}
+
+.removeButton {
+  background: rgba(255, 0, 0, 0.2);
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+}
+
+.removeButton:hover {
+  background: rgba(255, 0, 0, 0.3);
+}

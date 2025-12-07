@@ -1,7 +1,7 @@
 // Centralized type definitions for the entire application
 
 // Define the keys that should be optional in defaultProps
-type OptionalKeys = 'buttons' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange';
+type OptionalKeys = 'buttons' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange' | 'metaData' | 'onUpdateMetaData';
 
 // Utility type to make all properties required except for specific optional ones
 // but still allow the optional properties to be provided in defaultProps
@@ -119,12 +119,6 @@ interface GitHubWidgetBaseProps extends DefaultWidgetProps {
   repositoryUrl: string;
   autoRefresh?: boolean;
   refreshInterval?: number; // in minutes
-}
-
-export interface GitHubWidgetProps extends GitHubWidgetBaseProps {
-}
-
-export interface GitCommentWatcherProps extends GitHubWidgetBaseProps {
 }
 
 export interface GitHubGuruProps extends GitHubWidgetBaseProps {
@@ -392,3 +386,23 @@ export const isSecureProperty = (key: string): boolean => {
     'patToken']; // Add other secure property names here
   return secureProps.map(prop => prop.toLowerCase()).includes(key.toLowerCase());
 };
+
+// Settings Widget Types
+export interface PATToken {
+  name: string;
+  key: string;
+}
+
+export interface ProviderSettings {
+  name: string;
+  providerType: string;
+  providerSettings: {
+    url: string;
+    apiKey: string;
+  };
+}
+
+export interface SettingsWidgetProps extends DefaultWidgetProps {
+  metaData?: Record<string, unknown>;
+  onUpdateMetaData?: (metaData: Record<string, unknown>) => void;
+}

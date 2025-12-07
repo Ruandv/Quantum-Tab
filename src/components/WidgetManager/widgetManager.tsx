@@ -58,7 +58,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
       <p className={styles.filter}><div onClick={() => filterWidgets('all')}>{t('widgetManager.modal.sections.filter.all')}</div><div onClick={() => filterWidgets('general')}>{t('widgetManager.modal.sections.filter.general')}</div><div onClick={() => filterWidgets('git')}>{t('widgetManager.modal.sections.filter.git')}</div><div onClick={() => filterWidgets('business')}>{t('widgetManager.modal.sections.filter.business')}</div></p>
       <div className={styles.widgetTypes}>{filteredWidgets.map((widgetType: WidgetType) => {
         const component = existingWidgets.find((widget) => widget.id.startsWith(widgetType.id) && widgetType.isDepricated !== true);
-        debugger;
         console.log('Evaluating widget type:', widgetType.name, 'Group:', widgetType.group, 'Current filter:', filter);
         if (component && component.allowMultiples === false &&  (filter !== 'all' && widgetType.group !== filter)) {
           return null;

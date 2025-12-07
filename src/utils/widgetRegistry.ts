@@ -2,19 +2,16 @@ import {
   LiveClockProps,
   QuickActionButtonsProps,
   BackgroundManagerProps,
-  GitHubWidgetProps,
-  GitCommentWatcherProps,
   WebsiteCounterProps,
   LocaleWidgetProps,
   SprintNumberProps,
   WidgetType,
   QuarterIndicatorProps,
-  GitHubGuruProps
+  GitHubGuruProps,
+  SettingsWidgetProps
 } from '../types/common';
 import LiveClock from '../components/LiveClock/liveClock';
 import QuickActionButtons from '../components/QuickActionButtons/quickActionButtons';
-import GitHubWidget from '../components/GitHubWidget/gitHubWidget';
-import GitCommentWatcher from '../components/GitCommentWatcher/gitCommentWatcher';
 import WebsiteCounter from '../components/WebsiteCounter/websiteCounter';
 import LocaleWidget from '../components/LocaleWidget/localeWidget';
 import SprintNumber from '../components/SprintNumber/sprintNumber';
@@ -22,6 +19,7 @@ import { defaultDimensions } from '@/types/defaults';
 import BackgroundManager from '@/components/BackgroundManager/backgroundManager';
 import QuarterIndicator from '@/components/QuarterIndicator/quaterIndicator';
 import GitHubGuru from '@/components/GitHubGuru/gitHubGuru';
+import SettingsWidget from '@/components/SettingsWidget/settingsWidget';
 
 export class WidgetRegistry {
   private static instance: WidgetRegistry;
@@ -105,46 +103,6 @@ export class WidgetRegistry {
         backgroundSize: 'cover',
       },
       metaData: { lastRefresh: new Date(), backgroundImage: '' }
-    });
-
-    this.register<GitHubWidgetProps>({
-      id: 'github-widget',
-      isDepricated: true,
-      name: 'GitHub Repository',
-      wikiPage: 'githubwidget',
-      allowMultiples: true,
-      isRuntimeVisible: true,
-      group: 'git',
-      description: 'Monitor and interact with GitHub repositories',
-      component: GitHubWidget,
-      defaultDimensions: { width: 400, height: 250 },
-      defaultProps: {
-        widgetHeading: 'GitHub Repo',
-        patToken: '',
-        repositoryUrl: '',
-        autoRefresh: true,
-        refreshInterval: 5, // in minutes
-      },
-    });
-
-    this.register<GitCommentWatcherProps>({
-      id: 'git-comment-watcher',
-      isDepricated: true,
-      name: 'Git Comment Watcher',
-      wikiPage: 'gitcommentwatcher',
-      allowMultiples: true,
-      isRuntimeVisible: true,
-      group: 'git',
-      description: 'Monitor comments on your PR\'s',
-      component: GitCommentWatcher,
-      defaultDimensions: { width: 400, height: 250 },
-      defaultProps: {
-        widgetHeading: 'Git Comment Watcher',
-        patToken: '',
-        repositoryUrl: '',
-        autoRefresh: true,
-        refreshInterval: 5, // in minutes
-      },
     });
 
     this.register<GitHubGuruProps>({
@@ -241,6 +199,21 @@ export class WidgetRegistry {
       },
       group: 'business',
       wikiPage: 'quarter-indicator'
+    });
+
+    this.register<SettingsWidgetProps>({
+      id: 'settings-widget',
+      name: 'Settings',
+      wikiPage: 'settings',
+      allowMultiples: false,
+      isRuntimeVisible: false,
+      group: 'general',
+      description: 'Manage PAT tokens and provider settings',
+      component: SettingsWidget,
+      defaultDimensions: { width: 500, height: 400 },
+      defaultProps: {
+        widgetHeading: 'Settings',
+      },
     });
   }
 
