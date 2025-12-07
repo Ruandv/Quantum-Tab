@@ -2,8 +2,6 @@ import {
   LiveClockProps,
   QuickActionButtonsProps,
   BackgroundManagerProps,
-  GitHubWidgetProps,
-  GitCommentWatcherProps,
   WebsiteCounterProps,
   LocaleWidgetProps,
   SprintNumberProps,
@@ -12,8 +10,6 @@ import {
 } from '../types/common';
 import LiveClock from '../components/LiveClock/liveClock';
 import QuickActionButtons from '../components/QuickActionButtons/quickActionButtons';
-import GitHubWidget from '../components/GitHubWidget/gitHubWidget';
-import GitCommentWatcher from '../components/GitCommentWatcher/gitCommentWatcher';
 import WebsiteCounter from '../components/WebsiteCounter/websiteCounter';
 import LocaleWidget from '../components/LocaleWidget/localeWidget';
 import SprintNumber from '../components/SprintNumber/sprintNumber';
@@ -97,50 +93,14 @@ export class WidgetRegistry {
       defaultDimensions: { width: 320, height: 320 },
       defaultProps: {
         widgetHeading: 'Background Manager',
+        settingId: 0,
+        aiPrompt: '',
         isAIEnabled: false,
         autoRefresh: false,
         refreshInterval: 360, // 360 minutes = 6 hours
         backgroundSize: 'cover',
       },
       metaData: { lastRefresh: new Date(), backgroundImage: '' }
-    });
-
-    this.register<GitHubWidgetProps>({
-      id: 'github-widget',
-      name: 'GitHub Repository',
-      wikiPage: 'githubwidget',
-      allowMultiples: true,
-      isRuntimeVisible: true,
-      group: 'git',
-      description: 'Monitor and interact with GitHub repositories',
-      component: GitHubWidget,
-      defaultDimensions: { width: 400, height: 250 },
-      defaultProps: {
-        widgetHeading: 'GitHub Repo',
-        patToken: '',
-        repositoryUrl: '',
-        autoRefresh: true,
-        refreshInterval: 5, // in minutes
-      },
-    });
-
-    this.register<GitCommentWatcherProps>({
-      id: 'git-comment-watcher',
-      name: 'Git Comment Watcher',
-      wikiPage: 'gitcommentwatcher',
-      allowMultiples: true,
-      isRuntimeVisible: true,
-      group: 'git',
-      description: 'Monitor comments on your PR\'s',
-      component: GitCommentWatcher,
-      defaultDimensions: { width: 400, height: 250 },
-      defaultProps: {
-        widgetHeading: 'Git Comment Watcher',
-        patToken: '',
-        repositoryUrl: '',
-        autoRefresh: true,
-        refreshInterval: 5, // in minutes
-      },
     });
 
     this.register<WebsiteCounterProps>({

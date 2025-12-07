@@ -111,24 +111,41 @@ export interface QuickActionButtonItemProps {
 export interface GitHubIssuesProps extends DefaultWidgetProps {
 }
 
+export interface AiProviderProps{
+  id:number;
+  name: string;
+  apiKey: string;
+  providerType: 'openai' | 'azure' | 'custom';
+  endpointUrl?: string;
+  deploymentName?: string;
+  apiVersion?: string;
+}
 
+export interface ApiKeyProps{
+  id:number;
+  name: string;
+  apiKey: string;
+}
+
+export interface SettingProps extends DefaultWidgetProps {
+  ApiKeys: ApiKeyProps[];
+  ProviderSettings: AiProviderProps[];
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface GitHubWidgetBaseProps extends DefaultWidgetProps {
-  patToken: string;
+  settingId: string;
   repositoryUrl: string;
-  autoRefresh?: boolean;
-  refreshInterval?: number; // in minutes
-}
-
-export interface GitHubWidgetProps extends GitHubWidgetBaseProps {
-}
-
-export interface GitCommentWatcherProps extends GitHubWidgetBaseProps {
+  autoRefresh: boolean;
+  refreshInterval: number;
 }
 
 export interface BackgroundManagerProps extends DefaultWidgetProps {
   isAIEnabled: boolean;
-  autoRefresh?: boolean;
-  refreshInterval?: number; // in minutes
+  aiPrompt: string;
+  settingId: number;
+  autoRefresh: boolean;
+  refreshInterval: number; // in minutes
   backgroundSize: 'cover' | 'contain' | 'auto';
   onBackgroundChange?: (imageUrl: string) => void;
 }
@@ -137,7 +154,7 @@ export interface WebsiteCounterData {
   url: string;
   hostname: string;
   count: number;
-  lastVisited: number; // timestamp
+  lastVisited: number;
   favicon?: string;
 }
 
