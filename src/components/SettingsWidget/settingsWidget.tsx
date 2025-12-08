@@ -8,7 +8,7 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked }: S
 
   const [activeTab, setActiveTab] = useState<'pat' | 'providers'>('pat');
   const [patTokens, setPatTokens] = useState<PATToken[]>([]);
-  const [providerSettings, setProviderSettings] = useState<ProviderSettings[]>([]);
+  const [providers, setProviders] = useState<ProviderSettings[]>([]);
 
   const [newPatName, setNewPatName] = useState('');
   const [newPatKey, setNewPatKey] = useState('');
@@ -40,14 +40,14 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked }: S
 
   const addProviderSetting = () => {
     if (!newProviderName || !newProviderType || !newProviderUrl || !newProviderApiKey) return;
-    const newSettings = [...providerSettings, {
+    const newSettings = [...providers, {
       name: newProviderName,
       providerType: newProviderType,
       providerSettings: { url: newProviderUrl, apiKey: newProviderApiKey }
     }];
-    setProviderSettings(newSettings);
+    setProviders(newSettings);
     chromeStorage.setWidgetMetaData<SettingsWidgetMetaData>(widgetId, {
-      providerSettings: newSettings,
+      providers: newSettings,
       lastRefresh: new Date()
     });
     setNewProviderName('');
@@ -57,10 +57,10 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked }: S
   };
 
   const removeProviderSetting = (index: number) => {
-    const newSettings = providerSettings.filter((_, i) => i !== index);
-    setProviderSettings(newSettings);
+    const newSettings = providers.filter((_, i) => i !== index);
+    setProviders(newSettings);
     chromeStorage.setWidgetMetaData<SettingsWidgetMetaData>(widgetId, {
-      providerSettings: newSettings,
+      providers: newSettings,
       lastRefresh: new Date()
     });
   };
@@ -71,7 +71,7 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked }: S
       // Placeholder for fetching logic
       const res = await chromeStorage.getWidgetMetaData<SettingsWidgetMetaData>(widgetId);
       setPatTokens(res.patTokens || []);
-      setProviderSettings(res.providerSettings || [])
+      setProviders(res.providers || [])
       console.log('Fetched metaData for widget', widgetId, res);
     }
     fetchMetaData();
@@ -178,7 +178,7 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked }: S
                 </button>
               </div>
               <ul className={styles.list}>
-                {providerSettings.map((setting, index) => (
+                {providers.map((setting, index) => (
                   <li key={index} className={styles.listItem}>
                     <span className={styles.itemName}>{setting.name} ({setting.providerType})</span>
                     <button className={styles.removeButton} onClick={() => removeProviderSetting(index)}>

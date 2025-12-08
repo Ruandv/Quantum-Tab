@@ -572,12 +572,67 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             const sanitizedWidget = { ...widget };
             if (widget.props) {
               // iterate over the props and sanitize any props that isSecureProperty
-              Object.keys(widget.props).forEach((key, _) => {
-                if (isSecureProperty(key)) {
-                  sanitizedWidget.props[key] = '[REDACTED]';
-                  exportedData.secretProps.push({ name: widget.name, key });
-                }
-              });
+              const sanitizeProps = (props: Record<string, unknown>, widgetName: string, secretProps: Array<{ name: string, key: string, value?: string }>, parentKey = ''): Record<string, unknown> => {
+                const sanitized: Record<string, unknown> = {};
+                
+                Object.entries(props).forEach(([key, value]) => {
+                  const fullKey = parentKey ? `${parentKey}.${key}` : key;
+                  
+                  if (isSecureProperty(key)) {
+                    sanitized[key] = '[REDACTED]';
+                    secretProps.push({ name: widgetName, key: fullKey });
+                  } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+                    // Recursively sanitize nested objects
+                    sanitized[key] = sanitizeProps(value as Record<string, unknown>, widgetName, secretProps, fullKey);
+                  } else if (Array.isArray(value)) {
+                    // Recursively sanitize arrays
+                    sanitized[key] = value.map((item, index) => {
+                      if (item && typeof item === 'object') {
+                        return sanitizeProps(item as Record<string, unknown>, widgetName, secretProps, `${fullKey}[${index}]`);
+                      }
+                      return item;
+                    });
+                  } else {
+                    sanitized[key] = value;
+                  }
+                });
+                
+                return sanitized;
+              };
+
+              sanitizedWidget.props = sanitizeProps(widget.props, widget.name, exportedData.secretProps);
+            }
+            if (widget.metaData) {
+              // Also sanitize metaData for widgets that store sensitive data there
+              const sanitizeMetaData = (metaData: Record<string, unknown>, widgetName: string, secretProps: Array<{ name: string, key: string, value?: string }>, parentKey = ''): Record<string, unknown> => {
+                const sanitized: Record<string, unknown> = {};
+                
+                Object.entries(metaData).forEach(([key, value]) => {
+                  const fullKey = parentKey ? `${parentKey}.${key}` : key;
+                  
+                  if (isSecureProperty(key)) {
+                    sanitized[key] = '[REDACTED]';
+                    secretProps.push({ name: widgetName, key: fullKey });
+                  } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+                    // Recursively sanitize nested objects
+                    sanitized[key] = sanitizeMetaData(value as Record<string, unknown>, widgetName, secretProps, fullKey);
+                  } else if (Array.isArray(value)) {
+                    // Recursively sanitize arrays
+                    sanitized[key] = value.map((item, index) => {
+                      if (item && typeof item === 'object') {
+                        return sanitizeMetaData(item as Record<string, unknown>, widgetName, secretProps, `${fullKey}[${index}]`);
+                      }
+                      return item;
+                    });
+                  } else {
+                    sanitized[key] = value;
+                  }
+                });
+                
+                return sanitized;
+              };
+
+              sanitizedWidget.metaData = sanitizeMetaData(widget.metaData as Record<string, unknown>, widget.name, exportedData.secretProps);
             }
             exportedData.widgets.push(sanitizedWidget);
           });

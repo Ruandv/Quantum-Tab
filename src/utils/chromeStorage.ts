@@ -1,4 +1,4 @@
-import { Dimensions, Position, CssStyle, STORAGE_KEYS, WebsiteCounterData } from '../types/common';
+import { Dimensions, Position, CssStyle, STORAGE_KEYS, WebsiteCounterData, SettingsWidgetMetaData } from '../types/common';
 import { defaultDimensions, defaultPosition, defaultStyle } from '../types/defaults';
 // Storage keys for Chrome extension storage
 
@@ -15,7 +15,7 @@ export interface SerializedWidget {
   dimensions: Dimensions;
   position: Position;
   style: CssStyle;
-  metaData?: Record<string, unknown>;
+  metaData?: SettingsWidgetMetaData | Record<string, unknown>;
 }
 
 // Interface for saved data

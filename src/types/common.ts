@@ -43,7 +43,7 @@ export interface DashboardWidget {
   dimensions: Dimensions;
   position: Position;
   style: CssStyle;
-  metaData?: Record<string, unknown>;
+  metaData?: SettingsWidgetMetaData | Record<string, unknown>;
 }
 
 export interface WidgetType<T = Record<string, unknown>> {
@@ -406,7 +406,7 @@ export interface ProviderSettings {
 export interface SettingsWidgetMetaData {
   lastRefresh: Date;
   patTokens?: PATToken[];
-  providerSettings?: ProviderSettings[];
+  providers?: ProviderSettings[];
 }
 
 export interface SettingsWidgetProps extends DefaultWidgetProps {
