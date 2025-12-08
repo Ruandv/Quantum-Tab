@@ -333,7 +333,7 @@ export const chromeStorage = {
     }
   },
 
-  setWidgetMetaData: async (widgetId: string, metaData: Record<string, unknown>): Promise<boolean> => {
+  setWidgetMetaData: async <T>(widgetId: string, metaData: T): Promise<boolean> => {
     try {
       const result = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
       const widgets: SerializedWidget[] = result[STORAGE_KEYS.WIDGETS] || [];
@@ -355,14 +355,14 @@ export const chromeStorage = {
     }
   },
 
-  getWidgetMetaData: async (widgetId: string): Promise<Record<string, unknown>> => {
+  getWidgetMetaData: async <T = Record<string, unknown>>(widgetId: string): Promise<T> => {
     try {
       const result = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
       const widget = result[STORAGE_KEYS.WIDGETS].find((w) => w.id === widgetId);
-      return widget ? widget.metaData : {};
+      return widget ? widget.metaData : {} as T;
     } catch (error) {
       console.error(`Failed to get widget meta data for ${widgetId} from Chrome storage:`, error);
-      return {};
+      return {} as T;
     }
   },
 

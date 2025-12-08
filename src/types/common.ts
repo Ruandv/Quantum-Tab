@@ -1,7 +1,7 @@
 // Centralized type definitions for the entire application
 
 // Define the keys that should be optional in defaultProps
-type OptionalKeys = 'buttons' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange' | 'metaData' | 'onUpdateMetaData';
+type OptionalKeys = 'buttons' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange' | 'metaData';
 
 // Utility type to make all properties required except for specific optional ones
 // but still allow the optional properties to be provided in defaultProps
@@ -380,6 +380,7 @@ export const isSecureProperty = (key: string): boolean => {
     'credential',
     'auth',
     'api',
+    'key',
     'pat', // Personal Access Token
     'aikey',
     'bearer',
@@ -402,7 +403,12 @@ export interface ProviderSettings {
   };
 }
 
+export interface SettingsWidgetMetaData {
+  lastRefresh: Date;
+  patTokens?: PATToken[];
+  providerSettings?: ProviderSettings[];
+}
+
 export interface SettingsWidgetProps extends DefaultWidgetProps {
-  metaData?: Record<string, unknown>;
-  onUpdateMetaData?: (metaData: Record<string, unknown>) => void;
+
 }
