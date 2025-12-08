@@ -115,7 +115,7 @@ export interface GitHubIssuesProps extends DefaultWidgetProps {
 
 
 interface GitHubWidgetBaseProps extends DefaultWidgetProps {
-  patToken: string;
+  tokenName: string;
   repositoryUrl: string;
   autoRefresh?: boolean;
   refreshInterval?: number; // in minutes
@@ -146,6 +146,7 @@ export interface LocaleWidgetProps extends DefaultWidgetProps {
 
 export interface BackgroundManagerProps extends DefaultWidgetProps {
   isAIEnabled: boolean;
+  tokenName?: string;
   autoRefresh?: boolean;
   refreshInterval?: number; // in minutes
   backgroundSize: 'cover' | 'contain' | 'auto';
@@ -380,12 +381,16 @@ export const isSecureProperty = (key: string): boolean => {
     'credential',
     'auth',
     'api',
-    'key',
     'pat', // Personal Access Token
     'aikey',
     'bearer',
     'patToken']; // Add other secure property names here
-  return secureProps.map(prop => prop.toLowerCase()).includes(key.toLowerCase());
+  const notSecureProps = [
+    'tokenName', 
+    'patTokens'
+  ];
+  return secureProps.some(prop => key.toLowerCase().includes(prop.toLowerCase())) && 
+         !notSecureProps.some(prop => key.toLowerCase() === prop.toLowerCase());
 };
 
 // Settings Widget Types

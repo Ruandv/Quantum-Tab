@@ -312,6 +312,36 @@ export const chromeStorage = {
       return [];
     }
   },
+  getApiToken: async (tokenname: string): Promise<string | null> => {
+    try {
+      const result = await chromeStorage.loadAll();
+      const settingsWidget = result.widgets.find((w) => w.component === 'settings-widget');
+      if (!settingsWidget) {
+        console.warn('Settings widget not found when retrieving API token');
+        return null;
+      }
+      const token = settingsWidget.metaData ? (settingsWidget.metaData as SettingsWidgetMetaData).patTokens?.find(x => x.name === tokenname) : null;
+      return token?.key || null;
+    } catch (error) {
+      console.error(`Failed to get API token for ${tokenname} from Chrome storage:`, error);
+      return null;
+    }
+  },
+  getApiTokens: async (): Promise<{ name: string }[]> => {
+    try {
+      const result = await chromeStorage.loadAll();
+      const settingsWidget = result.widgets.find((w) => w.component === 'settings-widget');
+      if (!settingsWidget) {
+        console.warn('Settings widget not found when retrieving API token');
+        return null;
+      }
+      const tokens = settingsWidget.metaData ? (settingsWidget.metaData as SettingsWidgetMetaData).patTokens : null;
+      return tokens?.map(x => ({ name: x.name })) || [];
+    } catch (error) {
+      console.error(`Failed to get API tokens from Chrome storage:`, error);
+      return null;
+    }
+  },
 
   // Get storage usage info
   getStorageInfo: async (): Promise<{ bytesInUse: number; quotaBytes: number }> => {

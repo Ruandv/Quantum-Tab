@@ -6,12 +6,12 @@ import styles from './gitHubGuru.module.css';
 import chromeStorage from '@/utils/chromeStorage';
 
 const GitHubGuru: React.FC<GitHubGuruProps> = ({
-    patToken = '',
     repositoryUrl = '',
     autoRefresh = false,
     refreshInterval = 5,
     isLocked,
     widgetId,
+    tokenName = '',
 }) => {
     const { t } = useTranslation();
 
@@ -22,7 +22,7 @@ const GitHubGuru: React.FC<GitHubGuruProps> = ({
     const [lastFetch, setLastFetch] = useState<Date | null>(null);
     const [activeTab, setActiveTab] = useState<'all' | 'mine'>('all');
     const [dismissedNotifications, setDismissedNotifications] = useState<Set<string>>(new Set());
-
+    const [patToken, setPatToken] = useState('');
     const previousUserPRsRef = useRef<GitHubPullRequestWithReviews[]>([]);
 
     // Function to fetch PR data from background service
@@ -34,7 +34,6 @@ const GitHubGuru: React.FC<GitHubGuruProps> = ({
 
         setIsLoading(true);
         setError(null);
-
         try {
             // Fetch all PRs
             const allPRsMessage: BackgroundMessage = {
@@ -133,7 +132,18 @@ const GitHubGuru: React.FC<GitHubGuruProps> = ({
             );
         }
     }, [patToken, repositoryUrl, t, dismissedNotifications]);
-
+    useEffect(() => {
+        const getData = async () => {
+            const key = await chromeStorage.getApiToken(tokenName);
+            const token = key;
+            if (token) {
+                setPatToken(token as string);
+            } else {
+                setPatToken('');
+            }
+        };
+        getData();
+    }, [ widgetId, tokenName]);
     // Auto-refresh timer effect
     useEffect(() => {
         if (!autoRefresh || !patToken || !repositoryUrl) {
@@ -190,17 +200,21 @@ const GitHubGuru: React.FC<GitHubGuruProps> = ({
 
     // Save data when it changes
     useEffect(() => {
-        if (lastFetch === null) return;
         const metaData = {
+            lastFetch: lastFetch === null ? (new Date()).toISOString() : lastFetch.toISOString(),
             allPullRequests,
             userPullRequests,
-            lastFetch: lastFetch?.toISOString(),
             previousUserPRs: previousUserPRsRef.current,
-            dismissedNotifications: Array.from(dismissedNotifications)
+            dismissedNotifications: Array.from(dismissedNotifications),
         };
         chromeStorage.setWidgetMetaData(widgetId, metaData);
-    }, [lastFetch, allPullRequests, userPullRequests, dismissedNotifications, widgetId]);
-
+    }, [lastFetch, dismissedNotifications, widgetId, allPullRequests, userPullRequests]);
+    // Initial fetch on mount
+    useEffect(() => {
+        if (patToken && repositoryUrl) {
+            fetchPullRequests();
+        }
+    }, []);
     // Handle PR item click
     const handlePrClick = useCallback((pr: GitHubPullRequestWithReviews) => {
         if (!isLocked) {

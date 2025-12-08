@@ -11,6 +11,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   onBackgroundChange,
   isLocked,
   widgetId,
+  tokenName,
   isAIEnabled
 }: BackgroundManagerProps) => {
   const { t } = useTranslation();
@@ -52,8 +53,9 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       }
       // Load AI data only if AI is enabled
       if (isAIEnabled) {
+
         const storedPrompt = serializedWidget.props?.aiPrompt?.toString() || '';
-        const storedKey = serializedWidget.props?.aiKey?.toString() || '';
+        const storedKey = await chromeStorage.getApiToken(tokenName) || '';
         setAiPrompt(storedPrompt);
         setAiKey(storedKey);
       }

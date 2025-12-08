@@ -18,7 +18,7 @@ const WebsiteCounter: React.FC<WebsiteCounterProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [newWebsiteUrl, setNewWebsiteUrl] = useState('');
   const [isAddingWebsite, setIsAddingWebsite] = useState(false);
-  const saveTimeoutRef = useRef<number | null>(null);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { t } = useTranslation();
 

@@ -98,6 +98,7 @@ export class WidgetRegistry {
       defaultProps: {
         widgetHeading: 'Background Manager',
         isAIEnabled: false,
+        tokenName: "GitToken",
         autoRefresh: false,
         refreshInterval: 360, // 360 minutes = 6 hours
         backgroundSize: 'cover',
@@ -117,9 +118,9 @@ export class WidgetRegistry {
       defaultDimensions: { width: 450, height: 300 },
       defaultProps: {
         widgetHeading: 'GitHub Guru',
-        patToken: '',
         repositoryUrl: '',
         autoRefresh: true,
+        tokenName: "GitToken",
         refreshInterval: 5, // in minutes
       },
     });
