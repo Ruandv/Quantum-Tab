@@ -115,7 +115,7 @@ export interface GitHubIssuesProps extends DefaultWidgetProps {
 
 
 interface GitHubWidgetBaseProps extends DefaultWidgetProps {
-  tokenName: string;
+  providerName: string;
   repositoryUrl: string;
   autoRefresh?: boolean;
   refreshInterval?: number; // in minutes
@@ -146,7 +146,7 @@ export interface LocaleWidgetProps extends DefaultWidgetProps {
 
 export interface BackgroundManagerProps extends DefaultWidgetProps {
   isAIEnabled: boolean;
-  tokenName?: string;
+  providerName?: string;
   autoRefresh?: boolean;
   refreshInterval?: number; // in minutes
   backgroundSize: 'cover' | 'contain' | 'auto';
@@ -399,19 +399,10 @@ export interface PATToken {
   key: string;
 }
 
-export interface ProviderSettings {
-  name: string;
-  providerType: string;
-  providerSettings: {
-    url: string;
-    apiKey: string;
-  };
-}
-
 export interface SettingsWidgetMetaData {
   lastRefresh: Date;
   patTokens?: PATToken[];
-  providers?: ProviderSettings[];
+  providers?: any[];
 }
 
 export interface SettingsWidgetProps extends DefaultWidgetProps {

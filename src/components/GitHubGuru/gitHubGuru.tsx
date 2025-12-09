@@ -11,7 +11,7 @@ const GitHubGuru: React.FC<GitHubGuruProps> = ({
     refreshInterval = 5,
     isLocked,
     widgetId,
-    tokenName = '',
+    providerName = '',
 }) => {
     const { t } = useTranslation();
 
@@ -134,8 +134,8 @@ const GitHubGuru: React.FC<GitHubGuruProps> = ({
     }, [patToken, repositoryUrl, t, dismissedNotifications]);
     useEffect(() => {
         const getData = async () => {
-            const key = await chromeStorage.getApiToken(tokenName);
-            const token = key;
+            const providerSettings = await chromeStorage.getProviderConfiguration(providerName);
+            const token = providerSettings.PatToken;
             if (token) {
                 setPatToken(token as string);
             } else {
@@ -143,7 +143,7 @@ const GitHubGuru: React.FC<GitHubGuruProps> = ({
             }
         };
         getData();
-    }, [ widgetId, tokenName]);
+    }, [ widgetId, providerName]);
     // Auto-refresh timer effect
     useEffect(() => {
         if (!autoRefresh || !patToken || !repositoryUrl) {

@@ -240,7 +240,11 @@ export const chromeStorage = {
   getWidgetData: async (widgetId: string): Promise<Record<string, unknown>> => {
     try {
       const result = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
-      const w = result[STORAGE_KEYS.WIDGETS]?.find((widget) => widget.id === widgetId) || {};
+      let w = result[STORAGE_KEYS.WIDGETS]?.find((widget) => widget.id === widgetId) || undefined;
+      if (!w) {
+        debugger;
+        w = result[STORAGE_KEYS.WIDGETS]?.find((widget) => widget.component === widgetId) || {};
+      }
       return w;
 
     } catch (error) {
@@ -312,7 +316,7 @@ export const chromeStorage = {
       return [];
     }
   },
-  getApiToken: async (tokenname: string): Promise<string | null> => {
+  getProviderConfiguration: async (providerName: string): Promise<any | null> => {
     try {
       const result = await chromeStorage.loadAll();
       const settingsWidget = result.widgets.find((w) => w.component === 'settings-widget');
@@ -320,14 +324,14 @@ export const chromeStorage = {
         console.warn('Settings widget not found when retrieving API token');
         return null;
       }
-      const token = settingsWidget.metaData ? (settingsWidget.metaData as SettingsWidgetMetaData).patTokens?.find(x => x.name === tokenname) : null;
-      return token?.key || null;
+      const token = settingsWidget.metaData ? (settingsWidget.metaData as SettingsWidgetMetaData).providers?.find(x => x.name === providerName) : null;
+      return token || null;
     } catch (error) {
-      console.error(`Failed to get API token for ${tokenname} from Chrome storage:`, error);
+      console.error(`Failed to get API token for ${providerName} from Chrome storage:`, error);
       return null;
     }
   },
-  getApiTokens: async (): Promise<{ name: string }[]> => {
+  getProviders: async (): Promise<{ name: string }[]> => {
     try {
       const result = await chromeStorage.loadAll();
       const settingsWidget = result.widgets.find((w) => w.component === 'settings-widget');
@@ -335,7 +339,7 @@ export const chromeStorage = {
         console.warn('Settings widget not found when retrieving API token');
         return null;
       }
-      const tokens = settingsWidget.metaData ? (settingsWidget.metaData as SettingsWidgetMetaData).patTokens : null;
+      const tokens = settingsWidget.metaData ? (settingsWidget.metaData as SettingsWidgetMetaData).providers: null;
       return tokens?.map(x => ({ name: x.name })) || [];
     } catch (error) {
       console.error(`Failed to get API tokens from Chrome storage:`, error);

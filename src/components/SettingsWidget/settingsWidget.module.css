@@ -1,56 +1,26 @@
 /* SettingsWidget Styles */
 .settingsWidget {
-  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
 }
 
-.tabs {
-  display: flex;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: 1rem;
-}
-
-.tabButton {
-  background: none;
-  border: none;
-  padding: 0.75rem 1rem;
-  color: rgba(255, 255, 255, 0.7);
-  cursor: pointer;
-  font-size: var(--widget-body-size, 0.9rem);
-  font-weight: 600;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s ease;
-}
-
-.tabButton:hover {
-  color: white;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.tabButton.active {
-  color: white;
-  border-bottom-color: rgba(255, 255, 255, 0.8);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.tabContent {
+.content {
   flex: 1;
   overflow-y: auto;
   padding-right: 4px;
 }
 
-.tabContent::-webkit-scrollbar {
+.content::-webkit-scrollbar {
   width: 4px;
 }
 
-.tabContent::-webkit-scrollbar-track {
+.content::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.tabContent::-webkit-scrollbar-thumb {
+.content::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, var(--opacity-border));
   border-radius: 2px;
 }
@@ -61,14 +31,7 @@
   border-radius: var(--border-radius-md);
   padding: 1rem;
 }
-
-.sectionTitle {
-  font-size: var(--widget-heading-size, 1.2rem);
-  font-weight: 600;
-  color: white;
-  margin-bottom: 1rem;
-}
-
+ 
 .formGroup {
   margin-bottom: 1rem;
 }

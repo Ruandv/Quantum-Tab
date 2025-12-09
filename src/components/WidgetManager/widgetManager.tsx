@@ -42,7 +42,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     return availableWidgets.filter(widget => widget.group === filter);
   }, [availableWidgets, filter]);
   const getTokens = async () => {
-    const res=  await chromeStorage.getApiTokens();
+    const res=  await chromeStorage.getProviders();
     setExistingApiTokens(res.map(t => t.name));
   }
   const loadDefaults = useCallback(async () => {

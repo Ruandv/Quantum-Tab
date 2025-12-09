@@ -11,7 +11,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   onBackgroundChange,
   isLocked,
   widgetId,
-  tokenName,
+  providerName,
   isAIEnabled
 }: BackgroundManagerProps) => {
   const { t } = useTranslation();
@@ -53,11 +53,10 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       }
       // Load AI data only if AI is enabled
       if (isAIEnabled) {
-
         const storedPrompt = serializedWidget.props?.aiPrompt?.toString() || '';
-        const storedKey = await chromeStorage.getApiToken(tokenName) || '';
+        const storedKey = await chromeStorage.getProviderConfiguration(providerName) || '';
         setAiPrompt(storedPrompt);
-        setAiKey(storedKey);
+        setAiKey(storedKey.apiKey);
       }
     };
     doWork();
@@ -86,14 +85,13 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       const updatedProps = {
         ...storedProps,
         aiPrompt,
-        aiKey,
         backgroundSize,
       };
       await chromeStorage.setWidgetData(widgetId, { props: updatedProps });
     }
     doWork();
 
-  }, [aiPrompt, aiKey, backgroundSize, widgetId])
+  }, [aiPrompt, backgroundSize, widgetId])
 
   useEffect(() => {
     if (!widgetId) return;
@@ -273,17 +271,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
                 placeholder={t('backgroundManager.placeholders.aiPrompt')}
                 value={aiPrompt}
                 onChange={(e) => setAiPrompt(e.target.value)}
-              />
-              <label htmlFor="aiPromptKey" className={styles.label}>
-                {t('backgroundManager.labels.aiPromptKey')}
-              </label>
-              <input
-                type="text"
-                id="aiPromptKey"
-                className={styles.aiTextarea}
-                placeholder={t('backgroundManager.placeholders.aiPromptKey')}
-                value={aiKey}
-                onChange={(e) => setAiKey(e.target.value)}
               />
               <button className={styles.controlBtn} onClick={handleAIButtonClick}>
                 {t('backgroundManager.buttons.submit')}

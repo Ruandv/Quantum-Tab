@@ -28,10 +28,29 @@ const NewTab: React.FC = () => {
         try {
             // Create a stable fallback component reference
             const ClockComponent = componentMap['live-clock'];
+            debugger;
+            const settingsWidgetComponent = componentMap['settings-widget'];
             if (!ClockComponent) {
                 console.error('Live clock component not found in component map');
                 return [];
             }
+            if (!settingsWidgetComponent) {
+                console.error('Settings widget component not found in component map');
+                return [];
+            }
+            const settingsWidget: DashboardWidget = {
+                id: 'settings-widget-1',
+                name: 'Settings Widget',
+                wikiPage: 'settingswidget',
+                description: 'Widget to manage provider settings and configurations',
+                allowMultiples: false,
+                isRuntimeVisible: false,
+                position: defaultPosition,
+                dimensions: defaultDimensions,
+                component: settingsWidgetComponent,
+                props: { widgetId: 'settings-widget-1', isLocked: false },
+                style: defaultStyle,
+            };
 
             const clockWidget: DashboardWidget = {
                 id: 'live-clock-1',
@@ -47,7 +66,7 @@ const NewTab: React.FC = () => {
                 style: defaultStyle,
             };
 
-            return [clockWidget];
+            return [clockWidget,settingsWidget];
         } catch (error) {
             console.error('Error creating initial widgets:', error);
             return [];
@@ -416,7 +435,7 @@ const NewTab: React.FC = () => {
                 <main className={styles.newtabMain}>
                     <div className={styles.mainDashboard}>
                         <Dashboard
-                            widgets={widgets}
+                            widgets={widgets.filter((w) => w.name !== 'Settings Widget')}
                             onRemoveWidget={handleRemoveWidget}
                             onWidgetResize={handleWidgetResize}
                             onWidgetMove={handleWidgetMove}
