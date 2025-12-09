@@ -3,22 +3,24 @@ import { useTranslation } from 'react-i18next';
 import { SettingsWidgetProps, SettingsWidgetMetaData } from '@/types/common';
 import styles from './settingsWidget.module.css';
 import chromeStorage from '@/utils/chromeStorage';
-import { providerRegistry } from '@/types/providerSettings';
+import { providerRegistry, ProviderSettings } from '@/types/providerSettings';
 
 const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, widgetHeading }: SettingsWidgetProps) => {
   const { t } = useTranslation();
 
-  const [providers, setProviders] = useState<any[]>([]); // Use any[] for dynamic provider settings
-  const [newProviderType, setNewProviderType] = useState({});
+  const [providers, setProviders] = useState<ProviderSettings[]>([]);
+  const [selectedProviderKey, setSelectedProviderKey] = useState<string>('');
+  const [newProviderSettings, setNewProviderSettings] = useState<ProviderSettings | null>(null);
 
   const addProviderSetting = () => {
-    if (!newProviderType) return;
-    const newSettings = [...providers, newProviderType];
+    if (!newProviderSettings) return;
+    const newSettings = [...providers, newProviderSettings];
     chromeStorage.setWidgetMetaData<SettingsWidgetMetaData>(widgetId, {
       providers: newSettings,
       lastRefresh: new Date()
     });
-    setNewProviderType({}); // Reset to default
+    setNewProviderSettings(null);
+    setSelectedProviderKey('');
   };
 
   const removeProviderSetting = (index: number) => {
@@ -36,7 +38,7 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, wid
       // Placeholder for fetching logic
       const res = await chromeStorage.getWidgetMetaData<SettingsWidgetMetaData>(widgetId);
       // setPatTokens(res.patTokens || []);
-      setProviders(res.providers || [])
+      setProviders((res?.providers as ProviderSettings[]) || [])
     }
     fetchMetaData();
   }, [widgetId]);
@@ -50,12 +52,16 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, wid
               <label className={styles.label}>{t('settingsWidget.labels.providerType')}</label>
               <select
                 className={styles.input}
-                value={newProviderType.toString()}
+                value={selectedProviderKey}
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                  const prop = providerRegistry?.[e.target.value];
-                  setNewProviderType(prop);
-                }
-                }
+                  const key = e.target.value;
+                  setSelectedProviderKey(key);
+                  if (key && providerRegistry[key]) {
+                    setNewProviderSettings({ ...providerRegistry[key] });
+                  } else {
+                    setNewProviderSettings(null);
+                  }
+                }}
               >
                 <option key={0} value={''}>
                   {t('settingsWidget.placeholders.select')}
@@ -67,27 +73,28 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, wid
                 ))}
               </select>
             </div>
-            {newProviderType && (
-              Object.keys(newProviderType || {})?.map((key) => (
-                <div key={key} className={styles.formGroup}>
-                  <label className={styles.label}>{key}</label>
-                  <input
-                    type="text"
-                    className={styles.input}
-                    value={newProviderType[key] || ''}
-                    onChange={(e) => {
-                      const o = { [`${key}`]: e.target.value }
-                      setNewProviderType((prev) => ({
-                        ...prev,
-                        ...o
-                      }));
-                    }
-                    }
-                  />
-                </div>
-              )))}
+            {newProviderSettings && (
+              Object.keys(newProviderSettings).map((key) => {
+                if (key === 'name') return null; // Skip name field
+                return (
+                  <div key={key} className={styles.formGroup}>
+                    <label className={styles.label}>{key}</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={(newProviderSettings as unknown as Record<string, string>)[key] || ''}
+                      onChange={(e) => {
+                        setNewProviderSettings((prev) => prev ? ({
+                          ...prev,
+                          [key]: e.target.value
+                        }) : null);
+                      }}
+                    />
+                  </div>
+                );
+              }))}
             <div className={styles.formGroup}>
-              <button className={styles.button} onClick={addProviderSetting}>
+              <button className={styles.button} onClick={addProviderSetting} disabled={!newProviderSettings}>
                 {t('settingsWidget.buttons.addProvider')}
               </button>
             </div>
