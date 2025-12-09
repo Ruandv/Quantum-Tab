@@ -162,7 +162,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
       });
       setModalContent({
         title: t('widgetManager.modal.titleImportSecrets'), content: fieldsData, actions: [{
-          index: 1, text: 'Cancel', onClick: () => {
+          index: 1, text: t('common.buttons.cancel'), onClick: () => {
             setIsModalOpen(false);
             setModalContent(null);
             setSelectedWidgetType(null);
@@ -170,7 +170,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
         },
         {
           index: 0,
-          text: 'Save',
+          text: t('common.buttons.save'),
           onClick: async () => {
             // now we need to go find the widgets where the id matches
             data.exportMetadata.secretProps.map(({ name, key, value }) => {
@@ -188,8 +188,8 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             await chromeStorage.saveBackground(data.backgroundImage);
             await chromeStorage.saveVersion(data?.version?.toString() || '1.0.0');
             setModalContent({
-              title: 'Import Successful', content: "Data imported successfully", actions: [{
-                index: 1, text: 'Refresh', onClick: () => {
+              title: t('widgetManager.messages.importSuccessful'), content: t('widgetManager.messages.dataImported'), actions: [{
+                index: 1, text: t('common.buttons.refresh'), onClick: () => {
                   window.location.reload();
                 }
               }]

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SettingsWidgetProps, SettingsWidgetMetaData } from '@/types/common';
 import styles from './settingsWidget.module.css';
 import chromeStorage from '@/utils/chromeStorage';
 import { providerRegistry } from '@/types/providerSettings';
 
 const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, widgetHeading }: SettingsWidgetProps) => {
+  const { t } = useTranslation();
 
   const [providers, setProviders] = useState<any[]>([]); // Use any[] for dynamic provider settings
   const [newProviderType, setNewProviderType] = useState({});
@@ -45,7 +47,7 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, wid
         <div className={styles.content}>
           <div className={styles.section}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>Provider Type</label>
+              <label className={styles.label}>{t('settingsWidget.labels.providerType')}</label>
               <select
                 className={styles.input}
                 value={newProviderType.toString()}
@@ -56,7 +58,7 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, wid
                 }
               >
                 <option key={0} value={''}>
-                  Please select
+                  {t('settingsWidget.placeholders.select')}
                 </option>
                 {Object.keys(providerRegistry).map((provider) => (
                   <option key={provider} value={provider}>
@@ -86,7 +88,7 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, wid
               )))}
             <div className={styles.formGroup}>
               <button className={styles.button} onClick={addProviderSetting}>
-                Add Provider Setting
+                {t('settingsWidget.buttons.addProvider')}
               </button>
             </div>
             <ul className={styles.list}>
@@ -94,7 +96,7 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, wid
                 <li key={index} className={styles.listItem}>
                   <span className={styles.itemName}>{setting.name}</span>
                   <button className={styles.removeButton} onClick={() => removeProviderSetting(index)}>
-                    Remove
+                    {t('common.buttons.remove')}
                   </button>
                 </li>
               ))}

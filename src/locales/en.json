@@ -80,10 +80,15 @@
       "justifyCenter": "Center",
       "justifyEnd": "End",
       "justifyBetween": "Space Between",
-      "justifyAround": "Space Around"
+      "justifyAround": "Space Around",
+      "selectProvider": "Select Provider"
     },
     "units": {
       "pixels": "px"
+    },
+    "messages": {
+      "importSuccessful": "Import Successful",
+      "dataImported": "Data imported successfully"
     }
   },
   "backgroundManager": {
@@ -208,6 +213,17 @@
     "title": "Language Settings",
     "labels": {
       "language": "Interface Language:"
+    }
+  },
+  "settingsWidget": {
+    "labels": {
+      "providerType": "Provider Type"
+    },
+    "placeholders": {
+      "select": "Please select"
+    },
+    "buttons": {
+      "addProvider": "Add Provider Setting"
     }
   },
   "githubIssues": {
