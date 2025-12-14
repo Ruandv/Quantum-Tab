@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsWidgetProps, SettingsWidgetMetaData, CssStyle } from '@/types/common';
 import styles from './settingsWidget.module.css';
-import chromeStorage, { Defaults } from '@/utils/chromeStorage';
+import chromeStorage from '@/utils/chromeStorage';
 import { providerRegistry, ProviderSettings } from '@/types/providerSettings';
 
 const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, widgetHeading }: SettingsWidgetProps) => {

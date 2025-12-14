@@ -28,7 +28,6 @@ const NewTab: React.FC = () => {
         try {
             // Create a stable fallback component reference
             const ClockComponent = componentMap['live-clock'];
-            debugger;
             const settingsWidgetComponent = componentMap['settings-widget'];
             if (!ClockComponent) {
                 console.error('Live clock component not found in component map');
@@ -136,7 +135,7 @@ const NewTab: React.FC = () => {
                         let widgetTypeId = '';
 
                         // Try to extract widget type ID from saved data
-                        const comp = widget.component as any;
+                        const comp = widget.component as unknown;
 
                         if (typeof comp === 'string') {
                             // If it's a string, it might be the widget type ID

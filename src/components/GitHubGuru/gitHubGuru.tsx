@@ -214,7 +214,7 @@ const GitHubGuru: React.FC<GitHubGuruProps> = ({
         if (patToken && repositoryUrl) {
             fetchPullRequests();
         }
-    }, []);
+    }, [patToken, repositoryUrl, fetchPullRequests]);
     // Handle PR item click
     const handlePrClick = useCallback((pr: GitHubPullRequestWithReviews) => {
         if (!isLocked) {

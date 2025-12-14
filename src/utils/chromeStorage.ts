@@ -1,4 +1,5 @@
 import { Dimensions, Position, CssStyle, STORAGE_KEYS, SettingsWidgetMetaData } from '../types/common';
+import { ProviderSettings } from '../types/providerSettings';
 import { defaultDimensions, defaultPosition, defaultStyle } from '../types/defaults';
 // Storage keys for Chrome extension storage
 
@@ -21,6 +22,7 @@ export interface SerializedWidget {
 // Interface for saved data
 export interface SavedData {
   widgets: SerializedWidget[];
+  backgroundImage: string;
   isLocked: boolean;
   timestamp: number;
   version: string;
@@ -178,7 +180,7 @@ export const chromeStorage = {
         isLocked: result[STORAGE_KEYS.LOCK_STATE] || false,
         version,
         timestamp: Date.now(),
-      } as any;
+      };
     } catch (error) {
       console.error('Failed to load all data from Chrome storage:', error);
       return {

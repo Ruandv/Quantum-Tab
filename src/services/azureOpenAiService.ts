@@ -1,7 +1,7 @@
 import { AzureOpenAI } from 'openai';
 import { AIService } from './aiService.interface';
 
-const AzureOpenAiService = class azureOpenAIService implements AIService<azureOpenAIService> {
+const AzureOpenAiService = class azureOpenAIService implements AIService {
     private static instance: azureOpenAIService | null = null;
     private readonly service: AzureOpenAI;
 

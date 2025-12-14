@@ -1,3 +1,3 @@
-export interface AIService<T> {
+export interface AIService {
     generateResponse(prompt: string): Promise<string>;
 }

@@ -1,7 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { AIService } from './aiService.interface';
 
-const GeminiService = class geminiService implements AIService<geminiService> {
+const GeminiService = class geminiService implements AIService {
     private static instance: geminiService | null = null;
     private readonly service: GoogleGenAI;
 

@@ -7,6 +7,8 @@ type OptionalKeys = 'buttons' | 'isLocked' | 'widgetId' | 'onBackgroundChange' |
 // but still allow the optional properties to be provided in defaultProps
 type RequiredProps<T> = Required<Omit<T, OptionalKeys & keyof T>> & Partial<Pick<T, OptionalKeys & keyof T>>;
 
+import { ProviderSettings } from './providerSettings';
+
 export interface Position {
   x: number;
   y: number;
@@ -387,7 +389,7 @@ export interface PATToken {
 export interface SettingsWidgetMetaData {
   lastRefresh: Date;
   patTokens?: PATToken[];
-  providers?: any[];
+  providers?: ProviderSettings[];
 }
 
 export interface SettingsWidgetProps extends DefaultWidgetProps {

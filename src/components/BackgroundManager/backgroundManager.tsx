@@ -60,7 +60,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       }
     };
     doWork();
-  }, [widgetId, isAIEnabled]);
+  }, [widgetId, isAIEnabled, providerName]);
   // Add widget removal event listener for cleanup
 
   useEffect(() => {
