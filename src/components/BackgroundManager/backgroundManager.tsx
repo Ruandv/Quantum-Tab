@@ -54,9 +54,9 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       // Load AI data only if AI is enabled
       if (isAIEnabled) {
         const storedPrompt = serializedWidget.metaData?.['aiPrompt']?.toString() || '';
-        const storedKey = await chromeStorage.getProviderConfiguration(providerName) || '';
+        const storedKey = await chromeStorage.getProviderConfiguration(providerName);
         setAiPrompt(storedPrompt);
-        setAiKey(storedKey.apiKey);
+        setAiKey((storedKey as any)?.apiKey || '');
       }
     };
     doWork();

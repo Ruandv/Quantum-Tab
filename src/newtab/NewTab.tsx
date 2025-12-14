@@ -135,7 +135,7 @@ const NewTab: React.FC = () => {
                         let widgetTypeId = '';
 
                         // Try to extract widget type ID from saved data
-                        const comp = widget.component as unknown;
+                        const comp = widget.component as any;
 
                         if (typeof comp === 'string') {
                             // If it's a string, it might be the widget type ID

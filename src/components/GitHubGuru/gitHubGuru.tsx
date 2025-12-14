@@ -135,7 +135,7 @@ const GitHubGuru: React.FC<GitHubGuruProps> = ({
     useEffect(() => {
         const getData = async () => {
             const providerSettings = await chromeStorage.getProviderConfiguration(providerName);
-            const token = providerSettings.PatToken;
+            const token = (providerSettings as any)?.PatToken;
             if (token) {
                 setPatToken(token as string);
             } else {
