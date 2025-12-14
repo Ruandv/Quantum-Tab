@@ -38,9 +38,9 @@
 |:---:|:---:|:---:|
 | Multi-timezone support<br/>Custom formats<br/>Real-time updates | Favorite website shortcuts<br/>Custom icons & labels<br/>One-click navigation | Upload custom backgrounds<br/>5MB file support<br/>Preview & restore |
 
-| 🐙 **GitHub Integration** | 📊 **Website Counter** | 🌐 **Language Settings** |
-|:---:|:---:|:---:|
-| PR monitoring<br/>PAT authentication<br/>Real-time updates | Visit tracking<br/>Favicon display<br/>Statistics & trends | Multi-language UI<br/>Instant switching<br/>Persistent preferences |
+| 🐙 **GitHub Integration** | 🌐 **Language Settings** |
+|:---:|:---:|
+| PR monitoring<br/>PAT authentication<br/>Real-time updates | Multi-language UI<br/>Instant switching<br/>Persistent preferences |
 
 | 🏃 **Sprint Number** | | |
 |:---:|:---:|:---:|
@@ -371,23 +371,6 @@ This command generates wiki files in `wiki/` folder for CI/CD deployment.
 
 **Multiple Instances:** ✅ Yes (monitor multiple repositories)  
 **Requirements:** GitHub Personal Access Token for private repos
-
-</details>
-
-<details>
-<summary>📊 <strong>Website Counter Widget</strong></summary>
-
-**Track your browsing habits and favorite sites**
-
-✨ **Features:**
-- 📈 Automatic visit counting
-- 🌐 Favicon display for visual identification
-- 📅 Last visited timestamps
-- ⚙️ Customizable website list
-- 📊 Visit statistics and trends
-
-**Multiple Instances:** ❌ No (single counter tracks all sites)  
-**Default Sites:** Google, GitHub, MyBroadband
 
 </details>
 

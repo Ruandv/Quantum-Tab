@@ -180,5 +180,5 @@ export async function testWidgetUpgrade(): Promise<void> {
 
 // Export for use in browser console or tests
 if (typeof window !== 'undefined') {
-  (window as any).testWidgetUpgrade = testWidgetUpgrade;
+  (window as unknown as { testWidgetUpgrade: typeof testWidgetUpgrade }).testWidgetUpgrade = testWidgetUpgrade;
 }

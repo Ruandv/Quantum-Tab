@@ -28,6 +28,7 @@
     "@google/genai": "^1.25.0",
     "@types/react-beautiful-dnd": "^13.1.8",
     "i18next": "^25.5.2",
+    "openai": "^6.10.0",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",

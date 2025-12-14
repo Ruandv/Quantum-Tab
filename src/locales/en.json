@@ -80,10 +80,15 @@
       "justifyCenter": "Center",
       "justifyEnd": "End",
       "justifyBetween": "Space Between",
-      "justifyAround": "Space Around"
+      "justifyAround": "Space Around",
+      "selectProvider": "Select Provider"
     },
     "units": {
       "pixels": "px"
+    },
+    "messages": {
+      "importSuccessful": "Import Successful",
+      "dataImported": "Data imported successfully"
     }
   },
   "backgroundManager": {
@@ -155,6 +160,30 @@
       "files": "files"
     }
   },
+  "githubGuru": {
+    "title": "GitHub Guru",
+    "tabs": {
+      "allPRs": "All PRs",
+      "myPRs": "My PRs"
+    },
+    "labels": {
+      "approvals": "approvals"
+    },
+    "buttons": {
+      "dismissNotification": "Dismiss notification",
+      "clearCredentials": "Clear Credentials"
+    },
+    "notifications": {
+      "newActivity": "New Activity"
+    },
+    "messages": {
+      "noPRs": "No open pull requests found",
+      "noUserPRs": "You have no open pull requests"
+    },
+    "confirm": {
+      "clearCredentials": "Are you sure you want to clear your GitHub credentials? This will remove your PAT token."
+    }
+  },
   "gitCommentWatcher": {
     "title": "Git Comment Watcher",
     "labels": {
@@ -184,6 +213,17 @@
     "title": "Language Settings",
     "labels": {
       "language": "Interface Language:"
+    }
+  },
+  "settingsWidget": {
+    "labels": {
+      "providerType": "Provider Type"
+    },
+    "placeholders": {
+      "select": "Please select"
+    },
+    "buttons": {
+      "addProvider": "Add Provider Setting"
     }
   },
   "githubIssues": {
@@ -257,43 +297,9 @@
       "name": "GitHub PR Tracker",
       "description": "Display and track GitHub pull requests"
     },
-    "websiteCounter": {
-      "name": "Website Counter",
-      "description": "Track and display website visit statistics",
-      "loading": "Loading counters...",
-      "stats": {
-        "totalVisits": "{{count}} total visits",
-        "trackedSites": "{{current}}/{{max}} sites"
-      },
-      "emptyState": {
-        "title": "No websites being tracked",
-        "hint": "Add a website to start counting visits"
-      },
-      "buttons": {
-        "addWebsite": "➕ Add Website",
-        "resetAll": "🔄 Reset All",
-        "remove": "Remove website"
-      },
-      "placeholders": {
-        "websiteUrl": "Enter website URL (e.g., github.com)"
-      },
-      "alerts": {
-        "alreadyTracked": "This website is already being tracked!",
-        "maxReached": "Maximum of {{max}} websites can be tracked.",
-        "invalidUrl": "Please enter a valid website URL"
-      },
-      "confirm": {
-        "resetCounters": "Are you sure you want to reset all website counters?"
-      },
-      "lastVisited": {
-        "never": "Never",
-        "today": "Today",
-        "yesterday": "Yesterday",
-        "daysAgo": "{{days}} days ago"
-      },
-      "alt": {
-        "favicon": "{{hostname}} favicon"
-      }
+    "githubGuru": {
+      "name": "GitHub Guru",
+      "description": "Monitor all PRs and your PRs with notifications"
     },
     "localeWidget": {
       "name": "Locale Selector",
@@ -302,6 +308,18 @@
     "sprintNumber": {
       "name": "Sprint Counter",
       "description": "Track sprint numbers and project timelines"
+    },
+    "settingsWidget": {
+      "labels": {
+        "providerType": "Provider Type"
+      },
+      "placeholders": {
+        "select": "Select a provider"
+      },
+      "buttons": {
+        "addProvider": "Add Provider",
+        "saveDefaults": "Save Defaults"
+      }
     }
   }
 }
