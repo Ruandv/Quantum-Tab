@@ -294,7 +294,7 @@ export const chromeStorage = {
     }
   },
 
-  getProviderConfiguration: async (providerName: string): Promise<any | null> => {
+  getProviderConfiguration: async (providerName: string): Promise<ProviderSettings | null> => {
     try {
       const result = await chromeStorage.loadAll();
       const settingsWidget = result.widgets.find((w) => w.component === 'settings-widget');
