@@ -8,29 +8,6 @@ Quantum Tab is a Chrome extension that provides a customizable new tab experienc
 
 ## Data Collection and Usage
 
-### Website Visit Tracking (Website Counter Widget)
-
-**What we collect:**
-- Domain names (hostnames) of websites you choose to track
-- Visit counts for each tracked website
-- Last visit timestamps
-- Full URLs of tracked websites
-- Optional favicon images (fetched from Google's favicon service)
-
-**How we collect it:**
-- Only when you explicitly add a website to track via the Website Counter widget
-- Content scripts run only on websites you've approved
-- Data is collected locally in your browser
-
-**How we use it:**
-- To display visit statistics in the Website Counter widget
-- To show when you last visited each tracked website
-
-**Data storage:**
-- All data is stored locally in your browser's Chrome storage
-- No data is transmitted to external servers
-- Data remains on your device only
-
 ### GitHub Integration (GitHub Guru Widget)
 
 **What we collect:**

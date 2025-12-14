@@ -4,12 +4,7 @@
   "version": "1.7.0",
   "description": "New tab. New intelligence.",
   "permissions": [
-    "storage",
-    "scripting"
-  ],
-  "optional_host_permissions": [
-    "https://*/*",
-    "http://*/*"
+    "storage"
   ],
   "chrome_url_overrides": {
     "newtab": "newtab.html"

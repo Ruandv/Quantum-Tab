@@ -53,7 +53,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       }
       // Load AI data only if AI is enabled
       if (isAIEnabled) {
-        const storedPrompt = serializedWidget.props?.aiPrompt?.toString() || '';
+        const storedPrompt = serializedWidget.metaData?.['aiPrompt']?.toString() || '';
         const storedKey = await chromeStorage.getProviderConfiguration(providerName) || '';
         setAiPrompt(storedPrompt);
         setAiKey(storedKey.apiKey);
@@ -65,15 +65,28 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
 
   useEffect(() => {
     const doWork = async () => {
-      if (lastRefresh) {
-        await chromeStorage.setWidgetMetaData(widgetId, {
-          lastRefresh: lastRefresh.toISOString(),
-          backgroundImage: uploadedImage
-        });
-      }
+      const currentWidgetMetaData = await chromeStorage.getWidgetMetaData(widgetId);
+      await chromeStorage.setWidgetMetaData(widgetId, {
+        ...currentWidgetMetaData,
+        lastRefresh: lastRefresh?.toISOString(),
+        // backgroundImage: uploadedImage,
+        aiPrompt: aiPrompt
+      });
     };
     doWork();
-  }, [lastRefresh, widgetId, uploadedImage]); 
+  }, [lastRefresh, widgetId, aiPrompt, uploadedImage]);
+  useEffect(() => {
+    const doWork = async () => {
+      if (uploadedImage === null) return;
+      const currentWidgetMetaData = await chromeStorage.getWidgetMetaData(widgetId);
+      await chromeStorage.setWidgetMetaData(widgetId, {
+        ...currentWidgetMetaData,
+        lastRefresh: lastRefresh?.toISOString(),
+        backgroundImage: uploadedImage,
+      });
+    };
+    doWork();
+  }, [widgetId, uploadedImage, lastRefresh]);
 
   useEffect(() => {
     const doWork = async () => {
@@ -84,14 +97,14 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
           : {};
       const updatedProps = {
         ...storedProps,
-        aiPrompt,
         backgroundSize,
       };
+      console.log('Updating widget props:', updatedProps);
       await chromeStorage.setWidgetData(widgetId, { props: updatedProps });
     }
     doWork();
 
-  }, [aiPrompt, backgroundSize, widgetId])
+  }, [backgroundSize, widgetId])
 
   useEffect(() => {
     if (!widgetId) return;

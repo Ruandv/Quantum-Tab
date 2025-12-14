@@ -3,7 +3,6 @@
 ## Data Collection
 Quantum Tab collects only the data you explicitly provide and configure:
 
-- **Website visit counts**: Only for websites you choose to track via the Website Counter widget
 - **API credentials**: GitHub PATs and Gemini API keys you enter for widget functionality
 
 ## Data Usage
@@ -17,7 +16,6 @@ Quantum Tab collects only the data you explicitly provide and configure:
 - Data remains on your device only
 
 ## Data Deletion
-- Clear website tracking data by removing websites from the counter
 - Clear API credentials using the "Clear Credentials" button in widgets
 - Uninstall the extension to remove all stored data
 

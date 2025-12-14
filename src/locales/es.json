@@ -295,46 +295,6 @@
             "name": "GitHub Guru",
             "description": "Monitorea solicitudes de extracción con notificaciones inteligentes"
         },
-        "websiteCounter": {
-            "name": "Contador de Sitios",
-            "description": "Rastrea y muestra estadísticas de visitas a sitios web",
-            "loading": "Cargando contadores...",
-            "stats": {
-                "totalVisits": "{{count}} visitas totales",
-                "trackedSites": "{{current}}/{{max}} sitios"
-            },
-            "emptyState": {
-                "title": "No se están rastreando sitios web",
-                "hint": "Agrega un sitio web para comenzar a contar visitas"
-            },
-            "buttons": {
-                "addWebsite": "➕ Agregar Sitio Web",
-                "resetAll": "🔄 Restablecer Todo",
-                "remove": "Eliminar sitio web"
-            },
-            "placeholders": {
-                "websiteUrl": "Ingresa URL del sitio web (ej. github.com)"
-            },
-            "alerts": {
-                "alreadyTracked": "¡Este sitio web ya está siendo rastreado!",
-                "maxReached": "Se puede rastrear un máximo de {{max}} sitios web.",
-                "invalidUrl": "Por favor ingresa una URL de sitio web válida",
-                "permissionDenied": "Quantum Tab no puede rastrear {{hostname}} sin el permiso adicional."
-            },
-            "confirm": {
-                "resetCounters": "¿Estás seguro de que quieres restablecer todos los contadores de sitio web?",
-                "allowTracking": "¿Permitir que Quantum Tab rastree visitas a {{hostname}}?"
-            },
-            "lastVisited": {
-                "never": "Nunca",
-                "today": "Hoy",
-                "yesterday": "Ayer",
-                "daysAgo": "Hace {{days}} días"
-            },
-            "alt": {
-                "favicon": "{{hostname}} favicon"
-            }
-        },
         "localeWidget": {
             "name": "Selector de Idioma",
             "description": "Cambia tu idioma y configuración regional preferidos"

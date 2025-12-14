@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SettingsWidgetProps, SettingsWidgetMetaData } from '@/types/common';
+import { SettingsWidgetProps, SettingsWidgetMetaData, CssStyle } from '@/types/common';
 import styles from './settingsWidget.module.css';
-import chromeStorage from '@/utils/chromeStorage';
+import chromeStorage, { Defaults } from '@/utils/chromeStorage';
 import { providerRegistry, ProviderSettings } from '@/types/providerSettings';
 
 const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, widgetHeading }: SettingsWidgetProps) => {
@@ -11,6 +11,7 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, wid
   const [providers, setProviders] = useState<ProviderSettings[]>([]);
   const [selectedProviderKey, setSelectedProviderKey] = useState<string>('');
   const [newProviderSettings, setNewProviderSettings] = useState<ProviderSettings | null>(null);
+  const [defaultStyleSettings, setDefaultStyleSettings] = useState<CssStyle>(null);
 
   const addProviderSetting = () => {
     if (!newProviderSettings) return;
@@ -37,11 +38,25 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, wid
     async function fetchMetaData() {
       // Placeholder for fetching logic
       const res = await chromeStorage.getWidgetMetaData<SettingsWidgetMetaData>(widgetId);
-      // setPatTokens(res.patTokens || []);
+      const defaultsRes = await chromeStorage.loadAllDefaults(); 
       setProviders((res?.providers as ProviderSettings[]) || [])
+      setDefaultStyleSettings((defaultsRes?.['styling'] as CssStyle) || null);
     }
     fetchMetaData();
   }, [widgetId]);
+
+  useEffect(() => {
+    if(!defaultStyleSettings) return;
+    async function saveDefaults() {
+      const defaultsRes = await chromeStorage.loadAllDefaults(); 
+      chromeStorage.saveAllDefaults({
+        ...defaultsRes,
+        styling: defaultStyleSettings
+      });
+    }
+    saveDefaults();
+  }, [defaultStyleSettings]);
+
   return (
     isLocked ? <> </> :
       <div className={styles.settingsWidget}>
@@ -64,7 +79,7 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, wid
                 }}
               >
                 <option key={0} value={''}>
-                  {t('settingsWidget.placeholders.select')}
+                  {t('settingsWidget.placeholders.select')} 
                 </option>
                 {Object.keys(providerRegistry).map((provider) => (
                   <option key={provider} value={provider}>
@@ -82,6 +97,7 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, wid
                     <input
                       type="text"
                       className={styles.input}
+                      key={key}
                       value={(newProviderSettings as unknown as Record<string, string>)[key] || ''}
                       onChange={(e) => {
                         setNewProviderSettings((prev) => prev ? ({
@@ -108,6 +124,32 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, wid
                 </li>
               ))}
             </ul>
+          </div>
+          <div className={styles.content}>
+            <div className={styles.section}>
+              <h3>Default widget settings</h3>
+              <p>These settings will apply to new widgets created after changing them.</p>
+              {defaultStyleSettings && (
+                Object.keys(defaultStyleSettings).map((key) => {
+                  if (key === 'name') return null; // Skip name field
+                  return (
+                    <div key={key} className={styles.formGroup}>
+                      <label className={styles.label}>{key}</label>
+                      <input
+                        type="text"
+                        className={styles.input}
+                        value={(defaultStyleSettings as CssStyle)[key] || ''}
+                        onChange={(e) => {
+                          setDefaultStyleSettings((prev) => prev ? ({
+                            ...prev,
+                            [key]: e.target.value
+                          }) : null);
+                        }}
+                      />
+                    </div>
+                  );
+                }))}
+            </div>
           </div>
         </div>
       </div>

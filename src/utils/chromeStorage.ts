@@ -1,4 +1,4 @@
-import { Dimensions, Position, CssStyle, STORAGE_KEYS, WebsiteCounterData, SettingsWidgetMetaData } from '../types/common';
+import { Dimensions, Position, CssStyle, STORAGE_KEYS, SettingsWidgetMetaData } from '../types/common';
 import { defaultDimensions, defaultPosition, defaultStyle } from '../types/defaults';
 // Storage keys for Chrome extension storage
 
@@ -188,7 +188,7 @@ export const chromeStorage = {
         timestamp: Date.now(),
       };
     }
-  },
+  }, 
   // Save all data at once
   saveAllDefaults: async (data: Defaults): Promise<boolean> => {
     try {
@@ -242,7 +242,6 @@ export const chromeStorage = {
       const result = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
       let w = result[STORAGE_KEYS.WIDGETS]?.find((widget) => widget.id === widgetId) || undefined;
       if (!w) {
-        debugger;
         w = result[STORAGE_KEYS.WIDGETS]?.find((widget) => widget.component === widgetId) || {};
       }
       return w;
@@ -293,29 +292,6 @@ export const chromeStorage = {
     }
   },
 
-  // Save website counter data
-  saveWebsiteCounters: async (counters: WebsiteCounterData[]): Promise<boolean> => {
-    try {
-      await chrome.storage.local.set({
-        websiteCounters: counters,
-      });
-      return true;
-    } catch (error) {
-      console.error('Failed to save website counters to Chrome storage:', error);
-      return false;
-    }
-  },
-
-  // Load website counter data
-  loadWebsiteCounters: async (): Promise<WebsiteCounterData[]> => {
-    try {
-      const result = await chrome.storage.local.get('websiteCounters');
-      return result.websiteCounters || [];
-    } catch (error) {
-      console.error('Failed to load website counters from Chrome storage:', error);
-      return [];
-    }
-  },
   getProviderConfiguration: async (providerName: string): Promise<any | null> => {
     try {
       const result = await chromeStorage.loadAll();

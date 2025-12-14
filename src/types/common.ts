@@ -10,7 +10,7 @@ type RequiredProps<T> = Required<Omit<T, OptionalKeys & keyof T>> & Partial<Pick
 export interface Position {
   x: number;
   y: number;
-}
+} 
 
 export interface Dimensions {
   width: number;
@@ -122,21 +122,6 @@ interface GitHubWidgetBaseProps extends DefaultWidgetProps {
 }
 
 export interface GitHubGuruProps extends GitHubWidgetBaseProps {
-}
-
-export interface WebsiteCounterProps extends DefaultWidgetProps {
-  websites?: WebsiteCounterData[];
-  showFavicons?: boolean;
-  maxWebsites?: number;
-  sortBy?: 'count' | 'name' | 'lastVisited' | 'recent';
-}
-
-export interface WebsiteCounterData {
-  url: string;
-  hostname: string;
-  count: number;
-  lastVisited: number;
-  favicon?: string;
 }
 
 export interface LocaleWidgetProps extends DefaultWidgetProps {

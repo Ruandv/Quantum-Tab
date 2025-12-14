@@ -301,46 +301,6 @@
       "name": "GitHub Guru",
       "description": "Monitor all PRs and your PRs with notifications"
     },
-    "websiteCounter": {
-      "name": "Website Counter",
-      "description": "Track and display website visit statistics",
-      "loading": "Loading counters...",
-      "stats": {
-        "totalVisits": "{{count}} total visits",
-        "trackedSites": "{{current}}/{{max}} sites"
-      },
-      "emptyState": {
-        "title": "No websites being tracked",
-        "hint": "Add a website to start counting visits"
-      },
-      "buttons": {
-        "addWebsite": "➕ Add Website",
-        "resetAll": "🔄 Reset All",
-        "remove": "Remove website"
-      },
-      "placeholders": {
-        "websiteUrl": "Enter website URL (e.g., github.com)"
-      },
-      "alerts": {
-        "alreadyTracked": "This website is already being tracked!",
-        "maxReached": "Maximum of {{max}} websites can be tracked.",
-        "invalidUrl": "Please enter a valid website URL",
-        "permissionDenied": "Quantum Tab can't track {{hostname}} without the extra permission."
-      },
-      "confirm": {
-        "resetCounters": "Are you sure you want to reset all website counters?",
-        "allowTracking": "Allow Quantum Tab to track visits to {{hostname}}?"
-      },
-      "lastVisited": {
-        "never": "Never",
-        "today": "Today",
-        "yesterday": "Yesterday",
-        "daysAgo": "{{days}} days ago"
-      },
-      "alt": {
-        "favicon": "{{hostname}} favicon"
-      }
-    },
     "localeWidget": {
       "name": "Locale Selector",
       "description": "Change your preferred language and locale"
@@ -348,6 +308,18 @@
     "sprintNumber": {
       "name": "Sprint Counter",
       "description": "Track sprint numbers and project timelines"
+    },
+    "settingsWidget": {
+      "labels": {
+        "providerType": "Provider Type"
+      },
+      "placeholders": {
+        "select": "Select a provider"
+      },
+      "buttons": {
+        "addProvider": "Add Provider",
+        "saveDefaults": "Save Defaults"
+      }
     }
   }
 }

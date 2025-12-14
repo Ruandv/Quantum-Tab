@@ -366,7 +366,7 @@ const NewTab: React.FC = () => {
     }, []);
 
     const handleBackgroundChange = useCallback(async (newBackground: string) => {
-        await chromeStorage.saveBackground(newBackground)
+        // await chromeStorage.saveBackground(newBackground)
         // load the widget again to get updated props
         const bg = widgets.find(x => x.id.toLowerCase().startsWith('background-manager'));
         if (bg) {

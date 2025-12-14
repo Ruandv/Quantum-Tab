@@ -2,6 +2,8 @@ import SettingsWidget from '@/components/SettingsWidget/settingsWidget';
 import chromeStorage from '@/utils/chromeStorage';
 import React, { useEffect } from 'react';
 import './Popup.css';
+import '../styles/variables.css';
+import '../styles/global.css';
 const Popup: React.FC = () => {
   const version = chrome.runtime.getManifest().version;
   const [activeTab, setActiveTab] = React.useState<'provider' | 'recent' | 'bugs'>('provider');

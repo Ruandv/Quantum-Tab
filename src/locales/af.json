@@ -263,46 +263,6 @@
       "name": "GitHub Guru",
       "description": "Monitor alle TV's en jou TV's met kennisgewings"
     },
-    "websiteCounter": {
-      "name": "Webwerf Teller",
-      "description": "Spoor en vertoon webwerf besoek statistieke",
-      "loading": "Laai tellers...",
-      "stats": {
-        "totalVisits": "{{count}} totale besoeke",
-        "trackedSites": "{{current}}/{{max}} webwerwe"
-      },
-      "emptyState": {
-        "title": "Geen webwerwe word gevolg nie",
-        "hint": "Voeg 'n webwerf by om besoeke te begin tel"
-      },
-      "buttons": {
-        "addWebsite": "➕ Voeg Webwerf By",
-        "resetAll": "🔄 Stel Alles Terug",
-        "remove": "Verwyder webwerf"
-      },
-      "placeholders": {
-        "websiteUrl": "Voer webwerf URL in (bv. github.com)"
-      },
-      "alerts": {
-        "alreadyTracked": "Hierdie webwerf word reeds gevolg!",
-        "maxReached": "Maksimum van {{max}} webwerwe kan gevolg word.",
-        "invalidUrl": "Voer asseblief 'n geldige webwerf URL in",
-        "permissionDenied": "Quantum Tab kan nie {{hostname}} volg sonder die ekstra toestemming nie."
-      },
-      "confirm": {
-        "resetCounters": "Is jy seker jy wil alle webwerf tellers terugstel?",
-        "allowTracking": "Laat Quantum Tab toe om besoeke aan {{hostname}} te volg?"
-      },
-      "lastVisited": {
-        "never": "Nooit",
-        "today": "Vandag",
-        "yesterday": "Gister",
-        "daysAgo": "{{days}} dae gelede"
-      },
-      "alt": {
-        "favicon": "{{hostname}} favicon"
-      }
-    },
     "localeWidget": {
       "name": "Taal Kieser",
       "description": "Verander jou voorkeur taal en streek"

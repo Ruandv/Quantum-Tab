@@ -2,7 +2,6 @@ import {
   LiveClockProps,
   QuickActionButtonsProps,
   BackgroundManagerProps,
-  WebsiteCounterProps,
   LocaleWidgetProps,
   SprintNumberProps,
   WidgetType,
@@ -12,7 +11,6 @@ import {
 } from '../types/common';
 import LiveClock from '../components/LiveClock/liveClock';
 import QuickActionButtons from '../components/QuickActionButtons/quickActionButtons';
-import WebsiteCounter from '../components/WebsiteCounter/websiteCounter';
 import LocaleWidget from '../components/LocaleWidget/localeWidget';
 import SprintNumber from '../components/SprintNumber/sprintNumber';
 import { defaultDimensions } from '@/types/defaults';
@@ -125,33 +123,6 @@ export class WidgetRegistry {
       },
     });
 
-    this.register<WebsiteCounterProps>({
-      id: 'website-counter',
-      name: 'Website Counter',
-      wikiPage: 'websitecounter',
-      allowMultiples: true,
-      isRuntimeVisible: true,
-      group: 'general',
-      description: 'Track and count visits to your favorite websites',
-      component: WebsiteCounter,
-      defaultDimensions: { width: 350, height: 300 },
-      defaultProps: {
-        widgetHeading: 'Website Counter',
-        websites: ['google.com', 'github.com'].map((url) => {
-          const hostname = url.replace('www.', '');
-          return {
-            url,
-            hostname,
-            count: 0,
-            lastVisited: 0,
-          };
-        }),
-        showFavicons: true,
-        maxWebsites: 10,
-        sortBy: 'count',
-      },
-    });
-
     this.register<LocaleWidgetProps>({
       id: 'locale-selector',
       name: 'Language Settings',
@@ -256,7 +227,6 @@ export class WidgetRegistry {
       'background-manager': { name: 'widgets.backgroundManager.name', description: 'widgets.backgroundManager.description' },
       'github-widget': { name: 'widgets.githubWidget.name', description: 'widgets.githubWidget.description' },
       'github-guru': { name: 'widgets.githubGuru.name', description: 'widgets.githubGuru.description' },
-      'website-counter': { name: 'widgets.websiteCounter.name', description: 'widgets.websiteCounter.description' },
       'locale-selector': { name: 'widgets.localeWidget.name', description: 'widgets.localeWidget.description' },
       'sprint-number': { name: 'widgets.sprintNumber.name', description: 'widgets.sprintNumber.description' },
     };
