@@ -185,6 +185,7 @@ export const chromeStorage = {
       console.error('Failed to load all data from Chrome storage:', error);
       return {
         widgets: [],
+        backgroundImage: '',
         isLocked: false,
         version: '1.0.0',
         timestamp: Date.now(),

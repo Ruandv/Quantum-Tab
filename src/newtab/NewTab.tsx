@@ -297,6 +297,7 @@ const NewTab: React.FC = () => {
                     const version = await chromeStorage.getVersion();
                     const success = await chromeStorage.saveAll({
                         widgets: serializedWidgets,
+                        backgroundImage: '',
                         isLocked: locked,
                         version,
                         timestamp: Date.now(),
