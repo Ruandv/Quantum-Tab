@@ -35,6 +35,9 @@ chrome.runtime.onInstalled.addListener(async (details) => {
         timestamp: now
       }
     });
+
+    // Run migration for permission cleanup on update
+    await migratePermissions();
   }
 
   // Initialize default settings if they don't exist
@@ -170,11 +173,11 @@ const handleGitHubApiRequest = async (
   }
 
   try {
-    // Use the GitHub service to fetch real data
-    const pullRequests = await GitHubService.getPullRequests(
+    // Use the GitHub service to fetch real data with reviews
+    const pullRequests = await GitHubService.getPullRequestsWithReviews(
       patToken,
       repositoryUrl,
-      { state: 'open', per_page: 10 } // Fetch up to 10 open PRs
+      { state: 'open', per_page: 10, sort: 'updated', direction: 'desc' } // Fetch up to 10 open PRs, most recently updated first
     );
 
     // Return the pull requests directly - they already match our GitHubPullRequest interface
@@ -283,3 +286,49 @@ const handleUserPullRequestsRequest = async (message: BackgroundMessage, sendRes
 };
 
 // Utility functions can be added here as needed
+
+/**
+ * Migration function to clean up legacy permissions from previous versions.
+ * This addresses the change from static <all_urls> content scripts to dynamic registration.
+ */
+const migratePermissions = async (): Promise<void> => {
+  try {
+    // Check if the user has the legacy <all_urls> permission granted
+    const hasAllUrls = await new Promise<boolean>((resolve) => {
+      chrome.permissions.contains({ origins: ['<all_urls>'] }, (result) => {
+        if (chrome.runtime?.lastError) {
+          console.warn('Error checking permissions:', chrome.runtime.lastError);
+          resolve(false);
+          return;
+        }
+        resolve(result);
+      });
+    });
+
+    if (hasAllUrls) {
+      console.log('Detected legacy <all_urls> permission, attempting to remove...');
+
+      // Attempt to remove the legacy permission
+      const removed = await new Promise<boolean>((resolve) => {
+        chrome.permissions.remove({ origins: ['<all_urls>'] }, (removed) => {
+          if (chrome.runtime?.lastError) {
+            console.warn('Error removing legacy permission:', chrome.runtime.lastError);
+            resolve(false);
+            return;
+          }
+          resolve(removed);
+        });
+      });
+
+      if (removed) {
+        console.log('Successfully removed legacy <all_urls> permission');
+      } else {
+        console.warn('Failed to remove legacy <all_urls> permission');
+      }
+    } else {
+      console.log('No legacy <all_urls> permission found, migration not needed');
+    }
+  } catch (error) {
+    console.error('Permission migration failed:', error);
+  }
+};

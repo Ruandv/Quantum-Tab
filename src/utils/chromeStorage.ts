@@ -1,4 +1,5 @@
-import { Dimensions, Position, CssStyle, STORAGE_KEYS, WebsiteCounterData } from '../types/common';
+import { Dimensions, Position, CssStyle, STORAGE_KEYS, SettingsWidgetMetaData } from '../types/common';
+import { ProviderSettings } from '../types/providerSettings';
 import { defaultDimensions, defaultPosition, defaultStyle } from '../types/defaults';
 // Storage keys for Chrome extension storage
 
@@ -15,12 +16,13 @@ export interface SerializedWidget {
   dimensions: Dimensions;
   position: Position;
   style: CssStyle;
-  metaData?: Record<string, unknown>;
+  metaData?: SettingsWidgetMetaData | Record<string, unknown>;
 }
 
 // Interface for saved data
 export interface SavedData {
   widgets: SerializedWidget[];
+  backgroundImage: string;
   isLocked: boolean;
   timestamp: number;
   version: string;
@@ -178,17 +180,18 @@ export const chromeStorage = {
         isLocked: result[STORAGE_KEYS.LOCK_STATE] || false,
         version,
         timestamp: Date.now(),
-      } as any;
+      };
     } catch (error) {
       console.error('Failed to load all data from Chrome storage:', error);
       return {
         widgets: [],
+        backgroundImage: '',
         isLocked: false,
         version: '1.0.0',
         timestamp: Date.now(),
       };
     }
-  },
+  }, 
   // Save all data at once
   saveAllDefaults: async (data: Defaults): Promise<boolean> => {
     try {
@@ -240,7 +243,10 @@ export const chromeStorage = {
   getWidgetData: async (widgetId: string): Promise<Record<string, unknown>> => {
     try {
       const result = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
-      const w = result[STORAGE_KEYS.WIDGETS]?.find((widget) => widget.id === widgetId) || {};
+      let w = result[STORAGE_KEYS.WIDGETS]?.find((widget) => widget.id === widgetId) || undefined;
+      if (!w) {
+        w = result[STORAGE_KEYS.WIDGETS]?.find((widget) => widget.component === widgetId) || {};
+      }
       return w;
 
     } catch (error) {
@@ -289,27 +295,34 @@ export const chromeStorage = {
     }
   },
 
-  // Save website counter data
-  saveWebsiteCounters: async (counters: WebsiteCounterData[]): Promise<boolean> => {
+  getProviderConfiguration: async (providerName: string): Promise<ProviderSettings | null> => {
     try {
-      await chrome.storage.local.set({
-        websiteCounters: counters,
-      });
-      return true;
+      const result = await chromeStorage.loadAll();
+      const settingsWidget = result.widgets.find((w) => w.component === 'settings-widget');
+      if (!settingsWidget) {
+        console.warn('Settings widget not found when retrieving API token');
+        return null;
+      }
+      const token = settingsWidget.metaData ? (settingsWidget.metaData as SettingsWidgetMetaData).providers?.find(x => x.name === providerName) : null;
+      return token || null;
     } catch (error) {
-      console.error('Failed to save website counters to Chrome storage:', error);
-      return false;
+      console.error(`Failed to get API token for ${providerName} from Chrome storage:`, error);
+      return null;
     }
   },
-
-  // Load website counter data
-  loadWebsiteCounters: async (): Promise<WebsiteCounterData[]> => {
+  getProviders: async (): Promise<{ name: string }[]> => {
     try {
-      const result = await chrome.storage.local.get('websiteCounters');
-      return result.websiteCounters || [];
+      const result = await chromeStorage.loadAll();
+      const settingsWidget = result.widgets.find((w) => w.component === 'settings-widget');
+      if (!settingsWidget) {
+        console.warn('Settings widget not found when retrieving API token');
+        return null;
+      }
+      const tokens = settingsWidget.metaData ? (settingsWidget.metaData as SettingsWidgetMetaData).providers: null;
+      return tokens?.map(x => ({ name: x.name })) || [];
     } catch (error) {
-      console.error('Failed to load website counters from Chrome storage:', error);
-      return [];
+      console.error(`Failed to get API tokens from Chrome storage:`, error);
+      return null;
     }
   },
 
@@ -333,7 +346,7 @@ export const chromeStorage = {
     }
   },
 
-  setWidgetMetaData: async (widgetId: string, metaData: Record<string, unknown>): Promise<boolean> => {
+  setWidgetMetaData: async <T>(widgetId: string, metaData: T): Promise<boolean> => {
     try {
       const result = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
       const widgets: SerializedWidget[] = result[STORAGE_KEYS.WIDGETS] || [];
@@ -355,14 +368,14 @@ export const chromeStorage = {
     }
   },
 
-  getWidgetMetaData: async (widgetId: string): Promise<Record<string, unknown>> => {
+  getWidgetMetaData: async <T = Record<string, unknown>>(widgetId: string): Promise<T> => {
     try {
       const result = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
       const widget = result[STORAGE_KEYS.WIDGETS].find((w) => w.id === widgetId);
-      return widget ? widget.metaData : {};
+      return widget ? widget.metaData : {} as T;
     } catch (error) {
       console.error(`Failed to get widget meta data for ${widgetId} from Chrome storage:`, error);
-      return {};
+      return {} as T;
     }
   },
 

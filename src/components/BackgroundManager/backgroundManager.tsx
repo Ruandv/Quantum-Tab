@@ -11,6 +11,7 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
   onBackgroundChange,
   isLocked,
   widgetId,
+  providerName,
   isAIEnabled
 }: BackgroundManagerProps) => {
   const { t } = useTranslation();
@@ -52,27 +53,40 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
       }
       // Load AI data only if AI is enabled
       if (isAIEnabled) {
-        const storedPrompt = serializedWidget.props?.aiPrompt?.toString() || '';
-        const storedKey = serializedWidget.props?.aiKey?.toString() || '';
+        const storedPrompt = serializedWidget.metaData?.['aiPrompt']?.toString() || '';
+        const storedKey = await chromeStorage.getProviderConfiguration(providerName);
         setAiPrompt(storedPrompt);
-        setAiKey(storedKey);
+        setAiKey((storedKey as any)?.apiKey || '');
       }
     };
     doWork();
-  }, [widgetId, isAIEnabled]);
+  }, [widgetId, isAIEnabled, providerName]);
   // Add widget removal event listener for cleanup
 
   useEffect(() => {
     const doWork = async () => {
-      if (lastRefresh) {
-        await chromeStorage.setWidgetMetaData(widgetId, {
-          lastRefresh: lastRefresh.toISOString(),
-          backgroundImage: uploadedImage
-        });
-      }
+      const currentWidgetMetaData = await chromeStorage.getWidgetMetaData(widgetId);
+      await chromeStorage.setWidgetMetaData(widgetId, {
+        ...currentWidgetMetaData,
+        lastRefresh: lastRefresh?.toISOString(),
+        // backgroundImage: uploadedImage,
+        aiPrompt: aiPrompt
+      });
     };
     doWork();
-  }, [lastRefresh, widgetId, uploadedImage]); 
+  }, [lastRefresh, widgetId, aiPrompt, uploadedImage]);
+  useEffect(() => {
+    const doWork = async () => {
+      if (uploadedImage === null) return;
+      const currentWidgetMetaData = await chromeStorage.getWidgetMetaData(widgetId);
+      await chromeStorage.setWidgetMetaData(widgetId, {
+        ...currentWidgetMetaData,
+        lastRefresh: lastRefresh?.toISOString(),
+        backgroundImage: uploadedImage,
+      });
+    };
+    doWork();
+  }, [widgetId, uploadedImage, lastRefresh]);
 
   useEffect(() => {
     const doWork = async () => {
@@ -83,15 +97,14 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
           : {};
       const updatedProps = {
         ...storedProps,
-        aiPrompt,
-        aiKey,
         backgroundSize,
       };
+      console.log('Updating widget props:', updatedProps);
       await chromeStorage.setWidgetData(widgetId, { props: updatedProps });
     }
     doWork();
 
-  }, [aiPrompt, aiKey, backgroundSize, widgetId])
+  }, [backgroundSize, widgetId])
 
   useEffect(() => {
     if (!widgetId) return;
@@ -271,17 +284,6 @@ const BackgroundManager: React.FC<BackgroundManagerProps> = ({
                 placeholder={t('backgroundManager.placeholders.aiPrompt')}
                 value={aiPrompt}
                 onChange={(e) => setAiPrompt(e.target.value)}
-              />
-              <label htmlFor="aiPromptKey" className={styles.label}>
-                {t('backgroundManager.labels.aiPromptKey')}
-              </label>
-              <input
-                type="text"
-                id="aiPromptKey"
-                className={styles.aiTextarea}
-                placeholder={t('backgroundManager.placeholders.aiPromptKey')}
-                value={aiKey}
-                onChange={(e) => setAiKey(e.target.value)}
               />
               <button className={styles.controlBtn} onClick={handleAIButtonClick}>
                 {t('backgroundManager.buttons.submit')}

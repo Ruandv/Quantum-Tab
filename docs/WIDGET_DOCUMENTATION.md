@@ -91,20 +91,6 @@
 - **startDate**: Sprint start date in YYYY-MM-DD format (required) - the initial sprint start date
 - **widgetHeading**: Optional heading text displayed at the top of the widget
 
-### WebsiteCounter
-- **Description**: Website visit counter and tracking component
-- **Usage**: Tracks and displays visit counts and last visited times for favorite websites. Users can add websites to track, view visit statistics with favicons, and sort by different criteria. Automatically increments count when visiting tracked sites through the content script. Supports a maximum configurable number of tracked websites.
-
-#### Properties
-- **maxWebsites**: Maximum number of websites to track (default: 10)
-- **showFavicons**: Boolean indicating whether to display website favicons for visual identification (default: true)
-- **sortBy**: Sort order for the website list (default: 'count')
-  - `'count'` - Sort by number of visits (highest first)
-  - `'name'` - Sort alphabetically by website hostname
-  - `'recent'` - Sort by most recently visited (newest first)
-- **websites**: Array of WebsiteCounterData objects containing tracked website information (auto-populated from Chrome storage)
-- **widgetHeading**: Optional heading text displayed at the top of the widget
-
 ## Getting Help
 
 For more detailed instructions, visit our [GitHub Wiki](https://github.com/Ruandv/Quantum-Tab/wiki).

@@ -28,5 +28,5 @@ export interface StorageData {
   extensionInstalled?: boolean;
   installDate?: string;
   testData?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }

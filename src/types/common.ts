@@ -1,16 +1,18 @@
 // Centralized type definitions for the entire application
 
 // Define the keys that should be optional in defaultProps
-type OptionalKeys = 'buttons' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange';
+type OptionalKeys = 'buttons' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange' | 'metaData';
 
 // Utility type to make all properties required except for specific optional ones
 // but still allow the optional properties to be provided in defaultProps
 type RequiredProps<T> = Required<Omit<T, OptionalKeys & keyof T>> & Partial<Pick<T, OptionalKeys & keyof T>>;
 
+import { ProviderSettings } from './providerSettings';
+
 export interface Position {
   x: number;
   y: number;
-}
+} 
 
 export interface Dimensions {
   width: number;
@@ -36,13 +38,14 @@ export interface DashboardWidget {
   description: string;
   wikiPage: string;
   allowMultiples: boolean;
+  isDepricated?: boolean; // Made optional for backward compatibility
   isRuntimeVisible?: boolean; // Made optional for backward compatibility
   component: React.ComponentType<Record<string, unknown>>;
   props?: Record<string, unknown>;
   dimensions: Dimensions;
   position: Position;
   style: CssStyle;
-  metaData?: Record<string, unknown>;
+  metaData?: SettingsWidgetMetaData | Record<string, unknown>;
 }
 
 export interface WidgetType<T = Record<string, unknown>> {
@@ -51,6 +54,7 @@ export interface WidgetType<T = Record<string, unknown>> {
   wikiPage: string;
   allowMultiples: boolean;
   isRuntimeVisible: boolean;
+  isDepricated?: boolean; // Made optional for backward compatibility
   description: string;
   component: React.ComponentType<T>;
   defaultDimensions: Dimensions;
@@ -134,40 +138,27 @@ export interface SettingProps extends DefaultWidgetProps {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface GitHubWidgetBaseProps extends DefaultWidgetProps {
-  settingId: string;
+  providerName: string;
   repositoryUrl: string;
-  autoRefresh: boolean;
-  refreshInterval: number;
+  autoRefresh?: boolean;
+  refreshInterval?: number; // in minutes
 }
 
-export interface BackgroundManagerProps extends DefaultWidgetProps {
-  isAIEnabled: boolean;
-  aiPrompt: string;
-  settingId: number;
-  autoRefresh: boolean;
-  refreshInterval: number; // in minutes
-  backgroundSize: 'cover' | 'contain' | 'auto';
-  onBackgroundChange?: (imageUrl: string) => void;
-}
-
-export interface WebsiteCounterData {
-  url: string;
-  hostname: string;
-  count: number;
-  lastVisited: number;
-  favicon?: string;
-}
-
-export interface WebsiteCounterProps extends DefaultWidgetProps {
-  websites?: WebsiteCounterData[];
-  showFavicons?: boolean;
-  maxWebsites?: number;
-  sortBy?: 'count' | 'name' | 'recent';
+export interface GitHubGuruProps extends GitHubWidgetBaseProps {
 }
 
 export interface LocaleWidgetProps extends DefaultWidgetProps {
   selectedLocale?: string;
   onLocaleChange?: (locale: string) => void;
+}
+
+export interface BackgroundManagerProps extends DefaultWidgetProps {
+  isAIEnabled: boolean;
+  providerName?: string;
+  autoRefresh?: boolean;
+  refreshInterval?: number; // in minutes
+  backgroundSize: 'cover' | 'contain' | 'auto';
+  onBackgroundChange?: (imageUrl: string) => void;
 }
 
 export interface QuarterIndicatorProps extends DefaultWidgetProps {
@@ -323,6 +314,26 @@ export interface GitHubPullRequest {
   patch_url: string;
 }
 
+// GitHub Review interfaces
+export interface GitHubReview {
+  id: number;
+  node_id: string;
+  user: GitHubUser;
+  body: string;
+  state: 'APPROVED' | 'CHANGES_REQUESTED' | 'COMMENTED' | 'DISMISSED' | 'PENDING';
+  html_url: string;
+  pull_request_url: string;
+  commit_id: string;
+  submitted_at: string | null;
+  author_association: string;
+}
+
+export interface GitHubPullRequestWithReviews extends GitHubPullRequest {
+  reviews?: GitHubReview[];
+  approvalCount?: number;
+  hasNewActivity?: boolean;
+}
+
 export interface GitHubApiError {
   message: string;
   documentation_url?: string;
@@ -355,7 +366,7 @@ export interface GitHubApiRequest {
 export interface GitHubApiResponse {
   action: 'fetchPullRequests' | 'fetchUserPullRequests';
   success: boolean;
-  data?: GitHubPullRequest[];
+  data?: GitHubPullRequestWithReviews[];
   error?: string;
 }
 
@@ -382,5 +393,26 @@ export const isSecureProperty = (key: string): boolean => {
     'aikey',
     'bearer',
     'patToken']; // Add other secure property names here
-  return secureProps.map(prop => prop.toLowerCase()).includes(key.toLowerCase());
+  const notSecureProps = [
+    'tokenName', 
+    'patTokens'
+  ];
+  return secureProps.some(prop => key.toLowerCase().includes(prop.toLowerCase())) && 
+         !notSecureProps.some(prop => key.toLowerCase() === prop.toLowerCase());
 };
+
+// Settings Widget Types
+export interface PATToken {
+  name: string;
+  key: string;
+}
+
+export interface SettingsWidgetMetaData {
+  lastRefresh: Date;
+  patTokens?: PATToken[];
+  providers?: ProviderSettings[];
+}
+
+export interface SettingsWidgetProps extends DefaultWidgetProps {
+
+}

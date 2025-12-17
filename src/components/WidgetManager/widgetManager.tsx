@@ -30,18 +30,21 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   const [widgetPosition, setWidgetPosition] = useState<Position>(defaultPosition);
   const [widgetStyle, setWidgetStyle] = useState<CssStyle>(defaultStyle);
   const [filter, setFilter] = useState<string>('all');
+  const [existingApiTokens, setExistingApiTokens] = useState<string[]>([]);
   const [modalContent, setModalContent] = useState<{
     title: string | React.ReactNode; content: React.ReactNode,
     actions: Array<{ index: number, text: string; onClick: () => void }>
   } | null>(null);
-  const availableWidgets = useMemo(() => widgetRegistry.getAllLocalized(t), [t]);
+  const availableWidgets = useMemo(() => widgetRegistry.getAllLocalized(t), [t]).filter(widget => !widget.isDepricated);
   const containerBounds = useMemo(() => getViewportDimensions(), []);
   const filteredWidgets = useMemo(() => {
-    console.log('Current filter in useMemo:', filter);
     if (filter === 'all') return availableWidgets;
     return availableWidgets.filter(widget => widget.group === filter);
   }, [availableWidgets, filter]);
-  
+  const getTokens = async () => {
+    const res=  await chromeStorage.getProviders();
+    setExistingApiTokens(res.map(t => t.name));
+  }
   const loadDefaults = useCallback(async () => {
     const defaultStyle: CssStyle = (await chromeStorage.loadAllDefaults()).styling;
     const defaultDimensions: Dimensions = (await chromeStorage.loadAllDefaults()).dimensions;
@@ -58,7 +61,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
       <h3>{t('widgetManager.modal.sections.chooseType')}</h3>
       <p className={styles.filter}><div onClick={() => filterWidgets('all')}>{t('widgetManager.modal.sections.filter.all')}</div><div onClick={() => filterWidgets('general')}>{t('widgetManager.modal.sections.filter.general')}</div><div onClick={() => filterWidgets('git')}>{t('widgetManager.modal.sections.filter.git')}</div><div onClick={() => filterWidgets('business')}>{t('widgetManager.modal.sections.filter.business')}</div></p>
       <div className={styles.widgetTypes}>{filteredWidgets.map((widgetType: WidgetType) => {
-        const component = existingWidgets.find((widget) => widget.id.startsWith(widgetType.id));
+        const component = existingWidgets.find((widget) => widget.id.startsWith(widgetType.id) && widgetType.isDepricated !== true);
         console.log('Evaluating widget type:', widgetType.name, 'Group:', widgetType.group, 'Current filter:', filter);
         if (component && component.allowMultiples === false && (filter !== 'all' && widgetType.group !== filter)) {
           return null;
@@ -118,6 +121,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
           }]
       });
     }
+    getTokens();
   }, [filter, isModalOpen, selectedWidgetType, getDefaultModalContent, t]);
 
   useEffect(() => {
@@ -158,7 +162,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
       });
       setModalContent({
         title: t('widgetManager.modal.titleImportSecrets'), content: fieldsData, actions: [{
-          index: 1, text: 'Cancel', onClick: () => {
+          index: 1, text: t('common.buttons.cancel'), onClick: () => {
             setIsModalOpen(false);
             setModalContent(null);
             setSelectedWidgetType(null);
@@ -166,7 +170,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
         },
         {
           index: 0,
-          text: 'Save',
+          text: t('common.buttons.save'),
           onClick: async () => {
             // now we need to go find the widgets where the id matches
             data.exportMetadata.secretProps.map(({ name, key, value }) => {
@@ -184,8 +188,8 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             await chromeStorage.saveBackground(data.backgroundImage);
             await chromeStorage.saveVersion(data?.version?.toString() || '1.0.0');
             setModalContent({
-              title: 'Import Successful', content: "Data imported successfully", actions: [{
-                index: 1, text: 'Refresh', onClick: () => {
+              title: t('widgetManager.messages.importSuccessful'), content: t('widgetManager.messages.dataImported'), actions: [{
+                index: 1, text: t('common.buttons.refresh'), onClick: () => {
                   window.location.reload();
                 }
               }]
@@ -416,37 +420,60 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                             .replace(/([^A-Z])([A-Z])/g, '$1 $2')}
                         </label>
                         {
-
-                          typeof value === 'boolean' ? (
-                            <label className={styles.toggleSwitch}>
-                              <input
-                                type="checkbox"
-                                checked={value}
-                                onChange={(e) => handlePropertyChange(key, e.target.checked)}
-                              />
-                              <span className={styles.slider} />
-                            </label>
-                          ) : !key.toLowerCase().includes('format') && key.toLowerCase().includes('date') && (value.toString().length > 6) ? (
-                            <input
-                              type="date"
-                              value={String(value ?? '')}
-                              onChange={(e) => handlePropertyChange(key, e.target.value)}
-                            />
-                          ) : key.toLowerCase().includes('number') || key.toLowerCase().includes('currentsprint') ? (
-                            <input
-                              type="number"
-                              value={String(value ?? '')}
-                              placeholder={`Enter ${key.toLowerCase()}`}
-                              onChange={(e) => handlePropertyChange(key, e.target.value)}
-                            />
-                          ) : (
-                            <input
-                              type="text"
-                              value={String(value ?? '')}
-                              placeholder={`Enter ${key.toLowerCase()}`}
-                              onChange={(e) => handlePropertyChange(key, e.target.value)}
-                            />
-                          )
+                          // first check if it is not maybe a provider or api key
+                          (key.toLowerCase().includes('provider') || key.toLowerCase().includes('api') || key.toLowerCase().includes('token')) ?
+                            <>
+                              <select
+                                value={String(value ?? '')}
+                                onChange={(e) => handlePropertyChange(key, e.target.value)}
+                                className={styles.providerSelect}
+                              >
+                                <option value="">{t('widgetManager.labels.selectProvider')}</option>
+                                {existingApiTokens.map(w => (
+                                  <option key={w} value={w}>
+                                    {w}
+                                  </option>
+                                ))}
+                              </select>
+                            </>
+                            :
+                            typeof value === 'boolean' ?
+                              (
+                                <label className={styles.toggleSwitch}>
+                                  <input
+                                    type="checkbox"
+                                    checked={value}
+                                    onChange={(e) => handlePropertyChange(key, e.target.checked)}
+                                  />
+                                  <span className={styles.slider} />
+                                </label>
+                              )
+                              :
+                              !key.toLowerCase().includes('format') && key.toLowerCase().includes('date') && (value.toString().length > 6) ? (
+                                <input
+                                  type="date"
+                                  value={String(value ?? '')}
+                                  onChange={(e) => handlePropertyChange(key, e.target.value)}
+                                />
+                              )
+                                :
+                                key.toLowerCase().includes('number') || key.toLowerCase().includes('currentsprint') ? (
+                                  <input
+                                    type="number"
+                                    value={String(value ?? '')}
+                                    placeholder={`Enter ${key.toLowerCase()}`}
+                                    onChange={(e) => handlePropertyChange(key, e.target.value)}
+                                  />
+                                )
+                                  :
+                                  (
+                                    <input
+                                      type="text"
+                                      value={String(value ?? '')}
+                                      placeholder={`Enter ${key.toLowerCase()}`}
+                                      onChange={(e) => handlePropertyChange(key, e.target.value)}
+                                    />
+                                  )
                         }
                       </div>
                     );
@@ -481,6 +508,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             description: selectedWidgetType.description,
             isRuntimeVisible: selectedWidgetType.isRuntimeVisible,
             allowMultiples: selectedWidgetType.allowMultiples,
+            isDepricated: selectedWidgetType.isDepricated,
             wikiPage: selectedWidgetType.wikiPage,
             component: selectedWidgetType.component,
             dimensions: widgetDimensions,
@@ -572,12 +600,68 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             const sanitizedWidget = { ...widget };
             if (widget.props) {
               // iterate over the props and sanitize any props that isSecureProperty
-              Object.keys(widget.props).forEach((key, _) => {
-                if (isSecureProperty(key)) {
-                  sanitizedWidget.props[key] = '[REDACTED]';
-                  exportedData.secretProps.push({ name: widget.name, key });
-                }
-              });
+              const sanitizeProps = (props: Record<string, unknown>, widgetName: string, secretProps: Array<{ name: string, key: string, value?: string }>, parentKey = ''): Record<string, unknown> => {
+                const sanitized: Record<string, unknown> = {};
+
+                Object.entries(props).forEach(([key, value]) => {
+                  const fullKey = parentKey ? `${parentKey}.${key}` : key;
+
+                  if (isSecureProperty(key)) {
+                    sanitized[key] = '[REDACTED]';
+                    secretProps.push({ name: widgetName, key: fullKey });
+                  } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+                    // Recursively sanitize nested objects
+                    sanitized[key] = sanitizeProps(value as Record<string, unknown>, widgetName, secretProps, fullKey);
+                  } else if (Array.isArray(value)) {
+                    // Recursively sanitize arrays
+                    sanitized[key] = value.map((item, index) => {
+                      if (item && typeof item === 'object') {
+                        return sanitizeProps(item as Record<string, unknown>, widgetName, secretProps, `${fullKey}[${index}]`);
+                      }
+                      return item;
+                    });
+                  } else {
+                    sanitized[key] = value;
+                  }
+                });
+
+                return sanitized;
+              };
+
+              sanitizedWidget.props = sanitizeProps(widget.props, widget.name, exportedData.secretProps);
+            }
+            if (widget.metaData) {
+              // Also sanitize metaData for widgets that store sensitive data there
+              const sanitizeMetaData = (metaData: Record<string, unknown>, widgetName: string, secretProps: Array<{ name: string, key: string, value?: string }>, parentKey = ''): Record<string, unknown> => {
+                const sanitized: Record<string, unknown> = {};
+
+                Object.entries(metaData).forEach(([key, value]) => {
+                  const fullKey = parentKey ? `${parentKey}.${key}` : key;
+
+                  // Check if this key should be redacted
+                  if (isSecureProperty(key)) {
+                    sanitized[key] = '[REDACTED]';
+                    secretProps.push({ name: widgetName, key: fullKey });
+                  } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+                    // Recursively sanitize nested objects
+                    sanitized[key] = sanitizeMetaData(value as Record<string, unknown>, widgetName, secretProps, fullKey);
+                  } else if (Array.isArray(value)) {
+                    // Recursively sanitize arrays
+                    sanitized[key] = value.map((item, index) => {
+                      if (item && typeof item === 'object') {
+                        return sanitizeMetaData(item as Record<string, unknown>, widgetName, secretProps, `${fullKey}[${index}]`);
+                      }
+                      return item;
+                    });
+                  } else {
+                    sanitized[key] = value;
+                  }
+                });
+
+                return sanitized;
+              };
+
+              sanitizedWidget.metaData = sanitizeMetaData(widget.metaData as Record<string, unknown>, widget.name, exportedData.secretProps);
             }
             exportedData.widgets.push(sanitizedWidget);
           });

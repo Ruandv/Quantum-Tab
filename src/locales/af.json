@@ -137,6 +137,26 @@
       "files": "lêers"
     }
   },
+  "githubGuru": {
+    "title": "GitHub Guru",
+    "tabs": {
+      "allPRs": "Alle TV's",
+      "myPRs": "My TV's"
+    },
+    "labels": {
+      "approvals": "goedkeurings"
+    },
+    "buttons": {
+      "dismissNotification": "Maak kennisgewing toe"
+    },
+    "notifications": {
+      "newActivity": "Nuwe Aktiwiteit"
+    },
+    "messages": {
+      "noPRs": "Geen oop trekversoeke gevind nie",
+      "noUserPRs": "Jy het geen oop trekversoeke nie"
+    }
+  },
   "gitCommentWatcher": {
     "title": "Git Kommentaar Waarnemer",
     "labels": {
@@ -239,43 +259,9 @@
       "name": "GitHub Kwessies",
       "description": "Vertoon en spoor GitHub kwessies en trekversoeke"
     },
-    "websiteCounter": {
-      "name": "Webwerf Teller",
-      "description": "Spoor en vertoon webwerf besoek statistieke",
-      "loading": "Laai tellers...",
-      "stats": {
-        "totalVisits": "{{count}} totale besoeke",
-        "trackedSites": "{{current}}/{{max}} webwerwe"
-      },
-      "emptyState": {
-        "title": "Geen webwerwe word gevolg nie",
-        "hint": "Voeg 'n webwerf by om besoeke te begin tel"
-      },
-      "buttons": {
-        "addWebsite": "➕ Voeg Webwerf By",
-        "resetAll": "🔄 Stel Alles Terug",
-        "remove": "Verwyder webwerf"
-      },
-      "placeholders": {
-        "websiteUrl": "Voer webwerf URL in (bv. github.com)"
-      },
-      "alerts": {
-        "alreadyTracked": "Hierdie webwerf word reeds gevolg!",
-        "maxReached": "Maksimum van {{max}} webwerwe kan gevolg word.",
-        "invalidUrl": "Voer asseblief 'n geldige webwerf URL in"
-      },
-      "confirm": {
-        "resetCounters": "Is jy seker jy wil alle webwerf tellers terugstel?"
-      },
-      "lastVisited": {
-        "never": "Nooit",
-        "today": "Vandag",
-        "yesterday": "Gister",
-        "daysAgo": "{{days}} dae gelede"
-      },
-      "alt": {
-        "favicon": "{{hostname}} favicon"
-      }
+    "githubGuru": {
+      "name": "GitHub Guru",
+      "description": "Monitor alle TV's en jou TV's met kennisgewings"
     },
     "localeWidget": {
       "name": "Taal Kieser",

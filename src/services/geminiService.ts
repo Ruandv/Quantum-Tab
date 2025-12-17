@@ -1,22 +1,23 @@
 import { GoogleGenAI } from '@google/genai';
+import { AIService } from './aiService.interface';
 
-export default class GeminiService {
-    private static instance: GeminiService | null = null;
-    private readonly googleGenAI: GoogleGenAI;
+const GeminiService = class geminiService implements AIService {
+    private static instance: geminiService | null = null;
+    private readonly service: GoogleGenAI;
 
-    private constructor(GEMINI_API_KEY: string) {
-        this.googleGenAI = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+    private constructor(API_KEY: string) {
+        this.service = new GoogleGenAI({ apiKey: API_KEY });
     }
 
-    public static getInstance(GEMINI_API_KEY: string): GeminiService {
-        if (!GeminiService.instance) {
-            GeminiService.instance = new GeminiService(GEMINI_API_KEY);
+    public static getInstance(API_KEY: string): geminiService {
+        if (!geminiService.instance) {
+            geminiService.instance = new geminiService(API_KEY);
         }
-        return GeminiService.instance;
+        return geminiService.instance;
     }
 
     public async generateResponse(prompt: string): Promise<string> {
-        const response = await this.googleGenAI.models.generateContent({
+        const response = await this.service.models.generateContent({
             model: "gemini-2.5-flash-image-preview",
             contents: {
                 "parts": [
@@ -40,3 +41,4 @@ export default class GeminiService {
         return '';
     }
 }
+export default GeminiService ;
