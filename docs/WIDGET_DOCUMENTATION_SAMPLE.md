@@ -7,7 +7,7 @@
 #### Properties
 - **widgetHeading**: Optional heading text displayed at the top of the widget
 
-### GitHubWidget
+### GitHubGuru
 - **Description**: Monitor and interact with GitHub repositories, displaying pull requests, issues, and repository statistics
 - **Usage**: Connect to a GitHub repository using a PAT token to view PRs, issues, and get repository insights
 

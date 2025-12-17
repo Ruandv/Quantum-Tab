@@ -1,183 +1,154 @@
-# Quantum Tab Widgets Documentation
-
 ## Available Widgets
 
 ### BackgroundManager
-- **Description**: Upload and manage custom background images for the dashboard
-- **Usage**: Allows users to upload, select, and manage background images that appear behind all widgets on the dashboard. Supports image file validation (PNG, JPG, JPEG, GIF, WebP) with a 5MB file size limit and persists selections to Chrome storage.
+- **Description**: Upload and manage custom background images for the dashboard, with support for AI-generated backgrounds.
+- **Usage**: Allows users to upload, select, and manage background images that appear behind all widgets on the dashboard. Supports AI-powered background generation when configured with a compatible AI provider.
 
 #### Properties
+- **autoRefresh**: Boolean indicating whether to automatically refresh the background at regular intervals (default: false)
+- **backgroundSize**: Controls how the background image is sized. Options: `cover` (fill entire area), `contain` (fit within area), or `auto` (natural size)
+- **isAIEnabled**: Boolean indicating whether AI background generation is enabled
+- **providerName**: Name of the AI provider to use for background generation (e.g., 'Gemini')
+- **refreshInterval**: Auto-refresh interval in minutes when autoRefresh is enabled
 - **widgetHeading**: Optional heading text displayed at the top of the widget
 
-### GitCommentWatcher
-- **Description**: Monitor GitHub pull requests where you have been mentioned or requested for review
-- **Usage**: Tracks pull requests across repositories where you are involved, highlighting new comments and review requests with visual indicators. Supports auto-refresh to stay updated on PR activity and automatically highlights PRs with new comments for 5 seconds. Uses your GitHub PAT to monitor your assigned reviews and mentions.
+### GitHubGuru
+- **Description**: Monitor and interact with GitHub repositories, displaying pull requests and tracking activity on your PRs.
+- **Usage**: Connect to a GitHub repository using a Personal Access Token (PAT) to view all open pull requests. Displays both all repository PRs and your own PRs in separate tabs. Tracks new activity on your PRs including comments and approvals. Supports auto-refresh for real-time updates.
 
 #### Properties
 - **autoRefresh**: Boolean indicating whether to automatically refresh PR data at regular intervals (default: false)
-- **patToken**: GitHub Personal Access Token for API authentication (required for accessing your PRs and mentions across repositories)
-- **refreshInterval**: Auto-refresh interval in minutes when autoRefresh is enabled (default: 5 minutes)
-- **repositoryUrl**: GitHub repository URL to monitor in the format `https://github.com/owner/repo` (required)
-- **widgetHeading**: Optional heading text displayed at the top of the widget
-
-### GitHubWidget
-- **Description**: Monitor and interact with GitHub repositories, displaying pull requests, issues, and repository statistics
-- **Usage**: Connect to a GitHub repository using a Personal Access Token (PAT) to view all pull requests in the repository. Fetches data from the GitHub API through a background service worker. Supports auto-refresh for real-time updates and displays PR status (Open, Merged, Closed, Draft).
-
-#### Properties
-- **autoRefresh**: Boolean indicating whether to automatically refresh PR data at regular intervals (default: false)
-- **patToken**: GitHub Personal Access Token for API authentication (required for accessing private repositories and increased rate limits)
+- **providerName**: Name of the provider configuration that contains the PAT token for GitHub API authentication
 - **refreshInterval**: Auto-refresh interval in minutes when autoRefresh is enabled (default: 5 minutes)
 - **repositoryUrl**: GitHub repository URL to monitor in the format `https://github.com/owner/repo` (required)
 - **widgetHeading**: Optional heading text displayed at the top of the widget
 
 ### LiveClock
-- **Description**: Real-time clock component with customizable timezone, date, and time formatting
-- **Usage**: Displays the current time and date for any timezone with extensive customization options for format and display. Updates every second to show real-time information. Perfect for tracking multiple timezones or displaying local time with custom formatting.
+- **Description**: Real-time clock component with customizable timezone, date, and time formatting.
+- **Usage**: Displays the current time and date for any timezone, with extensive customization options for format and display. Updates every second for accurate timekeeping.
 
 #### Properties
-- **dateFormat**: Optional date formatting pattern (default: 'yyyy-MM-dd')  
+- **dateFormat**: Date formatting pattern using tokens.  
   Common Examples:  
-  `yyyy-MM-dd` → 2025-10-16  
-  `dd MMMM yyyy` → 16 October 2025  
-  `dddd, MMM d` → Thursday, Oct 16
-- **showDate**: Boolean indicating whether to display the date (default: false)
-- **showTime**: Boolean indicating whether to display the time (default: true)
-- **showTimeZone**: Boolean indicating whether to display the time zone label (default: false)
-- **timeFormat**: Optional time formatting pattern (default: 'hh:mm a')  
+  `yyyy-MM-dd` → 2025-12-17  
+  `dd MMMM yyyy` → 17 December 2025  
+  `dddd, MMM d` → Wednesday, Dec 17  
+  Available tokens: `yyyy` (full year), `yy` (2-digit year), `MMMM` (full month), `MMM` (short month), `MM` (2-digit month), `M` (month), `dddd` (full day name), `ddd` (short day name), `dd` (2-digit day), `d` (day)
+- **showDate**: Boolean indicating whether to show the date (default: true)
+- **showTime**: Boolean indicating whether to show the time (default: true)
+- **showTimeZone**: Boolean indicating whether to display the time zone label
+- **timeFormat**: Time formatting pattern using tokens.  
   Common Examples:  
   `HH:mm:ss` → 14:30:05 (24-hour)  
   `h:mm a` → 2:30 pm (12-hour)  
-  `HH:mm` → 14:30 (24-hour without seconds)
-- **timeZone**: IANA timezone identifier (required)  
-  See the Time Zone Reference table for available zones.  
-  Examples: `America/New_York`, `Europe/London`, `Asia/Tokyo`, `Australia/Sydney`
+  Available tokens: `HH` (24-hour with zero), `H` (24-hour), `hh` (12-hour with zero), `h` (12-hour), `mm` (minutes), `ss` (seconds), `A` (AM/PM uppercase), `a` (am/pm lowercase), `SSS` (milliseconds)
+- **timeZone**: IANA timezone identifier (e.g., 'America/New_York', 'Europe/London', 'Africa/Johannesburg')
 - **widgetHeading**: Optional heading text displayed at the top of the widget
 
 ### LocaleWidget
-- **Description**: Language and locale settings component for changing the application language
-- **Usage**: Allows users to select their preferred language from available options. Currently supports English (🇺🇸), Afrikaans (🇿🇦), and Spanish (🇪🇸). Changes are applied immediately and persisted across sessions. Features a dropdown interface with flag emojis for visual identification.
+- **Description**: Language selector widget for switching the application's display language.
+- **Usage**: Provides a dropdown interface to select from available languages. Changes are persisted and apply immediately to all translated text throughout the application.
 
 #### Properties
-- **selectedLocale**: Currently selected locale code (e.g., 'en', 'af', 'es')
+- **selectedLocale**: The currently selected locale code (e.g., 'en', 'af', 'es')
+- **widgetHeading**: Optional heading text displayed at the top of the widget
+
+### ModalDialog
+- **Description**: Reusable modal dialog component for displaying overlays with customizable content and actions.
+- **Usage**: Used throughout the application to display popups, confirmations, forms, and other modal content. Supports custom title, body content, and action buttons.
+
+#### Properties
+- **content**: Object containing the modal content configuration:
+  - **title**: Optional string or React node for the modal header
+  - **content**: React node for the modal body (required)
+  - **actions**: Optional array of action buttons, each with `index` (number), `text` (string), `onClick` (function), and optional `disabled` (boolean)
+- **isOpen**: Boolean indicating whether the modal is currently visible
 - **widgetHeading**: Optional heading text displayed at the top of the widget
 
 ### QuarterIndicator
-- **Description**: Quarter counter component for tracking project quarters or fiscal periods
-- **Usage**: Displays the current quarter number based on a configurable start date. Automatically calculates which quarter you're in based on the elapsed time since the start date, with each quarter being 3 months (90 days). Perfect for tracking fiscal quarters, project phases, or any 3-month cycles.
+- **Description**: Displays the current fiscal or calendar quarter number based on a configurable start date.
+- **Usage**: Automatically calculates which quarter the current date falls into, counting from the specified start date. Useful for tracking fiscal quarters, project quarters, or any quarterly planning cycle.
 
 #### Properties
-- **startDate**: Quarter start date in YYYY-MM-DD format (required) - the initial quarter start date from which all quarters are calculated
+- **startDate**: The start date for quarter calculation in `YYYY-MM-DD` format (e.g., '2025-01-01'). Quarters are calculated as 3-month periods from this date.
 - **widgetHeading**: Optional heading text displayed at the top of the widget
 
 ### QuickActionButtons
-- **Description**: Collection of customizable quick action buttons for accessing favorite websites
-- **Usage**: Displays a grid of buttons that open websites in new tabs when clicked. Users can add, remove, and customize buttons with custom icons (emojis), labels, and URLs. Perfect for frequently accessed sites. Default buttons include GitHub (🐙) and MyBroadband (🗞️).
+- **Description**: Customizable quick access buttons for frequently used websites and resources.
+- **Usage**: Provides a grid of clickable buttons that open external URLs. Users can add, remove, and customize buttons with custom icons (emojis), labels, and URLs.
 
 #### Properties
-- **buttons**: Array of ActionButton objects (default includes GitHub and MyBroadband), each containing:
-  - **icon**: Emoji or text icon for the button
-  - **label**: Display label for the button
-  - **url**: Target URL to open when clicked
+- **buttons**: Array of button configurations, each containing:
+  - **icon**: Emoji or text icon to display (e.g., '🐙', '📧')
+  - **label**: Text label for the button (e.g., 'GitHub', 'Email')
+  - **url**: URL to open when the button is clicked (e.g., 'https://github.com')
 - **widgetHeading**: Optional heading text displayed at the top of the widget
+
+### SettingsWidget
+- **Description**: Central configuration widget for managing AI providers and default widget styling.
+- **Usage**: Allows users to configure API providers (such as Gemini for AI features, GitHub for repository access) by adding their API keys and settings. Also provides controls for default widget styling that applies to newly created widgets.
+
+#### Properties
+- **widgetHeading**: Optional heading text displayed at the top of the widget (e.g., 'Settings', 'Configuration')
 
 ### SprintNumber
-- **Description**: Sprint counter and timeline tracking component for agile project management
-- **Usage**: Displays the current sprint number and countdown information based on a configurable start date and sprint duration. Automatically calculates the current sprint number based on elapsed days and displays start/end dates for the current sprint. Updates automatically at midnight each day.
+- **Description**: Displays the current sprint number for agile/scrum teams with automatic calculation based on sprint duration.
+- **Usage**: Automatically calculates the current sprint number based on a start date, sprint duration, and initial sprint number. Shows the current sprint's start and end dates. Useful for development teams following sprint-based methodologies.
 
 #### Properties
-- **currentSprint**: Starting sprint number (required) - the base sprint number to calculate from
-- **numberOfDays**: Number of days per sprint cycle (required) - typically 7, 10, or 14 days
-- **startDate**: Sprint start date in YYYY-MM-DD format (required) - the initial sprint start date
+- **currentSprint**: The sprint number at the start date. Subsequent sprints are calculated from this base number.
+- **numberOfDays**: The duration of each sprint in days (e.g., 14 for two-week sprints)
+- **startDate**: The start date of the first sprint in `YYYY-MM-DD` format (e.g., '2025-01-06')
 - **widgetHeading**: Optional heading text displayed at the top of the widget
 
-## Getting Help
-
-For more detailed instructions, visit our [GitHub Wiki](https://github.com/Ruandv/Quantum-Tab/wiki).
-
 ---
 
-### Time Zone Reference
+## Generating a GitHub Personal Access Token (PAT)
 
-The Live Clock widget supports all IANA time zone identifiers. Below is a table of commonly used time zones organized by region. Use the **Time Zone ID** column when configuring your clock.
+The GitHubGuru widget requires a GitHub Personal Access Token (PAT) to authenticate with the GitHub API. Follow these steps to generate one:
 
-#### Common Examples
+### Step 1: Access GitHub Settings
+1. Log in to your GitHub account at [github.com](https://github.com)
+2. Click on your profile picture in the top-right corner
+3. Select **Settings** from the dropdown menu
 
-*   `America/New_York` → Eastern Time
-*   `Europe/London` → GMT/BST
-*   `Asia/Tokyo` → Japan Standard Time
-*   `Australia/Sydney` → Australian Eastern Time
+### Step 2: Navigate to Developer Settings
+1. Scroll down the left sidebar
+2. Click on **Developer settings** (at the bottom)
 
----
+### Step 3: Create a Personal Access Token
+1. In the left sidebar, click **Personal access tokens**
+2. Select **Tokens (classic)** or **Fine-grained tokens** based on your preference
+3. Click **Generate new token**
 
-#### Americas
+### Step 4: Configure Token Permissions
+For **Classic Tokens**:
+1. Give your token a descriptive name (e.g., "Quantum Tab - GitHubGuru")
+2. Set an expiration date (recommended: 90 days or custom)
+3. Select the following scopes:
+   - `repo` - Full control of private repositories (required for private repos)
+   - `read:user` - Read user profile data
+4. Click **Generate token**
 
-| Region | Time Zone ID | Common Name | UTC Offset |
-| :----- | :----------- | :---------- | :--------- |
-| **Eastern** | `America/New_York` | EST/EDT | UTC-5/-4 |
-| **Central** | `America/Chicago` | CST/CDT | UTC-6/-5 |
-| **Mountain** | `America/Denver` | MST/MDT | UTC-7/-6 |
-| **Pacific** | `America/Los_Angeles` | PST/PDT | UTC-8/-7 |
-| **Alaska** | `America/Anchorage` | AKST/AKDT | UTC-9/-8 |
-| **Hawaii** | `Pacific/Honolulu` | HST | UTC-10 |
-| **Brazil** | `America/Sao_Paulo` | BRT | UTC-3 |
-| **Argentina** | `America/Argentina/Buenos_Aires` | ART | UTC-3 |
-| **Mexico City** | `America/Mexico_City` | CST/CDT | UTC-6/-5 |
+For **Fine-grained Tokens** (recommended for better security):
+1. Give your token a descriptive name
+2. Set an expiration date
+3. Select the repository access (specific repositories or all repositories)
+4. Under **Permissions**, set:
+   - **Repository permissions**:
+     - Pull requests: Read
+     - Contents: Read
+     - Metadata: Read
+5. Click **Generate token**
 
----
+### Step 5: Copy and Save Your Token
+1. **Important**: Copy your token immediately - you won't be able to see it again!
+2. Store it securely (e.g., in a password manager)
+3. Add the token to the Settings Widget in Quantum Tab under the GitHub provider configuration
 
-#### Europe
-
-| Region | Time Zone ID | Common Name | UTC Offset |
-| :----- | :----------- | :---------- | :--------- |
-| **London** | `Europe/London` | GMT/BST | UTC+0/+1 |
-| **Paris** | `Europe/Paris` | CET/CEST | UTC+1/+2 |
-| **Berlin** | `Europe/Berlin` | CET/CEST | UTC+1/+2 |
-| **Rome** | `Europe/Rome` | CET/CEST | UTC+1/+2 |
-| **Madrid** | `Europe/Madrid` | CET/CEST | UTC+1/+2 |
-| **Amsterdam** | `Europe/Amsterdam` | CET/CEST | UTC+1/+2 |
-| **Moscow** | `Europe/Moscow` | MSK | UTC+3 |
-| **Istanbul** | `Europe/Istanbul` | TRT | UTC+3 |
-
----
-
-#### Asia & Oceania
-
-| Region | Time Zone ID | Common Name | UTC Offset |
-| :----- | :----------- | :---------- | :--------- |
-| **Tokyo** | `Asia/Tokyo` | JST | UTC+9 |
-| **Shanghai** | `Asia/Shanghai` | CST | UTC+8 |
-| **Hong Kong** | `Asia/Hong_Kong` | HKT | UTC+8 |
-| **Singapore** | `Asia/Singapore` | SGT | UTC+8 |
-| **Seoul** | `Asia/Seoul` | KST | UTC+9 |
-| **Mumbai** | `Asia/Kolkata` | IST | UTC+5:30 |
-| **Dubai** | `Asia/Dubai` | GST | UTC+4 |
-| **Sydney** | `Australia/Sydney` | AEST/AEDT | UTC+10/+11 |
-| **Melbourne** | `Australia/Melbourne` | AEST/AEDT | UTC+10/+11 |
-| **Perth** | `Australia/Perth` | AWST | UTC+8 |
-
----
-
-#### Africa
-
-| Region | Time Zone ID | Common Name | UTC Offset |
-| :----- | :----------- | :---------- | :--------- |
-| **Cairo** | `Africa/Cairo` | EET/EEST | UTC+2/+3 |
-| **Johannesburg** | `Africa/Johannesburg` | SAST | UTC+2 |
-| **Lagos** | `Africa/Lagos` | WAT | UTC+1 |
-| **Nairobi** | `Africa/Nairobi` | EAT | UTC+3 |
-
----
-
-## Why GitHub Wiki?
-
-**Benefits of using GitHub Wiki for documentation:**
-
-✅ **Professional Presentation**: Better formatting, images, and rich content  
-✅ **Community Contributions**: Anyone can suggest improvements via pull requests  
-✅ **Easy Updates**: No need to rebuild the extension to update documentation  
-✅ **Version Control**: Documentation changes are tracked in git  
-✅ **Rich Media**: Can include screenshots, videos, and interactive examples  
-✅ **Standard Practice**: Common pattern for open source projects  
-
-**Local Fallback**: This template file serves as a backup and development reference.
+### Security Best Practices
+- Never share your PAT with anyone
+- Use fine-grained tokens when possible for minimal permissions
+- Set an expiration date and rotate tokens regularly
+- Revoke tokens you no longer use
+- If a token is compromised, revoke it immediately in GitHub Settings

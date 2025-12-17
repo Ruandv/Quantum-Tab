@@ -115,7 +115,28 @@ export interface QuickActionButtonItemProps {
 export interface GitHubIssuesProps extends DefaultWidgetProps {
 }
 
+export interface AiProviderProps{
+  id:number;
+  name: string;
+  apiKey: string;
+  providerType: 'openai' | 'azure' | 'custom';
+  endpointUrl?: string;
+  deploymentName?: string;
+  apiVersion?: string;
+}
 
+export interface ApiKeyProps{
+  id:number;
+  name: string;
+  apiKey: string;
+}
+
+export interface SettingProps extends DefaultWidgetProps {
+  ApiKeys: ApiKeyProps[];
+  ProviderSettings: AiProviderProps[];
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface GitHubWidgetBaseProps extends DefaultWidgetProps {
   providerName: string;
   repositoryUrl: string;
@@ -132,6 +153,8 @@ export interface LocaleWidgetProps extends DefaultWidgetProps {
 }
 
 export interface BackgroundManagerProps extends DefaultWidgetProps {
+  settingId?: number;
+  aiPrompt?: string;
   isAIEnabled: boolean;
   providerName?: string;
   autoRefresh?: boolean;
