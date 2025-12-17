@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0](https://github.com/Ruandv/Quantum-Tab/compare/v1.7.0...v1.8.0) (2025-12-17)
+
+
+### Features
+
+* New Github Widget ([#70](https://github.com/Ruandv/Quantum-Tab/issues/70)) ([9049658](https://github.com/Ruandv/Quantum-Tab/commit/90496580ffbfb9d849aecad074bbc5c5c7f51292))
+* quarter indicator  ([#67](https://github.com/Ruandv/Quantum-Tab/issues/67)) ([d466dee](https://github.com/Ruandv/Quantum-Tab/commit/d466dee15d0e8e06b3f55606c1b781ecac878207))
+
+
+### Bug Fixes
+
+* add groups to Add Widget modal ([#68](https://github.com/Ruandv/Quantum-Tab/issues/68)) ([f383d7b](https://github.com/Ruandv/Quantum-Tab/commit/f383d7b73776f8e92c47006966b8fd1fffea86c8))
+* ensure numeric calculation for current sprint number in SprintNumber component ([#69](https://github.com/Ruandv/Quantum-Tab/issues/69)) ([fa03619](https://github.com/Ruandv/Quantum-Tab/commit/fa0361985c11e504bb9c8a885fd9cb19d9f2657e))
+* moved background Image into backgroundManager metaData ([#64](https://github.com/Ruandv/Quantum-Tab/issues/64)) ([028b6d9](https://github.com/Ruandv/Quantum-Tab/commit/028b6d9106c103dc5f3aab62519a8b8f3d58a957))
+
 ## [1.7.0](https://github.com/Ruandv/Quantum-Tab/compare/v1.6.0...v1.7.0) (2025-10-22)
 
 
