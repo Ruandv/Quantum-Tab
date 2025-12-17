@@ -83,4 +83,6 @@ Each component must be placed in its own section, following this **exact structu
 
 ---
 You can also use docs/WIDGET_DOCUMENTATION_SAMPLE.md as a reference for formatting and style.
+Do not use the example section in the final output and do not use the components listed in the example documentation.
 You will output only the **final formatted markdown Wiki content**, no explanations, commentary, or extra text.
+Also include a section in the wiki that will explain how to generate a PAT Token in GitHub for use with the GitHubGuru widget.

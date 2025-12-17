@@ -227,7 +227,6 @@ export class WidgetRegistry {
       'live-clock': { name: 'widgets.liveClock.name', description: 'widgets.liveClock.description' },
       'quick-actions': { name: 'widgets.quickActions.name', description: 'widgets.quickActions.description' },
       'background-manager': { name: 'widgets.backgroundManager.name', description: 'widgets.backgroundManager.description' },
-      'github-widget': { name: 'widgets.githubWidget.name', description: 'widgets.githubWidget.description' },
       'github-guru': { name: 'widgets.githubGuru.name', description: 'widgets.githubGuru.description' },
       'locale-selector': { name: 'widgets.localeWidget.name', description: 'widgets.localeWidget.description' },
       'sprint-number': { name: 'widgets.sprintNumber.name', description: 'widgets.sprintNumber.description' },
