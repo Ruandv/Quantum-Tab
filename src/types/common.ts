@@ -153,6 +153,8 @@ export interface LocaleWidgetProps extends DefaultWidgetProps {
 }
 
 export interface BackgroundManagerProps extends DefaultWidgetProps {
+  settingId?: number;
+  aiPrompt?: string;
   isAIEnabled: boolean;
   providerName?: string;
   autoRefresh?: boolean;
