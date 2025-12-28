@@ -184,6 +184,38 @@
       "clearCredentials": "Are you sure you want to clear your GitHub credentials? This will remove your PAT token."
     }
   },
+  "azureAdoBoard": {
+    "labels": {
+      "boardPlaceholder": "Azure Board",
+      "lastUpdated": "Updated",
+      "unassigned": "Unassigned",
+      "priority": "Priority {{value}}",
+      "unknown": "Unknown"
+    },
+    "placeholders": {
+      "filter": "Filter by title, member, tag, or ID"
+    },
+    "buttons": {
+      "loadMore": "Load more..."
+    },
+    "errors": {
+      "missingConfiguration": "Please configure your Azure DevOps board details",
+      "extensionError": "Extension error",
+      "fetchFailed": "Failed to load Azure DevOps work items"
+    },
+    "messages": {
+      "noItems": "No items available in this column",
+      "noFilterResults": "No items match your filter"
+    },
+    "types": {
+      "bug": "Bug",
+      "pbi": "Product Backlog Item",
+      "nonFunctional": "Non-Functional",
+      "defect": "Defect",
+      "security": "Security",
+      "other": "Work Item"
+    }
+  },
   "gitCommentWatcher": {
     "title": "Git Comment Watcher",
     "labels": {
@@ -300,6 +332,10 @@
     "githubGuru": {
       "name": "GitHub Guru",
       "description": "Monitor all PRs and your PRs with notifications"
+    },
+    "azureAdoBoard": {
+      "name": "Azure ADO Board",
+      "description": "Track Azure DevOps board items with filters and tabs"
     },
     "localeWidget": {
       "name": "Locale Selector",

@@ -11,6 +11,17 @@ const path = require('path');
 const DOCS_FILE = path.join(__dirname, '..', 'docs', 'WIDGET_DOCUMENTATION.md');
 const WIKI_DIR = path.join(__dirname, '..', 'wiki');
 
+function createSlug(name) {
+    return name
+        .replace(/([a-z0-9])([A-Z])/g, '$1-$2') // Split camelCase transitions
+        .replace(/[_\s]+/g, '-') // Normalize spaces/underscores
+        .replace(/[^\w-]/g, '') // Strip remaining special characters
+        .replace(/-+/g, '-') // Collapse double hyphens
+        .replace(/^-+/, '') // Trim leading hyphens
+        .replace(/-+$/, '') // Trim trailing hyphens
+        .toLowerCase();
+}
+
 function parseWidgetDocumentation(content) {
     const lines = content.split('\n');
     const widgets = [];
@@ -68,7 +79,7 @@ function generateHomePage(widgets) {
 
     widgets.forEach(widget => {
         const widgetName = widget.name;
-        const fileName = widgetName.replace(/\s+/g, '-').toLowerCase();
+        const fileName = createSlug(widgetName);
         content += `- [${widgetName}](${fileName})\n`;
     });
 
@@ -137,12 +148,7 @@ function main() {
 
         // Generate individual widget pages
         widgets.forEach(widget => {
-            const sanitizedName = widget.name
-                .replace(/[^\w\s-]/g, '') // Remove emojis and special chars
-                .replace(/\s+/g, '-') // Replace spaces with hyphens
-                .replace(/^-+/, '') // Remove leading dashes
-                .replace(/-+$/, '') // Remove trailing dashes
-                .toLowerCase();
+            const sanitizedName = createSlug(widget.name);
             const fileName = `${sanitizedName}.md`;
             const pageContent = generateWidgetPage(widget);
             writeWikiPage(fileName, pageContent);

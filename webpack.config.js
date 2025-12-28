@@ -2,6 +2,42 @@ const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const ANSI_ESCAPE_REGEX = /[\u001b\u009b][[\]()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/gu;
+
+const patchStream = (stream) => {
+  if (!stream || stream._webpackTimestampPatched) {
+    return;
+  }
+
+  stream._webpackTimestampPatched = true;
+  const originalWrite = stream.write.bind(stream);
+
+  stream.write = (chunk, encoding, callback) => {
+    const text = typeof chunk === 'string' ? chunk : chunk?.toString(encoding || 'utf8');
+
+    if (text) {
+      const sanitized = text.replace(ANSI_ESCAPE_REGEX, '');
+      const normalized = sanitized.trimStart();
+      if (/webpack \d/.test(normalized) && normalized.includes('compiled')) {
+        const trimmed = text.replace(/\s+$/u, '');
+        const suffix = ` [${new Date().toISOString()}]`;
+        const needsNewline = !/\n$/.test(text);
+        const updated = `${trimmed}${suffix}${needsNewline ? '\n' : ''}`;
+        return originalWrite(updated, encoding, callback);
+      }
+    }
+
+    return originalWrite(chunk, encoding, callback);
+  };
+};
+
+const patchWebpackOutput = () => {
+  patchStream(process.stdout);
+  patchStream(process.stderr);
+};
+
+patchWebpackOutput();
+
 module.exports = {
   entry: {
     popup: './src/popup/index.tsx',

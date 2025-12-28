@@ -138,13 +138,18 @@ export const isEqual = (a: unknown, b: unknown): boolean => {
 /**
  * Create a safe string for use in IDs or classes
  */
-export const sanitizeString = (str: string): string => {
-  return str
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, '-')
+export const createSlug = (value: string): string => {
+  return value
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .replace(/[_\s]+/g, '-')
+    .replace(/[^\w-]/g, '')
     .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
+    .replace(/^-+/, '')
+    .replace(/-+$/, '')
+    .toLowerCase();
 };
+
+export const sanitizeString = (str: string): string => createSlug(str);
 
 /**
  * Get viewport dimensions
