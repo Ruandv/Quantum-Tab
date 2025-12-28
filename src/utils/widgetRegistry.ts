@@ -8,7 +8,7 @@ import {
   QuarterIndicatorProps,
   GitHubGuruProps,
   SettingsWidgetProps,
-  AzureAdoBoardProps
+  AzureAdoBoardProps,
 } from '../types/common';
 import LiveClock from '../components/LiveClock/liveClock';
 import QuickActionButtons from '../components/QuickActionButtons/quickActionButtons';
@@ -55,7 +55,7 @@ export class WidgetRegistry {
         showDate: false,
         showTimeZone: false,
       },
-      group: 'general'
+      group: 'general',
     });
 
     this.register<QuickActionButtonsProps>({
@@ -100,12 +100,12 @@ export class WidgetRegistry {
         settingId: 0,
         aiPrompt: '',
         isAIEnabled: false,
-        providerName: "GitToken",
+        providerName: 'GitToken',
         autoRefresh: false,
         refreshInterval: 360, // 360 minutes = 6 hours
         backgroundSize: 'cover',
       },
-      metaData: { lastRefresh: new Date(), backgroundImage: '' }
+      metaData: { lastRefresh: new Date(), backgroundImage: '' },
     });
 
     this.register<GitHubGuruProps>({
@@ -122,7 +122,7 @@ export class WidgetRegistry {
         widgetHeading: 'GitHub Guru',
         repositoryUrl: '',
         autoRefresh: true,
-        providerName: "GitToken",
+        providerName: 'GitToken',
         refreshInterval: 5, // in minutes
       },
     });
@@ -174,7 +174,7 @@ export class WidgetRegistry {
         startDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
       },
       group: 'business',
-      wikiPage: 'quarter-indicator'
+      wikiPage: 'quarter-indicator',
     });
 
     this.register<SettingsWidgetProps>({
@@ -247,13 +247,34 @@ export class WidgetRegistry {
 
     // Map widget IDs to translation keys
     const translationMap: Record<string, { name: string; description: string }> = {
-      'live-clock': { name: 'widgets.liveClock.name', description: 'widgets.liveClock.description' },
-      'quick-actions': { name: 'widgets.quickActions.name', description: 'widgets.quickActions.description' },
-      'background-manager': { name: 'widgets.backgroundManager.name', description: 'widgets.backgroundManager.description' },
-      'github-guru': { name: 'widgets.githubGuru.name', description: 'widgets.githubGuru.description' },
-      'locale-selector': { name: 'widgets.localeWidget.name', description: 'widgets.localeWidget.description' },
-      'sprint-number': { name: 'widgets.sprintNumber.name', description: 'widgets.sprintNumber.description' },
-      'azure-ado-board': { name: 'widgets.azureAdoBoard.name', description: 'widgets.azureAdoBoard.description' },
+      'live-clock': {
+        name: 'widgets.liveClock.name',
+        description: 'widgets.liveClock.description',
+      },
+      'quick-actions': {
+        name: 'widgets.quickActions.name',
+        description: 'widgets.quickActions.description',
+      },
+      'background-manager': {
+        name: 'widgets.backgroundManager.name',
+        description: 'widgets.backgroundManager.description',
+      },
+      'github-guru': {
+        name: 'widgets.githubGuru.name',
+        description: 'widgets.githubGuru.description',
+      },
+      'locale-selector': {
+        name: 'widgets.localeWidget.name',
+        description: 'widgets.localeWidget.description',
+      },
+      'sprint-number': {
+        name: 'widgets.sprintNumber.name',
+        description: 'widgets.sprintNumber.description',
+      },
+      'azure-ado-board': {
+        name: 'widgets.azureAdoBoard.name',
+        description: 'widgets.azureAdoBoard.description',
+      },
     };
 
     const translations = translationMap[widgetId];
@@ -268,11 +289,15 @@ export class WidgetRegistry {
   public getAllLocalized(t?: (key: string) => string): WidgetType[] {
     if (!t) return this.getAll();
 
-    return this.getAll().map(widget => this.getLocalizedWidget(widget.id, t) || widget);
+    return this.getAll().map((widget) => this.getLocalizedWidget(widget.id, t) || widget);
   }
 
-  public getComponentByName(name: string): React.ComponentType<Record<string, unknown>> | undefined {
-    const widget = Array.from(this.widgets.values()).find((w) => w.component.name.toLowerCase() === name.toLowerCase());
+  public getComponentByName(
+    name: string
+  ): React.ComponentType<Record<string, unknown>> | undefined {
+    const widget = Array.from(this.widgets.values()).find(
+      (w) => w.component.name.toLowerCase() === name.toLowerCase()
+    );
     return widget?.component;
   }
 

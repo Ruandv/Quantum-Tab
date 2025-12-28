@@ -7,7 +7,7 @@ import {
   Dimensions,
   Position,
   CssStyle,
-  isSecureProperty
+  isSecureProperty,
 } from '../../types/common';
 import { widgetRegistry } from '../../utils/widgetRegistry';
 import { generateUniqueId, findOptimalPosition, getViewportDimensions } from '../../utils/helpers';
@@ -33,19 +33,22 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   const [filter, setFilter] = useState<string>('all');
   const [existingApiTokens, setExistingApiTokens] = useState<string[]>([]);
   const [modalContent, setModalContent] = useState<{
-    title: string | React.ReactNode; content: React.ReactNode,
-    actions: Array<{ index: number, text: string; onClick: () => void }>
+    title: string | React.ReactNode;
+    content: React.ReactNode;
+    actions: Array<{ index: number; text: string; onClick: () => void }>;
   } | null>(null);
-  const availableWidgets = useMemo(() => widgetRegistry.getAllLocalized(t), [t]).filter(widget => !widget.isDepricated);
+  const availableWidgets = useMemo(() => widgetRegistry.getAllLocalized(t), [t]).filter(
+    (widget) => !widget.isDepricated
+  );
   const containerBounds = useMemo(() => getViewportDimensions(), []);
   const filteredWidgets = useMemo(() => {
     if (filter === 'all') return availableWidgets;
-    return availableWidgets.filter(widget => widget.group === filter);
+    return availableWidgets.filter((widget) => widget.group === filter);
   }, [availableWidgets, filter]);
   const getTokens = async () => {
     const res = await chromeStorage.getProviders();
-    setExistingApiTokens(res.map(t => t.name));
-  }
+    setExistingApiTokens(res.map((t) => t.name));
+  };
   const loadDefaults = useCallback(async () => {
     const defaultStyle: CssStyle = (await chromeStorage.loadAllDefaults()).styling;
     const defaultDimensions: Dimensions = (await chromeStorage.loadAllDefaults()).dimensions;
@@ -55,32 +58,78 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   const filterWidgets = (group: string) => {
     setFilter(group);
   };
-  const [data, setData] = useState<{ widgets: SerializedWidget[], version: string, backgroundImage: string, isLocked: boolean, timestamp: number, exportMetadata: { secretProps: Array<{ name: string, key: string, value?: string }> } }>({ widgets: [], version: '1.0.0', backgroundImage: '', isLocked: false, timestamp: Date.now(), exportMetadata: { secretProps: [] } });
+  const [data, setData] = useState<{
+    widgets: SerializedWidget[];
+    version: string;
+    backgroundImage: string;
+    isLocked: boolean;
+    timestamp: number;
+    exportMetadata: { secretProps: Array<{ name: string; key: string; value?: string }> };
+  }>({
+    widgets: [],
+    version: '1.0.0',
+    backgroundImage: '',
+    isLocked: false,
+    timestamp: Date.now(),
+    exportMetadata: { secretProps: [] },
+  });
   // Function to generate default modal content - moved after all handlers are defined
-  const getDefaultModalContent = useCallback(() => (
-    <div className={styles.formSection}>
-      <h3>{t('widgetManager.modal.sections.chooseType')}</h3>
-      <p className={styles.filter}><div onClick={() => filterWidgets('all')}>{t('widgetManager.modal.sections.filter.all')}</div><div onClick={() => filterWidgets('general')}>{t('widgetManager.modal.sections.filter.general')}</div><div onClick={() => filterWidgets('git')}>{t('widgetManager.modal.sections.filter.git')}</div><div onClick={() => filterWidgets('business')}>{t('widgetManager.modal.sections.filter.business')}</div></p>
-      <div className={styles.widgetTypes}>{filteredWidgets.map((widgetType: WidgetType) => {
-        const component = existingWidgets.find((widget) => widget.id.startsWith(widgetType.id) && widgetType.isDepricated !== true);
-        console.log('Evaluating widget type:', widgetType.name, 'Group:', widgetType.group, 'Current filter:', filter);
-        if (component && component.allowMultiples === false && (filter !== 'all' && widgetType.group !== filter)) {
-          return null;
-        }
-        return (
-          <div
-            key={widgetType.id}
-            className={`${styles.widgetTypeCard} ${selectedWidgetType?.id === widgetType.id ? styles.selected : ''}`}
-            onClick={() => handleWidgetTypeSelect(widgetType)}
-          >
-            <h4>{widgetType.name}</h4>
-            <p>{widgetType.description}</p>
+  const getDefaultModalContent = useCallback(
+    () => (
+      <div className={styles.formSection}>
+        <h3>{t('widgetManager.modal.sections.chooseType')}</h3>
+        <p className={styles.filter}>
+          <div onClick={() => filterWidgets('all')}>
+            {t('widgetManager.modal.sections.filter.all')}
           </div>
-        );
-      })}</div>
-    </div>
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  ), [t, availableWidgets, existingWidgets, selectedWidgetType, filteredWidgets]);
+          <div onClick={() => filterWidgets('general')}>
+            {t('widgetManager.modal.sections.filter.general')}
+          </div>
+          <div onClick={() => filterWidgets('git')}>
+            {t('widgetManager.modal.sections.filter.git')}
+          </div>
+          <div onClick={() => filterWidgets('business')}>
+            {t('widgetManager.modal.sections.filter.business')}
+          </div>
+        </p>
+        <div className={styles.widgetTypes}>
+          {filteredWidgets.map((widgetType: WidgetType) => {
+            const component = existingWidgets.find(
+              (widget) => widget.id.startsWith(widgetType.id) && widgetType.isDepricated !== true
+            );
+            console.log(
+              'Evaluating widget type:',
+              widgetType.name,
+              'Group:',
+              widgetType.group,
+              'Current filter:',
+              filter
+            );
+            if (
+              component &&
+              component.allowMultiples === false &&
+              filter !== 'all' &&
+              widgetType.group !== filter
+            ) {
+              return null;
+            }
+            return (
+              <div
+                key={widgetType.id}
+                className={`${styles.widgetTypeCard} ${selectedWidgetType?.id === widgetType.id ? styles.selected : ''}`}
+                onClick={() => handleWidgetTypeSelect(widgetType)}
+              >
+                <h4>{widgetType.name}</h4>
+                <p>{widgetType.description}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    ),
+    [t, availableWidgets, existingWidgets, selectedWidgetType, filteredWidgets]
+  );
 
   const resetModalState = useCallback(async () => {
     setSelectedWidgetType(null);
@@ -95,8 +144,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             setIsModalOpen(false);
             setModalContent(null);
             setSelectedWidgetType(null);
-          }
-        }]
+          },
+        },
+      ],
     });
     const r = await loadDefaults();
     setWidgetDimensions(r.defaultDimensions);
@@ -118,8 +168,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
               setIsModalOpen(false);
               setModalContent(null);
               setSelectedWidgetType(null);
-            }
-          }]
+            },
+          },
+        ],
       });
     }
     getTokens();
@@ -132,7 +183,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   useEffect(() => {
     const handleWidgetEditing = (event: WidgetEvent) => {
       if (event.widgetId) {
-        const widgeta = existingWidgets.find(w => w.id === event.widgetId);
+        const widgeta = existingWidgets.find((w) => w.id === event.widgetId);
         if (widgeta) {
           const wt = widgeta as unknown as WidgetType;
           wt.defaultProps = widgeta?.props || {};
@@ -155,48 +206,64 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   useEffect(() => {
     if (data.exportMetadata.secretProps && data.exportMetadata.secretProps.length > 0) {
       const fieldsData = data.exportMetadata.secretProps.map(({ name, key, value }, idx) => {
-        return (<React.Fragment key={`${idx}_${key}`}>{renderTextInput(!value ? '' : value, `${name}_${key}`, value, (e) => {
-          const newData = { ...data };
-          newData.exportMetadata.secretProps[idx].value = e.target.value;
-          setData(newData);
-        })}</React.Fragment>);
+        return (
+          <React.Fragment key={`${idx}_${key}`}>
+            {renderTextInput(!value ? '' : value, `${name}_${key}`, value, (e) => {
+              const newData = { ...data };
+              newData.exportMetadata.secretProps[idx].value = e.target.value;
+              setData(newData);
+            })}
+          </React.Fragment>
+        );
       });
       setModalContent({
-        title: t('widgetManager.modal.titleImportSecrets'), content: fieldsData, actions: [{
-          index: 1, text: t('common.buttons.cancel'), onClick: () => {
-            setIsModalOpen(false);
-            setModalContent(null);
-            setSelectedWidgetType(null);
-          }
-        },
-        {
-          index: 0,
-          text: t('common.buttons.save'),
-          onClick: async () => {
-            // now we need to go find the widgets where the id matches
-            data.exportMetadata.secretProps.map(({ name, key, value }) => {
-              const w = data.widgets.find(widget => widget.id === name);
-              if (w) {
-                w.props = { ...w.props, [key]: value };
-              }
-            });
-            const serializedWidgets = data.widgets.map((widget) => ({
-              ...widget,
-              // Ensure props are serializable and match SerializedWidget type
-              props: { ...widget.props }
-            }));
-            await chromeStorage.saveWidgets(serializedWidgets);
-            await chromeStorage.saveBackground(data.backgroundImage);
-            await chromeStorage.saveVersion(data?.version?.toString() || '1.0.0');
-            setModalContent({
-              title: t('widgetManager.messages.importSuccessful'), content: t('widgetManager.messages.dataImported'), actions: [{
-                index: 1, text: t('common.buttons.refresh'), onClick: () => {
-                  window.location.reload();
+        title: t('widgetManager.modal.titleImportSecrets'),
+        content: fieldsData,
+        actions: [
+          {
+            index: 1,
+            text: t('common.buttons.cancel'),
+            onClick: () => {
+              setIsModalOpen(false);
+              setModalContent(null);
+              setSelectedWidgetType(null);
+            },
+          },
+          {
+            index: 0,
+            text: t('common.buttons.save'),
+            onClick: async () => {
+              // now we need to go find the widgets where the id matches
+              data.exportMetadata.secretProps.map(({ name, key, value }) => {
+                const w = data.widgets.find((widget) => widget.id === name);
+                if (w) {
+                  w.props = { ...w.props, [key]: value };
                 }
-              }]
-            });
-          }
-        }]
+              });
+              const serializedWidgets = data.widgets.map((widget) => ({
+                ...widget,
+                // Ensure props are serializable and match SerializedWidget type
+                props: { ...widget.props },
+              }));
+              await chromeStorage.saveWidgets(serializedWidgets);
+              await chromeStorage.saveBackground(data.backgroundImage);
+              await chromeStorage.saveVersion(data?.version?.toString() || '1.0.0');
+              setModalContent({
+                title: t('widgetManager.messages.importSuccessful'),
+                content: t('widgetManager.messages.dataImported'),
+                actions: [
+                  {
+                    index: 1,
+                    text: t('common.buttons.refresh'),
+                    onClick: () => {
+                      window.location.reload();
+                    },
+                  },
+                ],
+              });
+            },
+          },
+        ],
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -205,8 +272,12 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   useEffect(() => {
     if (!selectedWidgetType) return;
     setModalContent({
-      title: (<><p>{t('widgetManager.modal.title')}</p> <sub>({selectedWidgetType.name})</sub></>),
-      content:
+      title: (
+        <>
+          <p>{t('widgetManager.modal.title')}</p> <sub>({selectedWidgetType.name})</sub>
+        </>
+      ),
+      content: (
         <>
           <div className={`section ${styles.formSection}`}>
             <h3>{t('widgetManager.modal.sections.styling')}</h3>
@@ -292,7 +363,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                     border: '1px solid rgba(255, 255, 255, 0.2)',
                     marginBottom: '10px',
                   }}
-                >{t('widgetManager.labels.textColor')}</div>
+                >
+                  {t('widgetManager.labels.textColor')}
+                </div>
                 <div className={styles.colorControls}>
                   {renderColorInput(
                     'textColorRed',
@@ -321,7 +394,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       name="textAlign"
                       value="left"
                       checked={(widgetStyle?.alignment ?? 'center') === 'flex-start'}
-                      onChange={() => handleStyleChange('alignment', 'flex-start' as unknown as number)}
+                      onChange={() =>
+                        handleStyleChange('alignment', 'flex-start' as unknown as number)
+                      }
                     />
                     {t('widgetManager.labels.left')}
                   </label>
@@ -341,7 +416,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       name="textAlign"
                       value="right"
                       checked={(widgetStyle?.alignment ?? 'center') === 'flex-end'}
-                      onChange={() => handleStyleChange('alignment', 'flex-end' as unknown as number)}
+                      onChange={() =>
+                        handleStyleChange('alignment', 'flex-end' as unknown as number)
+                      }
                     />
                     {t('widgetManager.labels.right')}
                   </label>
@@ -356,7 +433,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       name="justify"
                       value="flex-start"
                       checked={(widgetStyle?.justify ?? 'center') === 'flex-start'}
-                      onChange={() => handleStyleChange('justify', 'flex-start' as unknown as number)}
+                      onChange={() =>
+                        handleStyleChange('justify', 'flex-start' as unknown as number)
+                      }
                     />
                     {t('widgetManager.labels.justifyStart')}
                   </label>
@@ -386,7 +465,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       name="justify"
                       value="space-between"
                       checked={(widgetStyle?.justify ?? 'center') === 'space-between'}
-                      onChange={() => handleStyleChange('justify', 'space-between' as unknown as number)}
+                      onChange={() =>
+                        handleStyleChange('justify', 'space-between' as unknown as number)
+                      }
                     />
                     {t('widgetManager.labels.justifyBetween')}
                   </label>
@@ -396,7 +477,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                       name="justify"
                       value="space-around"
                       checked={(widgetStyle?.justify ?? 'center') === 'space-around'}
-                      onChange={() => handleStyleChange('justify', 'space-around' as unknown as number)}
+                      onChange={() =>
+                        handleStyleChange('justify', 'space-around' as unknown as number)
+                      }
                     />
                     {t('widgetManager.labels.justifyAround')}
                   </label>
@@ -422,7 +505,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                         </label>
                         {
                           // first check if it is not maybe a provider or api key
-                          (key.toLowerCase().includes('provider') || key.toLowerCase().includes('api') || key.toLowerCase().includes('token')) ?
+                          key.toLowerCase().includes('provider') ||
+                          key.toLowerCase().includes('api') ||
+                          key.toLowerCase().includes('token') ? (
                             <>
                               <select
                                 value={String(value ?? '')}
@@ -430,51 +515,46 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                                 className={styles.providerSelect}
                               >
                                 <option value="">{t('widgetManager.labels.selectProvider')}</option>
-                                {existingApiTokens.map(w => (
+                                {existingApiTokens.map((w) => (
                                   <option key={w} value={w}>
                                     {w}
                                   </option>
                                 ))}
                               </select>
                             </>
-                            :
-                            typeof value === 'boolean' ?
-                              (
-                                <label className={styles.toggleSwitch}>
-                                  <input
-                                    type="checkbox"
-                                    checked={value}
-                                    onChange={(e) => handlePropertyChange(key, e.target.checked)}
-                                  />
-                                  <span className={styles.slider} />
-                                </label>
-                              )
-                              :
-                              !key.toLowerCase().includes('format') && key.toLowerCase().includes('date') && (value.toString().length > 6) ? (
-                                <input
-                                  type="date"
-                                  value={String(value ?? '')}
-                                  onChange={(e) => handlePropertyChange(key, e.target.value)}
-                                />
-                              )
-                                :
-                                key.toLowerCase().includes('number') || key.toLowerCase().includes('currentsprint') ? (
-                                  <input
-                                    type="number"
-                                    value={String(value ?? '')}
-                                    placeholder={`Enter ${key.toLowerCase()}`}
-                                    onChange={(e) => handlePropertyChange(key, e.target.value)}
-                                  />
-                                )
-                                  :
-                                  (
-                                    <input
-                                      type="text"
-                                      value={String(value ?? '')}
-                                      placeholder={`Enter ${key.toLowerCase()}`}
-                                      onChange={(e) => handlePropertyChange(key, e.target.value)}
-                                    />
-                                  )
+                          ) : typeof value === 'boolean' ? (
+                            <label className={styles.toggleSwitch}>
+                              <input
+                                type="checkbox"
+                                checked={value}
+                                onChange={(e) => handlePropertyChange(key, e.target.checked)}
+                              />
+                              <span className={styles.slider} />
+                            </label>
+                          ) : !key.toLowerCase().includes('format') &&
+                            key.toLowerCase().includes('date') &&
+                            value.toString().length > 6 ? (
+                            <input
+                              type="date"
+                              value={String(value ?? '')}
+                              onChange={(e) => handlePropertyChange(key, e.target.value)}
+                            />
+                          ) : key.toLowerCase().includes('number') ||
+                            key.toLowerCase().includes('currentsprint') ? (
+                            <input
+                              type="number"
+                              value={String(value ?? '')}
+                              placeholder={`Enter ${key.toLowerCase()}`}
+                              onChange={(e) => handlePropertyChange(key, e.target.value)}
+                            />
+                          ) : (
+                            <input
+                              type="text"
+                              value={String(value ?? '')}
+                              placeholder={`Enter ${key.toLowerCase()}`}
+                              onChange={(e) => handlePropertyChange(key, e.target.value)}
+                            />
+                          )
                         }
                       </div>
                     );
@@ -482,244 +562,313 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                 </div>
               </div>
             )}
-        </>,
-      actions: [{
-        index: 0,
-        text: t('widgetManager.buttons.addWidget'),
-        onClick: () => {
-          if (!selectedWidgetType) {
-            console.error('No widget type selected!');
-            return;
-          }
+        </>
+      ),
+      actions: [
+        {
+          index: 0,
+          text: t('widgetManager.buttons.addWidget'),
+          onClick: () => {
+            if (!selectedWidgetType) {
+              console.error('No widget type selected!');
+              return;
+            }
 
-          let widgetProps = { ...(selectedWidgetType.defaultProps || {}) };
+            let widgetProps = { ...(selectedWidgetType.defaultProps || {}) };
 
-          // Add background change handler for BackgroundManager
-          if (selectedWidgetType.id === 'background-manager' && onBackgroundChange) {
-            widgetProps = {
-              ...widgetProps,
-              onBackgroundChange,
+            // Add background change handler for BackgroundManager
+            if (selectedWidgetType.id === 'background-manager' && onBackgroundChange) {
+              widgetProps = {
+                ...widgetProps,
+                onBackgroundChange,
+              };
+            }
+            // check if selectedWidgetType is being edited
+            const isEditing = existingWidgets.some((w) => w.id.startsWith(selectedWidgetType.id));
+            const newWidget: DashboardWidget = {
+              id: isEditing
+                ? selectedWidgetType.id.toString()
+                : generateUniqueId(selectedWidgetType.id),
+              name: selectedWidgetType.name,
+              description: selectedWidgetType.description,
+              isRuntimeVisible: selectedWidgetType.isRuntimeVisible,
+              allowMultiples: selectedWidgetType.allowMultiples,
+              isDepricated: selectedWidgetType.isDepricated,
+              wikiPage: selectedWidgetType.wikiPage,
+              component: selectedWidgetType.component,
+              dimensions: widgetDimensions,
+              position: widgetPosition,
+              props: widgetProps,
+              style: widgetStyle,
+              metaData: selectedWidgetType.metaData || { lastRefresh: new Date() },
             };
-          }
-          // check if selectedWidgetType is being edited
-          const isEditing = existingWidgets.some(w => w.id.startsWith(selectedWidgetType.id));
-          const newWidget: DashboardWidget = {
-            id: isEditing ? selectedWidgetType.id.toString() : generateUniqueId(selectedWidgetType.id),
-            name: selectedWidgetType.name,
-            description: selectedWidgetType.description,
-            isRuntimeVisible: selectedWidgetType.isRuntimeVisible,
-            allowMultiples: selectedWidgetType.allowMultiples,
-            isDepricated: selectedWidgetType.isDepricated,
-            wikiPage: selectedWidgetType.wikiPage,
-            component: selectedWidgetType.component,
-            dimensions: widgetDimensions,
-            position: widgetPosition,
-            props: widgetProps,
-            style: widgetStyle,
-            metaData: selectedWidgetType.metaData || { lastRefresh: new Date() },
-          };
 
-          onAddWidget(newWidget);
-          chromeStorage.saveAllDefaults({
-            styling: widgetStyle,
-            dimensions: widgetDimensions,
-            positioning: widgetPosition,
-          });
+            onAddWidget(newWidget);
+            chromeStorage.saveAllDefaults({
+              styling: widgetStyle,
+              dimensions: widgetDimensions,
+              positioning: widgetPosition,
+            });
 
-          // Close modal and reset state properly
-          setIsModalOpen(false);
-          setModalContent(null);
-          setSelectedWidgetType(null);
-        }
-      }, {
-        index: 1,
-        text: t('common.buttons.cancel'),
-        onClick: handleCloseModal
-      }]
+            // Close modal and reset state properly
+            setIsModalOpen(false);
+            setModalContent(null);
+            setSelectedWidgetType(null);
+          },
+        },
+        {
+          index: 1,
+          text: t('common.buttons.cancel'),
+          onClick: handleCloseModal,
+        },
+      ],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [widgetStyle, selectedWidgetType]);
 
-  const handleAction = useCallback(async (action: 'addWidget' | 'import' | 'export') => {
-    switch (action) {
-      case 'addWidget':
-        setIsModalOpen(true);
-        resetModalState();
-        break;
-      case 'import':
-        try {
-          const input = document.createElement('input');
-          input.type = 'file';
-          input.accept = 'application/json';
-          input.onchange = async (e: Event) => {
-            const target = e.target as HTMLInputElement;
-            if (target.files && target.files.length > 0) {
-              const file = target.files[0];
-              const text = await file.text();
-              const myData = JSON.parse(text);
-              if (myData.exportMetadata.secretProps && myData.exportMetadata.secretProps.length > 0) {
-                const fieldsData = myData.exportMetadata.secretProps.map(({ name, key, value }, idx) => {
-                  return (<React.Fragment key={`${idx}_${key}`}>{renderTextInput(!value ? '' : value, `${name}_${key}`, `${name}_${key}`, (e) => {
-                    const newData = { ...myData };
-                    newData.exportMetadata.secretProps[idx].value = e.target.value;
-                    setData(newData);
-                  })}</React.Fragment>);
-                });
-                setModalContent({ title: t('widgetManager.modal.titleImport'), content: fieldsData, actions: [] });
-              }
-              else {
-                await chromeStorage.saveWidgets(myData.widgets);
-                await chromeStorage.saveBackground(myData.backgroundImage);
-                await chromeStorage.saveVersion(myData?.version?.toString() || '1.0.0');
-                setModalContent({
-                  title: 'Import Successful', content: "Data imported successfully", actions: [{
-                    index: 1, text: 'Refresh', onClick: () => {
-                      window.location.reload();
-                    }
-                  }]
-                });
-              }
-            }
-          }
-          input.click();
-        } catch (e) {
-          console.error('Import failed:', e);
-          // Consider showing user-friendly error notification
-        }
-        break;
-      case 'export':
-        // Handle export action
-        try {
-          const data = await chromeStorage.loadAll();
-
-          // Find all widgets that contain InternalString properties and sanitize them
-          const exportedData = {
-            widgets: [],
-            secretProps: []
-          };
-          data.widgets?.map((widget: SerializedWidget) => {
-            const sanitizedWidget = { ...widget };
-            if (widget.props) {
-              // iterate over the props and sanitize any props that isSecureProperty
-              const sanitizeProps = (props: Record<string, unknown>, widgetName: string, secretProps: Array<{ name: string, key: string, value?: string }>, parentKey = ''): Record<string, unknown> => {
-                const sanitized: Record<string, unknown> = {};
-
-                Object.entries(props).forEach(([key, value]) => {
-                  const fullKey = parentKey ? `${parentKey}.${key}` : key;
-
-                  if (isSecureProperty(key)) {
-                    sanitized[key] = '[REDACTED]';
-                    secretProps.push({ name: widgetName, key: fullKey });
-                  } else if (value && typeof value === 'object' && !Array.isArray(value)) {
-                    // Recursively sanitize nested objects
-                    sanitized[key] = sanitizeProps(value as Record<string, unknown>, widgetName, secretProps, fullKey);
-                  } else if (Array.isArray(value)) {
-                    // Recursively sanitize arrays
-                    sanitized[key] = value.map((item, index) => {
-                      if (item && typeof item === 'object') {
-                        return sanitizeProps(item as Record<string, unknown>, widgetName, secretProps, `${fullKey}[${index}]`);
-                      }
-                      return item;
-                    });
-                  } else {
-                    sanitized[key] = value;
-                  }
-                });
-
-                return sanitized;
-              };
-
-              sanitizedWidget.props = sanitizeProps(widget.props, widget.name, exportedData.secretProps);
-            }
-            if (widget.metaData) {
-              // Also sanitize metaData for widgets that store sensitive data there
-              const sanitizeMetaData = (metaData: Record<string, unknown>, widgetName: string, secretProps: Array<{ name: string, key: string, value?: string }>, parentKey = ''): Record<string, unknown> => {
-                const sanitized: Record<string, unknown> = {};
-
-                Object.entries(metaData).forEach(([key, value]) => {
-                  const fullKey = parentKey ? `${parentKey}.${key}` : key;
-
-                  // Check if this key should be redacted
-                  if (isSecureProperty(key)) {
-                    sanitized[key] = '[REDACTED]';
-                    secretProps.push({ name: widgetName, key: fullKey });
-                  } else if (value && typeof value === 'object' && !Array.isArray(value)) {
-                    // Recursively sanitize nested objects
-                    sanitized[key] = sanitizeMetaData(value as Record<string, unknown>, widgetName, secretProps, fullKey);
-                  } else if (Array.isArray(value)) {
-                    // Recursively sanitize arrays
-                    sanitized[key] = value.map((item, index) => {
-                      if (item && typeof item === 'object') {
-                        return sanitizeMetaData(item as Record<string, unknown>, widgetName, secretProps, `${fullKey}[${index}]`);
-                      }
-                      return item;
-                    });
-                  } else {
-                    sanitized[key] = value;
-                  }
-                });
-
-                return sanitized;
-              };
-
-              sanitizedWidget.metaData = sanitizeMetaData(widget.metaData as Record<string, unknown>, widget.name, exportedData.secretProps);
-            }
-            exportedData.widgets.push(sanitizedWidget);
-          });
-          // Create export data with sanitized widgets
-          // Dynamically read the version from the manifest.json file
-          let manifestVersion = '1.0.0';
+  const handleAction = useCallback(
+    async (action: 'addWidget' | 'import' | 'export') => {
+      switch (action) {
+        case 'addWidget':
+          setIsModalOpen(true);
+          resetModalState();
+          break;
+        case 'import':
           try {
-            if (typeof chrome !== 'undefined' && chrome.runtime?.getManifest) {
-              // Chrome extension environment
-              manifestVersion = chrome.runtime.getManifest().version || '1.0.0';
-            }
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            input.onchange = async (e: Event) => {
+              const target = e.target as HTMLInputElement;
+              if (target.files && target.files.length > 0) {
+                const file = target.files[0];
+                const text = await file.text();
+                const myData = JSON.parse(text);
+                if (
+                  myData.exportMetadata.secretProps &&
+                  myData.exportMetadata.secretProps.length > 0
+                ) {
+                  const fieldsData = myData.exportMetadata.secretProps.map(
+                    ({ name, key, value }, idx) => {
+                      return (
+                        <React.Fragment key={`${idx}_${key}`}>
+                          {renderTextInput(
+                            !value ? '' : value,
+                            `${name}_${key}`,
+                            `${name}_${key}`,
+                            (e) => {
+                              const newData = { ...myData };
+                              newData.exportMetadata.secretProps[idx].value = e.target.value;
+                              setData(newData);
+                            }
+                          )}
+                        </React.Fragment>
+                      );
+                    }
+                  );
+                  setModalContent({
+                    title: t('widgetManager.modal.titleImport'),
+                    content: fieldsData,
+                    actions: [],
+                  });
+                } else {
+                  await chromeStorage.saveWidgets(myData.widgets);
+                  await chromeStorage.saveBackground(myData.backgroundImage);
+                  await chromeStorage.saveVersion(myData?.version?.toString() || '1.0.0');
+                  setModalContent({
+                    title: 'Import Successful',
+                    content: 'Data imported successfully',
+                    actions: [
+                      {
+                        index: 1,
+                        text: 'Refresh',
+                        onClick: () => {
+                          window.location.reload();
+                        },
+                      },
+                    ],
+                  });
+                }
+              }
+            };
+            input.click();
           } catch (e) {
-            // Fallback to default version if manifest is not accessible
-            manifestVersion = '1.0.0';
+            console.error('Import failed:', e);
+            // Consider showing user-friendly error notification
+          }
+          break;
+        case 'export':
+          // Handle export action
+          try {
+            const data = await chromeStorage.loadAll();
+
+            // Find all widgets that contain InternalString properties and sanitize them
+            const exportedData = {
+              widgets: [],
+              secretProps: [],
+            };
+            data.widgets?.map((widget: SerializedWidget) => {
+              const sanitizedWidget = { ...widget };
+              if (widget.props) {
+                // iterate over the props and sanitize any props that isSecureProperty
+                const sanitizeProps = (
+                  props: Record<string, unknown>,
+                  widgetName: string,
+                  secretProps: Array<{ name: string; key: string; value?: string }>,
+                  parentKey = ''
+                ): Record<string, unknown> => {
+                  const sanitized: Record<string, unknown> = {};
+
+                  Object.entries(props).forEach(([key, value]) => {
+                    const fullKey = parentKey ? `${parentKey}.${key}` : key;
+
+                    if (isSecureProperty(key)) {
+                      sanitized[key] = '[REDACTED]';
+                      secretProps.push({ name: widgetName, key: fullKey });
+                    } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+                      // Recursively sanitize nested objects
+                      sanitized[key] = sanitizeProps(
+                        value as Record<string, unknown>,
+                        widgetName,
+                        secretProps,
+                        fullKey
+                      );
+                    } else if (Array.isArray(value)) {
+                      // Recursively sanitize arrays
+                      sanitized[key] = value.map((item, index) => {
+                        if (item && typeof item === 'object') {
+                          return sanitizeProps(
+                            item as Record<string, unknown>,
+                            widgetName,
+                            secretProps,
+                            `${fullKey}[${index}]`
+                          );
+                        }
+                        return item;
+                      });
+                    } else {
+                      sanitized[key] = value;
+                    }
+                  });
+
+                  return sanitized;
+                };
+
+                sanitizedWidget.props = sanitizeProps(
+                  widget.props,
+                  widget.name,
+                  exportedData.secretProps
+                );
+              }
+              if (widget.metaData) {
+                // Also sanitize metaData for widgets that store sensitive data there
+                const sanitizeMetaData = (
+                  metaData: Record<string, unknown>,
+                  widgetName: string,
+                  secretProps: Array<{ name: string; key: string; value?: string }>,
+                  parentKey = ''
+                ): Record<string, unknown> => {
+                  const sanitized: Record<string, unknown> = {};
+
+                  Object.entries(metaData).forEach(([key, value]) => {
+                    const fullKey = parentKey ? `${parentKey}.${key}` : key;
+
+                    // Check if this key should be redacted
+                    if (isSecureProperty(key)) {
+                      sanitized[key] = '[REDACTED]';
+                      secretProps.push({ name: widgetName, key: fullKey });
+                    } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+                      // Recursively sanitize nested objects
+                      sanitized[key] = sanitizeMetaData(
+                        value as Record<string, unknown>,
+                        widgetName,
+                        secretProps,
+                        fullKey
+                      );
+                    } else if (Array.isArray(value)) {
+                      // Recursively sanitize arrays
+                      sanitized[key] = value.map((item, index) => {
+                        if (item && typeof item === 'object') {
+                          return sanitizeMetaData(
+                            item as Record<string, unknown>,
+                            widgetName,
+                            secretProps,
+                            `${fullKey}[${index}]`
+                          );
+                        }
+                        return item;
+                      });
+                    } else {
+                      sanitized[key] = value;
+                    }
+                  });
+
+                  return sanitized;
+                };
+
+                sanitizedWidget.metaData = sanitizeMetaData(
+                  widget.metaData as Record<string, unknown>,
+                  widget.name,
+                  exportedData.secretProps
+                );
+              }
+              exportedData.widgets.push(sanitizedWidget);
+            });
+            // Create export data with sanitized widgets
+            // Dynamically read the version from the manifest.json file
+            let manifestVersion = '1.0.0';
+            try {
+              if (typeof chrome !== 'undefined' && chrome.runtime?.getManifest) {
+                // Chrome extension environment
+                manifestVersion = chrome.runtime.getManifest().version || '1.0.0';
+              }
+            } catch (e) {
+              // Fallback to default version if manifest is not accessible
+              manifestVersion = '1.0.0';
+            }
+
+            const exportData = {
+              ...data,
+              widgets: exportedData.widgets,
+              exportMetadata: {
+                exportedAt: new Date().toISOString(),
+                version: manifestVersion,
+                securityNote:
+                  'InternalString properties (tokens, credentials, sensitive data) have been removed for security',
+                secretProps: exportedData.secretProps,
+              },
+            };
+
+            // Create and download the export file
+            const exportBlob = new Blob([JSON.stringify(exportData, null, 2)], {
+              type: 'application/json',
+            });
+
+            const downloadUrl = URL.createObjectURL(exportBlob);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = downloadUrl;
+            downloadLink.download = `quantum-tab-export-${new Date().toISOString().slice(0, 10)}.json`;
+
+            // Trigger download
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+
+            // Clean up the URL object
+            URL.revokeObjectURL(downloadUrl);
+          } catch (error) {
+            console.error('Export failed:', error);
+            // Consider showing user-friendly error notification
           }
 
-          const exportData = {
-            ...data,
-            widgets: exportedData.widgets,
-            exportMetadata: {
-              exportedAt: new Date().toISOString(),
-              version: manifestVersion,
-              securityNote: 'InternalString properties (tokens, credentials, sensitive data) have been removed for security',
-              secretProps: exportedData.secretProps
-            }
-          };
-
-          // Create and download the export file
-          const exportBlob = new Blob([JSON.stringify(exportData, null, 2)], {
-            type: 'application/json'
-          });
-
-          const downloadUrl = URL.createObjectURL(exportBlob);
-          const downloadLink = document.createElement('a');
-          downloadLink.href = downloadUrl;
-          downloadLink.download = `quantum-tab-export-${new Date().toISOString().slice(0, 10)}.json`;
-
-          // Trigger download
-          document.body.appendChild(downloadLink);
-          downloadLink.click();
-          document.body.removeChild(downloadLink);
-
-          // Clean up the URL object
-          URL.revokeObjectURL(downloadUrl);
-
-
-        } catch (error) {
-          console.error('Export failed:', error);
-          // Consider showing user-friendly error notification
-        }
-
-        break;
-      default:
-        break;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resetModalState]);
+          break;
+        default:
+          break;
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [resetModalState]
+  );
 
   const handleCloseModal = useCallback(() => {
     if (selectedWidgetType) {
@@ -736,8 +885,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
               setIsModalOpen(false);
               setModalContent(null);
               setSelectedWidgetType(null);
-            }
-          }]
+            },
+          },
+        ],
       });
     } else {
       // Second click: close modal completely
@@ -758,31 +908,37 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
         containerBounds
       );
       setWidgetPosition(optimalPosition);
-    }, [existingWidgets, containerBounds]);
+    },
+    [existingWidgets, containerBounds]
+  );
 
   const handleStyleChange = useCallback((property: keyof CssStyle, value: number | string) => {
     // Convert transparency from percentage to decimal
-    const finalValue = property === 'transparency' ? (typeof value === 'number' ? value / 100 : 0) : value;
+    const finalValue =
+      property === 'transparency' ? (typeof value === 'number' ? value / 100 : 0) : value;
     setWidgetStyle((prev) => {
       const newStyle = { ...prev, [property]: finalValue };
       return newStyle;
     });
   }, []);
 
-  const handlePropertyChange = useCallback((key: string, value: string | boolean | number) => {
-    if (selectedWidgetType) {
-      setSelectedWidgetType(prev => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          defaultProps: {
-            ...prev.defaultProps,
-            [key]: value
-          }
-        };
-      });
-    }
-  }, [selectedWidgetType]);
+  const handlePropertyChange = useCallback(
+    (key: string, value: string | boolean | number) => {
+      if (selectedWidgetType) {
+        setSelectedWidgetType((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            defaultProps: {
+              ...prev.defaultProps,
+              [key]: value,
+            },
+          };
+        });
+      }
+    },
+    [selectedWidgetType]
+  );
 
   const renderStyleInput = useCallback(
     (
@@ -814,16 +970,15 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   );
 
   const renderTextInput = useCallback(
-    (value: string, id: string, label: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void) => (
+    (
+      value: string,
+      id: string,
+      label: string,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    ) => (
       <div className={styles.styleField}>
         <label className={styles.styleLabel}>{label}</label>
-        <input
-          type="text"
-          id={id}
-          value={value}
-          onChange={onChange}
-          className={styles.textInput}
-        />
+        <input type="text" id={id} value={value} onChange={onChange} className={styles.textInput} />
       </div>
     ),
     []
@@ -831,7 +986,13 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
   const renderColorInput = useCallback(
     (
-      property: 'backgroundColorRed' | 'backgroundColorGreen' | 'backgroundColorBlue' | 'textColorRed' | 'textColorGreen' | 'textColorBlue',
+      property:
+        | 'backgroundColorRed'
+        | 'backgroundColorGreen'
+        | 'backgroundColorBlue'
+        | 'textColorRed'
+        | 'textColorGreen'
+        | 'textColorBlue',
       value: number,
       label: string
     ) => (
@@ -862,7 +1023,6 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
 
   return isLocked ? (
     <>
-
       <button
         className={`${styles.lockToggle} ${isLocked ? styles.locked : ''}`}
         onClick={handleToggleLock}
@@ -875,13 +1035,20 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     <>
       <button
         className={`${styles.lockToggle} ${isLocked ? styles.locked : ''}`}
-        style={{ background: `rgba(${widgetStyle.backgroundColorRed}, ${widgetStyle.backgroundColorGreen}, ${widgetStyle.backgroundColorBlue}, ${widgetStyle.transparency / 1})` }}
+        style={{
+          background: `rgba(${widgetStyle.backgroundColorRed}, ${widgetStyle.backgroundColorGreen}, ${widgetStyle.backgroundColorBlue}, ${widgetStyle.transparency / 1})`,
+        }}
         onClick={handleToggleLock}
         title={isLocked ? 'Unlock Dashboard' : 'Lock Dashboard'}
       >
         <span className={styles.btnIcon}>{isLocked ? '🔒' : '🔓'}</span>
       </button>
-      <div className={styles.widgetManager} style={{ background: `rgba(${widgetStyle.backgroundColorRed}, ${widgetStyle.backgroundColorGreen}, ${widgetStyle.backgroundColorBlue}, ${widgetStyle.transparency / 1})` }} >
+      <div
+        className={styles.widgetManager}
+        style={{
+          background: `rgba(${widgetStyle.backgroundColorRed}, ${widgetStyle.backgroundColorGreen}, ${widgetStyle.backgroundColorBlue}, ${widgetStyle.transparency / 1})`,
+        }}
+      >
         <div className={styles.widgetsList}>
           <button
             className={styles.btn}
@@ -909,14 +1076,24 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
           </button>
           <button
             className={styles.btn}
-            onClick={() => window.open('https://github.com/Ruandv/Quantum-Tab/issues/new?template=feature_request.yml', '_blank')}
+            onClick={() =>
+              window.open(
+                'https://github.com/Ruandv/Quantum-Tab/issues/new?template=feature_request.yml',
+                '_blank'
+              )
+            }
             title={t('githubIssues.tooltips.requestFeature')}
           >
             {t('githubIssues.links.requestFeature')}
           </button>
           <button
             className={styles.btn}
-            onClick={() => window.open('https://github.com/Ruandv/Quantum-Tab/issues/new?template=bug_report.yml', '_blank')}
+            onClick={() =>
+              window.open(
+                'https://github.com/Ruandv/Quantum-Tab/issues/new?template=bug_report.yml',
+                '_blank'
+              )
+            }
             title={t('githubIssues.tooltips.logBug')}
           >
             {t('githubIssues.links.logBug')}
@@ -927,8 +1104,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
             isOpen={isModalOpen}
             onClose={handleCloseModal}
             content={modalContent}
-          >
-          </ModalDialog>
+          ></ModalDialog>
         )}
       </div>
     </>

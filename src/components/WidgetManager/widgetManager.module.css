@@ -1,4 +1,3 @@
-
 /* WidgetManager Component Styles */
 .widgetManager {
   position: absolute;
@@ -47,7 +46,7 @@
   box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
 }
 
-.filter{
+.filter {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
@@ -55,7 +54,7 @@
   font-size: 0.9rem;
   cursor: pointer;
 }
-.filter div{
+.filter div {
   border-radius: 12px;
   padding: 0.3rem 0.8rem;
   background: rgba(255, 255, 255, 0.1);
@@ -426,7 +425,6 @@
   border-radius: 6px;
   color: white;
 }
-
 
 /* Justify Options */
 .textAlignOptions,

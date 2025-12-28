@@ -1,4 +1,10 @@
-import { Dimensions, Position, CssStyle, STORAGE_KEYS, SettingsWidgetMetaData } from '../types/common';
+import {
+  Dimensions,
+  Position,
+  CssStyle,
+  STORAGE_KEYS,
+  SettingsWidgetMetaData,
+} from '../types/common';
 import { ProviderSettings } from '../types/providerSettings';
 import { defaultDimensions, defaultPosition, defaultStyle } from '../types/defaults';
 import { dispatchWidgetMetaUpdate } from './widgetEvents';
@@ -67,11 +73,12 @@ export const chromeStorage = {
     try {
       // find the backgroundManager widget and get its background from metaData
       const widgets = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
-      const backgroundManager = widgets[STORAGE_KEYS.WIDGETS].find((widget) => widget.component === 'background-manager');
+      const backgroundManager = widgets[STORAGE_KEYS.WIDGETS].find(
+        (widget) => widget.component === 'background-manager'
+      );
       if (backgroundManager && backgroundManager.metaData) {
         backgroundManager.metaData.backgroundImage = backgroundImage;
-      }
-      else if (backgroundManager) {
+      } else if (backgroundManager) {
         backgroundManager.metaData = { background: backgroundImage };
       }
       await chromeStorage.setWidgetData(backgroundManager.id, backgroundManager);
@@ -86,8 +93,10 @@ export const chromeStorage = {
   loadBackground: async (): Promise<string> => {
     try {
       // find the backgroundManager widget and get its background from metaData
-      const widgets = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS) as SerializedWidget[];
-      const backgroundManager = widgets[STORAGE_KEYS.WIDGETS].find((widget) => widget.component === 'background-manager');
+      const widgets = (await chrome.storage.local.get(STORAGE_KEYS.WIDGETS)) as SerializedWidget[];
+      const backgroundManager = widgets[STORAGE_KEYS.WIDGETS].find(
+        (widget) => widget.component === 'background-manager'
+      );
       return backgroundManager?.metaData?.backgroundImage || '';
     } catch (error) {
       console.warn('Failed to load background from Chrome storage:', error);
@@ -125,7 +134,7 @@ export const chromeStorage = {
       await chrome.storage.local.set({
         [STORAGE_KEYS.WIDGETS]: data.widgets,
         [STORAGE_KEYS.LOCK_STATE]: data.isLocked,
-        [STORAGE_KEYS.VERSION]: data.version
+        [STORAGE_KEYS.VERSION]: data.version,
       });
       return true;
     } catch (error) {
@@ -138,8 +147,7 @@ export const chromeStorage = {
     try {
       const result = await chrome.storage.local.get(STORAGE_KEYS.VERSION);
       return result[STORAGE_KEYS.VERSION] || '1.0.0';
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Failed to get version from Chrome storage:', error);
       return '1.0.0';
     }
@@ -149,8 +157,7 @@ export const chromeStorage = {
     try {
       await chrome.storage.local.set({ [STORAGE_KEYS.VERSION]: version });
       return version;
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Failed to get version from Chrome storage:', error);
       return '1.0.0';
     }
@@ -163,7 +170,7 @@ export const chromeStorage = {
         STORAGE_KEYS.WIDGETS,
         'quantum-tab-background',
         STORAGE_KEYS.LOCK_STATE,
-        STORAGE_KEYS.VERSION
+        STORAGE_KEYS.VERSION,
       ]);
 
       // Try to get the version from the manifest if available
@@ -192,7 +199,7 @@ export const chromeStorage = {
         timestamp: Date.now(),
       };
     }
-  }, 
+  },
   // Save all data at once
   saveAllDefaults: async (data: Defaults): Promise<boolean> => {
     try {
@@ -231,10 +238,7 @@ export const chromeStorage = {
   // Clear all data
   clearAll: async (): Promise<boolean> => {
     try {
-      await chrome.storage.local.remove([
-        STORAGE_KEYS.WIDGETS,
-        STORAGE_KEYS.LOCK_STATE,
-      ]);
+      await chrome.storage.local.remove([STORAGE_KEYS.WIDGETS, STORAGE_KEYS.LOCK_STATE]);
       return true;
     } catch (error) {
       console.error('Failed to clear Chrome storage:', error);
@@ -249,7 +253,6 @@ export const chromeStorage = {
         w = result[STORAGE_KEYS.WIDGETS]?.find((widget) => widget.component === widgetId) || {};
       }
       return w;
-
     } catch (error) {
       console.error(`Failed to get widget data for ${widgetId} from Chrome storage:`, error);
       return {};
@@ -304,7 +307,11 @@ export const chromeStorage = {
         console.warn('Settings widget not found when retrieving API token');
         return null;
       }
-      const token = settingsWidget.metaData ? (settingsWidget.metaData as SettingsWidgetMetaData).providers?.find(x => x.name === providerName) : null;
+      const token = settingsWidget.metaData
+        ? (settingsWidget.metaData as SettingsWidgetMetaData).providers?.find(
+            (x) => x.name === providerName
+          )
+        : null;
       return token || null;
     } catch (error) {
       console.error(`Failed to get API token for ${providerName} from Chrome storage:`, error);
@@ -319,8 +326,10 @@ export const chromeStorage = {
         console.warn('Settings widget not found when retrieving API token');
         return null;
       }
-      const tokens = settingsWidget.metaData ? (settingsWidget.metaData as SettingsWidgetMetaData).providers: null;
-      return tokens?.map(x => ({ name: x.name })) || [];
+      const tokens = settingsWidget.metaData
+        ? (settingsWidget.metaData as SettingsWidgetMetaData).providers
+        : null;
+      return tokens?.map((x) => ({ name: x.name })) || [];
     } catch (error) {
       console.error(`Failed to get API tokens from Chrome storage:`, error);
       return null;
@@ -379,7 +388,7 @@ export const chromeStorage = {
     try {
       const result = await chrome.storage.local.get(STORAGE_KEYS.WIDGETS);
       const widget = result[STORAGE_KEYS.WIDGETS].find((w) => w.id === widgetId);
-      return widget ? widget.metaData : {} as T;
+      return widget ? widget.metaData : ({} as T);
     } catch (error) {
       console.error(`Failed to get widget meta data for ${widgetId} from Chrome storage:`, error);
       return {} as T;

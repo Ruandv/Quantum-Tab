@@ -88,11 +88,15 @@ export class AzureDevOpsService {
     const resolvedTeam = derivedContext.team || this.normalizeSegment(team);
 
     if (!resolvedOrganization || !resolvedProject) {
-      throw new Error('Unable to determine Azure DevOps organization or project from the board URL. Please update the widget settings.');
+      throw new Error(
+        'Unable to determine Azure DevOps organization or project from the board URL. Please update the widget settings.'
+      );
     }
 
     if (!resolvedTeam) {
-      throw new Error('Unable to determine the Azure DevOps team from the board URL. Please include it in the URL or widget settings.');
+      throw new Error(
+        'Unable to determine the Azure DevOps team from the board URL. Please include it in the URL or widget settings.'
+      );
     }
 
     const boardId = this.parseBoardIdentifier(boardUrl);
@@ -308,7 +312,7 @@ ORDER BY [System.ChangedDate] DESC`;
   private static mapWorkItemsToColumns(
     batchValues: WorkItemBatchValue[],
     sourceColumns: AzureDevOpsBoardColumnResponse[],
-    mappedColumns: AzureBoardColumn[],
+    mappedColumns: AzureBoardColumn[]
   ): { workItems: AzureWorkItem[]; columns: AzureBoardColumn[] } {
     const columnMap = new Map<string, AzureBoardColumn>(
       mappedColumns.map((col) => [col.id, { ...col }])
@@ -333,9 +337,10 @@ ORDER BY [System.ChangedDate] DESC`;
         workItemType,
         assignedTo: fields['System.AssignedTo']
           ? {
-            displayName: (fields['System.AssignedTo'] as { displayName?: string }).displayName || '',
-            uniqueName: (fields['System.AssignedTo'] as { uniqueName?: string }).uniqueName,
-          }
+              displayName:
+                (fields['System.AssignedTo'] as { displayName?: string }).displayName || '',
+              uniqueName: (fields['System.AssignedTo'] as { uniqueName?: string }).uniqueName,
+            }
           : undefined,
         tags: this.parseTags(String(fields['System.Tags'] || '')),
         boardColumn: resolvedColumn.name,
@@ -401,7 +406,10 @@ ORDER BY [System.ChangedDate] DESC`;
     return { id: 'unmapped', name: 'Unmapped' };
   }
 
-  private static createBoardColumn(column: AzureDevOpsBoardColumnResponse, fallbackOrder: number): AzureBoardColumn {
+  private static createBoardColumn(
+    column: AzureDevOpsBoardColumnResponse,
+    fallbackOrder: number
+  ): AzureBoardColumn {
     return {
       id: column.id || column.name,
       name: column.name,
@@ -553,7 +561,7 @@ ORDER BY [System.ChangedDate] DESC`;
   }
 
   private static buildBaseUrl(organization: string, project: string, team?: string): string {
-    const segments = [organization, project,team]
+    const segments = [organization, project, team]
       .filter((segment) => typeof segment === 'string' && segment.trim().length > 0)
       .map((segment) => encodeURIComponent(segment!.trim()));
 
@@ -584,7 +592,9 @@ ORDER BY [System.ChangedDate] DESC`;
     const projectBase = this.buildProjectBaseUrl(organization, project);
 
     if (trimmedTeam) {
-      endpoints.push(`${this.buildBaseUrl(organization, project, trimmedTeam)}${pathSuffix}?${apiVersionParam}`);
+      endpoints.push(
+        `${this.buildBaseUrl(organization, project, trimmedTeam)}${pathSuffix}?${apiVersionParam}`
+      );
     }
 
     endpoints.push(`${projectBase}${pathSuffix}?${apiVersionParam}`);
@@ -602,7 +612,11 @@ ORDER BY [System.ChangedDate] DESC`;
     return status === 404 || status === 400 || status === 405;
   }
 
-  private static formatAzureErrorMessage(status: number, statusText: string, rawBody: string): string {
+  private static formatAzureErrorMessage(
+    status: number,
+    statusText: string,
+    rawBody: string
+  ): string {
     const base = `HTTP ${status}${statusText ? ` ${statusText}` : ''}`.trim();
     if (!rawBody) {
       return base;

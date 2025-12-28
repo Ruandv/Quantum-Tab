@@ -235,7 +235,11 @@ const AzureAdoBoard: React.FC<AzureAdoBoardProps> = ({
     setError(null);
     const areaPaths = areaPath?.trim() || undefined;
     const iterationPaths = iterationPath?.trim() || undefined;
-    console.warn('RDV - Initiating fetch for Azure DevOps board data...', { boardUrl, areaPaths, iterationPaths });
+    console.warn('RDV - Initiating fetch for Azure DevOps board data...', {
+      boardUrl,
+      areaPaths,
+      iterationPaths,
+    });
     try {
       const message: BackgroundMessage = {
         action: 'fetchAzureBoardData',
@@ -252,7 +256,9 @@ const AzureAdoBoard: React.FC<AzureAdoBoardProps> = ({
       });
 
       if (chrome.runtime.lastError) {
-        setError(`${t('azureAdoBoard.errors.extensionError')}: ${chrome.runtime.lastError.message}`);
+        setError(
+          `${t('azureAdoBoard.errors.extensionError')}: ${chrome.runtime.lastError.message}`
+        );
         setIsLoading(false);
         return;
       }
@@ -270,19 +276,11 @@ const AzureAdoBoard: React.FC<AzureAdoBoardProps> = ({
         setError(response.error || t('azureAdoBoard.errors.fetchFailed'));
       }
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : t('azureAdoBoard.errors.fetchFailed')
-      );
+      setError(err instanceof Error ? err.message : t('azureAdoBoard.errors.fetchFailed'));
     } finally {
       setIsLoading(false);
     }
-  }, [
-    patToken,
-    boardUrl,
-    areaPath,
-    iterationPath,
-    t,
-  ]);
+  }, [patToken, boardUrl, areaPath, iterationPath, t]);
 
   // Initial data fetch
   useEffect(() => {
@@ -297,9 +295,12 @@ const AzureAdoBoard: React.FC<AzureAdoBoardProps> = ({
       return;
     }
 
-    const intervalId = window.setInterval(() => {
-      fetchBoardData();
-    }, refreshInterval * 60 * 1000);
+    const intervalId = window.setInterval(
+      () => {
+        fetchBoardData();
+      },
+      refreshInterval * 60 * 1000
+    );
 
     return () => window.clearInterval(intervalId);
   }, [autoRefresh, refreshInterval, fetchBoardData, patToken]);
@@ -315,15 +316,12 @@ const AzureAdoBoard: React.FC<AzureAdoBoardProps> = ({
     [isLocked, t]
   );
 
-  const handleLoadMore = useCallback(
-    (columnId: string) => {
-      setVisibleCounts((prev) => ({
-        ...prev,
-        [columnId]: (prev[columnId] || MAX_ITEMS_PER_PAGE) + MAX_ITEMS_PER_PAGE,
-      }));
-    },
-    []
-  );
+  const handleLoadMore = useCallback((columnId: string) => {
+    setVisibleCounts((prev) => ({
+      ...prev,
+      [columnId]: (prev[columnId] || MAX_ITEMS_PER_PAGE) + MAX_ITEMS_PER_PAGE,
+    }));
+  }, []);
 
   const renderCard = (item: AzureWorkItem) => {
     const category = (item.typeCategory || 'other') as TypeCategory;
@@ -344,7 +342,9 @@ const AzureAdoBoard: React.FC<AzureAdoBoardProps> = ({
           <span className={styles.stateChip}>{item.state}</span>
           <span className={styles.workItemType}>{item.workItemType}</span>
           <span className={styles.updatedAt}>
-            {item.changedDate ? new Date(item.changedDate).toLocaleDateString() : t('azureAdoBoard.labels.unknown')}
+            {item.changedDate
+              ? new Date(item.changedDate).toLocaleDateString()
+              : t('azureAdoBoard.labels.unknown')}
           </span>
         </div>
         <div className={styles.metaRow}>
@@ -352,7 +352,9 @@ const AzureAdoBoard: React.FC<AzureAdoBoardProps> = ({
             👤 {item.assignedTo?.displayName || t('azureAdoBoard.labels.unassigned')}
           </span>
           {item.priority && (
-            <span className={styles.priority}>⬆️ {t('azureAdoBoard.labels.priority', { value: item.priority })}</span>
+            <span className={styles.priority}>
+              ⬆️ {t('azureAdoBoard.labels.priority', { value: item.priority })}
+            </span>
           )}
         </div>
         <div className={styles.tagsRow}>
@@ -439,10 +441,7 @@ const AzureAdoBoard: React.FC<AzureAdoBoardProps> = ({
           <>
             <div className={styles.cardList}>{activeColumnItems.items.map(renderCard)}</div>
             {activeColumnItems.hasMore && (
-              <button
-                className={styles.loadMoreBtn}
-                onClick={() => handleLoadMore(activeColumnId)}
-              >
+              <button className={styles.loadMoreBtn} onClick={() => handleLoadMore(activeColumnId)}>
                 {t('azureAdoBoard.buttons.loadMore')}
               </button>
             )}
