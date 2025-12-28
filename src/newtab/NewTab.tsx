@@ -11,7 +11,6 @@ import { dispatchWidgetRemoval, widgetEventManager, WIDGET_EVENTS, WidgetEventLi
 import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 import NotificationManager from '@/utils/notificationManager';
 import { upgradeWidgets } from '../utils/widgetUpgrade';
-import GitHubIssues from '@/components/GitHubIssues/gitHubIssues';
 import styles from './newTab.module.css';
 
 // Stable fallback component to avoid creating new function instances
