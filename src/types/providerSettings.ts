@@ -1,52 +1,52 @@
 interface ProviderSettingsBase {
-    name: string;
+  name: string;
 }
 
 export interface GeminiProviderSettings extends ProviderSettingsBase {
-    apiKey: string;
+  apiKey: string;
 }
 
 export interface AzureOpenAiProviderSettings extends ProviderSettingsBase {
-    endpoint: string;
-    apiKey: string;
-    apiVersion: string;
-    deploymentName: string;
+  endpoint: string;
+  apiKey: string;
+  apiVersion: string;
+  deploymentName: string;
 }
 
 export interface GitHubProviderSettings extends ProviderSettingsBase {
-    PatToken: string;
+  PatToken: string;
 }
 
 export interface AzureDevOpsProviderSettings extends ProviderSettingsBase {
-    PatToken: string;
+  PatToken: string;
 }
 
 export type ProviderSettings =
-    | GeminiProviderSettings
-    | AzureOpenAiProviderSettings
-    | GitHubProviderSettings
-    | AzureDevOpsProviderSettings;
+  | GeminiProviderSettings
+  | AzureOpenAiProviderSettings
+  | GitHubProviderSettings
+  | AzureDevOpsProviderSettings;
 
 export type ProviderType = 'Gemini' | 'AzureAi' | 'GitHub' | 'AzureDevOps';
 
 export const providerRegistry: Record<string, ProviderSettings> = {
-    Gemini: {
-        name: 'Gemini',
-        apiKey: '',
-    } as GeminiProviderSettings,
-    AzureAi: {
-        name: 'AzureAi',
-        endpoint: '',
-        apiKey: '',
-        apiVersion: '',
-        deploymentName: '',
-    } as AzureOpenAiProviderSettings,
-    GitHub: {
-        name: 'GitHub',
-        PatToken: '',
-    } as GitHubProviderSettings,
-    AzureDevOps: {
-        name: 'AzureDevOps',
-        PatToken: '',
-    } as AzureDevOpsProviderSettings,
+  Gemini: {
+    name: 'Gemini',
+    apiKey: '',
+  } as GeminiProviderSettings,
+  AzureAi: {
+    name: 'AzureAi',
+    endpoint: '',
+    apiKey: '',
+    apiVersion: '',
+    deploymentName: '',
+  } as AzureOpenAiProviderSettings,
+  GitHub: {
+    name: 'GitHub',
+    PatToken: '',
+  } as GitHubProviderSettings,
+  AzureDevOps: {
+    name: 'AzureDevOps',
+    PatToken: '',
+  } as AzureDevOpsProviderSettings,
 };

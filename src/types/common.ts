@@ -1,18 +1,26 @@
 // Centralized type definitions for the entire application
 
 // Define the keys that should be optional in defaultProps
-type OptionalKeys = 'buttons' | 'isLocked' | 'widgetId' | 'onBackgroundChange' | 'onButtonsChange' | 'onLocaleChange' | 'metaData';
+type OptionalKeys =
+  | 'buttons'
+  | 'isLocked'
+  | 'widgetId'
+  | 'onBackgroundChange'
+  | 'onButtonsChange'
+  | 'onLocaleChange'
+  | 'metaData';
 
 // Utility type to make all properties required except for specific optional ones
 // but still allow the optional properties to be provided in defaultProps
-type RequiredProps<T> = Required<Omit<T, OptionalKeys & keyof T>> & Partial<Pick<T, OptionalKeys & keyof T>>;
+type RequiredProps<T> = Required<Omit<T, OptionalKeys & keyof T>> &
+  Partial<Pick<T, OptionalKeys & keyof T>>;
 
 import { ProviderSettings } from './providerSettings';
 
 export interface Position {
   x: number;
   y: number;
-} 
+}
 
 export interface Dimensions {
   width: number;
@@ -59,7 +67,7 @@ export interface WidgetType<T = Record<string, unknown>> {
   component: React.ComponentType<T>;
   defaultDimensions: Dimensions;
   defaultProps: RequiredProps<T>;
-  metaData?: { lastRefresh: Date, backgroundImage: string },
+  metaData?: { lastRefresh: Date; backgroundImage: string };
   group: string;
 }
 
@@ -112,11 +120,10 @@ export interface QuickActionButtonItemProps {
   onRemoveButton: (index: number) => void;
 }
 
-export interface GitHubIssuesProps extends DefaultWidgetProps {
-}
+export interface GitHubIssuesProps extends DefaultWidgetProps {}
 
-export interface AiProviderProps{
-  id:number;
+export interface AiProviderProps {
+  id: number;
   name: string;
   apiKey: string;
   providerType: 'openai' | 'azure' | 'custom';
@@ -125,8 +132,8 @@ export interface AiProviderProps{
   apiVersion?: string;
 }
 
-export interface ApiKeyProps{
-  id:number;
+export interface ApiKeyProps {
+  id: number;
   name: string;
   apiKey: string;
 }
@@ -144,8 +151,7 @@ interface GitHubWidgetBaseProps extends DefaultWidgetProps {
   refreshInterval?: number; // in minutes
 }
 
-export interface GitHubGuruProps extends GitHubWidgetBaseProps {
-}
+export interface GitHubGuruProps extends GitHubWidgetBaseProps {}
 
 export interface LocaleWidgetProps extends DefaultWidgetProps {
   selectedLocale?: string;
@@ -460,13 +466,13 @@ export const isSecureProperty = (key: string): boolean => {
     'pat', // Personal Access Token
     'aikey',
     'bearer',
-    'patToken']; // Add other secure property names here
-  const notSecureProps = [
-    'tokenName', 
-    'patTokens'
-  ];
-  return secureProps.some(prop => key.toLowerCase().includes(prop.toLowerCase())) && 
-         !notSecureProps.some(prop => key.toLowerCase() === prop.toLowerCase());
+    'patToken',
+  ]; // Add other secure property names here
+  const notSecureProps = ['tokenName', 'patTokens'];
+  return (
+    secureProps.some((prop) => key.toLowerCase().includes(prop.toLowerCase())) &&
+    !notSecureProps.some((prop) => key.toLowerCase() === prop.toLowerCase())
+  );
 };
 
 // Settings Widget Types
@@ -481,6 +487,4 @@ export interface SettingsWidgetMetaData {
   providers?: ProviderSettings[];
 }
 
-export interface SettingsWidgetProps extends DefaultWidgetProps {
-
-}
+export interface SettingsWidgetProps extends DefaultWidgetProps {}

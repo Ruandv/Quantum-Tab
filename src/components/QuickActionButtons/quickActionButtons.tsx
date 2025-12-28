@@ -99,76 +99,82 @@ const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({
             onRemoveButton={handleRemoveButton}
           />
         ))}
-        
       </div>
 
       {/* Add Button Popup */}
       {showAddPopup && (
-        <><ModalDialog
-          isOpen={showAddPopup}
-          onClose={handleCancelAdd}
-          content={{
-            title: t('quickActionButtons.popup.title'),
-            content: <><div className="form-group">
-              <label>{t('quickActionButtons.popup.labels.icon')}</label>
-              <input
-                type="text"
-                value={newButton.icon}
-                onChange={(e) => setNewButton({ ...newButton, icon: e.target.value })}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  e.currentTarget.focus();
-                }}
-                onMouseDown={(e) => {
-                  e.stopPropagation();
-                }}
-                placeholder={t('common.placeholders.emoji')}
-                maxLength={2}
-                style={{ pointerEvents: 'all', cursor: 'text' }}
-                autoFocus={false} />
-            </div>
-              <div className="form-group">
-                <label>{t('quickActionButtons.popup.labels.label')}</label>
-                <input
-                  type="text"
-                  value={newButton.label}
-                  onChange={(e) => setNewButton({ ...newButton, label: e.target.value })}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    e.currentTarget.focus();
-                  }}
-                  onMouseDown={(e) => {
-                    e.stopPropagation();
-                  }}
-                  placeholder={t('common.placeholders.website')}
-                  style={{ pointerEvents: 'all', cursor: 'text' }} />
-              </div>
-              <div className="form-group">
-                <label>{t('quickActionButtons.popup.labels.url')}</label>
-                <input
-                  type="url"
-                  value={newButton.url}
-                  onChange={(e) => setNewButton({ ...newButton, url: e.target.value })}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    e.currentTarget.focus();
-                  }}
-                  onMouseDown={(e) => {
-                    e.stopPropagation();
-                  }}
-                  placeholder={t('common.placeholders.url')}
-                  style={{ pointerEvents: 'all', cursor: 'text' }} />
-              </div></>,
-            actions: [
-              { index: 1, text: t('common.buttons.save'), onClick: handleSaveButton },
-              { index: 2, text: t('common.buttons.cancel'), onClick: handleCancelAdd },
-            ],
-          }}
-        >
-        </ModalDialog>
+        <>
+          <ModalDialog
+            isOpen={showAddPopup}
+            onClose={handleCancelAdd}
+            content={{
+              title: t('quickActionButtons.popup.title'),
+              content: (
+                <>
+                  <div className="form-group">
+                    <label>{t('quickActionButtons.popup.labels.icon')}</label>
+                    <input
+                      type="text"
+                      value={newButton.icon}
+                      onChange={(e) => setNewButton({ ...newButton, icon: e.target.value })}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        e.currentTarget.focus();
+                      }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                      }}
+                      placeholder={t('common.placeholders.emoji')}
+                      maxLength={2}
+                      style={{ pointerEvents: 'all', cursor: 'text' }}
+                      autoFocus={false}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>{t('quickActionButtons.popup.labels.label')}</label>
+                    <input
+                      type="text"
+                      value={newButton.label}
+                      onChange={(e) => setNewButton({ ...newButton, label: e.target.value })}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        e.currentTarget.focus();
+                      }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                      }}
+                      placeholder={t('common.placeholders.website')}
+                      style={{ pointerEvents: 'all', cursor: 'text' }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>{t('quickActionButtons.popup.labels.url')}</label>
+                    <input
+                      type="url"
+                      value={newButton.url}
+                      onChange={(e) => setNewButton({ ...newButton, url: e.target.value })}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        e.currentTarget.focus();
+                      }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                      }}
+                      placeholder={t('common.placeholders.url')}
+                      style={{ pointerEvents: 'all', cursor: 'text' }}
+                    />
+                  </div>
+                </>
+              ),
+              actions: [
+                { index: 1, text: t('common.buttons.save'), onClick: handleSaveButton },
+                { index: 2, text: t('common.buttons.cancel'), onClick: handleCancelAdd },
+              ],
+            }}
+          ></ModalDialog>
         </>
       )}
     </>

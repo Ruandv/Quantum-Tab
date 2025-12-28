@@ -106,9 +106,15 @@
 }
 
 @keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 /* Content */
@@ -198,7 +204,11 @@
 
 .prItemWithNotification {
   border-left: 3px solid var(--color-error);
-  background: linear-gradient(90deg, rgba(239, 68, 68, 0.05) 0%, rgba(255, 255, 255, var(--opacity-overlay)) 20px);
+  background: linear-gradient(
+    90deg,
+    rgba(239, 68, 68, 0.05) 0%,
+    rgba(255, 255, 255, var(--opacity-overlay)) 20px
+  );
 }
 
 .prHeader {
