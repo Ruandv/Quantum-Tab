@@ -25,6 +25,7 @@ jobs:
           release-type: node
           config-file: .release-please-config.json
           manifest-file: .release-please-manifest.json
+          token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
 
   build-and-package:
     runs-on: ubuntu-latest
