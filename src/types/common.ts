@@ -163,6 +163,15 @@ export interface BackgroundManagerProps extends DefaultWidgetProps {
   onBackgroundChange?: (imageUrl: string) => void;
 }
 
+export interface AzureAdoBoardProps extends DefaultWidgetProps {
+  providerName: string;
+  boardUrl: string;
+  areaPath?: string;
+  iterationPath?: string;
+  autoRefresh?: boolean;
+  refreshInterval?: number; // in minutes
+}
+
 export interface QuarterIndicatorProps extends DefaultWidgetProps {
   startDate: string; // Format: YYYY-MM-DD
 }
@@ -372,9 +381,65 @@ export interface GitHubApiResponse {
   error?: string;
 }
 
+export interface AzureBoardColumn {
+  id: string;
+  name: string;
+  columnType: string;
+  isSplit?: boolean;
+  order: number;
+}
+
+export interface AzureWorkItemAssignee {
+  displayName: string;
+  uniqueName?: string;
+  imageUrl?: string;
+}
+
+export interface AzureWorkItem {
+  id: number;
+  title: string;
+  state: string;
+  workItemType: string;
+  assignedTo?: AzureWorkItemAssignee;
+  tags: string[];
+  boardColumn: string;
+  boardColumnId: string;
+  url: string;
+  changedDate?: string;
+  priority?: number;
+  areaPath?: string;
+  iterationPath?: string;
+  typeCategory?: string;
+}
+
+export interface AzureBoardPayload {
+  boardId: string;
+  boardName: string;
+  columns: AzureBoardColumn[];
+  workItems: AzureWorkItem[];
+  retrievedAt: string;
+}
+
+export interface AzureBoardRequest {
+  action: 'fetchAzureBoardData';
+  data: {
+    patToken: string;
+    boardUrl: string;
+    areaPath?: string;
+    iterationPath?: string;
+  };
+}
+
+export interface AzureBoardResponse {
+  action: 'fetchAzureBoardData';
+  success: boolean;
+  data?: AzureBoardPayload;
+  error?: string;
+}
+
 // Background message types
-export type BackgroundMessage = GitHubApiRequest;
-export type BackgroundResponse = GitHubApiResponse;
+export type BackgroundMessage = GitHubApiRequest | AzureBoardRequest;
+export type BackgroundResponse = GitHubApiResponse | AzureBoardResponse;
 
 /**
  * Type guard to check if a value is an InternalString

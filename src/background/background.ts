@@ -1,6 +1,7 @@
 // Background service worker for Chrome Extension Manifest V3
 import { BackgroundMessage, BackgroundResponse, STORAGE_KEYS } from '../types/common';
 import { GitHubService } from '../services/githubService';
+import AzureDevOpsService from '../services/azureDevOpsService';
 import { defaultPosition, defaultStyle } from '@/types/defaults';
 
 // Listen for extension installation or startup
@@ -84,6 +85,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true; // Keep message channel open for async response
   }
 
+  if (message.action === 'fetchAzureBoardData') {
+    handleAzureBoardRequest(message, sendResponse);
+    return true;
+  }
+
   switch (message.action) {
     case 'getTabInfo':
       if (sender.tab) {
@@ -114,8 +120,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       break;
 
     default:
-      console.warn('Unknown action:', message.action);
-      console.warn('Available actions: getTabInfo, updateBadge, pageLoaded, fetchPullRequests');
+        console.warn('Unknown action:', message.action);
+        console.warn('Available actions: getTabInfo, updateBadge, pageLoaded, fetchPullRequests, fetchAzureBoardData');
       sendResponse({ error: 'Unknown action' });
   }
 
@@ -281,6 +287,46 @@ const handleUserPullRequestsRequest = async (message: BackgroundMessage, sendRes
       action: 'fetchUserPullRequests',
       success: false,
       error: errorMessage,
+    });
+  }
+};
+
+const handleAzureBoardRequest = async (
+  message: BackgroundMessage,
+  sendResponse: (response: BackgroundResponse) => void
+) => {
+  if (message.action !== 'fetchAzureBoardData') {
+    sendResponse({ action: 'fetchAzureBoardData', success: false, error: 'Invalid action' });
+    return;
+  }
+
+  const { patToken, boardUrl, areaPath, iterationPath } = message.data;
+
+  if (!patToken) {
+    sendResponse({ action: 'fetchAzureBoardData', success: false, error: 'Azure DevOps PAT token is required' });
+    return;
+  }
+
+  if (!boardUrl) {
+    sendResponse({ action: 'fetchAzureBoardData', success: false, error: 'Board URL is required' });
+    return;
+  }
+
+  try {
+    const data = await AzureDevOpsService.fetchBoardData({
+      patToken,
+      boardUrl,
+      areaPath,
+      iterationPath,
+    });
+
+    sendResponse({ action: 'fetchAzureBoardData', success: true, data });
+  } catch (error) {
+    console.error('Azure DevOps request failed:', error);
+    sendResponse({
+      action: 'fetchAzureBoardData',
+      success: false,
+      error: error instanceof Error ? error.stack?.toString() : 'Failed to load Azure DevOps board data',
     });
   }
 };

@@ -79,6 +79,7 @@ export const WIDGET_EVENTS = {
   WIDGET_ADDED: 'WidgetAdded',
   WIDGET_EDITED: 'WidgetEdited',
   WIDGET_UPDATED: 'WidgetUpdated',
+  WIDGET_META_UPDATED: 'WidgetMetaUpdated',
 } as const;
 
 /**
@@ -102,6 +103,17 @@ export const dispatchWidgetEditing = (widgetId: string): void => {
     widgetId,
     data: { editing: true },
   })
+};
+
+export const dispatchWidgetMetaUpdate = (
+  widgetId: string,
+  metaData: Record<string, unknown>
+): void => {
+  widgetEventManager.dispatchEvent({
+    type: WIDGET_EVENTS.WIDGET_META_UPDATED,
+    widgetId,
+    data: { metaData },
+  });
 };
 
 

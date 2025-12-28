@@ -157,6 +157,38 @@
       "noUserPRs": "Jy het geen oop trekversoeke nie"
     }
   },
+  "azureAdoBoard": {
+    "labels": {
+      "boardPlaceholder": "Azure Bord",
+      "lastUpdated": "Laas opgedateer",
+      "unassigned": "Ongekoppel",
+      "priority": "Prioriteit {{value}}",
+      "unknown": "Onbekend"
+    },
+    "placeholders": {
+      "filter": "Filter volgens titel, lid, etiket of ID"
+    },
+    "buttons": {
+      "loadMore": "Laai meer..."
+    },
+    "errors": {
+      "missingConfiguration": "Konfigureer asseblief jou Azure DevOps bordbesonderhede",
+      "extensionError": "Uitbreiding fout",
+      "fetchFailed": "Kon nie Azure DevOps items laai nie"
+    },
+    "messages": {
+      "noItems": "Geen items beskikbaar in hierdie kolom nie",
+      "noFilterResults": "Geen items pas jou filter nie"
+    },
+    "types": {
+      "bug": "Fout",
+      "pbi": "Produk Teruglog Item",
+      "nonFunctional": "Nie-Funksioneel",
+      "defect": "Defek",
+      "security": "Sekuriteit",
+      "other": "Werk Item"
+    }
+  },
   "gitCommentWatcher": {
     "title": "Git Kommentaar Waarnemer",
     "labels": {
@@ -262,6 +294,10 @@
     "githubGuru": {
       "name": "GitHub Guru",
       "description": "Monitor alle TV's en jou TV's met kennisgewings"
+    },
+    "azureAdoBoard": {
+      "name": "Azure ADO Bord",
+      "description": "Monitor Azure DevOps borditems en filter per lid"
     },
     "localeWidget": {
       "name": "Taal Kieser",

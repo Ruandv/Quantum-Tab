@@ -7,7 +7,8 @@ import {
   WidgetType,
   QuarterIndicatorProps,
   GitHubGuruProps,
-  SettingsWidgetProps
+  SettingsWidgetProps,
+  AzureAdoBoardProps
 } from '../types/common';
 import LiveClock from '../components/LiveClock/liveClock';
 import QuickActionButtons from '../components/QuickActionButtons/quickActionButtons';
@@ -18,6 +19,7 @@ import BackgroundManager from '@/components/BackgroundManager/backgroundManager'
 import QuarterIndicator from '@/components/QuarterIndicator/quaterIndicator';
 import GitHubGuru from '@/components/GitHubGuru/gitHubGuru';
 import SettingsWidget from '@/components/SettingsWidget/settingsWidget';
+import AzureAdoBoard from '@/components/AzureAdoBoard/azureAdoBoard';
 
 export class WidgetRegistry {
   private static instance: WidgetRegistry;
@@ -189,6 +191,27 @@ export class WidgetRegistry {
         widgetHeading: 'Settings',
       },
     });
+
+    this.register<AzureAdoBoardProps>({
+      id: 'azure-ado-board',
+      name: 'Azure ADO Board',
+      wikiPage: 'azure-ado-board',
+      allowMultiples: true,
+      isRuntimeVisible: true,
+      group: 'business',
+      description: 'Track Azure DevOps board items with filters and tabs',
+      component: AzureAdoBoard,
+      defaultDimensions: { width: 520, height: 360 },
+      defaultProps: {
+        widgetHeading: 'Azure ADO Board',
+        providerName: '',
+        boardUrl: '',
+        areaPath: '',
+        iterationPath: '',
+        autoRefresh: true,
+        refreshInterval: 5,
+      },
+    });
   }
 
   public register<T = unknown>(widget: WidgetType<T>): void {
@@ -230,6 +253,7 @@ export class WidgetRegistry {
       'github-guru': { name: 'widgets.githubGuru.name', description: 'widgets.githubGuru.description' },
       'locale-selector': { name: 'widgets.localeWidget.name', description: 'widgets.localeWidget.description' },
       'sprint-number': { name: 'widgets.sprintNumber.name', description: 'widgets.sprintNumber.description' },
+      'azure-ado-board': { name: 'widgets.azureAdoBoard.name', description: 'widgets.azureAdoBoard.description' },
     };
 
     const translations = translationMap[widgetId];

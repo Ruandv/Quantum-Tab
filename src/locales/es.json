@@ -190,6 +190,38 @@
             "autoRefresh": "Actualización Automática"
         }
     },
+    "azureAdoBoard": {
+        "labels": {
+            "boardPlaceholder": "Tablero de Azure",
+            "lastUpdated": "Última actualización",
+            "unassigned": "Sin asignar",
+            "priority": "Prioridad {{value}}",
+            "unknown": "Desconocido"
+        },
+        "placeholders": {
+            "filter": "Filtrar por título, miembro, etiqueta o ID"
+        },
+        "buttons": {
+            "loadMore": "Cargar más..."
+        },
+        "errors": {
+            "missingConfiguration": "Configura los detalles de tu tablero de Azure DevOps",
+            "extensionError": "Error de la extensión",
+            "fetchFailed": "No se pudieron cargar los elementos de Azure DevOps"
+        },
+        "messages": {
+            "noItems": "No hay elementos en esta columna",
+            "noFilterResults": "Ningún elemento coincide con tu filtro"
+        },
+        "types": {
+            "bug": "Error",
+            "pbi": "Elemento de backlog",
+            "nonFunctional": "No funcional",
+            "defect": "Defecto",
+            "security": "Seguridad",
+            "other": "Elemento"
+        }
+    },
     "gitCommentWatcher": {
         "labels": {
             "newComments": "Nuevos Comentarios",
@@ -294,6 +326,10 @@
         "githubGuru": {
             "name": "GitHub Guru",
             "description": "Monitorea solicitudes de extracción con notificaciones inteligentes"
+        },
+        "azureAdoBoard": {
+            "name": "Tablero Azure ADO",
+            "description": "Supervisa elementos del tablero de Azure DevOps con filtros"
         },
         "localeWidget": {
             "name": "Selector de Idioma",
