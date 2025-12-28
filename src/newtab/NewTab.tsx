@@ -493,10 +493,6 @@ const NewTab: React.FC = () => {
       }}
     >
       <div className={styles.newtabContent}>
-        <header className={styles.newtabHeader}>
-          <div className={styles.headerActions}></div>
-        </header>
-
         <main className={styles.newtabMain}>
           <div className={styles.mainDashboard}>
             <Dashboard
