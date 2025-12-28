@@ -38,13 +38,13 @@
 |:---:|:---:|:---:|
 | Multi-timezone support<br/>Custom formats<br/>Real-time updates | Favorite website shortcuts<br/>Custom icons & labels<br/>One-click navigation | Upload custom backgrounds<br/>5MB file support<br/>Preview & restore |
 
-| 🐙 **GitHub Integration** | 🌐 **Language Settings** |
-|:---:|:---:|
-| PR monitoring<br/>PAT authentication<br/>Real-time updates | Multi-language UI<br/>Instant switching<br/>Persistent preferences |
-
-| 🏃 **Sprint Number** | | |
+| 🐙 **GitHub Guru** | 📋 **Azure DevOps Board** | 🌐 **Language Settings** |
 |:---:|:---:|:---:|
-| Track sprint cycles<br/>Auto-calculate sprint dates<br/>Multiple sprint tracking | | |
+| Repository-wide PR monitoring<br/>PAT authentication<br/>Auto-refresh insights | Kanban-style Azure Boards view<br/>Column filtering & search<br/>Auto refresh with provider PATs | Multi-language UI<br/>Instant switching<br/>Persistent preferences |
+
+| 🏃 **Sprint Number** | 🗓️ **Quarter Indicator** | ⚙️ **Settings Hub** |
+|:---:|:---:|:---:|
+| Track sprint cycles<br/>Auto-calculate sprint dates<br/>Multiple sprint tracking | Fiscal calendar tracking<br/>Auto quarter calculation<br/>Custom start dates | Manage AI + GitHub providers<br/>Set widget defaults<br/>Centralized configuration |
 
 </div>
 
