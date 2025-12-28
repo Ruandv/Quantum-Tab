@@ -20,8 +20,8 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       notificationPending: {
         type: 'install',
         version: currentVersion,
-        timestamp: now
-      }
+        timestamp: now,
+      },
     });
   } else if (details.reason === 'update') {
     // Extension was updated
@@ -33,8 +33,8 @@ chrome.runtime.onInstalled.addListener(async (details) => {
         type: 'update',
         version: currentVersion,
         previousVersion: previousVersion,
-        timestamp: now
-      }
+        timestamp: now,
+      },
     });
 
     // Run migration for permission cleanup on update
@@ -120,8 +120,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       break;
 
     default:
-        console.warn('Unknown action:', message.action);
-        console.warn('Available actions: getTabInfo, updateBadge, pageLoaded, fetchPullRequests, fetchAzureBoardData');
+      console.warn('Unknown action:', message.action);
+      console.warn(
+        'Available actions: getTabInfo, updateBadge, pageLoaded, fetchPullRequests, fetchAzureBoardData'
+      );
       sendResponse({ error: 'Unknown action' });
   }
 
@@ -220,7 +222,10 @@ const handleGitHubApiRequest = async (
 };
 
 // Handle fetchUserPullRequests action
-const handleUserPullRequestsRequest = async (message: BackgroundMessage, sendResponse: (response: BackgroundResponse) => void) => {
+const handleUserPullRequestsRequest = async (
+  message: BackgroundMessage,
+  sendResponse: (response: BackgroundResponse) => void
+) => {
   if (message.action !== 'fetchUserPullRequests') {
     sendResponse({ action: 'fetchUserPullRequests', success: false, error: 'Invalid action' });
     return;
@@ -252,11 +257,11 @@ const handleUserPullRequestsRequest = async (message: BackgroundMessage, sendRes
     const currentUser = await GitHubService.getCurrentUser(patToken);
 
     // Use the GitHub service to fetch PRs by the current user
-    const pullRequests = await GitHubService.getPullRequests(
-      patToken,
-      repositoryUrl,
-      { state: 'open', per_page: 10, author: currentUser.login }
-    );
+    const pullRequests = await GitHubService.getPullRequests(patToken, repositoryUrl, {
+      state: 'open',
+      per_page: 10,
+      author: currentUser.login,
+    });
 
     // Return the pull requests
     sendResponse({
@@ -303,7 +308,11 @@ const handleAzureBoardRequest = async (
   const { patToken, boardUrl, areaPath, iterationPath } = message.data;
 
   if (!patToken) {
-    sendResponse({ action: 'fetchAzureBoardData', success: false, error: 'Azure DevOps PAT token is required' });
+    sendResponse({
+      action: 'fetchAzureBoardData',
+      success: false,
+      error: 'Azure DevOps PAT token is required',
+    });
     return;
   }
 
@@ -326,7 +335,8 @@ const handleAzureBoardRequest = async (
     sendResponse({
       action: 'fetchAzureBoardData',
       success: false,
-      error: error instanceof Error ? error.stack?.toString() : 'Failed to load Azure DevOps board data',
+      error:
+        error instanceof Error ? error.stack?.toString() : 'Failed to load Azure DevOps board data',
     });
   }
 };

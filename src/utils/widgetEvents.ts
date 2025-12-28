@@ -85,10 +85,7 @@ export const WIDGET_EVENTS = {
 /**
  * Convenience function to dispatch a widget removal event
  */
-export const dispatchWidgetRemoval = (
-  widgetId: string,
-  data?: Record<string, unknown>
-): void => {
+export const dispatchWidgetRemoval = (widgetId: string, data?: Record<string, unknown>): void => {
   widgetEventManager.dispatchEvent({
     type: WIDGET_EVENTS.REMOVE_WIDGET,
     widgetId,
@@ -96,13 +93,12 @@ export const dispatchWidgetRemoval = (
   });
 };
 
-
 export const dispatchWidgetEditing = (widgetId: string): void => {
   widgetEventManager.dispatchEvent({
     type: WIDGET_EVENTS.WIDGET_EDITED,
     widgetId,
     data: { editing: true },
-  })
+  });
 };
 
 export const dispatchWidgetMetaUpdate = (
@@ -115,7 +111,6 @@ export const dispatchWidgetMetaUpdate = (
     data: { metaData },
   });
 };
-
 
 /**
  * Convenience function to add a removal listener for a specific widget

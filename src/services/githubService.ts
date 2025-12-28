@@ -1,4 +1,10 @@
-import { GitHubPullRequest, GitHubApiError, GitHubPullRequestsParams, GitHubReview, GitHubPullRequestWithReviews } from '../types/common';
+import {
+  GitHubPullRequest,
+  GitHubApiError,
+  GitHubPullRequestsParams,
+  GitHubReview,
+  GitHubPullRequestWithReviews,
+} from '../types/common';
 
 /**
  * GitHub Service for interacting with GitHub REST API v2022-11-28
@@ -361,10 +367,11 @@ export class GitHubService {
 
     // For each PR, fetch reviews and calculate approval count
     const prsWithReviews: GitHubPullRequestWithReviews[] = await Promise.all(
-      pullRequests.slice(0, 10).map(async (pr) => { // Limit to 10 most recent
+      pullRequests.slice(0, 10).map(async (pr) => {
+        // Limit to 10 most recent
         try {
           const reviews = await this.getPullRequestReviews(token, repositoryUrl, pr.number);
-          const approvalCount = reviews.filter(review => review.state === 'APPROVED').length;
+          const approvalCount = reviews.filter((review) => review.state === 'APPROVED').length;
 
           return {
             ...pr,
@@ -385,13 +392,18 @@ export class GitHubService {
 
     return prsWithReviews;
   }
-  static async getCurrentUser(token: string): Promise<{ login: string; id: number; name: string | null }> {
+  static async getCurrentUser(
+    token: string
+  ): Promise<{ login: string; id: number; name: string | null }> {
     if (!token) {
       throw new Error('GitHub Personal Access Token is required');
     }
 
     const endpoint = '/user';
-    return await this.makeRequest<{ login: string; id: number; name: string | null }>(endpoint, token);
+    return await this.makeRequest<{ login: string; id: number; name: string | null }>(
+      endpoint,
+      token
+    );
   }
 }
 

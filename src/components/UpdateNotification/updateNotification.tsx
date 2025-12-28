@@ -20,12 +20,18 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss }) =>
 
   useEffect(() => {
     // Check for pending notifications
-    chrome.storage.sync.get(['notificationPending', 'showWelcomeNotification', 'showUpdateNotification'], (result) => {
-      if (result.notificationPending && (result.showWelcomeNotification || result.showUpdateNotification)) {
-        setNotification(result.notificationPending);
-        setIsVisible(true);
+    chrome.storage.sync.get(
+      ['notificationPending', 'showWelcomeNotification', 'showUpdateNotification'],
+      (result) => {
+        if (
+          result.notificationPending &&
+          (result.showWelcomeNotification || result.showUpdateNotification)
+        ) {
+          setNotification(result.notificationPending);
+          setIsVisible(true);
+        }
       }
-    });
+    );
   }, []);
 
   const handleDismiss = async () => {
@@ -35,7 +41,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss }) =>
     await chrome.storage.sync.set({
       showWelcomeNotification: false,
       showUpdateNotification: false,
-      notificationPending: null
+      notificationPending: null,
     });
 
     // Fade out animation
@@ -60,9 +66,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss }) =>
     <div className={`${styles.updateNotificationOverlay} ${isVisible ? styles.visible : ''}`}>
       <div className={styles.updateNotification}>
         <div className={styles.notificationHeader}>
-          <div className={styles.notificationIcon}>
-            {isInstall ? '🎉' : '✨'}
-          </div>
+          <div className={styles.notificationIcon}>{isInstall ? '🎉' : '✨'}</div>
           <div className={styles.notificationTitle}>
             {isInstall ? t('notifications.welcome.title') : t('notifications.update.title')}
           </div>
@@ -74,9 +78,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss }) =>
         <div className={styles.notificationContent}>
           {isInstall && (
             <>
-              <p className={styles.notificationMessage}>
-                {t('notifications.welcome.message')}
-              </p>
+              <p className={styles.notificationMessage}>{t('notifications.welcome.message')}</p>
               <div className={styles.notificationFeatures}>
                 <h4>{t('notifications.welcome.featuresTitle')}</h4>
                 <ul>
@@ -93,7 +95,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss }) =>
             <>
               <p className={styles.notificationMessage}>
                 {t('notifications.update.message', {
-                  version: notification.version
+                  version: notification.version,
                 })}
               </p>
               <div className={styles.notificationVersionInfo}>
@@ -115,12 +117,20 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss }) =>
 
         <div className={styles.notificationActions}>
           {isUpdate && (
-            <button className={`${styles.notificationButton} ${styles.secondaryButton}`} onClick={handleViewChanges}>
+            <button
+              className={`${styles.notificationButton} ${styles.secondaryButton}`}
+              onClick={handleViewChanges}
+            >
               {t('notifications.buttons.viewChanges')}
             </button>
           )}
-          <button className={`${styles.notificationButton} ${styles.primaryButton}`} onClick={handleDismiss}>
-            {isInstall ? t('notifications.buttons.getStarted') : t('notifications.buttons.continue')}
+          <button
+            className={`${styles.notificationButton} ${styles.primaryButton}`}
+            onClick={handleDismiss}
+          >
+            {isInstall
+              ? t('notifications.buttons.getStarted')
+              : t('notifications.buttons.continue')}
           </button>
         </div>
       </div>

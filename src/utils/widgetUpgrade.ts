@@ -19,15 +19,7 @@ export interface UpgradeResult {
 const CURRENT_VERSION: string = manifest.version;
 
 // Version history for upgrade paths
-const VERSION_HISTORY = [
-  '1.0.0',
-  '1.1.0',
-  '1.2.0',
-  '1.3.0',
-  '1.4.0',
-  '1.5.0',
-  manifest.version
-];
+const VERSION_HISTORY = ['1.0.0', '1.1.0', '1.2.0', '1.3.0', '1.4.0', '1.5.0', manifest.version];
 
 /**
  * Get stored version from chrome storage
@@ -71,7 +63,7 @@ export const upgradeWidgets = async (widgets: SerializedWidget[]): Promise<Upgra
   const changes: string[] = [];
   if (!storedVersion) {
     changes.push('No stored version found - performing initial setup');
-  } else if (storedVersion === CURRENT_VERSION ) {
+  } else if (storedVersion === CURRENT_VERSION) {
     return { upgraded: false, widgets, changes: [] };
   }
 
@@ -92,14 +84,18 @@ export const upgradeWidgets = async (widgets: SerializedWidget[]): Promise<Upgra
   return {
     upgraded: true,
     widgets: upgradedWidgets,
-    changes
+    changes,
   };
 };
 
 /**
  * Apply upgrade logic for a specific version
  */
-async function applyVersionUpgrade(widgets: SerializedWidget[], targetVersion: string, changes: string[]): Promise<SerializedWidget[]> {
+async function applyVersionUpgrade(
+  widgets: SerializedWidget[],
+  targetVersion: string,
+  changes: string[]
+): Promise<SerializedWidget[]> {
   switch (targetVersion) {
     default:
       console.log('No upgrade logic for version', targetVersion, changes);

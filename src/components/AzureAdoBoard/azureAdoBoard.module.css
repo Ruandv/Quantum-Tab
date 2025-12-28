@@ -71,7 +71,6 @@
   min-height: 50px;
 }
 
-
 .tabNavigation::-webkit-scrollbar {
   height: 4px;
 }
@@ -205,12 +204,30 @@
   font-size: var(--widget-small-size, 0.75rem);
   font-weight: 600;
 }
-.bug { background: rgba(244, 67, 54, 0.1); color: #ff8a80; }
-.pbi { background: rgba(59, 130, 246, 0.12); color: #90caf9; }
-.nonFunctional { background: rgba(255, 152, 0, 0.1); color: #ffcc80; }
-.defect { background: rgba(255, 214, 0, 0.12); color: #ffe082; }
-.security { background: rgba(76, 175, 80, 0.12); color: #a5d6a7; }
-.other { background: rgba(158, 158, 158, 0.12); color: #e0e0e0; }
+.bug {
+  background: rgba(244, 67, 54, 0.1);
+  color: #ff8a80;
+}
+.pbi {
+  background: rgba(59, 130, 246, 0.12);
+  color: #90caf9;
+}
+.nonFunctional {
+  background: rgba(255, 152, 0, 0.1);
+  color: #ffcc80;
+}
+.defect {
+  background: rgba(255, 214, 0, 0.12);
+  color: #ffe082;
+}
+.security {
+  background: rgba(76, 175, 80, 0.12);
+  color: #a5d6a7;
+}
+.other {
+  background: rgba(158, 158, 158, 0.12);
+  color: #e0e0e0;
+}
 
 .cardTitle {
   font-size: var(--widget-body-size, 0.95rem);
