@@ -53,7 +53,7 @@ const NewTab: React.FC = () => {
             const clockWidget: DashboardWidget = {
                 id: 'live-clock-1',
                 name: 'Live Clock',
-                wikiPage: 'liveclock',
+                wikiPage: 'live-clock',
                 description: 'Real-time clock with customizable timezone and format',
                 allowMultiples: true,
                 isRuntimeVisible: true,
@@ -218,7 +218,7 @@ const NewTab: React.FC = () => {
                         // Return widget with LiveClock as fallback and default style
                         const fallbackWidget: DashboardWidget = {
                             ...widget,
-                            wikiPage: 'liveclock',
+                            wikiPage: 'live-clock',
                             component: componentMap['LiveClock'],
                             style: widget.style || defaultStyle,
                             name: widget.name || 'Live Clock',

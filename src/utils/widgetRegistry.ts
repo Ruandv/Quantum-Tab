@@ -40,7 +40,7 @@ export class WidgetRegistry {
     this.register<LiveClockProps>({
       id: 'live-clock',
       name: 'Live Clock',
-      wikiPage: 'liveclock',
+      wikiPage: 'live-clock',
       allowMultiples: true,
       isRuntimeVisible: true,
       description: 'Real-time clock with customizable timezone and format',
@@ -61,7 +61,7 @@ export class WidgetRegistry {
     this.register<QuickActionButtonsProps>({
       id: 'quick-actions',
       name: 'Quick Actions',
-      wikiPage: 'quickactions',
+      wikiPage: 'quick-actions',
       allowMultiples: true,
       isRuntimeVisible: true,
       group: 'general',
@@ -88,7 +88,7 @@ export class WidgetRegistry {
     this.register<BackgroundManagerProps>({
       id: 'background-manager',
       name: 'Background Manager',
-      wikiPage: 'backgroundmanager',
+      wikiPage: 'background-manager',
       allowMultiples: false,
       isRuntimeVisible: false,
       group: 'general',
@@ -111,7 +111,7 @@ export class WidgetRegistry {
     this.register<GitHubGuruProps>({
       id: 'github-guru',
       name: 'GitHub Guru',
-      wikiPage: 'github-guru',
+      wikiPage: 'git-hub-guru',
       allowMultiples: true,
       isRuntimeVisible: true,
       group: 'git',
@@ -130,7 +130,7 @@ export class WidgetRegistry {
     this.register<LocaleWidgetProps>({
       id: 'locale-selector',
       name: 'Language Settings',
-      wikiPage: 'localewidget',
+      wikiPage: 'locale-widget',
       allowMultiples: false,
       isRuntimeVisible: false,
       group: 'general',
@@ -146,6 +146,7 @@ export class WidgetRegistry {
     this.register<SprintNumberProps>({
       id: 'sprint-number',
       name: 'Sprint Counter',
+      wikiPage: 'sprint-number',
       allowMultiples: true,
       isRuntimeVisible: true,
       group: 'business',
@@ -158,7 +159,6 @@ export class WidgetRegistry {
         numberOfDays: 14,
         currentSprint: 1,
       },
-      wikiPage: 'sprint-number'
     });
 
     this.register<QuarterIndicatorProps>({
