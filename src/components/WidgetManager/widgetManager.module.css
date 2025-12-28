@@ -1,8 +1,52 @@
-/* WidgetManager Component Styles */
 
+/* WidgetManager Component Styles */
 .widgetManager {
-  position: relative;
+  position: absolute;
+  background-color: var(--color-purple);
+  bottom: 70px;
+  right: 10px;
+  z-index: var(--z-widget-manager);
+  padding: var(--spacing-md);
 }
+
+/* Lock/Unlock Toggle Button */
+.lockToggle {
+  /* background: linear-gradient(45deg, #4facfe, #00f2fe); */
+  box-shadow: 0 3px 12px rgba(79, 172, 254, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: none;
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  color: white;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.lockToggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+}
+
+.lockToggle.locked {
+  background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+  box-shadow: 0 3px 12px rgba(255, 107, 107, 0.3);
+}
+
+.lockToggle.locked:hover {
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
 .filter{
   display: flex;
   gap: 1rem;
@@ -277,6 +321,7 @@
 .widgetsList {
   display: flex;
   gap: 0.5rem;
+  flex-direction: column;
 }
 
 /* Styling Options */

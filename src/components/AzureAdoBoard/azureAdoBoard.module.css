@@ -1,0 +1,274 @@
+.adoBoard {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.boardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.boardName {
+  font-size: var(--widget-heading-size, 1.2rem);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.lastUpdated {
+  font-size: var(--widget-small-size, 0.8rem);
+  color: rgba(255, 255, 255, var(--opacity-muted));
+}
+
+.controls {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.refreshBtn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--color-primary-light);
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.refreshBtn:hover {
+  background: var(--color-primary-light);
+  transform: translateY(-1px);
+}
+
+.filterBar {
+  margin-bottom: var(--spacing-md);
+}
+
+.filterBar input {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border-light);
+  background: rgba(255, 255, 255, var(--opacity-overlay));
+  color: var(--color-text-primary);
+}
+
+.tabNavigation {
+  display: flex;
+  gap: var(--spacing-xs);
+  overflow-x: auto;
+  padding-bottom: var(--spacing-sm);
+  min-height: 50px;
+}
+
+
+.tabNavigation::-webkit-scrollbar {
+  height: 4px;
+}
+
+.tabNavigation::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tabNavigation::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, var(--opacity-border));
+  border-radius: 2px;
+}
+
+.tabButton {
+  flex: 1;
+  min-width: 120px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-sm);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, var(--opacity-muted));
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  white-space: nowrap;
+}
+
+.tabButton:hover {
+  border-color: rgba(255, 255, 255, var(--opacity-border));
+}
+
+.activeTab {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--color-text-primary);
+  border-color: var(--color-primary-light);
+}
+
+.content {
+  flex: 1;
+  margin-top: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  overflow-y: hidden;
+}
+
+.loadingState,
+.errorState,
+.emptyState {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  text-align: center;
+  color: rgba(255, 255, 255, var(--opacity-muted));
+}
+
+.errorText {
+  color: var(--color-error);
+}
+
+.retryBtn,
+.loadMoreBtn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--color-primary-light);
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  align-self: center;
+}
+
+.retryBtn:hover,
+.loadMoreBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.cardList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  overflow-y: scroll;
+  padding-right: 4px;
+}
+
+.cardList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.cardList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cardList::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, var(--opacity-border));
+  border-radius: 2px;
+}
+
+.card {
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  background: rgba(255, 255, 255, var(--opacity-overlay));
+  border: 1px solid var(--color-border-light);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, var(--opacity-hover));
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xs);
+}
+
+.itemId {
+  font-family: 'Courier New', monospace;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.typeBadge {
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--widget-small-size, 0.75rem);
+  font-weight: 600;
+}
+.bug { background: rgba(244, 67, 54, 0.1); color: #ff8a80; }
+.pbi { background: rgba(59, 130, 246, 0.12); color: #90caf9; }
+.nonFunctional { background: rgba(255, 152, 0, 0.1); color: #ffcc80; }
+.defect { background: rgba(255, 214, 0, 0.12); color: #ffe082; }
+.security { background: rgba(76, 175, 80, 0.12); color: #a5d6a7; }
+.other { background: rgba(158, 158, 158, 0.12); color: #e0e0e0; }
+
+.cardTitle {
+  font-size: var(--widget-body-size, 0.95rem);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  font-size: var(--widget-small-size, 0.8rem);
+  color: rgba(255, 255, 255, var(--opacity-muted));
+  margin-bottom: var(--spacing-xxs);
+}
+
+.stateChip {
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border-radius: var(--border-radius-full);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.assignee,
+.priority,
+.updatedAt,
+.workItemType {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tagsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxs);
+  margin-top: var(--spacing-xs);
+}
+
+.tag {
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border-radius: var(--border-radius-full);
+  background: rgba(255, 255, 255, 0.12);
+  font-size: var(--widget-small-size, 0.75rem);
+}
+
+.tagOverflow {
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border-radius: var(--border-radius-full);
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 480px) {
+  .tabNavigation {
+    flex-wrap: wrap;
+  }
+
+  .tabButton {
+    flex: 0 0 calc(50% - var(--spacing-xs));
+  }
+}

@@ -3,15 +3,14 @@ import { useTranslation } from 'react-i18next';
 import Dashboard from '../components/Dashboard/dashboard';
 import WidgetManager from '../components/WidgetManager/widgetManager';
 import UpdateNotification from '../components/UpdateNotification/updateNotification';
-import { DashboardWidget, Position, Dimensions } from '../types/common';
+import { DashboardWidget, Position, Dimensions, STORAGE_KEYS } from '../types/common';
 import chromeStorage, { SerializedWidget } from '../utils/chromeStorage';
 import { widgetRegistry } from '../utils/widgetRegistry';
 import { debounce } from '../utils/helpers';
-import { dispatchWidgetRemoval } from '../utils/widgetEvents';
+import { dispatchWidgetRemoval, widgetEventManager, WIDGET_EVENTS, WidgetEventListener } from '../utils/widgetEvents';
 import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 import NotificationManager from '@/utils/notificationManager';
 import { upgradeWidgets } from '../utils/widgetUpgrade';
-import GitHubIssues from '@/components/GitHubIssues/gitHubIssues';
 import styles from './newTab.module.css';
 
 // Stable fallback component to avoid creating new function instances
@@ -54,7 +53,7 @@ const NewTab: React.FC = () => {
             const clockWidget: DashboardWidget = {
                 id: 'live-clock-1',
                 name: 'Live Clock',
-                wikiPage: 'liveclock',
+                wikiPage: 'live-clock',
                 description: 'Real-time clock with customizable timezone and format',
                 allowMultiples: true,
                 isRuntimeVisible: true,
@@ -65,7 +64,7 @@ const NewTab: React.FC = () => {
                 style: defaultStyle,
             };
 
-            return [clockWidget,settingsWidget];
+            return [clockWidget, settingsWidget];
         } catch (error) {
             console.error('Error creating initial widgets:', error);
             return [];
@@ -219,7 +218,7 @@ const NewTab: React.FC = () => {
                         // Return widget with LiveClock as fallback and default style
                         const fallbackWidget: DashboardWidget = {
                             ...widget,
-                            wikiPage: 'liveclock',
+                            wikiPage: 'live-clock',
                             component: componentMap['LiveClock'],
                             style: widget.style || defaultStyle,
                             name: widget.name || 'Live Clock',
@@ -265,6 +264,77 @@ const NewTab: React.FC = () => {
             clearTimeout(timeoutId);
         });
     }, [getInitialWidgets, componentMap]);
+
+    useEffect(() => {
+        const handleMetaUpdated: WidgetEventListener = (event) => {
+            if (event.type !== WIDGET_EVENTS.WIDGET_META_UPDATED) {
+                return;
+            }
+            const nextMeta = (event.data?.metaData as Record<string, unknown> | undefined) || {};
+            setWidgets((prev) =>
+                prev.map((widget) =>
+                    widget.id === event.widgetId
+                        ? { ...widget, metaData: nextMeta }
+                        : widget
+                )
+            );
+        };
+
+        widgetEventManager.addEventListener(WIDGET_EVENTS.WIDGET_META_UPDATED, handleMetaUpdated);
+        return () => {
+            widgetEventManager.removeEventListener(WIDGET_EVENTS.WIDGET_META_UPDATED, handleMetaUpdated);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!chrome?.storage?.onChanged) {
+            return;
+        }
+
+        const handleStorageChange = (
+            changes: { [key: string]: chrome.storage.StorageChange },
+            areaName: string,
+        ) => {
+            if (areaName !== 'local' || !changes[STORAGE_KEYS.WIDGETS]?.newValue) {
+                return;
+            }
+
+            const serializedWidgets = changes[STORAGE_KEYS.WIDGETS].newValue as SerializedWidget[];
+            const metaMap = new Map<string, Record<string, unknown>>();
+            serializedWidgets.forEach((widget) => {
+                if (widget.metaData) {
+                    metaMap.set(widget.id, widget.metaData as Record<string, unknown>);
+                }
+            });
+
+            if (metaMap.size === 0) {
+                return;
+            }
+
+            setWidgets((prev) => {
+                let hasChanges = false;
+                const nextWidgets = prev.map((widget) => {
+                    const nextMeta = metaMap.get(widget.id);
+                    if (!nextMeta) {
+                        return widget;
+                    }
+                    const existingMeta = widget.metaData || {};
+                    if (JSON.stringify(existingMeta) === JSON.stringify(nextMeta)) {
+                        return widget;
+                    }
+                    hasChanges = true;
+                    return { ...widget, metaData: nextMeta };
+                });
+
+                return hasChanges ? nextWidgets : prev;
+            });
+        };
+
+        chrome.storage.onChanged.addListener(handleStorageChange);
+        return () => {
+            chrome.storage.onChanged.removeListener(handleStorageChange);
+        };
+    }, []);
 
     // Create stable debounced function
     const debouncedSave = useMemo(
@@ -415,20 +485,7 @@ const NewTab: React.FC = () => {
             <div className={styles.newtabContent}>
                 <header className={styles.newtabHeader}>
                     <div className={styles.headerActions}>
-                        <button
-                            className={`${styles.lockToggle} ${isLocked ? styles.locked : ''}`}
-                            onClick={handleToggleLock}
-                            title={isLocked ? 'Unlock Dashboard' : 'Lock Dashboard'}
-                        >
-                            <span className={styles.btnIcon}>{isLocked ? '🔒' : '🔓'}</span>
-                            {isLocked ? 'Unlock' : 'Lock'}
-                        </button>
-                        <WidgetManager
-                            onAddWidget={handleAddWidget}
-                            existingWidgets={widgets}
-                            onBackgroundChange={handleBackgroundChange}
-                            isLocked={isLocked}
-                        />
+
                     </div>
                 </header>
 
@@ -459,7 +516,13 @@ const NewTab: React.FC = () => {
                     onDismiss={() => setShowNotification(false)}
                 />
             )}
-            <GitHubIssues isLocked={isLocked} />
+            <WidgetManager
+                onAddWidget={handleAddWidget}
+                existingWidgets={widgets}
+                onBackgroundChange={handleBackgroundChange}
+                isLocked={isLocked}
+                handleToggleLock={handleToggleLock}
+            />
         </div>
     );
 };

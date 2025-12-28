@@ -16,6 +16,7 @@ const SettingsWidget: React.FC<SettingsWidgetProps> = ({ widgetId, isLocked, wid
   const addProviderSetting = () => {
     if (!newProviderSettings) return;
     const newSettings = [...providers, newProviderSettings];
+    setProviders(newSettings);
     chromeStorage.setWidgetMetaData<SettingsWidgetMetaData>(widgetId, {
       providers: newSettings,
       lastRefresh: new Date()

@@ -1,6 +1,7 @@
 import { Dimensions, Position, CssStyle, STORAGE_KEYS, SettingsWidgetMetaData } from '../types/common';
 import { ProviderSettings } from '../types/providerSettings';
 import { defaultDimensions, defaultPosition, defaultStyle } from '../types/defaults';
+import { dispatchWidgetMetaUpdate } from './widgetEvents';
 // Storage keys for Chrome extension storage
 
 // Interface for serialized widget (component stored as string)
@@ -361,6 +362,12 @@ export const chromeStorage = {
         };
       }
       await chrome.storage.local.set({ [STORAGE_KEYS.WIDGETS]: widgets });
+      if (widgetIndex !== -1) {
+        dispatchWidgetMetaUpdate(
+          widgets[widgetIndex].id,
+          (widgets[widgetIndex].metaData || {}) as Record<string, unknown>
+        );
+      }
       return true;
     } catch (error) {
       console.error(`Failed to set widget meta data for ${widgetId} in Chrome storage:`, error);

@@ -38,13 +38,13 @@
 |:---:|:---:|:---:|
 | Multi-timezone support<br/>Custom formats<br/>Real-time updates | Favorite website shortcuts<br/>Custom icons & labels<br/>One-click navigation | Upload custom backgrounds<br/>5MB file support<br/>Preview & restore |
 
-| 🐙 **GitHub Integration** | 🌐 **Language Settings** |
-|:---:|:---:|
-| PR monitoring<br/>PAT authentication<br/>Real-time updates | Multi-language UI<br/>Instant switching<br/>Persistent preferences |
-
-| 🏃 **Sprint Number** | | |
+| 🐙 **GitHub Guru** | 📋 **Azure DevOps Board** | 🌐 **Language Settings** |
 |:---:|:---:|:---:|
-| Track sprint cycles<br/>Auto-calculate sprint dates<br/>Multiple sprint tracking | | |
+| Repository-wide PR monitoring<br/>PAT authentication<br/>Auto-refresh insights | Kanban-style Azure Boards view<br/>Column filtering & search<br/>Auto refresh with provider PATs | Multi-language UI<br/>Instant switching<br/>Persistent preferences |
+
+| 🏃 **Sprint Number** | 🗓️ **Quarter Indicator** | ⚙️ **Settings Widget** |
+|:---:|:---:|:---:|
+| Track sprint cycles<br/>Auto-calculate sprint dates<br/>Multiple sprint tracking | Fiscal calendar tracking<br/>Auto quarter calculation<br/>Custom start dates | Manage AI + GitHub providers<br/>Set widget defaults<br/>Centralized configuration |
 
 </div>
 
@@ -94,12 +94,14 @@ quantum-tab/
 │   ├── 🎨 newtab/               # New tab dashboard
 │   │   ├── index.tsx           # Main dashboard entry
 │   │   ├── NewTab.tsx          # Dashboard component
-│   │   └── newtab.css          # Dashboard styles
+│   │   └── newTab.module.css   # Scoped dashboard styles
 │   ├── 🧩 components/          # Reusable widgets
-│   │   ├── ClockWidget.tsx     # Live clock widget
-│   │   ├── GitHubWidget.tsx    # GitHub integration
-│   │   ├── LocaleWidget.tsx    # Language settings
-│   │   └── ...                 # More widgets
+│   │   ├── LiveClock/          # Live clock widget
+│   │   ├── QuickActionButtons/ # Shortcut launcher
+│   │   ├── BackgroundManager/  # Wallpaper controls
+│   │   ├── GitHubGuru/         # GitHub integration
+│   │   ├── AzureAdoBoard/      # Azure DevOps board view
+│   │   └── ...                 # More widgets & layout helpers
 │   ├── 🌍 locales/             # Internationalization
 │   │   ├── en.json            # English translations
 │   │   └── af.json            # Afrikaans translations
@@ -358,19 +360,36 @@ This command generates wiki files in `wiki/` folder for CI/CD deployment.
 </details>
 
 <details>
-<summary>🐙 <strong>GitHub Integration Widget</strong></summary>
+<summary>🐙 <strong>GitHub Guru Widget</strong></summary>
 
-**Monitor your repositories and pull requests**
+**Stay on top of repository-wide PR activity**
 
 ✨ **Features:**
-- 📊 Real-time pull request monitoring
-- 🔐 PAT token authentication for private repos
-- 🏷️ PR status indicators (Open, Merged, Closed, Draft)
-- 🔄 Auto-refresh pull request data
-- 📈 Repository information display
+- 📊 Split views for "All PRs" and "My PRs"
+- 🔐 Secure PAT authentication via provider settings
+- 🔄 Auto-refresh cadence with per-widget intervals
+- 🏷️ Rich status + reviewer context for every pull request
+- 🔔 Activity tracking to highlight new comments or approvals
 
-**Multiple Instances:** ✅ Yes (monitor multiple repositories)  
-**Requirements:** GitHub Personal Access Token for private repos
+**Multiple Instances:** ✅ Yes (add one per repository)  
+**Requirements:** GitHub Personal Access Token stored in the Settings Widget
+
+</details>
+
+<details>
+<summary>📋 <strong>Azure DevOps Board Widget</strong></summary>
+
+**Bring Azure Boards into your new tab**
+
+✨ **Features:**
+- 🧭 Column navigation with live work-item counts
+- 🔍 Client-side filtering across title, tags, owners, and states
+- 🔁 Manual or timed refresh using provider-based PATs
+- 🧱 Color-coded cards by work item type and priority
+- 📥 Cached data for offline viewing between refreshes
+
+**Multiple Instances:** ✅ Yes (track multiple teams/boards)  
+**Requirements:** Azure DevOps PAT configured in the Settings Widget
 
 </details>
 
@@ -407,6 +426,34 @@ This command generates wiki files in `wiki/` folder for CI/CD deployment.
 **Multiple Instances:** ✅ Yes (track multiple sprint schedules)  
 **Configuration:** Set once when adding widget  
 **Calculation:** `(Today - StartDate) / SprintLength + BaseSprint`
+
+</details>
+
+<details>
+<summary>🗓️ <strong>Quarter Indicator Widget</strong></summary>
+
+**Know exactly which quarter you are in**
+
+✨ **Features:**
+- ⚙️ Configurable fiscal year start date
+- 🧮 Automatic quarter calculation in real time
+- 🔁 Works with both calendar and offset fiscal schedules
+
+**Multiple Instances:** ✅ Yes (track multiple business units)
+
+</details>
+
+<details>
+<summary>⚙️ <strong>Settings Widget</strong></summary>
+
+**Central control center for providers and defaults**
+
+✨ **Features:**
+- 🔑 Manage PATs and API keys for GitHub, Azure DevOps, and AI services
+- 🧱 Define default widget styling for new widgets
+- 🔒 Toggle lock mode to prevent accidental edits across the board
+
+**Multiple Instances:** ❌ No (singleton system widget)
 
 </details>
 

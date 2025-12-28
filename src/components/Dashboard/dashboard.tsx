@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect, CSSProperties } from 'react';
 import ResizableWidget from '../ResizableWidget/resizableWidget';
 import { DashboardWidget, DashboardProps, DragState, Position, Dimensions } from '../../types/common';
-import { constrainPosition, getViewportDimensions } from '../../utils/helpers';
+import { constrainPosition, createSlug, getViewportDimensions } from '../../utils/helpers';
 import { dispatchWidgetEditing } from '@/utils/widgetEvents';
 import styles from './dashboard.module.css';
 import widgetCommon from '../../styles/widgetCommon.module.css';
@@ -117,7 +117,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     (widgetName: string) => {
       // Create a documentation URL for the widget on GitHub Wiki
       const baseUrl = 'https://github.com/Ruandv/Quantum-Tab/wiki';
-      const widgetSlug = widgetName.toLowerCase().replace(/\s+/g, '');
+      const widgetSlug = createSlug(widgetName);
       const docsUrl = `${baseUrl}/${widgetSlug}`;
 
       // Open documentation in a new tab/window

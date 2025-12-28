@@ -8,6 +8,17 @@ const path = require('path');
  * Converts WIDGET_DOCUMENTATION.md into individual wiki pages
  */
 
+function createSlug(name) {
+    return name
+        .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+        .replace(/[_\s]+/g, '-')
+        .replace(/[^\w-]/g, '')
+        .replace(/-+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '')
+        .toLowerCase();
+}
+
 function syncDocsToWiki() {
     const docsDir = path.join(__dirname, '..', 'docs');
     const outputDir = path.join(__dirname, '..', 'wiki-output');
@@ -51,7 +62,7 @@ function syncDocsToWiki() {
                 // Start new widget
                 currentWidget = {
                     name: widgetHeaderMatch[1],
-                    slug: widgetHeaderMatch[1].toLowerCase().replace(/\s+/g, '-'),
+                    slug: createSlug(widgetHeaderMatch[1]),
                     content: [line]
                 };
                 inWidgetSection = true;

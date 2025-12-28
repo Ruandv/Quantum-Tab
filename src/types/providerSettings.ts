@@ -17,12 +17,17 @@ export interface GitHubProviderSettings extends ProviderSettingsBase {
     PatToken: string;
 }
 
+export interface AzureDevOpsProviderSettings extends ProviderSettingsBase {
+    PatToken: string;
+}
+
 export type ProviderSettings =
     | GeminiProviderSettings
     | AzureOpenAiProviderSettings
-    | GitHubProviderSettings;
+    | GitHubProviderSettings
+    | AzureDevOpsProviderSettings;
 
-export type ProviderType = 'Gemini' | 'AzureAi' | 'GitHub';
+export type ProviderType = 'Gemini' | 'AzureAi' | 'GitHub' | 'AzureDevOps';
 
 export const providerRegistry: Record<string, ProviderSettings> = {
     Gemini: {
@@ -40,4 +45,8 @@ export const providerRegistry: Record<string, ProviderSettings> = {
         name: 'GitHub',
         PatToken: '',
     } as GitHubProviderSettings,
+    AzureDevOps: {
+        name: 'AzureDevOps',
+        PatToken: '',
+    } as AzureDevOpsProviderSettings,
 };

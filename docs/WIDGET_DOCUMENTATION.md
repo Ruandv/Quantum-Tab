@@ -23,6 +23,19 @@
 - **repositoryUrl**: GitHub repository URL to monitor in the format `https://github.com/owner/repo` (required)
 - **widgetHeading**: Optional heading text displayed at the top of the widget
 
+### AzureAdoBoard
+- **Description**: Visualize Azure DevOps board columns directly inside Quantum Tab with live work item data.
+- **Usage**: Connect to an Azure DevOps board using a provider PAT and optionally scope by area or iteration paths. Quickly browse columns, filter work items client-side, and refresh on demand or on an interval.
+
+#### Properties
+- **providerName**: Name of the provider configuration that stores the Azure DevOps PAT (required for authenticated calls)
+- **boardUrl**: Full Azure DevOps board URL (e.g., `https://dev.azure.com/org/project/_boards/board/t/Team/Board`) to load (required)
+- **areaPath**: Optional Azure DevOps area path string to filter work items (e.g., `Project\Team`)
+- **iterationPath**: Optional iteration path string for sprint-specific filtering
+- **autoRefresh**: Boolean to enable background refresh on an interval (default: false)
+- **refreshInterval**: Interval in minutes for auto refresh when enabled (default: 5)
+- **widgetHeading**: Optional heading text displayed at the top of the widget
+
 ### LiveClock
 - **Description**: Real-time clock component with customizable timezone, date, and time formatting.
 - **Usage**: Displays the current time and date for any timezone, with extensive customization options for format and display. Updates every second for accurate timekeeping.

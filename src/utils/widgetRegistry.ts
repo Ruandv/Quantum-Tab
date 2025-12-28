@@ -7,7 +7,8 @@ import {
   WidgetType,
   QuarterIndicatorProps,
   GitHubGuruProps,
-  SettingsWidgetProps
+  SettingsWidgetProps,
+  AzureAdoBoardProps
 } from '../types/common';
 import LiveClock from '../components/LiveClock/liveClock';
 import QuickActionButtons from '../components/QuickActionButtons/quickActionButtons';
@@ -18,6 +19,7 @@ import BackgroundManager from '@/components/BackgroundManager/backgroundManager'
 import QuarterIndicator from '@/components/QuarterIndicator/quaterIndicator';
 import GitHubGuru from '@/components/GitHubGuru/gitHubGuru';
 import SettingsWidget from '@/components/SettingsWidget/settingsWidget';
+import AzureAdoBoard from '@/components/AzureAdoBoard/azureAdoBoard';
 
 export class WidgetRegistry {
   private static instance: WidgetRegistry;
@@ -38,7 +40,7 @@ export class WidgetRegistry {
     this.register<LiveClockProps>({
       id: 'live-clock',
       name: 'Live Clock',
-      wikiPage: 'liveclock',
+      wikiPage: 'live-clock',
       allowMultiples: true,
       isRuntimeVisible: true,
       description: 'Real-time clock with customizable timezone and format',
@@ -59,7 +61,7 @@ export class WidgetRegistry {
     this.register<QuickActionButtonsProps>({
       id: 'quick-actions',
       name: 'Quick Actions',
-      wikiPage: 'quickactions',
+      wikiPage: 'quick-actions',
       allowMultiples: true,
       isRuntimeVisible: true,
       group: 'general',
@@ -86,7 +88,7 @@ export class WidgetRegistry {
     this.register<BackgroundManagerProps>({
       id: 'background-manager',
       name: 'Background Manager',
-      wikiPage: 'backgroundmanager',
+      wikiPage: 'background-manager',
       allowMultiples: false,
       isRuntimeVisible: false,
       group: 'general',
@@ -109,7 +111,7 @@ export class WidgetRegistry {
     this.register<GitHubGuruProps>({
       id: 'github-guru',
       name: 'GitHub Guru',
-      wikiPage: 'github-guru',
+      wikiPage: 'git-hub-guru',
       allowMultiples: true,
       isRuntimeVisible: true,
       group: 'git',
@@ -128,7 +130,7 @@ export class WidgetRegistry {
     this.register<LocaleWidgetProps>({
       id: 'locale-selector',
       name: 'Language Settings',
-      wikiPage: 'localewidget',
+      wikiPage: 'locale-widget',
       allowMultiples: false,
       isRuntimeVisible: false,
       group: 'general',
@@ -144,6 +146,7 @@ export class WidgetRegistry {
     this.register<SprintNumberProps>({
       id: 'sprint-number',
       name: 'Sprint Counter',
+      wikiPage: 'sprint-number',
       allowMultiples: true,
       isRuntimeVisible: true,
       group: 'business',
@@ -156,7 +159,6 @@ export class WidgetRegistry {
         numberOfDays: 14,
         currentSprint: 1,
       },
-      wikiPage: 'sprint-number'
     });
 
     this.register<QuarterIndicatorProps>({
@@ -187,6 +189,27 @@ export class WidgetRegistry {
       defaultDimensions: { width: 500, height: 400 },
       defaultProps: {
         widgetHeading: 'Settings',
+      },
+    });
+
+    this.register<AzureAdoBoardProps>({
+      id: 'azure-ado-board',
+      name: 'Azure ADO Board',
+      wikiPage: 'azure-ado-board',
+      allowMultiples: true,
+      isRuntimeVisible: true,
+      group: 'business',
+      description: 'Track Azure DevOps board items with filters and tabs',
+      component: AzureAdoBoard,
+      defaultDimensions: { width: 520, height: 360 },
+      defaultProps: {
+        widgetHeading: 'Azure ADO Board',
+        providerName: '',
+        boardUrl: '',
+        areaPath: '',
+        iterationPath: '',
+        autoRefresh: true,
+        refreshInterval: 5,
       },
     });
   }
@@ -230,6 +253,7 @@ export class WidgetRegistry {
       'github-guru': { name: 'widgets.githubGuru.name', description: 'widgets.githubGuru.description' },
       'locale-selector': { name: 'widgets.localeWidget.name', description: 'widgets.localeWidget.description' },
       'sprint-number': { name: 'widgets.sprintNumber.name', description: 'widgets.sprintNumber.description' },
+      'azure-ado-board': { name: 'widgets.azureAdoBoard.name', description: 'widgets.azureAdoBoard.description' },
     };
 
     const translations = translationMap[widgetId];

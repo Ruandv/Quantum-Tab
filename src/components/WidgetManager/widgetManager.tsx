@@ -22,6 +22,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   existingWidgets,
   onBackgroundChange,
   isLocked,
+  handleToggleLock,
 }: WidgetManagerProps) => {
   const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,7 +43,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     return availableWidgets.filter(widget => widget.group === filter);
   }, [availableWidgets, filter]);
   const getTokens = async () => {
-    const res=  await chromeStorage.getProviders();
+    const res = await chromeStorage.getProviders();
     setExistingApiTokens(res.map(t => t.name));
   }
   const loadDefaults = useCallback(async () => {
@@ -860,44 +861,77 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   );
 
   return isLocked ? (
-    <></>
+    <>
+
+      <button
+        className={`${styles.lockToggle} ${isLocked ? styles.locked : ''}`}
+        onClick={handleToggleLock}
+        title={isLocked ? 'Unlock Dashboard' : 'Lock Dashboard'}
+      >
+        <span className={styles.btnIcon}>{isLocked ? '🔒' : '🔓'}</span>
+      </button>
+    </>
   ) : (
-    <div className={styles.widgetManager}>
-      <div className={styles.widgetsList}>
-        <button
-          className={styles.btn}
-          onClick={() => handleAction('addWidget')}
-          title={t('widgetManager.tooltips.addWidget')}
-        >
-          <span className={styles.btnIcon}>➕</span>
-          {t('widgetManager.buttons.addWidget')}
-        </button>
-        <button
-          className={styles.btn}
-          onClick={() => handleAction('export')}
-          title={t('widgetManager.tooltips.exportWidgets')}
-        >
-          <span className={styles.btnIcon}>📤</span>
-          {t('widgetManager.buttons.exportWidgets')}
-        </button>
-        <button
-          className={styles.btn}
-          onClick={() => handleAction('import')}
-          title={t('widgetManager.tooltips.importWidgets')}
-        >
-          <span className={styles.btnIcon}>📥</span>
-          {t('widgetManager.buttons.importWidgets')}
-        </button>
+    <>
+      <button
+        className={`${styles.lockToggle} ${isLocked ? styles.locked : ''}`}
+        style={{ background: `rgba(${widgetStyle.backgroundColorRed}, ${widgetStyle.backgroundColorGreen}, ${widgetStyle.backgroundColorBlue}, ${widgetStyle.transparency / 1})` }}
+        onClick={handleToggleLock}
+        title={isLocked ? 'Unlock Dashboard' : 'Lock Dashboard'}
+      >
+        <span className={styles.btnIcon}>{isLocked ? '🔒' : '🔓'}</span>
+      </button>
+      <div className={styles.widgetManager} style={{ background: `rgba(${widgetStyle.backgroundColorRed}, ${widgetStyle.backgroundColorGreen}, ${widgetStyle.backgroundColorBlue}, ${widgetStyle.transparency / 1})` }} >
+        <div className={styles.widgetsList}>
+          <button
+            className={styles.btn}
+            onClick={() => handleAction('addWidget')}
+            title={t('widgetManager.tooltips.addWidget')}
+          >
+            <span className={styles.btnIcon}>➕</span>
+            {t('widgetManager.buttons.addWidget')}
+          </button>
+          <button
+            className={styles.btn}
+            onClick={() => handleAction('export')}
+            title={t('widgetManager.tooltips.exportWidgets')}
+          >
+            <span className={styles.btnIcon}>📤</span>
+            {t('widgetManager.buttons.exportWidgets')}
+          </button>
+          <button
+            className={styles.btn}
+            onClick={() => handleAction('import')}
+            title={t('widgetManager.tooltips.importWidgets')}
+          >
+            <span className={styles.btnIcon}>📥</span>
+            {t('widgetManager.buttons.importWidgets')}
+          </button>
+          <button
+            className={styles.btn}
+            onClick={() => window.open('https://github.com/Ruandv/Quantum-Tab/issues/new?template=feature_request.yml', '_blank')}
+            title={t('githubIssues.tooltips.requestFeature')}
+          >
+            {t('githubIssues.links.requestFeature')}
+          </button>
+          <button
+            className={styles.btn}
+            onClick={() => window.open('https://github.com/Ruandv/Quantum-Tab/issues/new?template=bug_report.yml', '_blank')}
+            title={t('githubIssues.tooltips.logBug')}
+          >
+            {t('githubIssues.links.logBug')}
+          </button>
+        </div>
+        {isModalOpen && modalContent !== null && (
+          <ModalDialog
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            content={modalContent}
+          >
+          </ModalDialog>
+        )}
       </div>
-      {isModalOpen && modalContent !== null && (
-        <ModalDialog
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          content={modalContent}
-        >
-        </ModalDialog>
-      )}
-    </div>
+    </>
   );
 };
 
