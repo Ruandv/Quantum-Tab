@@ -208,6 +208,7 @@ export interface WidgetManagerProps extends DefaultWidgetProps {
   onAddWidget: (widget: DashboardWidget) => void;
   existingWidgets: DashboardWidget[];
   onBackgroundChange?: (imageUrl: string) => void;
+  handleToggleLock?: () => void;
 }
 
 // Drag state interface

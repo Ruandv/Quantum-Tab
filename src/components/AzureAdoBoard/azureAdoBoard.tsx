@@ -233,7 +233,7 @@ const AzureAdoBoard: React.FC<AzureAdoBoardProps> = ({
 
     setIsLoading(true);
     setError(null);
-    const areaPaths =  areaPath?.trim() || undefined;
+    const areaPaths = areaPath?.trim() || undefined;
     const iterationPaths = iterationPath?.trim() || undefined;
     console.warn('RDV - Initiating fetch for Azure DevOps board data...', { boardUrl, areaPaths, iterationPaths });
     try {
@@ -381,18 +381,15 @@ const AzureAdoBoard: React.FC<AzureAdoBoardProps> = ({
   return (
     <div className={styles.adoBoard}>
       <div className={styles.header}>
-        <div className={styles.boardInfo}>
-          <span className={styles.boardName}>{boardInfo.name || t('azureAdoBoard.labels.boardPlaceholder')}</span>
+        <div className={styles.controls}>
+          <button className={styles.refreshBtn} onClick={fetchBoardData}>
+            🔄 {t('common.buttons.refresh')}
+          </button>
           {lastFetch && (
             <span className={styles.lastUpdated}>
               {t('azureAdoBoard.labels.lastUpdated')}: {lastFetch.toLocaleTimeString()}
             </span>
           )}
-        </div>
-        <div className={styles.controls}>
-          <button className={styles.refreshBtn} onClick={fetchBoardData}>
-            🔄 {t('common.buttons.refresh')}
-          </button>
         </div>
       </div>
 

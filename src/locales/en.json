@@ -187,7 +187,7 @@
   "azureAdoBoard": {
     "labels": {
       "boardPlaceholder": "Azure Board",
-      "lastUpdated": "Last updated",
+      "lastUpdated": "Updated",
       "unassigned": "Unassigned",
       "priority": "Priority {{value}}",
       "unknown": "Unknown"

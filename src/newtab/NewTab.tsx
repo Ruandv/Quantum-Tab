@@ -65,7 +65,7 @@ const NewTab: React.FC = () => {
                 style: defaultStyle,
             };
 
-            return [clockWidget,settingsWidget];
+            return [clockWidget, settingsWidget];
         } catch (error) {
             console.error('Error creating initial widgets:', error);
             return [];
@@ -486,20 +486,7 @@ const NewTab: React.FC = () => {
             <div className={styles.newtabContent}>
                 <header className={styles.newtabHeader}>
                     <div className={styles.headerActions}>
-                        <button
-                            className={`${styles.lockToggle} ${isLocked ? styles.locked : ''}`}
-                            onClick={handleToggleLock}
-                            title={isLocked ? 'Unlock Dashboard' : 'Lock Dashboard'}
-                        >
-                            <span className={styles.btnIcon}>{isLocked ? '🔒' : '🔓'}</span>
-                            {isLocked ? 'Unlock' : 'Lock'}
-                        </button>
-                        <WidgetManager
-                            onAddWidget={handleAddWidget}
-                            existingWidgets={widgets}
-                            onBackgroundChange={handleBackgroundChange}
-                            isLocked={isLocked}
-                        />
+
                     </div>
                 </header>
 
@@ -530,7 +517,13 @@ const NewTab: React.FC = () => {
                     onDismiss={() => setShowNotification(false)}
                 />
             )}
-            <GitHubIssues isLocked={isLocked} />
+            <WidgetManager
+                onAddWidget={handleAddWidget}
+                existingWidgets={widgets}
+                onBackgroundChange={handleBackgroundChange}
+                isLocked={isLocked}
+                handleToggleLock={handleToggleLock}
+            />
         </div>
     );
 };
