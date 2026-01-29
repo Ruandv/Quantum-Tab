@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   DashboardWidget,
@@ -37,6 +37,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     content: React.ReactNode;
     actions: Array<{ index: number; text: string; onClick: () => void }>;
   } | null>(null);
+  const lastLoggedFilter = useRef<string>('');
   const availableWidgets = useMemo(() => widgetRegistry.getAllLocalized(t), [t]).filter(
     (widget) => !widget.isDepricated
   );
@@ -56,6 +57,7 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     return { defaultStyle, defaultDimensions, defaultPosition };
   }, []);
   const filterWidgets = (group: string) => {
+    console.log(`Filter changed to: ${group}`);
     setFilter(group);
   };
   const [data, setData] = useState<{
@@ -75,60 +77,57 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
   });
   // Function to generate default modal content - moved after all handlers are defined
   const getDefaultModalContent = useCallback(
-    () => (
-      <div className={styles.formSection}>
-        <h3>{t('widgetManager.modal.sections.chooseType')}</h3>
-        <p className={styles.filter}>
-          <div onClick={() => filterWidgets('all')}>
-            {t('widgetManager.modal.sections.filter.all')}
+    () => {
+      if (filter !== lastLoggedFilter.current) {
+        console.log(`Evaluating widgets for filter: ${filter}`);
+        lastLoggedFilter.current = filter;
+      }
+      return (
+        <div className={styles.formSection}>
+          <h3>{t('widgetManager.modal.sections.chooseType')}</h3>
+          <p className={styles.filter}>
+            <div onClick={() => filterWidgets('all')}>
+              {t('widgetManager.modal.sections.filter.all')}
+            </div>
+            <div onClick={() => filterWidgets('general')}>
+              {t('widgetManager.modal.sections.filter.general')}
+            </div>
+            <div onClick={() => filterWidgets('git')}>
+              {t('widgetManager.modal.sections.filter.git')}
+            </div>
+            <div onClick={() => filterWidgets('business')}>
+              {t('widgetManager.modal.sections.filter.business')}
+            </div>
+          </p>
+          <div className={styles.widgetTypes}>
+            {filteredWidgets.map((widgetType: WidgetType) => {
+              const component = existingWidgets.find(
+                (widget) => widget.id.startsWith(widgetType.id) && widgetType.isDepricated !== true
+              );
+              if (
+                component &&
+                component.allowMultiples === false &&
+                filter !== 'all' &&
+                widgetType.group !== filter
+              ) {
+                return null;
+              }
+              return (
+                <div
+                  key={widgetType.id}
+                  className={`${styles.widgetTypeCard} ${selectedWidgetType?.id === widgetType.id ? styles.selected : ''}`}
+                  onClick={() => handleWidgetTypeSelect(widgetType)}
+                >
+                  <h4>{widgetType.name}</h4>
+                  <p>{widgetType.description}</p>
+                </div>
+              );
+            })}
           </div>
-          <div onClick={() => filterWidgets('general')}>
-            {t('widgetManager.modal.sections.filter.general')}
-          </div>
-          <div onClick={() => filterWidgets('git')}>
-            {t('widgetManager.modal.sections.filter.git')}
-          </div>
-          <div onClick={() => filterWidgets('business')}>
-            {t('widgetManager.modal.sections.filter.business')}
-          </div>
-        </p>
-        <div className={styles.widgetTypes}>
-          {filteredWidgets.map((widgetType: WidgetType) => {
-            const component = existingWidgets.find(
-              (widget) => widget.id.startsWith(widgetType.id) && widgetType.isDepricated !== true
-            );
-            console.log(
-              'Evaluating widget type:',
-              widgetType.name,
-              'Group:',
-              widgetType.group,
-              'Current filter:',
-              filter
-            );
-            if (
-              component &&
-              component.allowMultiples === false &&
-              filter !== 'all' &&
-              widgetType.group !== filter
-            ) {
-              return null;
-            }
-            return (
-              <div
-                key={widgetType.id}
-                className={`${styles.widgetTypeCard} ${selectedWidgetType?.id === widgetType.id ? styles.selected : ''}`}
-                onClick={() => handleWidgetTypeSelect(widgetType)}
-              >
-                <h4>{widgetType.name}</h4>
-                <p>{widgetType.description}</p>
-              </div>
-            );
-          })}
         </div>
-      </div>
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    ),
-    [t, availableWidgets, existingWidgets, selectedWidgetType, filteredWidgets]
+      );
+    },
+    [t, availableWidgets, existingWidgets, selectedWidgetType, filteredWidgets, filter]
   );
 
   const resetModalState = useCallback(async () => {
