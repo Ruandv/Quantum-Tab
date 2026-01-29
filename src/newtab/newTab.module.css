@@ -19,28 +19,6 @@
   box-sizing: border-box;
 }
 
-/* Header */
-.newtabHeader {
-  position: fixed;
-  padding: 0px 5px;
-  z-index: 100;
-  top: 10px;
-  left: 10px;
-  background-color: rgb(87, 80, 80);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  min-height: 60px;
-}
-
-.headerActions {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  flex-shrink: 0;
-}
-
 /* Main Content */
 .newtabMain {
   flex: 1;

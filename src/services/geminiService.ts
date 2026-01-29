@@ -18,7 +18,7 @@ const GeminiService = class geminiService implements AIService {
 
   public async generateResponse(prompt: string): Promise<string> {
     const response = await this.service.models.generateContent({
-      model: 'gemini-2.5-flash-image-preview',
+      model: 'gemini-2.5-flash-image',
       contents: {
         parts: [
           {
