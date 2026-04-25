@@ -37,8 +37,9 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
     content: React.ReactNode;
     actions: Array<{ index: number; text: string; onClick: () => void }>;
   } | null>(null);
-  const availableWidgets = useMemo(() => widgetRegistry.getAllLocalized(t), [t]).filter(
-    (widget) => !widget.isDepricated
+  const availableWidgets = useMemo(
+    () => widgetRegistry.getAllLocalized(t).filter((widget) => !widget.isDepricated),
+    [t]
   );
   const containerBounds = useMemo(() => getViewportDimensions(), []);
   const filteredWidgets = useMemo(() => {
