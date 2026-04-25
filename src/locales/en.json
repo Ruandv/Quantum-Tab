@@ -216,6 +216,17 @@
       "other": "Work Item"
     }
   },
+  "siteMonitor": {
+    "status": {
+      "healthy": "Healthy",
+      "degraded": "Degraded",
+      "unhealthy": "Unhealthy",
+      "unknown": "Unknown"
+    },
+    "labels": {
+      "lastChecked": "Last checked: {{time}}"
+    }
+  },
   "gitCommentWatcher": {
     "title": "Git Comment Watcher",
     "labels": {
@@ -336,6 +347,10 @@
     "azureAdoBoard": {
       "name": "Azure ADO Board",
       "description": "Track Azure DevOps board items with filters and tabs"
+    },
+    "siteMonitor": {
+      "name": "Site Monitor",
+      "description": "Monitor the health status of an HTTP endpoint"
     },
     "localeWidget": {
       "name": "Locale Selector",

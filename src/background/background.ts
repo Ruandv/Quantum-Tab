@@ -1,5 +1,5 @@
 // Background service worker for Chrome Extension Manifest V3
-import { BackgroundMessage, BackgroundResponse, STORAGE_KEYS } from '../types/common';
+import { BackgroundMessage, BackgroundResponse, STORAGE_KEYS, HealthCheckResponse } from '../types/common';
 import { GitHubService } from '../services/githubService';
 import AzureDevOpsService from '../services/azureDevOpsService';
 import { defaultPosition, defaultStyle } from '@/types/defaults';
@@ -87,6 +87,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === 'fetchAzureBoardData') {
     handleAzureBoardRequest(message, sendResponse);
+    return true;
+  }
+
+  if (message.action === 'fetchHealthStatus') {
+    handleHealthStatusRequest(message, sendResponse);
     return true;
   }
 
@@ -386,5 +391,50 @@ const migratePermissions = async (): Promise<void> => {
     }
   } catch (error) {
     console.error('Permission migration failed:', error);
+  }
+};
+
+// Handle fetchHealthStatus action
+const handleHealthStatusRequest = async (
+  message: BackgroundMessage,
+  sendResponse: (response: HealthCheckResponse) => void
+) => {
+  if (message.action !== 'fetchHealthStatus') {
+    sendResponse({ action: 'fetchHealthStatus', success: false, error: 'Invalid action' });
+    return;
+  }
+
+  const { endpointUrl } = message.data;
+
+  if (!endpointUrl) {
+    sendResponse({ action: 'fetchHealthStatus', success: false, error: 'Endpoint URL is required' });
+    return;
+  }
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+    const response = await fetch(endpointUrl, {
+      method: 'GET',
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+    const responseText = await response.text();
+
+    sendResponse({
+      action: 'fetchHealthStatus',
+      success: response.ok,
+      statusCode: response.status,
+      responseText,
+    });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Network request failed';
+    sendResponse({
+      action: 'fetchHealthStatus',
+      success: false,
+      error: errorMessage,
+    });
   }
 };

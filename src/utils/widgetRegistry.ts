@@ -9,6 +9,7 @@ import {
   GitHubGuruProps,
   SettingsWidgetProps,
   AzureAdoBoardProps,
+  SiteMonitorProps,
 } from '../types/common';
 import LiveClock from '../components/LiveClock/liveClock';
 import QuickActionButtons from '../components/QuickActionButtons/quickActionButtons';
@@ -20,6 +21,7 @@ import QuarterIndicator from '@/components/QuarterIndicator/quaterIndicator';
 import GitHubGuru from '@/components/GitHubGuru/gitHubGuru';
 import SettingsWidget from '@/components/SettingsWidget/settingsWidget';
 import AzureAdoBoard from '@/components/AzureAdoBoard/azureAdoBoard';
+import SiteMonitor from '@/components/SiteMonitor/siteMonitor';
 
 export class WidgetRegistry {
   private static instance: WidgetRegistry;
@@ -210,6 +212,23 @@ export class WidgetRegistry {
         iterationPath: '',
         autoRefresh: true,
         refreshInterval: 5,
+      },
+    });
+
+    this.register<SiteMonitorProps>({
+      id: 'site-monitor',
+      name: 'Site Monitor',
+      wikiPage: 'site-monitor',
+      allowMultiples: true,
+      isRuntimeVisible: true,
+      group: 'business',
+      description: 'Monitor the health status of an HTTP endpoint',
+      component: SiteMonitor,
+      defaultDimensions: { width: 280, height: 200 },
+      defaultProps: {
+        widgetHeading: 'Site Monitor',
+        displayName: 'Health Check',
+        endpointUrl: '',
       },
     });
   }

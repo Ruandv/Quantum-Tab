@@ -222,6 +222,17 @@
             "other": "Elemento"
         }
     },
+    "siteMonitor": {
+        "status": {
+            "healthy": "Saludable",
+            "degraded": "Degradado",
+            "unhealthy": "No saludable",
+            "unknown": "Desconocido"
+        },
+        "labels": {
+            "lastChecked": "Última verificación: {{time}}"
+        }
+    },
     "gitCommentWatcher": {
         "labels": {
             "newComments": "Nuevos Comentarios",
@@ -330,6 +341,10 @@
         "azureAdoBoard": {
             "name": "Tablero Azure ADO",
             "description": "Supervisa elementos del tablero de Azure DevOps con filtros"
+        },
+        "siteMonitor": {
+            "name": "Monitor de Sitio",
+            "description": "Monitorea el estado de salud de un endpoint HTTP"
         },
         "localeWidget": {
             "name": "Selector de Idioma",

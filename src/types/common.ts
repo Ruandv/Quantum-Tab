@@ -444,8 +444,30 @@ export interface AzureBoardResponse {
   error?: string;
 }
 
+export interface HealthCheckRequest {
+  action: 'fetchHealthStatus';
+  data: {
+    endpointUrl: string;
+  };
+}
+
+export type HealthStatus = 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
+
+export interface HealthCheckResponse {
+  action: 'fetchHealthStatus';
+  success: boolean;
+  statusCode?: number;
+  responseText?: string;
+  error?: string;
+}
+
+export interface SiteMonitorProps extends DefaultWidgetProps {
+  displayName: string;
+  endpointUrl: string;
+}
+
 // Background message types
-export type BackgroundMessage = GitHubApiRequest | AzureBoardRequest;
+export type BackgroundMessage = GitHubApiRequest | AzureBoardRequest | HealthCheckRequest;
 export type BackgroundResponse = GitHubApiResponse | AzureBoardResponse;
 
 /**

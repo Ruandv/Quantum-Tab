@@ -189,8 +189,18 @@
       "other": "Werk Item"
     }
   },
+  "siteMonitor": {
+    "status": {
+      "healthy": "Gesond",
+      "degraded": "Verswak",
+      "unhealthy": "Ongesond",
+      "unknown": "Onbekend"
+    },
+    "labels": {
+      "lastChecked": "Laas nagegaan: {{time}}"
+    }
+  },
   "gitCommentWatcher": {
-    "title": "Git Kommentaar Waarnemer",
     "labels": {
       "newComments": "Nuwe Kommentaar",
       "comments": "kommentaar"
@@ -298,6 +308,10 @@
     "azureAdoBoard": {
       "name": "Azure ADO Bord",
       "description": "Monitor Azure DevOps borditems en filter per lid"
+    },
+    "siteMonitor": {
+      "name": "Webwerf Monitor",
+      "description": "Monitor die gesondheidstatus van 'n HTTP-eindpunt"
     },
     "localeWidget": {
       "name": "Taal Kieser",
