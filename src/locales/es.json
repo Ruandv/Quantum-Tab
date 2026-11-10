@@ -222,6 +222,21 @@
             "other": "Elemento"
         }
     },
+    "sharePrice": {
+        "labels": {
+            "lastUpdated": "Actualizado",
+            "dayRange": "Rango del día",
+            "yearRange": "Rango de 52 semanas",
+            "volume": "Volumen",
+            "marketCap": "Capitalización"
+        },
+        "errors": {
+            "missingConfiguration": "Seleccione un proveedor de datos bursátiles (FinancialModelingPrep o Massive) e introduzca un símbolo",
+            "unsupportedProvider": "\"{{provider}}\" no es un proveedor de datos bursátiles. Elija un proveedor FinancialModelingPrep o Massive.",
+            "extensionError": "Error de la extensión",
+            "fetchFailed": "No se pudo cargar el precio de la acción"
+        }
+    },
     "gitCommentWatcher": {
         "labels": {
             "newComments": "Nuevos Comentarios",
@@ -338,6 +353,10 @@
         "sprintNumber": {
             "name": "Contador de Sprint",
             "description": "Rastrea números de sprint y cronogramas de proyecto"
+        },
+        "sharePrice": {
+            "name": "Precio de acciones",
+            "description": "Actualizaciones en vivo del precio de una acción seleccionada (FinancialModelingPrep o Massive)"
         }
     }
 }

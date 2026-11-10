@@ -60,6 +60,12 @@
   font-size: var(--widget-body-size, 0.9rem);
 }
 
+/* Native dropdown popups keep a white background; keep options readable */
+select.input option {
+  background-color: #3b3a78;
+  color: #fff;
+}
+
 .button {
   padding: 0.5rem 1rem;
   background: rgba(255, 255, 255, 0.1);

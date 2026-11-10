@@ -2,6 +2,8 @@
 import { BackgroundMessage, BackgroundResponse, STORAGE_KEYS } from '../types/common';
 import { GitHubService } from '../services/githubService';
 import AzureDevOpsService from '../services/azureDevOpsService';
+import { stockQuoteProviders } from '../services/stockQuoteProviders';
+import { isStockQuoteProvider } from '@/types/providerSettings';
 import { defaultPosition, defaultStyle } from '@/types/defaults';
 
 // Listen for extension installation or startup
@@ -90,6 +92,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
+  if (message.action === 'fetchSharePrice') {
+    handleSharePriceRequest(message, sendResponse);
+    return true;
+  }
+
   switch (message.action) {
     case 'getTabInfo':
       if (sender.tab) {
@@ -122,7 +129,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     default:
       console.warn('Unknown action:', message.action);
       console.warn(
-        'Available actions: getTabInfo, updateBadge, pageLoaded, fetchPullRequests, fetchAzureBoardData'
+        'Available actions: getTabInfo, updateBadge, pageLoaded, fetchPullRequests, fetchAzureBoardData, fetchSharePrice'
       );
       sendResponse({ error: 'Unknown action' });
   }
@@ -337,6 +344,57 @@ const handleAzureBoardRequest = async (
       success: false,
       error:
         error instanceof Error ? error.stack?.toString() : 'Failed to load Azure DevOps board data',
+    });
+  }
+};
+
+const handleSharePriceRequest = async (
+  message: BackgroundMessage,
+  sendResponse: (response: BackgroundResponse) => void
+) => {
+  if (message.action !== 'fetchSharePrice') {
+    sendResponse({ action: 'fetchSharePrice', success: false, error: 'Invalid action' });
+    return;
+  }
+
+  const { provider, apiKey, symbol, includeHistory } = message.data;
+
+  if (!isStockQuoteProvider(provider)) {
+    sendResponse({
+      action: 'fetchSharePrice',
+      success: false,
+      error: `"${provider}" is not a stock data provider`,
+    });
+    return;
+  }
+
+  if (!apiKey) {
+    sendResponse({
+      action: 'fetchSharePrice',
+      success: false,
+      error: `${provider} API key is required`,
+    });
+    return;
+  }
+
+  if (!symbol?.trim()) {
+    sendResponse({ action: 'fetchSharePrice', success: false, error: 'Share symbol is required' });
+    return;
+  }
+
+  try {
+    const data = await stockQuoteProviders[provider].fetchSharePrice(
+      apiKey,
+      symbol,
+      includeHistory
+    );
+    sendResponse({ action: 'fetchSharePrice', success: true, data });
+  } catch (error) {
+    console.error(`${provider} request failed:`, error);
+    sendResponse({
+      action: 'fetchSharePrice',
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to load share price',
     });
   }
 };

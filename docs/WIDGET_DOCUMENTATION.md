@@ -36,6 +36,21 @@
 - **refreshInterval**: Interval in minutes for auto refresh when enabled (default: 5)
 - **widgetHeading**: Optional heading text displayed at the top of the widget
 
+### SharePrice
+- **Description**: Show the latest share price, daily change, a 30-day trend line and key stats for a selected stock. Data comes from either [FinancialModelingPrep](https://site.financialmodelingprep.com/developer/docs) or [Massive](https://massive.com/docs/rest/quickstart), depending on the provider you pick.
+- **Usage**: In the Settings widget, add a `FinancialModelingPrep` or `Massive` provider and paste your own API key. Then add a Share Price widget, pick that provider and enter a ticker symbol. Quotes are cached and shared across open tabs, so opening a new tab doesn't spend an API call unless the cached quote is older than the refresh interval.
+- **Provider notes**:
+  - **FinancialModelingPrep**: intraday quotes. The free plan allows 250 calls per day and mainly covers major US stocks.
+  - **Massive**: built for the free Stocks Basic plan, which serves end-of-day prices, so the price shown is the latest close and the change is against the previous close. Company name, market cap and exchange refresh once a day.
+
+#### Properties
+- **providerName**: Name of the provider configuration that stores the API key, FinancialModelingPrep or Massive (required)
+- **symbol**: Ticker symbol to track, e.g. `AAPL` or `MSFT` (required)
+- **showChart**: Show a 30-day closing-price trend line (default: true; history is fetched at most once per day)
+- **autoRefresh**: Boolean to refresh the quote on an interval while the tab is visible (default: true)
+- **refreshInterval**: Interval in minutes for auto refresh (default: 15)
+- **widgetHeading**: Optional heading text displayed at the top of the widget
+
 ### LiveClock
 - **Description**: Real-time clock component with customizable timezone, date, and time formatting.
 - **Usage**: Displays the current time and date for any timezone, with extensive customization options for format and display. Updates every second for accurate timekeeping.

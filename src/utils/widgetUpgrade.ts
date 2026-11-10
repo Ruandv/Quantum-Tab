@@ -89,6 +89,42 @@ export const upgradeWidgets = async (widgets: SerializedWidget[]): Promise<Upgra
 };
 
 /**
+ * Merge duplicate Settings widgets into the first one.
+ * Older builds could create a second Settings widget (e.g. `settings-widget` next to
+ * `settings-widget-1`), splitting saved providers across them. Providers from later
+ * duplicates are appended unless a provider with the same name already exists.
+ * Idempotent and safe to run on every load.
+ */
+export const consolidateSettingsWidgets = (
+  widgets: SerializedWidget[]
+): { widgets: SerializedWidget[]; changed: boolean } => {
+  const settings = widgets.filter((w) => w.component === 'settings-widget');
+  if (settings.length <= 1) return { widgets, changed: false };
+
+  type Provider = { name: string };
+  const [primary, ...duplicates] = settings;
+  const primaryMeta = (primary.metaData || {}) as { providers?: Provider[] };
+  const providers: Provider[] = [...(primaryMeta.providers || [])];
+
+  duplicates.forEach((dup) => {
+    const dupProviders = ((dup.metaData || {}) as { providers?: Provider[] }).providers || [];
+    dupProviders.forEach((p) => {
+      if (!providers.some((existing) => existing.name === p.name)) providers.push(p);
+    });
+  });
+
+  const duplicateIds = new Set(duplicates.map((d) => d.id));
+  return {
+    changed: true,
+    widgets: widgets
+      .filter((w) => !duplicateIds.has(w.id))
+      .map((w) =>
+        w.id === primary.id ? { ...w, metaData: { ...(w.metaData || {}), providers } } : w
+      ),
+  };
+};
+
+/**
  * Apply upgrade logic for a specific version
  */
 async function applyVersionUpgrade(

@@ -189,6 +189,21 @@
       "other": "Werk Item"
     }
   },
+  "sharePrice": {
+    "labels": {
+      "lastUpdated": "Opgedateer",
+      "dayRange": "Dagreeks",
+      "yearRange": "52-week-reeks",
+      "volume": "Volume",
+      "marketCap": "Markkapitalisasie"
+    },
+    "errors": {
+      "missingConfiguration": "Kies 'n aandeeldataverskaffer (FinancialModelingPrep of Massive) en voer 'n aandeelsimbool in",
+            "unsupportedProvider": "\"{{provider}}\" is nie 'n aandeeldataverskaffer nie. Kies 'n FinancialModelingPrep- of Massive-verskaffer.",
+      "extensionError": "Uitbreidingsfout",
+      "fetchFailed": "Kon nie aandeelprys laai nie"
+    }
+  },
   "gitCommentWatcher": {
     "title": "Git Kommentaar Waarnemer",
     "labels": {
@@ -306,6 +321,10 @@
     "sprintNumber": {
       "name": "Sprint Teller",
       "description": "Spoor sprint nommers en projek tydlyne"
+    },
+    "sharePrice": {
+      "name": "Aandeelprys",
+      "description": "Lewendige aandeelprysopdaterings vir 'n gekose aandeel (FinancialModelingPrep of Massive)"
     }
   }
 }

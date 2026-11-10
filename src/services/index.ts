@@ -6,6 +6,9 @@
  */
 
 export { default as GitHubService } from './githubService';
+export { default as FinancialModelingPrepService } from './financialModelingPrepService';
+export { default as MassiveService } from './massiveService';
+export { stockQuoteProviders } from './stockQuoteProviders';
 
 // Future services can be exported here:
 // export { default as TwitterService } from './twitterService';

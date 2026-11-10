@@ -584,12 +584,13 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
                 onBackgroundChange,
               };
             }
-            // check if selectedWidgetType is being edited
-            const isEditing = existingWidgets.some((w) => w.id.startsWith(selectedWidgetType.id));
+            // Single-instance widgets replace the existing instance (same id, keep its
+            // metaData such as saved providers). Multi-instance widgets always get a new id.
+            const existingInstance = selectedWidgetType.allowMultiples
+              ? undefined
+              : existingWidgets.find((w) => w.id.startsWith(selectedWidgetType.id));
             const newWidget: DashboardWidget = {
-              id: isEditing
-                ? selectedWidgetType.id.toString()
-                : generateUniqueId(selectedWidgetType.id),
+              id: existingInstance ? existingInstance.id : generateUniqueId(selectedWidgetType.id),
               name: selectedWidgetType.name,
               description: selectedWidgetType.description,
               isRuntimeVisible: selectedWidgetType.isRuntimeVisible,
@@ -601,7 +602,8 @@ const WidgetManager: React.FC<WidgetManagerProps> = ({
               position: widgetPosition,
               props: widgetProps,
               style: widgetStyle,
-              metaData: selectedWidgetType.metaData || { lastRefresh: new Date() },
+              metaData: existingInstance?.metaData ||
+                selectedWidgetType.metaData || { lastRefresh: new Date() },
             };
 
             onAddWidget(newWidget);
