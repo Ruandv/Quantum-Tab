@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0](https://github.com/Ruandv/Quantum-Tab/compare/v1.8.0...v1.9.0) (2026-11-10)
+
+
+### Features
+
+* shareprice widget ([#81](https://github.com/Ruandv/Quantum-Tab/issues/81)) ([4e710ad](https://github.com/Ruandv/Quantum-Tab/commit/4e710ad7a5c02f76bfb505f5928536f85f16beb0))
+
+
+### Bug Fixes
+
+* update model name in GeminiService for content generation ([#79](https://github.com/Ruandv/Quantum-Tab/issues/79)) ([d638e48](https://github.com/Ruandv/Quantum-Tab/commit/d638e48c30be4c3863042216dfc79ac6945cc0bf))
+
 ## [1.8.0](https://github.com/Ruandv/Quantum-Tab/compare/v1.7.0...v1.8.0) (2025-12-28)
 
 
