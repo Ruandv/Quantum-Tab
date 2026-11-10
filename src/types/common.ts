@@ -178,6 +178,14 @@ export interface AzureAdoBoardProps extends DefaultWidgetProps {
   refreshInterval?: number; // in minutes
 }
 
+export interface SharePriceProps extends DefaultWidgetProps {
+  providerName: string; // Settings provider holding the FinancialModelingPrep API key
+  symbol: string; // Ticker symbol, e.g. AAPL
+  showChart?: boolean;
+  autoRefresh?: boolean;
+  refreshInterval?: number; // in minutes
+}
+
 export interface QuarterIndicatorProps extends DefaultWidgetProps {
   startDate: string; // Format: YYYY-MM-DD
 }
@@ -444,9 +452,56 @@ export interface AzureBoardResponse {
   error?: string;
 }
 
+// FinancialModelingPrep (share price) types
+export interface ShareQuote {
+  symbol: string;
+  name: string;
+  price: number;
+  change: number;
+  changePercentage: number;
+  open?: number;
+  previousClose?: number;
+  dayLow?: number;
+  dayHigh?: number;
+  yearLow?: number;
+  yearHigh?: number;
+  volume?: number;
+  marketCap?: number;
+  exchange?: string;
+  timestamp?: number; // unix seconds
+}
+
+export interface SharePricePoint {
+  date: string; // YYYY-MM-DD
+  price: number;
+}
+
+export interface SharePricePayload {
+  quote: ShareQuote;
+  history?: SharePricePoint[]; // oldest first
+  retrievedAt: string;
+}
+
+export interface SharePriceRequest {
+  action: 'fetchSharePrice';
+  data: {
+    provider: string; // provider type, e.g. FinancialModelingPrep or Massive
+    apiKey: string;
+    symbol: string;
+    includeHistory?: boolean;
+  };
+}
+
+export interface SharePriceResponse {
+  action: 'fetchSharePrice';
+  success: boolean;
+  data?: SharePricePayload;
+  error?: string;
+}
+
 // Background message types
-export type BackgroundMessage = GitHubApiRequest | AzureBoardRequest;
-export type BackgroundResponse = GitHubApiResponse | AzureBoardResponse;
+export type BackgroundMessage = GitHubApiRequest | AzureBoardRequest | SharePriceRequest;
+export type BackgroundResponse = GitHubApiResponse | AzureBoardResponse | SharePriceResponse;
 
 /**
  * Type guard to check if a value is an InternalString

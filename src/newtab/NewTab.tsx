@@ -15,7 +15,7 @@ import {
 } from '../utils/widgetEvents';
 import { defaultDimensions, defaultPosition, defaultStyle } from '@/types/defaults';
 import NotificationManager from '@/utils/notificationManager';
-import { upgradeWidgets } from '../utils/widgetUpgrade';
+import { upgradeWidgets, consolidateSettingsWidgets } from '../utils/widgetUpgrade';
 import styles from './newTab.module.css';
 
 // Stable fallback component to avoid creating new function instances
@@ -121,6 +121,14 @@ const NewTab: React.FC = () => {
           await chromeStorage.saveWidgets(upgradeResult.widgets);
           // Update savedData with upgraded widgets
           savedData.widgets = upgradeResult.widgets;
+        }
+
+        // Merge duplicate Settings widgets so providers live in one place
+        const consolidated = consolidateSettingsWidgets(savedData.widgets || []);
+        if (consolidated.changed) {
+          console.log('Merged duplicate Settings widgets');
+          await chromeStorage.saveWidgets(consolidated.widgets);
+          savedData.widgets = consolidated.widgets;
         }
 
         // Handle widgets - force fresh start if data looks corrupted
@@ -352,7 +360,11 @@ const NewTab: React.FC = () => {
               const componentName =
                 widget.component.name || widget.component.displayName || 'unknown';
 
-              const widgetType = widgetRegistry.findByComponentName(componentName);
+              // Match by component reference first: function names are minified in
+              // production builds and can change between builds.
+              const widgetType =
+                widgetRegistry.getAll().find((w) => w.component === widget.component) ||
+                widgetRegistry.findByComponentName(componentName);
               const serializedComponent = widgetType?.id || componentName || 'LiveClock';
 
               return {

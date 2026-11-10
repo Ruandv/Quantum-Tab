@@ -9,6 +9,7 @@ import {
   GitHubGuruProps,
   SettingsWidgetProps,
   AzureAdoBoardProps,
+  SharePriceProps,
 } from '../types/common';
 import LiveClock from '../components/LiveClock/liveClock';
 import QuickActionButtons from '../components/QuickActionButtons/quickActionButtons';
@@ -20,6 +21,7 @@ import QuarterIndicator from '@/components/QuarterIndicator/quaterIndicator';
 import GitHubGuru from '@/components/GitHubGuru/gitHubGuru';
 import SettingsWidget from '@/components/SettingsWidget/settingsWidget';
 import AzureAdoBoard from '@/components/AzureAdoBoard/azureAdoBoard';
+import SharePrice from '@/components/SharePrice/sharePrice';
 
 export class WidgetRegistry {
   private static instance: WidgetRegistry;
@@ -212,6 +214,27 @@ export class WidgetRegistry {
         refreshInterval: 5,
       },
     });
+
+    this.register<SharePriceProps>({
+      id: 'share-price',
+      name: 'Share Price',
+      wikiPage: 'share-price',
+      allowMultiples: true,
+      isRuntimeVisible: true,
+      group: 'business',
+      description:
+        'Live share price updates for a selected stock (FinancialModelingPrep or Massive)',
+      component: SharePrice,
+      defaultDimensions: { width: 340, height: 280 },
+      defaultProps: {
+        widgetHeading: 'Share Price',
+        providerName: '',
+        symbol: 'AAPL',
+        showChart: true,
+        autoRefresh: true,
+        refreshInterval: 15, // in minutes; keeps usage within free-plan limits
+      },
+    });
   }
 
   public register<T = unknown>(widget: WidgetType<T>): void {
@@ -274,6 +297,10 @@ export class WidgetRegistry {
       'azure-ado-board': {
         name: 'widgets.azureAdoBoard.name',
         description: 'widgets.azureAdoBoard.description',
+      },
+      'share-price': {
+        name: 'widgets.sharePrice.name',
+        description: 'widgets.sharePrice.description',
       },
     };
 

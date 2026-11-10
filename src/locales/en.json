@@ -216,6 +216,21 @@
       "other": "Work Item"
     }
   },
+  "sharePrice": {
+    "labels": {
+      "lastUpdated": "Updated",
+      "dayRange": "Day range",
+      "yearRange": "52-week range",
+      "volume": "Volume",
+      "marketCap": "Market cap"
+    },
+    "errors": {
+      "missingConfiguration": "Select a stock data provider (FinancialModelingPrep or Massive) and enter a share symbol",
+            "unsupportedProvider": "\"{{provider}}\" is not a stock data provider. Choose a FinancialModelingPrep or Massive provider.",
+      "extensionError": "Extension error",
+      "fetchFailed": "Failed to load share price"
+    }
+  },
   "gitCommentWatcher": {
     "title": "Git Comment Watcher",
     "labels": {
@@ -356,6 +371,10 @@
         "addProvider": "Add Provider",
         "saveDefaults": "Save Defaults"
       }
+    },
+    "sharePrice": {
+      "name": "Share Price",
+      "description": "Live share price updates for a selected stock (FinancialModelingPrep or Massive)"
     }
   }
 }

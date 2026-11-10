@@ -198,6 +198,14 @@
   box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.2);
 }
 
+/* Native dropdown popups keep a white background, so give options an
+   explicit dark background to stay readable with the inherited white text */
+.modal select option,
+.modal select optgroup {
+  background-color: #3b3a78;
+  color: #fff;
+}
+
 .modal input::placeholder,
 .modal textarea::placeholder {
   color: rgba(255, 255, 255, 0.5);

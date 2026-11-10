@@ -21,13 +21,36 @@ export interface AzureDevOpsProviderSettings extends ProviderSettingsBase {
   PatToken: string;
 }
 
+export interface FinancialModelingPrepProviderSettings extends ProviderSettingsBase {
+  apiKey: string;
+}
+
+export interface MassiveProviderSettings extends ProviderSettingsBase {
+  apiKey: string;
+}
+
 export type ProviderSettings =
   | GeminiProviderSettings
   | AzureOpenAiProviderSettings
   | GitHubProviderSettings
-  | AzureDevOpsProviderSettings;
+  | AzureDevOpsProviderSettings
+  | FinancialModelingPrepProviderSettings
+  | MassiveProviderSettings;
 
-export type ProviderType = 'Gemini' | 'AzureAi' | 'GitHub' | 'AzureDevOps';
+export type ProviderType =
+  | 'Gemini'
+  | 'AzureAi'
+  | 'GitHub'
+  | 'AzureDevOps'
+  | 'FinancialModelingPrep'
+  | 'Massive';
+
+/** Provider types that can supply stock quotes to the Share Price widget. */
+export const STOCK_QUOTE_PROVIDERS = ['FinancialModelingPrep', 'Massive'] as const;
+export type StockQuoteProviderType = (typeof STOCK_QUOTE_PROVIDERS)[number];
+
+export const isStockQuoteProvider = (name: string | undefined): name is StockQuoteProviderType =>
+  !!name && (STOCK_QUOTE_PROVIDERS as readonly string[]).includes(name);
 
 export const providerRegistry: Record<string, ProviderSettings> = {
   Gemini: {
@@ -49,4 +72,12 @@ export const providerRegistry: Record<string, ProviderSettings> = {
     name: 'AzureDevOps',
     PatToken: '',
   } as AzureDevOpsProviderSettings,
+  FinancialModelingPrep: {
+    name: 'FinancialModelingPrep',
+    apiKey: '',
+  } as FinancialModelingPrepProviderSettings,
+  Massive: {
+    name: 'Massive',
+    apiKey: '',
+  } as MassiveProviderSettings,
 };

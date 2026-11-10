@@ -299,20 +299,18 @@ export const chromeStorage = {
     }
   },
 
+  /** All providers across every Settings widget (guards against duplicate Settings widgets). */
+  getAllProviderSettings: async (): Promise<ProviderSettings[]> => {
+    const result = await chromeStorage.loadAll();
+    return result.widgets
+      .filter((w) => w.component === 'settings-widget')
+      .flatMap((w) => (w.metaData as SettingsWidgetMetaData | undefined)?.providers || []);
+  },
+
   getProviderConfiguration: async (providerName: string): Promise<ProviderSettings | null> => {
     try {
-      const result = await chromeStorage.loadAll();
-      const settingsWidget = result.widgets.find((w) => w.component === 'settings-widget');
-      if (!settingsWidget) {
-        console.warn('Settings widget not found when retrieving API token');
-        return null;
-      }
-      const token = settingsWidget.metaData
-        ? (settingsWidget.metaData as SettingsWidgetMetaData).providers?.find(
-            (x) => x.name === providerName
-          )
-        : null;
-      return token || null;
+      const providers = await chromeStorage.getAllProviderSettings();
+      return providers.find((x) => x.name === providerName) || null;
     } catch (error) {
       console.error(`Failed to get API token for ${providerName} from Chrome storage:`, error);
       return null;
@@ -320,19 +318,12 @@ export const chromeStorage = {
   },
   getProviders: async (): Promise<{ name: string }[]> => {
     try {
-      const result = await chromeStorage.loadAll();
-      const settingsWidget = result.widgets.find((w) => w.component === 'settings-widget');
-      if (!settingsWidget) {
-        console.warn('Settings widget not found when retrieving API token');
-        return null;
-      }
-      const tokens = settingsWidget.metaData
-        ? (settingsWidget.metaData as SettingsWidgetMetaData).providers
-        : null;
-      return tokens?.map((x) => ({ name: x.name })) || [];
+      const providers = await chromeStorage.getAllProviderSettings();
+      const names = Array.from(new Set(providers.map((x) => x.name).filter(Boolean)));
+      return names.map((name) => ({ name }));
     } catch (error) {
       console.error(`Failed to get API tokens from Chrome storage:`, error);
-      return null;
+      return [];
     }
   },
 
